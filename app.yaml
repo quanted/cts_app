@@ -1,0 +1,142 @@
+application: cts
+version: master
+runtime: python27
+api_version: 1
+
+default_expiration: "5d 12h"
+
+threadsafe: false
+
+libraries:
+- name: numpy
+  version: latest
+- name: webapp2
+  version: latest
+- name: django
+  version: "latest"
+- name: PIL
+  version: latest
+- name: matplotlib
+  version: latest
+- name: ssl
+  version: "latest" 
+env_variables:
+  UBERTOOL_BATCH_SERVER: 'http://uberrest-topknotmeadows.rhcloud.com/'
+  UBERTOOL_MONGO_SERVER: 'http://uberrest-topknotmeadows.rhcloud.com'
+  UBERTOOL_SECURE_SERVER: 'http://uberrest-topknotmeadows.rhcloud.com'
+  # UBERTOOL_REST_SERVER: 'http://localhost:7777'
+  UBERTOOL_REST_SERVER: 'http://54.83.18.251:7777'
+
+skip_files:
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^(.*/)?.*\.gz
+- ^(.*/)?.*\.aux
+- ^(.*/)?.*\.xcf
+- ^(.*/)?.*\.php
+- ^(.*/)?.*\.bak
+- ^(.*/)?.*\.inc
+- ^(.*/)?.*\.dark
+- ^(.*/)?.*\.nofill
+- ^(.*/)?.*\.SDR
+- ^(.*/)?.*\MIT-LICENSE
+- ^(.*/)?.*\LGPL-LICENSE
+- ^(data/.*)
+- ^(REST/.*)
+- ^(generatepdf/generatepdf_picloud/.*)$
+
+handlers:
+- url: /
+  script: landing_cts.py 
+- url: /index.html
+  script: landing_cts.py 
+- url: /cts.html
+  script: main.py 
+- url: /about.html
+  script: about.py
+- url: /pdf.html
+  script: pdf_output.py
+- url: /html.html
+  script: html_output.py
+- url: /login.html
+  script: user/user_login_input.py
+  secure: always
+- url: /register.html
+  script: user/user_registration_input.py
+  secure: always
+- url: /history_revisit.html
+  script: history_revisit.py
+- url: /history_revisit_batch.html
+  script: history_revisit_batch.py
+# All URLs beginning with /stylesheets are treated as paths to static files in
+# the stylesheets/ directory. Note that static_dir handlers do not use a
+# regular expression for the URL pattern, only a prefix.
+- url: /stylesheets
+  static_dir: stylesheets
+- url: /images
+  static_dir: images
+- url: /pdfs
+  static_dir: pdfs
+- url: /csvs
+  static_dir: csvs
+- url: /templates/popup.html
+  static_files: templates/popup.html
+  upload: templates/popup.html
+- url: /data
+  static_dir: data
+
+##UNTESTED models##
+#description
+- url: /(.*?)_description.html
+  script: \1/\1_description.py
+#input
+- url: /(.*?)_input.html
+  script: \1/\1_input.py
+#output
+- url: /(.*?)_output.html
+  script: \1/\1_output.py  
+#algorithms
+- url: /(.*?)_algorithms.html
+  script: \1/\1_algorithm.py    
+#references
+- url: /(.*?)_references.html
+  script: \1/\1_references.py 
+#qaqc
+- url: /(.*?)_qaqc.html
+  script: \1/\1_qaqc.py 
+#batch
+- url: /(.*?)_batchinput.html
+  script: \1/\1_batchinput.py
+#batch_output
+- url: /(.*?)_batchoutput.html
+  script: \1/\1_batchoutput.py
+#hisotry
+- url: /(.*?)_history.html
+  script: \1/\1_history.py
+
+#webice
+- url: /webiceSSD_out\.html
+  script: webice/webice_SSDoutput.py
+- url: /webiceTNE_out\.html
+  script: webice/webice_TNEoutput.py
+- url: /ICETable\.html
+  script: webice/webice_ICETable.py
+
+# #historyoutput
+# - url: /(.*?)_asdf.html
+#   script: \1/\1_asdf.py
+  #historyoutput
+#historyoutput
+- url: /(.*?)_intermediate.html
+  script: \1/\1_intermediate.py
+
+#file not found
+- url: /.*
+  script: file_not_found.py

@@ -2,7 +2,6 @@
 *.pyc
 *.bak
 *.dropbox
-app.yaml
 *.xlsx
 *.old
 *.doc

@@ -1,0 +1,36 @@
+<p>
+The Chemical Transformation Simulator (CTS) represents the most robust process science available through the integration of state-of-the-art cheminformatics applications, computational chemistry and modeling software technologies. 
+</p>
+
+<p>The CTS automates the process of:</p>
+<ul class="bullet">
+  <li>Generating predicted transformation products based on user-defined reaction conditions</li>
+  <li>Calculating physico-chemical properties for both the parent chemical and predicted transformation products</li>
+</ul>
+
+<p>The EFS consists of 6 modules, the selection and order of execution of which is based on the workflow chosen by the user:
+</p>
+<h3>Chemical Editor (CE):</h3>
+<ul class="bullet">
+  <li>Provides options for chemical entry, as well as the speciation and  selected p-chem properties for the parent chemical</li>
+</ul>
+<h3>Physicochemical Properties Calculator (PPC):</h3>
+<ul class="bullet">
+  <li>Molecular descriptors for the parent chemical and predicted transformation products based on the executions of multiple p-chem calculators</li>
+</ul>
+<h3>Earth Systems Model:</h3>
+<ul class="bullet">
+  <li>Data Mining for environmental descriptors</li>
+</ul>
+<h3>Reaction Pathway Simulator (RPS):</h3>
+<ul class="bullet">
+  <li>Generates potential transformation products based on user-specified reaction conditions</li>
+</ul>
+<h3>Structure-based Database (SBD):</h3>
+<ul class="bullet">
+  <li>Populated with calculated and measured physico-chemical properties of parent and potential transformation products</li>
+</ul>
+<h3>Reaction Rate Calculator:</h3>
+<ul class="bullet">
+  <li>Parameritization and Execution of QSARs and Algorithms</li>
+</ul>
