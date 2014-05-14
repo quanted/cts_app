@@ -21,6 +21,7 @@ class analysisDescriptionPage(webapp.RequestHandler):
                 'model_page':'#', 
                 'model_attributes':'Structure Analysis Overview', 
                 'text_paragraph':x})
+        html = html + template.render(templatepath + '04ubertext_nav.html', {'model':'analysis'})
         html = html + template.render(templatepath + '04ubertext_end.html', {})
         html = html + template.render(templatepath + '05cts_ubertext_links_right.html', {})
         html = html + template.render(templatepath + '06cts_uberfooter.html', {'links': ''})

@@ -2,7 +2,7 @@
   color: #4289AA;
   margin-bottom: 20px;
   font-size: 1.5em;
-  font-weight: bold;
+  font-weight: 700;
   display: inline-block;
 }
 .input_header {
@@ -15,7 +15,7 @@
   color: #000;
   margin-bottom: 1em;
   font-size: 1.5em;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 /* Defining Hyperlink Colors */
@@ -70,7 +70,7 @@ a:hover {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
 }
 #topheader_pic {
-  background: #356697 url(/images/species/waterfrog_crop.png);
+  background: #356697 url(/images/species/cts_balls.png);
   width: 720px;
   height: 120px;
   float: left;
@@ -97,7 +97,7 @@ a:hover {
   display: none;
 }
 #topheader_pic_main {
-  background: #356697 url(/images/species/waterfrog_crop.png);
+  background: #356697 url(/images/species/cts_balls.png);
   width: 720px;
   height: 240px;
   float: left;
@@ -1237,4 +1237,101 @@ th {
   background:#FFA500;
   color:#fff;
   font-weight:normal;
+}
+
+/* CTS Inputs */
+
+#nav_text {
+  float: right;
+}
+#nav_text ul {
+  list-style: none;
+}
+#nav_text ul li {
+  display: table-cell;
+  vertical-align: middle;
+  list-style: none;
+}
+#nav_text ul li a {
+  font-size: 1.2em;
+}
+#nav_text img {
+  margin-left: 6px;
+}
+#chemEdit_div {
+  margin: 12px 0;
+  text-align: center;
+}
+#chemEdit_div ul {
+  list-style: none;
+}
+#chemEdit_div li {
+  display: inline;
+}
+#chemEditDraw_button {
+
+}
+#chemEditLookup_button {
+
+}
+/*#chemEditDraw, #chemEditLookup {
+  text-align: center;
+  margin-bottom: 20px;
+}*/
+#chemEditDraw table, #chemEditLookup table {
+  margin-left: auto;
+  margin-bottom: 24px;
+  min-width: 622px;
+}
+#chemEditDraw table textarea, #chemEditLookup table textarea {
+  width: 100%;
+}
+/*#chemEditDraw table td {
+  vertical-align: bottom;
+}*/
+#chemEditDraw span, #chemEditLookup span {
+  display: inline-block;
+  margin: 5px 0 5px 5px;
+  font-weight: 700;
+  font-size: 1.5em;
+}
+#getSmilesButton, #setSmilesButton {
+  float: right;
+  padding: 4px;
+}
+#MolTxt {
+  width: 100%;
+}
+.label {
+  min-width: 40%;
+}
+.tab_Speciation, .tab_ChemCalcs {
+  min-width: 622px;
+}
+.tab_ChemCalcs input, span {
+  float: left;
+  margin-right: 6px;
+}
+.tab_ChemCalcs td {
+  min-width: 60px;
+  text-align: center;
+}
+.input_nav {
+  max-width: 684px;
+  margin-top: 12px;
+}
+.ctsInputHeader {
+  padding: 6px;
+  font-size: 1.1em;
+}
+.ChemCalcs_available {
+  background: #356697;
+  color: #F7F9F4;
+}
+.ChemCalcs_unavailable {
+  background: #bc2f2f;
+  color: #F7F9F4;
+}
+.tab_Transform ul {
+  list-style: none;
 }
