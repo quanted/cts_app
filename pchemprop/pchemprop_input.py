@@ -20,7 +20,7 @@ class pchempropInputPage(webapp.RequestHandler):
         html = html + template.render (templatepath + '03cts_ubertext_links_left.html', {}) 
         html = html + template.render(templatepath + '04ubercts_start.html', {
                 'model':'pchemprop', 
-                'model_attributes':'Chemical Transport Simulator Inputs'})
+                'model_attributes':'Chemical Transformation Simulator Inputs'})
         html = html + template.render (templatepath + '04uberinput_tabbed_nav.html', {
                 'nav_dict': {
                     'class_name': ['Chemical', 'Speciation', 'ChemCalcs', 'Transform'],

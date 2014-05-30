@@ -19,7 +19,7 @@ class pchempropDescriptionPage(webapp.RequestHandler):
         html = html + template.render(templatepath + '03cts_ubertext_links_left.html', {})                       
         html = html + template.render(templatepath + '04ubertext_start.html', {
                 'model_page':'#', 
-                'model_attributes':'Chemical Transport Simulator Overview', 
+                'model_attributes':'Chemical Transformation Simulator Overview', 
                 'text_paragraph':x})
         html = html + template.render(templatepath + '04ubertext_nav.html', {'model':'pchemprop'})
         html = html + template.render(templatepath + '04ubertext_end.html', {})
