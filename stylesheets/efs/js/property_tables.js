@@ -13,7 +13,7 @@ var marvinSketcherInstance;
 //= dialog.js
 //= dynamic_table.js
 function errorHandler(response) {
-  //alert(response.getElementsByTagName(SOAP.errorElementName).item(0).firstChild.nodeValue);
+  //alert(response.getElementsByTagName(SOAP.errorElementName).item(0).firstChild.value);
 }
 
 function getContent(smile, mol, imgsOn) {
@@ -198,7 +198,9 @@ function resetDynamicTable()
 }
 
 function importMol(smiles) {
-  if(smiles) document.SmilesForm.MolTxt.value = smiles;
+  if(smiles) {
+    document.SmilesForm.MolTxt.value = smiles;
+  }
 
   var mol = document.SmilesForm.MolTxt.value;
 
