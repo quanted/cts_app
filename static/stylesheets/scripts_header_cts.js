@@ -56,7 +56,7 @@ $(document).ready(function() {
             retStatus = xhr.status;
           },
           success: function() {
-            window.location.href = model+"_qaqc.html";
+            window.location.href = "cts/"+model+"/qaqc";
           },
           error: function() {
             $.unblockUI();
