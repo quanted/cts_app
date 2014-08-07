@@ -1,21 +1,15 @@
-<!--start 03cts_ubertext_links_left-->
+<!--start 03ubertext_links_left-->
 <div class="left">
   <div class="urbangreymenu" id="l_menu">
-
-    <h3 class="headerbar">Workflows</h3>
+    {% for key, value in link_dict.items %}
+    <h3 class="headerbar">{{ key|safe }}</h3>
         <ul>
-            <li><a href="analysis_description.html" id="analysis" class="fadeMenu">Structure Analysis</a></li>
-            <li><a href="pchemprop_description.html" id="pchemprop" class="fadeMenu submenu_last">P-Chem Properties</a></li>
+            {% for valueKey, valueValue in value.items %}{% if forloop.last %}
+            <li><a href="/cts/{{ valueValue }}" id="{{ valueValue }}" class="fadeMenu submenu_last">{{ valueKey|safe }}</a></li>{% else %}
+            <li><a href="/cts/{{ valueValue }}" id="{{ valueValue }}" class="fadeMenu">{{ valueKey|safe }}</a></li>{% endif %}
+            {% endfor %}
         </ul>
-
-    <h3 class="headerbar">Structure-based Databases</h3>
-        <ul>
-            <li><a href="#" id="exponential" class="fadeMenu">EDSP Chemicals</a></li>
-            <li><a href="#" id="loons" class="fadeMenu">Flame Retardants</a></li>
-            <li><a href="#" id="exponential" class="fadeMenu">TSCA Chemicals</a></li>
-            <li><a href="#" id="loons" class="fadeMenu submenu_last">FIFRA Chemicals</a></li>
-        </ul>
-
+    {% endfor %}
   </div> <!-- End "Left" -->
 </div> <!-- End "urbangreymenu; l_menu" -->
-<!--end 03cts_ubertext_links_left-->
+<!--end 03ubertext_links_left-->

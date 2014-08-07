@@ -1,0 +1,108 @@
+<!-- Putting all the html in one file to test it -->
+
+<!-- 04uberinput_jquery.html :: analysis -->
+<script type="text/javascript" src="/static/stylesheets/scripts_analysis.js"></script>
+
+<script src="/static/stylesheets/scripts_input_tabbed.js"></script>
+
+<!-- <script type="text/javascript" src="/static/stylesheets/jquery.validate.js"></script> -->
+	<div class="articles_input">
+
+
+		<h2 class="model_header">Chemical Structual Analysis</h2>
+
+		<div class="input_nav">
+			<ul>
+				<li class="Chemical tabSel">Chemical Editor</li>
+				|
+				<li class="Speciation tabUnsel">Chemical Speciation</li>
+			</ul>
+		</div>
+		<form method="post" action="/cts/analysis/output">
+
+			<!-- <table class="input_table"> -->
+
+			<!-- cts.html start -->
+			<!-- <form name="SmilesForm"> -->
+
+			<div id="chemEditDraw">
+				<table class="input_table tab tab_Chemical">
+					<tr>
+						<td><span>Draw Chemical Structure</span>
+						<input id="getSmilesButton" class="tab_chemicalButtons" type="button" value="Draw a chemical structure and click here" onClick="importMolFromCanvas(null)"></td>
+					</tr>
+					<!-- begin Marvin4JS -->
+					<tr>
+						<td>
+							<div id="content" class="resizable"> 
+						<iframe id="sketch" src="/static/stylesheets/efs/marvin4js/editorws.html" class="sketcher-frame" style="overflow: hidden; min-width: 600px; min-height: 450px; border: 1px solid darkgray;"></iframe>
+							</div>
+					<!-- end Marvin4JS -->
+						</td>
+					</tr>
+				</table>
+				<!-- <input type=button value="Draw a chemical structure and click here" onClick="handleGetSmilesButton ()"> -->	
+			</div> 
+
+			<div id="chemEditLookup">
+				<table class="input_table tab tab_Chemical">
+					<tr>
+						<td colspan="2"><span>Lookup Chemical</span>
+						<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here" onClick="importMol(null)"></td>
+					</tr>
+					<tr>
+						<td colspan="2"><textarea id="MolTxt" name="MolTxt">O=C1NN=C(N1)N(=O)=O</textarea></td>
+						<!--<td ><textarea id="MolTxt" name="MolTxt">C1=CC=CC=C1</textarea></td>-->
+					</tr>
+					<tr>
+						<td id="results" colspan="2"><span>Results</span></td>
+					</tr>
+					<tr>
+						<td class="label">SMILES:</td>
+						<td><textarea id="molecule" name="smiles"></textarea></td>
+					</tr>
+					<tr>
+						<td class="label">IUPAC:</td>
+						<td><textarea id="IUPAC" name="name"></textarea></td>
+					</tr>
+					<tr>
+						<td class="label">Formula:</td>
+						<td><textarea id="formula" name="formula"></textarea></td>
+					</tr>
+					<tr>
+						<td class="label">Weight:</td>
+						<td><textarea id="weight" name="mass"></textarea></td>
+					</tr>
+				</table>
+				<!-- <input type=button value="Enter a SMILES, IUPAC or CAS# and click here" onClick="importMol(null)"> -->
+			</div>
+
+			<!-- </form> -->
+			<!-- cts.html end -->
+
+			<!-- str(parameters) goes inbetween start/end -->
+
+			<!-- </table> -->
+
+			<div class="input_nav">
+				<div class="input_left">
+					<ul>
+						<li><input type="button" value="Defaults" id="resetbutton" class="input_button"></li>
+						<li><input type="button" value="Clear" id="clearbutton" class="input_button"></li>
+					</ul>
+				</div>
+				<div class="input_right">
+					<ul>
+						<li id="metaDataText">Save Metadata?</li>
+						<li><input type="checkbox" id="metaDataToggle" /></li>
+						<li><input type="submit" value="{{ sub_title }}" class="input_button"></li>
+					</ul>
+				</div>
+			</div> <!-- End "submit" div -->
+			<div id="metaDataDiv" style="display:none">
+				<p>Enter Metadata to be saved with model run here:</p>
+				<textarea rows="2" id="metaDataTxtArea"></textarea>
+			</div>
+		</form>
+	</div> <!-- End "articles_input" div -->
+	<!--end 04uberinput_end-->
