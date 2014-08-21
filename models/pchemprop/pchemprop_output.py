@@ -1,41 +1,24 @@
-# -*- coding: utf-8 -*-
-import os
-os.environ['DJANGO_SETTINGS_MODULE']='settings'
-import webapp2 as webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext.webapp import template
+from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
 
-class pchempropOutputPage(webapp.RequestHandler):
-    def post(self):
-        templatepath = os.path.dirname(__file__) + '/../templates/'
-        html = template.render(templatepath + '01cts_uberheader.html', {'title'})
-        html = html + template.render(templatepath + '02cts_uberintroblock_wmodellinks.html',  {'model':'pchemprop','page':'output'})
-        html = html + template.render (templatepath + '03cts_ubertext_links_left.html', {})                               
-        html = html + template.render(templatepath + '04uberoutput_start.html', {
-                'model':'pchemprop', 
-                'model_attributes':'pchemprop Output'})
-        html = html + """
-        <table width="600" border="1">
-          
-        </table>
-        <p>&nbsp;</p>                     
-        
-        <table width="600" border="1">
-        
-        </table>
-        """
-        html = html + template.render(templatepath + '04uberoutput_end.html', {})
-        html = html + template.render(templatepath + '06cts_uberfooter.html', {'links': ''})
-        self.response.out.write(html)
+@require_POST
+def pchempropOutputPage(request):
+    import pchemprop_model
 
-app = webapp.WSGIApplication([('/.*', pchempropOutputPage)], debug=True)
+    # chem_name = request.POST.get('chemical_name')
+    # use = request.POST.get('Use')
+    # formu_name = request.POST.get('Formulated_product_name')
+    # a_i = request.POST.get('percent_ai')
+    # a_i = float(a_i)/100
+    # Application_type = request.POST.get('Application_type')
+    # seed_crop = float(request.POST.get('seed_crop'))
 
-def main():
-    run_wsgi_app(app)
+    # trex2_obj = trex2_model.trex2("single", chem_name, use, formu_name, a_i, Application_type, seed_treatment_formulation_name, seed_crop, seed_crop_v, r_s, b_w, p_i, den, h_l, n_a, rate_out, day_out,
+    #               ld50_bird, lc50_bird, NOAEC_bird, NOAEL_bird, aw_bird_sm, aw_bird_md, aw_bird_lg, 
+    #               Species_of_the_tested_bird_avian_ld50, Species_of_the_tested_bird_avian_lc50, Species_of_the_tested_bird_avian_NOAEC, Species_of_the_tested_bird_avian_NOAEL,
+    #               tw_bird_ld50, tw_bird_lc50, tw_bird_NOAEC, tw_bird_NOAEL, x, ld50_mamm, lc50_mamm, NOAEC_mamm, NOAEL_mamm, aw_mamm_sm, aw_mamm_md, aw_mamm_lg, tw_mamm,
+    #               m_s_r_p)
 
-if __name__ == '__main__':
-    main()
+    # return trex2_obj
 
- 
 
-    

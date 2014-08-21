@@ -5,7 +5,7 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE']='settings'
 from django import forms
-from django.db import models
+from django.db import models	
 from django.template import Context, Template
 from django.utils.safestring import mark_safe
 

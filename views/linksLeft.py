@@ -5,10 +5,22 @@ from collections import OrderedDict
 # 03ubertext_links_left:
 def linksLeft():
     link_dict = OrderedDict([
-        ('Terrestrial Models', OrderedDict([
-                ('Structural Analysis', 'analysis'),
-                ('Chemical Editor', 'pchemprop'),
+        ('Execute CTS Workflow', OrderedDict([
+                ('Calculate Chemical Speciation', 'chemspec'),
+                ('Calculate p-Chem Properties', 'pchemprop'),
+                ('Generate Transformation Products', 'gentrans'),
             ])
+        ),
+        ('Access Databases', OrderedDict([
+        		('FIFRA Chemicals', 'fifra'),
+        		('Flame Retardants', 'flame'),
+        	])
+        ),
+        ('Reaction Library Databases', OrderedDict([
+        		('Abiotic Hydrolysis', 'ahydrolysis'),
+        		('Abiotic Reduction', 'areduction'),
+        		('Mammalian Metabolism', 'mammet'),
+        	])
         ),
     ])
 

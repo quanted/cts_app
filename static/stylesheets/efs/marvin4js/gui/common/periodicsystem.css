@@ -78,12 +78,14 @@
 
 .periodicsystem .listButton .gwt-ToggleButton,
 .periodicsystem .listButton .gwt-ToggleButton-up{
-    background-color: #4982D8;
+    background-color: #8B9699;
     color: white;
+    font-weight: normal;
 }
 .periodicsystem .listButton .gwt-ToggleButton-down,
 .periodicsystem .listButton .gwt-ToggleButton-down-hovering{
-    background-color: #1952A8;
+    background-color: #7DC9BE;
+    font-weight: normal;
 }
 
 .topGap{

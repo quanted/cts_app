@@ -5,6 +5,7 @@
  * @version 1.0.4
  */
 pre {
+    box-shadow: 2px 2px 3px #888;
     border: 1px solid #ccc;
     word-wrap: break-word;
     padding: 6px 10px;
@@ -13,6 +14,7 @@ pre {
 }
 
 code {
+    
     border: 1px solid #eaeaea;
     margin: 0px 2px;
     padding: 0px 5px;
@@ -26,15 +28,17 @@ pre code {
     -moz-border-radius: 0px;
     -webkit-border-radius: 0px;
     border-radius: 0px;
+    
 }
 
 pre, code {
     font-family: Consolas, 'Liberation Mono', Courier, monospace;
     color: #333;
-    background: #f8f8f8;
+    background: #fefefe;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
+    overflow-x: auto;
 }
 
 pre, pre code {

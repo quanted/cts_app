@@ -2,47 +2,35 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<title>Marvin-JS Example - Set a Molecule</title>
+	<title>Marvin JS Example - Set a Molecule</title>
 	<link type="text/css" rel="stylesheet" href="../css/doc.css" />
 	<link type="text/css" rel="stylesheet" href="../js/lib/rainbow/github.css" />
 	<script src="../js/lib/jquery-1.9.1.min.js"></script>
 	<script src="../js/lib/rainbow/rainbow-custom.min.js"></script>
-	<script src="../js/util.js"></script>
+	<script src="../js/promise-0.1.1.min.js"></script>
+	<script src="../js/marvinjslauncher.js"></script>
 	<script>
 
 		var marvinSketcherInstance;
 
 		$(document).ready(function handleDocumentReady (e) {
-			getMarvinPromise("#sketch").done(function (sketcherInstance) {
+			MarvinJSUtil.getEditor("#sketch").then(function (sketcherInstance) {
 				marvinSketcherInstance = sketcherInstance;
-				marvinSketcherInstance.importAsMol(s);
+				marvinSketcherInstance.importStructure("mol", s).catch(function(error) {
+					alert(error);
+				});
 				initControls();
-			}).fail(function () {
-				alert("Cannot retrieve sketcher instance from iframe");
+			},function (error) {
+				alert("Cannot retrieve sketcher instance from iframe:"+error);
 			});
 		});
 
 		function initControls () {
-			// Carbon labels checkbox
-			$("#chbx-carbonVis").on("change", function (e) {
-				updateDisplaySettings('carbonLabelVisible', this.checked);
-			});
-
-			// CPK coloring checkbox
-			$("#chbx-coloring").on("change", function (e) {
-				updateDisplaySettings('cpkColoring', this.checked);
-			});
 
 			// Reset mol button
 			$("#btn-setmol").on("click", function (e) {
-				marvinSketcherInstance.importAsMol(s);
+				marvinSketcherInstance.importStructure("mol",s);
 			});
-		}
-
-		function updateDisplaySettings(key, value) {
-			var settings = marvinSketcherInstance.getDisplaySettings();
-			settings[key] = value;
-			marvinSketcherInstance.setDisplaySettings(settings);
 		}
 
 		var s = "\n\n\n"+
@@ -80,11 +68,10 @@
 	</script>
 </head>
 <body>
-	<h1>Marvin for JavaScript Example - Set a Molecule</h1>
+	<h1>Marvin JS Example - Set a Molecule</h1>
+	<div style="clear: both; width: 100%; text-align: right;"><a href="index.html">Back to index</a></div>
 	<div class="darkbox">
 		<ul class="horizontalmenu">
-			<li><label for="chbx-carbonVis">Carbon labels</label><input type="checkbox" id="chbx-carbonVis" /></li>
-			<li><label for="chbx-coloring">CPK coloring</label><input type="checkbox" id="chbx-coloring" checked="checked" /></li>
 			<li><input type="button" id="btn-setmol" value="Reset mol" /></li>
 		</ul>
 		<div class="resizable">
@@ -92,7 +79,7 @@
 		</div>
 	</div>
 	<div>
-		<p>To be able to embed the Marvin4JS editor into a web page, you need one of the following HTML files:
+		<p>To be able to embed the Marvin JS editor into a web page, you need one of the following HTML files:
 		<ul>
 			<li><strong>editor.html</strong> - the pure editor</li>
 			<li><strong>editorws.html</strong> - the editor extended with default webservices</li>
@@ -116,13 +103,18 @@
 
 		<p>The loading of the editor is not synchronized with the loading of the hosted page. The sketcher object is instantiated inside the <code>iframe</code>. Thus, there is no guaranty that the sketcher is already available
 		when the loading of the hosted page is finished.</p> 
-		<p>If you would like to access the sketcher object, use the <code>getMarvinPromise(<em>iframeID</em>)</code> helper function from the <code>js/util.js</code>.
-		Just specify the ID of iframe that contains the sketcher for the above function and it returns with a wrapper class for the sketcher.
-		The returning object fullfills the <em>promise</em> pattern. So you can define callback functions to this object that are performed later depending on whether the loading of the sketcher was successful or unsuccessful.</p>
+		<p>If you would like to access the sketcher object, use the <code>MarvinJSUtil.getEditor(<em>iframeID</em>)</code> helper function from the <code>js/marvinjslauncher.js</code>.
+		<p>To use it, please include the following script in the header of the HTML document where you would like to use.
+		<pre><code data-language="javascript">&lt;script src="../js/promise-0.1.1.min.js"&gt;&lt;/script&gt;
+	&lt;script src="../js/marvinjslauncher.js"&gt;&lt;/script&gt;</code></pre>
+		</p>
+		<p>Below, you can see its usage.
+		Call <code>MarvinJSUtil.getEditor</code> with the ID of the iframe that contains the editor. It returns with a promise.
+		After then, call the <code>then</code> method of the promise object. Here, you can specify which code should be evaluated when loading of the sketcher is successful and which one when it fails.</p>
 		<pre><code data-language="javascript">
-		getMarvinPromise("#sketch").done(function(sketcherInstance) {
+		MarvinJSUtil.getEditor("#sketch").then(function(sketcherInstance) {
 			// code performed when the sketcher loaded successful (sketcherInstance is a reference to the editor object)
-		}).fail(function() {
+		}, function() {
 			// code performed when the sketcher loading failed
 		});</code></pre>
 		<p>The fail branch can be evaluated in the following cases:</p>
@@ -135,42 +127,30 @@
 		<p>Please, take care that in certain case the browser can reject accessing of the sketcher despite it is loaded into the iframe. It happens when the JavaScript request violates the security concept of the browser  
 		(<a href="http://en.wikipedia.org/wiki/Same_origin_policy">same origin policy</a>).</p> See the <a href="../docs/troubleshoot.html">Troubleshoot</a> section of the documentation for more details.</a>
 		
-		<p>In this example, when sketcher is loaded, the initial molecule is setup by calling the <code>importAsMol</code> function, and the <code>initControls()</code> function is performed. It binds even handlers
+		<p>In this example, when sketcher is loaded, the initial molecule is setup by calling the <code>importStructure</code> function, and the <code>initControls()</code> function is performed. It binds even handlers
 		for the checkboxes above the editor (CPK coloring and Carbon label visibility).</p>
 
 		<pre><code data-language="javascript">var marvinSketcherInstance;
 
 $(document).ready(function handleDocumentReady (e) {
-	getMarvinPromise("#sketch").done(function (sketcherInstance) {
+	var p = MarvinJSUtil.getEditor("#sketch");
+	p.then(function (sketcherInstance) {
 		marvinSketcherInstance = sketcherInstance;
-		marvinSketcherInstance.importAsMol(s);
+		marvinSketcherInstance.importStructure("mol", s).catch(function(error) {
+			alert(error);
+		});
 		initControls();
-	}).fail(function () {
-		alert("Cannot retrieve sketcher instance from iframe");
+	}, function (error) {
+		alert("Cannot retrieve sketcher instance from iframe:"+error);
 	});
 });
 
 function initControls () {
-	// Carbon labels checkbox
-	$("#chbx-carbonVis").on("change", function (e) {
-		updateDisplaySettings('carbonLabelVisible', this.checked);
-	});
-
-	// CPK coloring checkbox
-	$("#chbx-coloring").on("change", function (e) {
-		updateDisplaySettings('cpkColoring', this.checked);
-	});
 
 	// Reset mol button
 	$("#btn-setmol").on("click", function (e) {
-		marvinSketcherInstance.importAsMol(s);
+		marvinSketcherInstance.importStructure("mol", s);
 	});
-}
-
-function updateDisplaySettings(key, value) {
-	var settings = marvinSketcherInstance.getDisplaySettings();
-	settings[key] = value;
-	marvinSketcherInstance.setDisplaySettings(settings);
 }
 
 var s = "\n\n\n"+
@@ -207,5 +187,6 @@ var s = "\n\n\n"+
 	"M  END\n";</code>
 	</pre>
 	</div>
+	<div style="clear: both; width: 100%; text-align: right;"><a href="index.html">Back to index</a></div>
 </body>
 </html>

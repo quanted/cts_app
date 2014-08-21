@@ -3,7 +3,9 @@
 	outline: none;
 }
 
-
+*, *:focus{
+	-webkit-tap-highlight-color: rgba(0,0,0,0);	
+}
 
 table{
 	border-spacing: 0px;
@@ -76,26 +78,19 @@ table{
 .redButton, .greenButton, .blueButton, .grayButton{
 	color: white;
 	background-image: none;
-	font-weight: bold;
+	font-weight: normal;
 	text-align: center;
 	min-width: 80px;
 	margin-top: 10px;
-	border-radius: 1px;			
+	border-radius: 1px;
+	border: 1px solid #3498db;
+	background-color: #3498db;
 }
-.greenButton{
-	border: 1px solid #7CB92D;
-	background-color: #7CB92D;
-}
+.greenButton{}
 
-.redButton{
-	border: 1px solid #EC3128;
-	background-color: #EC3128;
-}
+.redButton{}
 
-.blueButton{
-	border: 1px solid #4982D8;
-	background-color: #4982D8;	
-}
+.blueButton{}
 
 .grayButton{
 	border: 1px solid lightgray;
@@ -123,6 +118,14 @@ table{
 .errorMessage {
 	font-weight: bold;	
 	color: red;
+}
+
+.dialogSubHeader{
+	color: gray;
+	font-weight: bold;	
+	font-size: 14px;
+	margin-top: 15px; 
+	margin-bottom: 5px;
 }
 
 .gwt-SuggestBoxPopup{
@@ -161,6 +164,10 @@ table{
 
 .gwt-Tree .gwt-TreeNode {
     border-left: 1px solid #005284;
+}
+
+.propertyDialog .gwt-CheckBox{
+	margin-left: 10px;
 }
 
 .disableiOSMenu{

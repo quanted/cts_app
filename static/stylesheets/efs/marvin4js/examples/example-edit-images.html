@@ -3,14 +3,16 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <title>Marvin for JavaScript Examples - Edit images</title>
-  <link type="text/css" rel="stylesheet" href="../css/doc.css" />
+  <title>Marvin JS Examples - Edit images</title>
   <link type="text/css" rel="stylesheet" href="../css/example-edit-images.css" />
   <link type="text/css" rel="stylesheet" href="../js/lib/rainbow/github.css" />
+  <link type="text/css" rel="stylesheet" href="../css/doc.css" />
+  
   <script src="../js/lib/rainbow/rainbow-custom.min.js"></script>
   <script src="../js/lib/jquery-1.9.1.min.js"></script>
   <script src="../gui/gui.nocache.js"></script>
-  <script src="../js/util.js"></script>  
+  <script src="../js/promise-0.1.1.min.js"></script>
+  <script src="../js/marvinjslauncher.js"></script> 
   <script type="text/javascript">
 
 	var marvinSketcherInstance;
@@ -24,7 +26,7 @@
 	marvin.onReady(function() {
 		var divContent = "";
 		for(i=0; i<molecules.length;i++) {
-		  var imgData = marvin.ImageExporter.molToDataUrl(molecules[i]);
+		  var imgData = marvin.ImageExporter.mrvToDataUrl(molecules[i]);
 		  if(imgData != null) {
 			divContent +="<div class=\"mol-cell\"><span>Compound #"+(i+1)+"</span><img name=\"pict\" src=\""+imgData+"\" alt=\""+escape(molecules[i])+"\" onclick=\"clickOnImage(this);\"/></div>\n";
 		  }
@@ -32,10 +34,10 @@
 	  	divContent += '<div class="table-bottom"></div>';
 	  	$("#imageContainer").html(divContent);
 	  	$("#sketchContainer").append($('<iframe id="sketchImg" src="../editor.html" />'));
-	  	getMarvinPromise("#sketchImg").done(function (sketcherInstance) {
+	  	MarvinJSUtil.getEditor("#sketchImg").then(function (sketcherInstance) {
 			marvinSketcherInstance = sketcherInstance;
 			editorControl.open();
-	  	}).fail(function () {
+	  	}, function () {
 			alert("Cannot retrieve sketcher instance from iframe");
 		});
 	});
@@ -50,16 +52,20 @@
 			}
 			,"open" : function openEditor() {
 				if(currentPict != null) {
-					marvinSketcherInstance.importAsMol(unescape(currentPict.alt));
+					marvinSketcherInstance.importStructure("mrv", unescape(currentPict.alt));
 					$("#popup").css("visibility", "visible");
 					$("#popup").css("opacity", 1);
 				}
 			}
 			,"close" : function closeEditor() {
 				if(marvinSketcherInstance != null) {
-					var s = marvinSketcherInstance.exportAsMol();
-					currentPict.alt = escape(s);
-					currentPict.src = marvin.ImageExporter.molToDataUrl(s);
+					var cp = currentPict;
+					marvinSketcherInstance.exportStructure("mrv").then(function(s) {
+						cp.alt = escape(s);
+						cp.src = marvin.ImageExporter.mrvToDataUrl(s);	
+					}, function(error) {
+						alert(error);
+					});
 				}
 				$("#popup").css("visibility", "hidden");
 				$("#popup").css("opacity", 0);
@@ -74,15 +80,10 @@
 	}
 
 	var molecules = new Array(
-
-			  "Ac\n  Mrv0541 02121315482D          \n\n  3  2  0  0  0  0            999 V2000\n    1.2375   -0.7145    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.9520   -1.1270    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.6664   -0.7145    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  2  0  0  0  0\nM  STY  1   1 SUP\nM  SAL   1  3   1   2   3\nM  SMT   1 Ac\nM  SAP   1  1   2   0  1\nM  SCL   1 CXN\nM  SDS EXP  1   1\nM  END\n",
-
-			  "AcAc\n  Mrv0541 02121315492D          \n\n  6  5  0  0  0  0            999 V2000\n    2.4750   -1.4289    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0625   -0.7145    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4750    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2375   -0.7145    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8250    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  2  0  0  0  0\n  2  4  1  0  0  0  0\n  4  5  1  0  0  0  0\n  5  6  2  0  0  0  0\nM  STY  1   1 SUP\nM  SAL   1  6   1   2   3   4   5   6\nM  SMT   1 AcAc\nM  SAP   1  1   5   0  1\nM  SCL   1 CXN\nM  SDS EXP  1   1\nM  END\n",
-
-			  "Acet\n  Mrv0541 02121315502D          \n\n  3  2  0  0  0  0            999 V2000\n    1.2375   -0.7145    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.9520   -1.1270    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.6664   -0.7145    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  2  0  0  0  0\nM  STY  1   1 SUP\nM  SAL   1  3   1   2   3\nM  SMT   1 Acet\nM  SAP   1  1   2   0  1\nM  SCL   1 CXN\nM  SDS EXP  1   1\nM  END\n",
-
-			  "Acm\n  Mrv0541 02121315512D          \n\n  5  4  0  0  0  0            999 V2000\n    0.8250    1.4289    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2375    0.7145    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    0.8250    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.2375   -0.7145    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.0000    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  1  0  0  0  0\n  3  4  1  0  0  0  0\n  3  5  2  0  0  0  0\nM  STY  1   1 SUP\nM  SAL   1  5   1   2   3   4   5\nM  SMT   1 Acm\nM  SAP   1  1   1   0  1\nM  SCL   1 CXN\nM  SDS EXP  1   1\nM  END\n"
-	);
+			'<cml><MDocument><MChemicalStruct><molecule molID="m1"><atomArray><atom id="a1" elementType="O" x2="-0.4166666666666667" y2="5.666666666666667"/><atom id="a2" elementType="C" x2="-0.4166666666666666" y2="4.126666666666667"/><atom id="a3" elementType="R" x2="-1.750345788494702" y2="3.3566666666666665" rgroupRef="1"/><atom id="a4" elementType="C" x2="0.9170124551613692" y2="3.3566666666666674"/><atom id="a5" elementType="C" x2="2.250691576989405" y2="4.126666666666667"/></atomArray><bondArray><bond atomRefs2="a2 a3" order="1"/><bond atomRefs2="a1 a2" order="2"/><bond atomRefs2="a2 a4" order="1"/><bond atomRefs2="a4 a5" order="1"/></bondArray></molecule><Rgroup rgroupID="1"><molecule molID="m2"><atomArray><atom id="a1" elementType="C" x2="7.000306666666667" y2="-4.634999999999999"/><atom id="a2" elementType="C" x2="7.000306666666667" y2="-3.094999999999999"/><atom id="a3" elementType="C" x2="4.333026666666667" y2="-3.094999999999999"/><atom id="a4" elementType="C" x2="4.333026666666667" y2="-4.634999999999999"/><atom id="a5" elementType="C" x2="5.666666666666667" y2="-5.404999999999999"/><atom id="a6" elementType="C" x2="0.6625329956836948" y2="-3.5120012459627215"/><atom id="a7" elementType="C" x2="0.18667057829647382" y2="-4.976548685882615"/><atom id="a8" elementType="C" x2="-1.3533372449631407" y2="-4.976548685882615"/><atom id="a9" elementType="C" x2="-1.82919966235036" y2="-3.5120012459627215"/><atom id="a10" elementType="C" x2="-0.5833333333333334" y2="-2.6067846474507204"/><atom id="a11" elementType="C" x2="-5.4163306589517415" y2="-2.9383163927742935"/><atom id="a12" elementType="C" x2="-5.4163306589517415" y2="-4.478350273892374"/><atom id="a13" elementType="C" x2="-6.75" y2="-5.248367214451415"/><atom id="a14" elementType="C" x2="-8.083669341048259" y2="-4.478350273892374"/><atom id="a15" elementType="C" x2="-8.083669341048259" y2="-2.9383163927742935"/><atom id="a16" elementType="C" x2="-6.75" y2="-2.168299452215253"/><atom id="a17" elementType="*" x2="8.08925110969395" y2="-2.006055556972716" attachmentOrder="1"/><atom id="a18" elementType="*" x2="2.1271655562561276" y2="-3.0361320806335947" attachmentOrder="1"/><atom id="a19" elementType="*" x2="-4.082646646814511" y2="-2.168324863100402" attachmentOrder="1"/></atomArray><bondArray><bond atomRefs2="a5 a1" order="1"/><bond atomRefs2="a2 a1" order="1"/><bond atomRefs2="a3 a2" order="1"/><bond atomRefs2="a4 a3" order="1"/><bond atomRefs2="a5 a4" order="1"/><bond atomRefs2="a10 a6" order="1"/><bond atomRefs2="a7 a6" order="1"/><bond atomRefs2="a8 a7" order="1"/><bond atomRefs2="a9 a8" order="1"/><bond atomRefs2="a10 a9" order="1"/><bond atomRefs2="a16 a11" order="1"/><bond atomRefs2="a12 a11" order="1"/><bond atomRefs2="a13 a12" order="1"/><bond atomRefs2="a14 a13" order="1"/><bond atomRefs2="a15 a14" order="1"/><bond atomRefs2="a16 a15" order="1"/><bond atomRefs2="a2 a17" order="1"/><bond atomRefs2="a6 a18" order="1"/><bond atomRefs2="a11 a19" order="1"/></bondArray></molecule></Rgroup></MChemicalStruct></MDocument></cml>'
+			,'<cml><MDocument><MChemicalStruct><molecule molID="m1"><atomArray><atom id="a1" elementType="O" x2="-4.666666666666667" y2="2.7916666666666665"/><atom id="a2" elementType="C" x2="-3.3329875448386312" y2="2.0216666666666665"/><atom id="a3" elementType="O" x2="-2.087101373501212" y2="2.926855955197075"/><atom id="a4" elementType="R" x2="-4.23817683336904" y2="0.7757804953292473" rgroupRef="1"/><atom id="a5" elementType="R" x2="-2.3025264110459895" y2="0.8772236354314795" rgroupRef="2"/><atom id="a6" elementType="C" x2="-0.7534222516731761" y2="2.156855955197075"/><atom id="a7" elementType="C" x2="0.6534377530964293" y2="2.783230385533807"/><atom id="a8" elementType="C" x2="0.8144115865286162" y2="4.314794104400948"/><atom id="a9" elementType="C" x2="1.899323924433848" y2="1.8780410970033983"/></atomArray><bondArray><bond atomRefs2="a6 a7" order="1"/><bond atomRefs2="a7 a8" order="2"/><bond atomRefs2="a7 a9" order="1"/><bond atomRefs2="a2 a3" order="1"/><bond atomRefs2="a3 a6" order="1"/><bond atomRefs2="a1 a2" order="1"/><bond atomRefs2="a2 a4" order="1"/><bond atomRefs2="a2 a5" order="1"/></bondArray></molecule><Rgroup rgroupID="1"><molecule molID="m2"><atomArray><atom id="a1" elementType="C" x2="10.083669341048259" y2="4.8950169405590405"/><atom id="a2" elementType="C" x2="10.083669341048259" y2="3.3549830594409595"/><atom id="a3" elementType="C" x2="8.75" y2="2.584966118881919"/><atom id="a4" elementType="C" x2="7.4163306589517415" y2="3.3549830594409595"/><atom id="a5" elementType="C" x2="7.4163306589517415" y2="4.8950169405590405"/><atom id="a6" elementType="C" x2="8.75" y2="5.665033881118081"/><atom id="a7" elementType="*" x2="11.41735335318549" y2="5.665008470232932" attachmentOrder="1"/></atomArray><bondArray><bond atomRefs2="a6 a1" order="1"/><bond atomRefs2="a2 a1" order="1"/><bond atomRefs2="a3 a2" order="1"/><bond atomRefs2="a4 a3" order="1"/><bond atomRefs2="a5 a4" order="1"/><bond atomRefs2="a6 a5" order="1"/><bond atomRefs2="a1 a7" order="1"/></bondArray></molecule></Rgroup><Rgroup rgroupID="2"><molecule molID="m3"><atomArray><atom id="a1" elementType="C" x2="10.079565293165455" y2="-0.05185595519707542"/><atom id="a2" elementType="C" x2="8.74588617133742" y2="-0.8218559551970753"/><atom id="a3" elementType="*" x2="7.412207049509384" y2="-0.051855955197074755" attachmentOrder="1"/></atomArray><bondArray><bond atomRefs2="a2 a1" order="1"/><bond atomRefs2="a2 a3" order="1"/></bondArray></molecule></Rgroup></MChemicalStruct></MDocument></cml>'
+			,'<cml><MDocument><MChemicalStruct><molecule molID="m1"><atomArray><atom id="a1" elementType="O" x2="-4.583333333333333" y2="5"/><atom id="a2" elementType="C" x2="-4.583333333333333" y2="3.46"/><atom id="a3" elementType="R" x2="-5.917012455161369" y2="2.6900000000000004" rgroupRef="1"/><atom id="a4" elementType="O" x2="-3.2496542115052978" y2="2.6899999999999995"/><atom id="a5" elementType="R" x2="-1.915975089677262" y2="3.459999999999999" rgroupRef="2"/><atom id="a6" elementType="C" x2="2.3333333333333335" y2="5.25"/><atom id="a7" elementType="C" x2="2.3333333333333335" y2="3.71"/><atom id="a8" elementType="C" x2="3.738794467125975" y2="3.0238903020981467"/><atom id="a9" elementType="O" x2="0.7957804953292479" y2="3.054810711469591"/></atomArray><bondArray><bond atomRefs2="a2 a4" order="1"/><bond atomRefs2="a1 a2" order="1"/><bond atomRefs2="a4 a5" order="1"/><bond atomRefs2="a2 a3" order="1"/><bond atomRefs2="a6 a7" order="2"/><bond atomRefs2="a7 a8" order="1"/><bond atomRefs2="a7 a9" order="1"/></bondArray></molecule><Rgroup rgroupID="1"><molecule molID="m2"><atomArray><atom id="a1" elementType="C" x2="-6.2913306589517415" y2="-1.396649726107626"/><atom id="a2" elementType="C" x2="-6.2913306589517415" y2="-2.936683607225707"/><atom id="a3" elementType="C" x2="-7.625" y2="-3.706700547784748"/><atom id="a4" elementType="C" x2="-8.958669341048259" y2="-2.936683607225707"/><atom id="a5" elementType="C" x2="-8.958669341048259" y2="-1.396649726107626"/><atom id="a6" elementType="C" x2="-7.625" y2="-0.6266327855485856"/><atom id="a7" elementType="*" x2="-4.957646646814511" y2="-0.6266581964337348" attachmentOrder="1"/></atomArray><bondArray><bond atomRefs2="a6 a1" order="1"/><bond atomRefs2="a2 a1" order="1"/><bond atomRefs2="a3 a2" order="1"/><bond atomRefs2="a4 a3" order="1"/><bond atomRefs2="a5 a4" order="1"/><bond atomRefs2="a6 a5" order="1"/><bond atomRefs2="a1 a7" order="1"/></bondArray></molecule></Rgroup><Rgroup rgroupID="2"><molecule molID="m3"><atomArray><atom id="a1" elementType="C" x2="2.2503457884947022" y2="-2.6883333333333335"/><atom id="a2" elementType="C" x2="0.9166666666666666" y2="-3.4583333333333335"/><atom id="a3" elementType="*" x2="-0.41701245516136864" y2="-2.688333333333333" attachmentOrder="1"/></atomArray><bondArray><bond atomRefs2="a2 a1" order="1"/><bond atomRefs2="a2 a3" order="1"/></bondArray></molecule></Rgroup></MChemicalStruct></MDocument></cml>'
+			);
   </script>
 </head>
 
@@ -94,8 +95,8 @@
 	</div>
 </div>
 
-<h1>Marvin for JavaScript Examples - Edit images</h1>
-
+<h1>Marvin JS Examples - Edit images</h1>
+<div style="clear: both; width: 100%; text-align: right;"><a href="index.html">Back to index</a></div>
 <p>A molecule table should be displayed as the loading of the page is finished. See below the <a href="#technical-details">commented code</a></p>
 
 <noscript>
@@ -142,7 +143,7 @@ When the loading of the editor is finished, you give a chance to editorControl t
 	marvin.onReady(function() {
 		var divContent = &quot;&quot;;
 		for(i=0; i&lt;molecules.length;i++) {
-		  var imgData = marvin.ImageExporter.molToDataUrl(molecules[i]);
+		  var imgData = marvin.ImageExporter.mrvToDataUrl(molecules[i]);
 		  if(imgData != null) {
 			divContent +=&quot;&lt;div class=\&quot;mol-cell\&quot;&gt;&lt;span&gt;Compound #&quot;+(i+1)+&quot;&lt;/span&gt;&lt;img name=\&quot;pict\&quot; src=\&quot;&quot;+imgData+&quot;\&quot; alt=\&quot;&quot;+escape(molecules[i])+&quot;\&quot; onclick=\&quot;clickOnImage(this);\&quot;/&gt;&lt;/div&gt;\n&quot;;
 		  }
@@ -150,10 +151,10 @@ When the loading of the editor is finished, you give a chance to editorControl t
 	  	divContent += '&lt;div class=&quot;table-bottom&quot;&gt;&lt;/div&gt;';
 	  	$(&quot;#imageContainer&quot;).html(divContent);
 	  	$(&quot;#sketchContainer&quot;).append($('&lt;iframe id=&quot;sketchImg&quot; src=&quot;../editor.html&quot; /&gt;'));
-	  	getMarvinPromise(&quot;#sketchImg&quot;).done(function (sketcherInstance) {
+	  	MarvinJSUtil.getEditor(&quot;#sketchImg&quot;).then(function (sketcherInstance) {
 			marvinSketcherInstance = sketcherInstance;
 			editorControl.open();
-	  	}).fail(function () {
+	  	}, function () {
 			alert(&quot;Cannot retrieve sketcher instance from iframe&quot;);
 		});
 	});</code></pre>
@@ -172,16 +173,20 @@ The molecule source for an image is stored in its <code>alt</code> attribute.</p
 			}
 			,&quot;open&quot; : function openEditor() {
 				if(currentPict != null) {
-					marvinSketcherInstance.importAsMol(unescape(currentPict.alt));
+					marvinSketcherInstance.importStructure("mrv", unescape(currentPict.alt));
 					$(&quot;#popup&quot;).css(&quot;visibility&quot;, &quot;visible&quot;);
 					$(&quot;#popup&quot;).css(&quot;opacity&quot;, 1);
 				}
 			}
 			,&quot;close&quot; : function closeEditor() {
 				if(marvinSketcherInstance != null) {
-					var s = marvinSketcherInstance.exportAsMol();
-					currentPict.alt = escape(s);
-					currentPict.src = marvin.ImageExporter.molToDataUrl(s);
+					var cp = currentPict;
+					marvinSketcherInstance.exportStructure("mrv").then(function(s) {
+						cp.alt = escape(s);
+						cp.src = marvin.ImageExporter.mrvToDataUrl(s);	
+					}, function(error) {
+						alert(error);
+					});
 				}
 				$(&quot;#popup&quot;).css(&quot;visibility&quot;, &quot;hidden&quot;);
 				$(&quot;#popup&quot;).css(&quot;opacity&quot;, 0);
@@ -198,5 +203,7 @@ and ask it to open the editor.</p>
 		editorControl.picture(pict);
 		editorControl.open();
 	}</code></pre>
+	
+	<div style="clear: both; width: 100%; text-align: right;"><a href="index.html">Back to index</a></div>
 </body>
 </html>

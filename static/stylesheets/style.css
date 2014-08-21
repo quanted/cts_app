@@ -213,7 +213,9 @@ span {
 #header_menu_r li {
   display: inline;
   color: white;
-  padding-left: 11px;
+  /*padding-left: 20px;*/
+  float:right;
+  padding-right:5px;
 }
 #header_menu_r li a {
   color: white;

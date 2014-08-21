@@ -1,4 +1,4 @@
-jQuery.noConflict();
+// jQuery.noConflict();
 
 var list;
 var chemicals = {};
@@ -197,39 +197,93 @@ function resetDynamicTable()
   dyn_Table();
 }
 
-function importMol(smiles) {
-  if(smiles) {
-    document.SmilesForm.MolTxt.value = smiles;
-  }
+// $(document).ready(function() {
+//       $('#hit').click(function(event) {
+//           var term = $('#term').val();
+//           alert(term);
+//       });
+//   });​
 
-  var mol = document.SmilesForm.MolTxt.value;
+function importMol(smiles) {
+  // if(smiles) {
+  //   document.SmilesForm.MolTxt.value = smiles;
+  // }
+
+  var mol;
+
+  // var mol = document.SmilesForm.MolTxt.value;
+  if (typeof smiles === 'undefined')
+  {
+    mol = $('#MolTxt').val();
+  }
+  else
+  {
+    mol = smiles;
+    $('#MolTxt').val(mol);
+  }
 
   if (mol != "") // entered value in textbox
   {
+
     var jchemData = REST.Util.DetailsBySmiles(mol);
 
-    marvinSketcherInstance.importAsMrv(jchemData.data[0].structureData.structure);
-//    msi.importAsMrv(jchemData.data[0].structureData.structure);
+    // marvinSketcherInstance.importAsMrv(jchemData.data[0].structureData.structure);
 
-    document.SmilesForm.molecule.value = jchemData.data[0].smiles;
-    document.SmilesForm.formula.value = jchemData.data[0].formula;
-    document.SmilesForm.IUPAC.value = jchemData.data[0].iupac;
-    document.SmilesForm.mass.value = jchemData.data[0].mass;
+    //ADD ERROR CHECKING 
+
+    var dataContent = jchemData.data[0];
+    $('#molecule').val(dataContent["smiles"]);
+    $('#IUPAC').val(dataContent["iupac"]);
+    $('#weight').val(dataContent["mass"]);
+    $('#formula').val(dataContent["formula"]);
+    
+
   }
 
-  if (smiles)
-  {
-    setTimeout(function() {jQuery("#doDump1").click();}, 1000);
-  }
+  // if (smiles)
+  // {
+  //   setTimeout(function() {jQuery("#doDump1").click();}, 1000);
+  // }
 }
 
 function importMolFromCanvas(s) {
-  var jchemData = REST.Util.MrvToSmiles(marvinSketcherInstance.exportAsMrv());
-  //var jchemData = REST.Util.MrvToSmiles(msi.exportAsMrv());
-  var smiles = jchemData['structure'];
 
-  document.SmilesForm.MolTxt.value = smiles;
-  importMol(null);
+
+  marvinSketcherInstance.exportStructure("mrv").then(function(source) {
+    
+    var smileData = REST.Util.MrvToSmiles(source);
+
+    //$("#MolTxt").val(smileData.structure);
+
+    //var jchemData = REST.Util.DetailsBySmiles(smileData.structure);
+
+    // marvinSketcherInstance.importAsMrv(jchemData.data[0].structureData.structure);
+
+    importMol(smileData.structure);
+
+    //ADD ERROR CHECKING 
+
+    // var dataContent = jchemData.data[0];
+    // $('#molecule').val(dataContent["smiles"]);
+    // $('#IUPAC').val(dataContent["iupac"]);
+    // $('#weight').val(dataContent["mass"]);
+    // $('#formula').val(dataContent["formula"]);
+
+
+  }, function(error) {
+    alert("Molecule export failed:"+error); 
+  });
+
+
+  //$$$$$ Old Code $$$$$
+  // var jchemData = REST.Util.MrvToSmiles(marvinSketcherInstance.exportAsMrv());
+  // //var jchemData = REST.Util.MrvToSmiles(msi.exportAsMrv());
+  // var smiles = jchemData['structure'];
+
+  // document.SmilesForm.MolTxt.value = smiles;
+  // importMol(null);
+  //$$$$$$$$$$$$$$$$$$$$
+
 }
 
 function setElementValueAndBackgroundColor(elementID, value, booleanExpression, trueColor, falseColor) {
@@ -890,66 +944,27 @@ function loadProperties(propertiesData, containerID) {
 }
 
 
-jQuery(document).ready(function($) {
-//  var $tabs = $('#mtabs').tabs();
-//  var selected = $tabs.tabs('option', 'selected');
+// jQuery(document).ready(function($) {
+$(document).ready(function handleDocumentReady (e) {
 
-//  $('#dialog').dialog({
-//    autoOpen : false
-//  });
+//   //original code:
+//   if(!jQuery("#sketch").length) {
+//       jQuery("div.resizable").html("<iframe id='sketch' src='../stylesheets/efs/marvin4js/editor.html'  class='sketcher-frame' style='min-width:600px; min-height:450px;'></iframe>");
 
-//  jQuery("#chemEditor").click(function () {
-    if(!jQuery("#sketch").length) {
-      jQuery("div.resizable").html("<iframe id='sketch' src='../stylesheets/efs/marvin4js/editor.html'  class='sketcher-frame' style='min-width:600px; min-height:450px;'></iframe>");
+//       getMarvinPromise("#sketch").done(function (sketcherInstance) {
+//         marvinSketcherInstance = sketcherInstance;
+//       });
+//     }
 
-      getMarvinPromise("#sketch").done(function (sketcherInstance) {
-        marvinSketcherInstance = sketcherInstance;
-      });
-    }
-//  });
 
-//  google.setOnLoadCallback(showMap);
+  var p = MarvinJSUtil.getEditor("#sketch");
+  p.then(function (sketcherInstance) {
+    marvinSketcherInstance = sketcherInstance;
+    initControl();
+  }, function (error) {
+    alert("Cannot retrieve sketcher instance from iframe:"+error);
+  });
+  
 
-//  $('#mtabs').bind('tabsshow', function(event, ui) {
-//    if (ui.panel.id == "mtabs-4") {
-//      window.gmap.checkResize();
-//    }
-//  });
-
-//  $('#doDump1').click(function(event) {
-//    var url = "dump.jsp?smiles=";
-//    url += $('#molecule').val() + "&iupac=" + $('#IUPAC').val();
-
-//    $(this).attr("href", url);
-//    $.ajax({
-//      type : "POST",
-//      url : url,
-//      dataType : "html",
-//      success : function(data) {
-//        loadProperties(data, "#propertyTable");
-//        $('#tabs').tabs();
-//      }
-//    });
-
-//    label = "Chemical Properties (SMILES: " + $('#molecule').val() + ")";
-//    $(this).html(label);
-//    return false;
-//  });
-
-//  bindToggle();
-
-//  $('#doMap').click(function(event) {
-//    var response = '';
-//    $.ajax({
-//      type : "GET",
-//      url : "http://www.getlatlon.com",
-//      success : function(data) {
-//        $('#doMapPage').html(data.responseText);
-//        $('#doMapPage').show();
-//        $('#doMapPage').prev().children().first().html("-");
-//      }
-//    });
-
-//  });
 });
 

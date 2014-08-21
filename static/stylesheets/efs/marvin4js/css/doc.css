@@ -1,14 +1,52 @@
-body {
-	font-family: sans-serif;
-	margin-left: 20px;
+html{
+	font-family: "Titillium",  Cambria, Helvetica, Arial, Geneva, sans-serif !important;
+	padding: 20px 5% 20px 5% !important;
+	background: #29999c;
 }
+
+body {
+	clear: both;
+	box-shadow: 2px 2px 3px #444;
+	border-radius: 3px;
+	padding: 20px !important;
+	margin: 0px;
+	background: #f9f9f9;
+	min-width: 650px;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+a, a:link, a:active{color:#29999C !important;}
+a:visited{color:#55299C !important;}
+a:hover{color:#3EB9BD !important;}
+
+
 h1 {
 	text-align: center;
+	color: #29999c;
+	background: white;
+	border-radius: 3px 3px 0px 0px;
+	margin: -20px -20px 0px -20px;
+	border-bottom: 1px solid #888;
+}
+
+h1, h1 a, h2 a{
+		font-family: "Titillium",  Cambria, Helvetica, Arial, Geneva, sans-serif !important;
+}
+
+.version {
+	font-family: sans-serif;
+	font-size: smaller;
+	float: right;
 }
 
 pre {
 	padding: 30px;
 	font-family: courier;
+	max-width: 70vw;
+	overflow-x: auto;
 }
 
 input {
@@ -19,7 +57,8 @@ iframe{
 	border:none;
 	padding: 0px;
 	margin: 0px;
-    box-shadow: 2px 2px 8px #888;
+    
+	box-shadow: 2px 2px 3px #888;
 }
 
 select {
@@ -30,7 +69,15 @@ textarea {
 	font-family: monospace;
 }
 
+
+#molsource-box{
+	min-width: 30%;
+	width: 600px;
+	height: 350px;
+}
 .sketcher-frame {
+	margin: -2px;
+	resize: none;
 	min-width: 370px;
 	min-height: 370px;
 	height: 100%;
@@ -40,8 +87,8 @@ textarea {
 
 .resizable{
 	border: none;
-	padding: 8px;
-	margin: 0px;
+	padding: 0px 8px 8px 0px;
+	border: 0px;
 	resize: both;
 	width: 510px;
 	height: 510px;
@@ -68,6 +115,23 @@ ul.horizontalmenu li {
 
 input[type="checkbox"], input[type="button"] {
 	cursor: pointer;
+}
+
+input[type="number"] {
+	width: 70px;
+	text-indent: 2px;
+}
+
+.table-layout {
+	vertical-align: top;
+}
+
+.table-layout li {
+	display: table-row;
+}
+.table-layout li * {
+	display: table-cell;
+	padding: 2px;
 }
 
 label {
@@ -145,5 +209,52 @@ div#serviceForm input {
 }
 
 .bordered {
-	    box-shadow: 2px 2px 8px #444;
+	box-shadow: 2px 2px 3px #444;
+}
+
+/* APIDOC style */
+.rightSide {
+	float: right;
+}
+
+div.table {
+	border: 1px solid;
+	display: table;
+	width: 100%;
+	margin-bottom: 14px;
+}
+
+div.api-header div.api-body {
+	display: table-row;
+}
+
+.api-body, .api-header, div.inner-api-table {
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+div.api-body p:last-of-type {
+	margin-bottom: 1em;
+}
+
+.api-header {
+	background-color:  #29999C;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+span.api-method-returntype:before {
+	content: "Returns: ";
+}
+
+div code {
+	background-color: inherit;
+	border: none;
+}
+
+div.inner-api-table {
+	display: block;
+	background-color: lightblue;
+	border: none;
+	overflow-x: auto;
 }

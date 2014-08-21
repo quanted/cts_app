@@ -1,33 +1,33 @@
 """
-doc stuff
+doc stuff for pchemprop_input.py
 """
 import django
 from django import forms
 from django.template.loader import render_to_string
 
 
-def pchempropInputPage(request, model='', header='Structural Analysis', formData=None):
+def pchempropInputPage(request, model='', header='Structural chemspec', formData=None):
     import pchemprop_parameters
-    from models.analysis import analysis_parameters
+    from models.chemspec import chemspec_parameters
 
 
-    html = render_to_string('04uberinput_jquery.html', { 'model': model})
+    html = render_to_string('04uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
 
-    html = render_to_string('04uberinput_start_tabbed.html', {
+    html = html + render_to_string('04uberinput_start_tabbed.html', {
             'model': model,
             'model_attributes': header+' Inputs'
     })
 
     html = html + render_to_string('04uberinput_tabbed_nav.html', {
             'nav_dict': {
-                'class_name': ['Chemical', 'Speciation', 'ChemCalcs', 'Transform'],
-                'tab_label': ['Chemical Editor', 'Chemical Speciation', 'Chemical Calculators', 'Transformation Pathways']
+                'class_name': ['Chemical', 'Transform', 'ChemCalcs'],
+                'tab_label': ['Chemical Editor', 'Transformation Pathways', 'Chemical Calculators']
                 }
             })
 
     html = html + render_to_string('cts.html', {})
 
-    html = html + str(analysis_parameters.form())
+    html = html + str(chemspec_parameters.form())
     html = html + render_to_string('cts_pchem.html', {})
     html = html + str(pchemprop_parameters.form())
 

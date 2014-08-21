@@ -1,10 +1,10 @@
 $(document).ready(function() {
     // Call function to setup tabbed nav
-    uberNavTabs(
-        ["Chemical", "Speciation", "ChemCalcs", "Transform"],
-        {   "isSubTabs":true,
-        	"Chemical": [".tab_chemicalButtons"] }
-    );
+    // uberNavTabs(
+    //     ["Chemical", "Speciation", "ChemCalcs", "Transform"],
+    //     {   "isSubTabs":true,
+    //     	"Chemical": [".tab_chemicalButtons"] }
+    // );
 
     $('#chemEditDraw_button').click(function() {
     	$('#chemEditDraw').show();

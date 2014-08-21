@@ -2,19 +2,20 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Substructure Search</title>
+<title>Marvin JS Substructure Search</title>
 <link type="text/css" rel="stylesheet" href="../../css/doc.css" />
 <link type="text/css" rel="stylesheet" href="../../css/substructuresearch.css" />
 <script src="../../js/lib/jquery-1.9.1.min.js"></script>
 <script src="../../js/webservices.js"></script>
 <script src="../../gui/gui.nocache.js"></script>
-<script src="../../js/util.js"></script>
+<script src="../../js/promise-0.1.1.min.js"></script>
+<script src="../../js/marvinjslauncher.js"></script>
 <script>
 var marvinSketcherInstance;
 
 $(document).ready(function handleDocumentReady (e) {
 	
-	getMarvinPromise("#sketch").done(function (sketcherInstance) {
+	MarvinJSUtil.getEditor("#sketch").then(function (sketcherInstance) {
 		marvinSketcherInstance = sketcherInstance;
 		var buttonAttributes = {
 				'name' : "custom",
@@ -24,7 +25,7 @@ $(document).ready(function handleDocumentReady (e) {
 		sketcherInstance.addButton(buttonAttributes, function() {
 			tableControl.subStructureSearch();
 		});
-	}).fail(function () {
+	}, function () {
 		alert("Cannot retrieve sketcher instance from iframe");
 	});
 });
@@ -56,7 +57,8 @@ var tableView = (function () {
 					$("#result").append('<h2>Query result is empty</h2>');
 				}
 				$.each(data, function (index, value) {
-					var link = marvin.ImageExporter.mrvToDataUrl(value['mrv'],"image/png");
+					var structure = value.cd_structure.structureData.structure;
+					var link = marvin.ImageExporter.mrvToDataUrl(structure,"image/png");
 					$("#result").append($('<div class="mol-cell"><span>cd_id: '+value['cd_id']+'</span><img width="'+width+'" height="'+height+'" src="'+link+'" ></img></div>'));
 			    });
 			}
@@ -93,11 +95,11 @@ var tableControl = (function () {
 				},
 				"paging": {
 					"offset": 0,
-					"limit": 100
+					"limit": 20
 				},
 				"display": {
 
-					"include": ["cd_id", "mrv"]
+					"include": ["cd_id", "cd_structure"]
 
 				}
 			});
@@ -120,7 +122,7 @@ var tableControl = (function () {
 </head>
 <body>
 
-<h1>Substructure Search</h1>
+<h1>Marvin JS Substructure Search</h1>
 <p>Draw a query and perform a substructure search with JChem Webservices on an example data base, the target hints will be displayed on the bottom of the page. 
 Please, take care that Complex Query Search Webservice with valid license is required for this example.</p>
 <p><input id="tableNameText" type="text" value="ChEBI_lite_3star"/></p>

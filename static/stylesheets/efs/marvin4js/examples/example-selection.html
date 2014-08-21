@@ -2,22 +2,23 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<title>Marvin-JS Examples - Demo</title>
+	<title>Marvin JS Examples - Demo</title>
 	<link type="text/css" rel="stylesheet" href="../css/doc.css">
 	<link type="text/css" rel="stylesheet" href="../js/lib/rainbow/github.css" />
 	<script src="../js/lib/rainbow/rainbow-custom.min.js"></script>
 	<script src="../js/lib/jquery-1.9.1.min.js"></script>
-	<script src="../js/util.js"></script>
+	<script src="../js/promise-0.1.1.min.js"></script>
+	<script src="../js/marvinjslauncher.js"></script>
 	<script type="text/javascript">
 
 		var marvinSketcherInstance;
 		var molChangeCounter;
 
 		$(document).ready(function handleDocumentReady (e) {
-			getMarvinPromise("#sketch").done(function (sketcherInstance) {
+			MarvinJSUtil.getEditor("#sketch").then(function (sketcherInstance) {
 				// initalize sketcher
 				marvinSketcherInstance = sketcherInstance;
-				marvinSketcherInstance.importAsMol(caffeineSource);
+				marvinSketcherInstance.importStructure("mol",caffeineSource);
 				marvinSketcherInstance.setDisplaySettings({
 					'carbonLabelVisible' : true,
 					'atomIndicesVisible' : true
@@ -73,7 +74,10 @@
 				handleMolChangeEvent = function () {
 					molChangeCounter = molChangeCounter+1;
 					$("#molChangeCounterDisplay").text(molChangeCounter);
-					$("#molsource").val(marvinSketcherInstance.exportAsMol());
+					marvinSketcherInstance.exportStructure("mrv").then(function(molsource) {
+						$("#molsource").val(molsource);	
+					}, function (error) {});
+					
 				};
 
 				// true to switch on auto retrieve of the molecule, false to switch it off
@@ -102,7 +106,7 @@
 					$("#molChangeCounterDisplay").text(molChangeCounter);
 				});
 
-			}).fail(function () {
+			}, function () {
 				alert("Cannot retrieve sketcher instance from iframe");
 			});
 		});
@@ -143,7 +147,8 @@
 	</script>
 </head>
 <body>
-	<h1>Marvin for JavaScript Examples - Manage selection</h1>
+	<h1>Marvin JS Examples - Manage selection</h1>
+	<div style="clear: both; width: 100%; text-align: right;"><a href="index.html">Back to index</a></div>
 	<table>
 		<tr>
 			<td>
@@ -188,10 +193,12 @@
 		var molChangeCounter;
 
 		$(document).ready(function handleDocumentReady (e) {
-			getMarvinPromise(&quot;#sketch&quot;).done(function (sketcherInstance) {
+			MarvinJSUtil.getEditor(&quot;#sketch&quot;).then(function (sketcherInstance) {
 				// initalize sketcher
 				marvinSketcherInstance = sketcherInstance;
-				marvinSketcherInstance.importAsMol(caffeineSource);
+				marvinSketcherInstance.importStructure("mol",caffeineSource).catch(function(error) {
+					alert("Import failed:"+error);
+				});
 				marvinSketcherInstance.setDisplaySettings({
 					'carbonLabelVisible' : true,
 					'atomIndicesVisible' : true
@@ -247,7 +254,9 @@
 				handleMolChangeEvent = function () {
 					molChangeCounter = molChangeCounter+1;
 					$(&quot;#molChangeCounterDisplay&quot;).text(molChangeCounter);
-					$(&quot;#molsource&quot;).val(marvinSketcherInstance.exportAsMol());
+					marvinSketcherInstance.exportStructure(&quot;mrv&quot;).then(function(molsource) {
+						$(&quot;#molsource&quot;).val(molsource);	
+					}, function () {});
 				};
 				
 				// true to switch on auto retrieve of the molecule, false to switch it off
@@ -276,11 +285,12 @@
 					$(&quot;#molChangeCounterDisplay&quot;).text(molChangeCounter);
 				});
 
-			}).fail(function () {
+			}, function () {
 				alert(&quot;Cannot retrieve sketcher instance from iframe&quot;);
 			});
 		});
 
 		</code></pre>
+		<div style="clear: both; width: 100%; text-align: right;"><a href="index.html">Back to index</a></div>
   </body>
 </html>

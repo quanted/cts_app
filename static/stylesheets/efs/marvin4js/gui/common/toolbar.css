@@ -6,6 +6,7 @@
 .touchToolbar .gwt-PushButton-up-disabled,
 .touchToolbar .gwt-PushButton-down-disabled,
 .touchComboButtonPopup .gwt-ToggleButton,
+.touchComboButtonPopup .gwt-PushButton,
 .toolbar .gwt-ToggleButton,
 .toolbar .gwt-PushButton-up,
 .toolbar .gwt-PushButton-down,
@@ -13,7 +14,8 @@
 .toolbar .gwt-PushButton-down-hovering,
 .toolbar .gwt-PushButton-up-disabled,
 .toolbar .gwt-PushButton-down-disabled,
-.comboButtonPopup .gwt-ToggleButton {
+.comboButtonPopup .gwt-ToggleButton,
+.comboButtonPopup .gwt-PushButton {
 	width: 24px;
 	height: 28px;
 	line-height: 26px;
@@ -32,7 +34,8 @@
 .touchToolbar .gwt-PushButton-down-hovering,
 .touchToolbar .gwt-PushButton-up-disabled,
 .touchToolbar .gwt-PushButton-down-disabled,
-.touchComboButtonPopup .gwt-ToggleButton{
+.touchComboButtonPopup .gwt-ToggleButton,
+.touchComboButtonPopup .gwt-PushButton{
 	width: 54px;
 	height: 58px;
 	line-height: 56px;	
@@ -85,6 +88,7 @@
 .touchToolbar .gwt-PushButton-up-disabled img,
 .touchToolbar .gwt-PushButton-down-disabled img,
 .touchComboButtonPopup .gwt-ToggleButton img,
+.touchComboButtonPopup .gwt-PushButton img,
 .toolbar .gwt-ToggleButton img,
 .toolbar .gwt-PushButton-up img,
 .toolbar .gwt-PushButton-down img,
@@ -92,7 +96,8 @@
 .toolbar .gwt-PushButton-down-hovering img,
 .toolbar .gwt-PushButton-up-disabled img,
 .toolbar .gwt-PushButton-down-disabled img,
-.comboButtonPopup .gwt-ToggleButton img{
+.comboButtonPopup .gwt-ToggleButton img,
+.comboButtonPopup .gwt-PushButton img{
 	vertical-align: middle;
 	margin-top: 1px;
 }
@@ -106,6 +111,9 @@
 .touchComboButtonPopup .gwt-ToggleButton-up-disabled,
 .touchComboButtonPopup .gwt-ToggleButton-down-disabled,
 .touchComboButtonPopup .gwt-ToggleButton-up,
+.touchComboButtonPopup .gwt-PushButton-up-disabled,
+.touchComboButtonPopup .gwt-PushButton-down-disabled,
+.touchComboButtonPopup .gwt-PushButton-up,
 .toolbar .gwt-ToggleButton-up-disabled,
 .toolbar .gwt-ToggleButton-down-disabled,
 .toolbar .gwt-PushButton-up-disabled,
@@ -114,7 +122,10 @@
 .toolbar .gwt-PushButton-up,
 .comboButtonPopup .gwt-ToggleButton-up-disabled,
 .comboButtonPopup .gwt-ToggleButton-down-disabled,
-.comboButtonPopup .gwt-ToggleButton-up {
+.comboButtonPopup .gwt-ToggleButton-up,
+.comboButtonPopup .gwt-PushButton-up-disabled,
+.comboButtonPopup .gwt-PushButton-down-disabled,
+.comboButtonPopup .gwt-PushButton-up {
 	border: 1px solid white;
 	
 }
@@ -130,7 +141,10 @@
 .touchToolbar .gwt-PushButton-down img,
 .touchComboButtonPopup .gwt-ToggleButton img,
 .touchComboButtonPopup .gwt-ToggleButton-up img,
-.touchComboButtonPopup .gwt-ToggleButton-down img, 
+.touchComboButtonPopup .gwt-ToggleButton-down img,
+.touchComboButtonPopup .gwt-PushButton img,
+.touchComboButtonPopup .gwt-PushButton-up img,
+.touchComboButtonPopup .gwt-PushButton-down img, 
 .toolbar .gwt-ToggleButton img,
 .toolbar .gwt-ToggleButton-up img,
 .toolbar .gwt-ToggleButton-down img,
@@ -138,7 +152,10 @@
 .toolbar .gwt-PushButton-down img,
 .comboButtonPopup .gwt-ToggleButton img,
 .comboButtonPopup .gwt-ToggleButton-up img,
-.comboButtonPopup .gwt-ToggleButton-down img {
+.comboButtonPopup .gwt-ToggleButton-down img,
+.comboButtonPopup .gwt-PushButton img,
+.comboButtonPopup .gwt-PushButton-up img,
+.comboButtonPopup .gwt-PushButton-down img {
 	opacity:1.0;
 	filter:alpha(opacity=100); /* For IE8 and earlier */
 }
@@ -149,12 +166,16 @@
 .touchToolbar .gwt-PushButton-down-disabled img,
 .touchComboButtonPopup .gwt-ToggleButton-up-disabled img,
 .touchComboButtonPopup .gwt-ToggleButton-down-disabled img,
+.touchComboButtonPopup .gwt-PushButton-up-disabled img,
+.touchComboButtonPopup .gwt-PushButton-down-disabled img,
 .toolbar .gwt-ToggleButton-up-disabled img,
 .toolbar .gwt-ToggleButton-down-disabled img,
 .toolbar .gwt-PushButton-up-disabled img,
 .toolbar .gwt-PushButton-down-disabled img,
 .comboButtonPopup .gwt-ToggleButton-up-disabled img,
-.comboButtonPopup .gwt-ToggleButton-down-disabled img{
+.comboButtonPopup .gwt-ToggleButton-down-disabled img,
+.comboButtonPopup .gwt-PushButton-up-disabled img,
+.comboButtonPopup .gwt-PushButton-down-disabled img{
 	opacity:0.4;
 	filter:alpha(opacity=40); /* For IE8 and earlier */
 }
@@ -165,21 +186,27 @@
 .touchToolbar .gwt-PushButton-up:hover,
 .touchComboButtonPopup .gwt-ToggleButton-up-hovering,
 .touchComboButtonPopup .gwt-ToggleButton-up:hover,
+.touchComboButtonPopup .gwt-PushButton-up-hovering,
+.touchComboButtonPopup .gwt-PushButton-up:hover,
 .toolbar .gwt-ToggleButton-up-hovering,
 .toolbar .gwt-PushButton-up-hovering,
 .toolbar .gwt-ToggleButton-up:hover,
 .toolbar .gwt-PushButton-up:hover,
 .comboButtonPopup .gwt-ToggleButton-up-hovering,
-.comboButtonPopup .gwt-ToggleButton-up:hover{
+.comboButtonPopup .gwt-ToggleButton-up:hover,
+.comboButtonPopup .gwt-PushButton-up-hovering,
+.comboButtonPopup .gwt-PushButton-up:hover{
 	border: 1px solid white;
 }
 
 .touchToolbar .gwt-ToggleButton-down,
 .touchToolbar .gwt-PushButton-down,
 .touchComboButtonPopup .gwt-ToggleButton-down,
+.touchComboButtonPopup .gwt-PushButton-down,
 .toolbar .gwt-ToggleButton-down,
 .toolbar .gwt-PushButton-down,
-.comboButtonPopup .gwt-ToggleButton-down {
+.comboButtonPopup .gwt-ToggleButton-down,
+.comboButtonPopup .gwt-PushButton-down {
 	outline: none;
 }
 
@@ -203,6 +230,13 @@
 .touchComboButtonPopup .gwt-ToggleButton-down-hovering,
 .touchComboButtonPopup .gwt-ToggleButton-up-disabled,
 .touchComboButtonPopup .gwt-ToggleButton-down-disabled,
+.touchComboButtonPopup .gwt-PushButton,
+.touchComboButtonPopup .gwt-PushButton-up,
+.touchComboButtonPopup .gwt-PushButton-down,
+.touchComboButtonPopup .gwt-PushButton-up-hovering,
+.touchComboButtonPopup .gwt-PushButton-down-hovering,
+.touchComboButtonPopup .gwt-PushButton-up-disabled,
+.touchComboButtonPopup .gwt-PushButton-down-disabled,
 .toolbar .gwt-ToggleButton,
 .toolbar .gwt-ToggleButton-up,
 .toolbar .gwt-ToggleButton-down,
@@ -216,6 +250,13 @@
 .toolbar .gwt-PushButton-down-hovering,
 .toolbar .gwt-PushButton-up-disabled,
 .toolbar .gwt-PushButton-down-disabled,
+.comboButtonPopup .gwt-PushButton,
+.comboButtonPopup .gwt-PushButton-up,
+.comboButtonPopup .gwt-PushButton-down,
+.comboButtonPopup .gwt-PushButton-up-hovering,
+.comboButtonPopup .gwt-PushButton-down-hovering,
+.comboButtonPopup .gwt-PushButton-up-disabled,
+.comboButtonPopup .gwt-PushButton-down-disabled,
 .comboButtonPopup .gwt-ToggleButton,
 .comboButtonPopup .gwt-ToggleButton-up,
 .comboButtonPopup .gwt-ToggleButton-down,
@@ -276,6 +317,9 @@
 .comboButtonPopup .gwt-ToggleButton-down,
 .comboButtonPopup .gwt-ToggleButton-down-hovering,
 .comboButtonPopup .gwt-ToggleButton-down-disabled,
+.comboButtonPopup .gwt-PushButton-down,
+.comboButtonPopup .gwt-PushButton-down-hovering,
+.comboButtonPopup .gwt-PushButton-down-disabled,
 .touchToolbar .comboButton-down,
 .toolbar .comboButton-down{
     box-shadow: 0px 0px 4px 1px gray inset;
