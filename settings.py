@@ -44,6 +44,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates').replace('\\','/'),
+
 )
 
 # List of callables that know how to import templates from various sources.
@@ -63,6 +64,9 @@ INSTALLED_APPS = (
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'docs'
+    'filters'
+    # 'templatetags.my_filter'
+
 )
 
 MIDDLEWARE_CLASSES = (

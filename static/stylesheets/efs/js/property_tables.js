@@ -211,15 +211,14 @@ function importMol(smiles) {
 
   var mol;
 
-  // var mol = document.SmilesForm.MolTxt.value;
   if (typeof smiles === 'undefined')
   {
-    mol = $('#MolTxt').val();
+    mol = $('#id_chem_struct').val(); //Use lookup chemical textarea if no drawn chemical 
   }
   else
   {
     mol = smiles;
-    $('#MolTxt').val(mol);
+    $('#id_chem_struct').val(mol);
   }
 
   if (mol != "") // entered value in textbox
@@ -227,16 +226,21 @@ function importMol(smiles) {
 
     var jchemData = REST.Util.DetailsBySmiles(mol);
 
-    // marvinSketcherInstance.importAsMrv(jchemData.data[0].structureData.structure);
-
-    //ADD ERROR CHECKING 
-
     var dataContent = jchemData.data[0];
-    $('#molecule').val(dataContent["smiles"]);
+    var smilesStr = dataContent["smiles"];
+    var smilesType = typeof(smilesStr);
+
+    $('#molecule').val(smilesStr);
     $('#IUPAC').val(dataContent["iupac"]);
     $('#weight').val(dataContent["mass"]);
     $('#formula').val(dataContent["formula"]);
-    
+    // $('#id_chem_struct').val($('#molecule').val());
+    if (smilesType === "string")
+    {
+      $('#id_chem_struct').val(dataContent["smiles"]);
+    }
+
+    marvinSketcherInstance.importStructure("mrv", jchemData.data[0].structureData.structure);
 
   }
 
@@ -253,36 +257,13 @@ function importMolFromCanvas(s) {
     
     var smileData = REST.Util.MrvToSmiles(source);
 
-    //$("#MolTxt").val(smileData.structure);
-
-    //var jchemData = REST.Util.DetailsBySmiles(smileData.structure);
-
-    // marvinSketcherInstance.importAsMrv(jchemData.data[0].structureData.structure);
-
     importMol(smileData.structure);
-
-    //ADD ERROR CHECKING 
-
-    // var dataContent = jchemData.data[0];
-    // $('#molecule').val(dataContent["smiles"]);
-    // $('#IUPAC').val(dataContent["iupac"]);
-    // $('#weight').val(dataContent["mass"]);
-    // $('#formula').val(dataContent["formula"]);
 
 
   }, function(error) {
     alert("Molecule export failed:"+error); 
   });
 
-
-  //$$$$$ Old Code $$$$$
-  // var jchemData = REST.Util.MrvToSmiles(marvinSketcherInstance.exportAsMrv());
-  // //var jchemData = REST.Util.MrvToSmiles(msi.exportAsMrv());
-  // var smiles = jchemData['structure'];
-
-  // document.SmilesForm.MolTxt.value = smiles;
-  // importMol(null);
-  //$$$$$$$$$$$$$$$$$$$$
 
 }
 

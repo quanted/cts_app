@@ -1,3 +1,3 @@
 ################ How model name appears on web page ################
-header = 'Chemical Speciation'
+header = 'Calculate Chemical Speciation Workflow'
 ####################################################################

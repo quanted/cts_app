@@ -1,5 +1,42 @@
 $( document ).ready(function() {
 
+	//++++++++++ From scripts_inputs.js in ubertool_eco ++++++++++++
+	//BlockUI on Form Submit
+	$("input[value='Submit']").click(function (e) {
+		e.preventDefault();
+		var form_valid = $("form").valid();
+
+		if (typeof form_valid == 'undefined'){
+			$.blockUI({
+			  css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "60px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
+			  message: '<h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
+			  fadeIn:  500
+			});
+			setTimeout(function() {$('form').submit();}, 500);
+		}
+
+		if (typeof form_valid !== 'undefined' && form_valid !== false){
+			e.preventDefault();
+			// ES Mapper check
+			if (model == "es_mapping") {
+				var html_input = $("form").html();
+				localStorage.html_input=html_input;
+
+				var html_new = $("form").serialize();
+
+				localStorage.html_new=html_new;
+				console.log(localStorage);
+			}
+			$.blockUI({
+			  css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "60px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
+			  message: '<h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
+			  fadeIn:  500
+			});
+			setTimeout(function() {$('form').submit();}, 500);
+		}
+	});
+
+
 	$('#resetbutton').click(
 		function(){
 			// Store Checkbox values
@@ -144,6 +181,9 @@ function uberNavTabs( modelTabs, subTabs ) {
 	});
 
 	$('.next').click(function () {
+
+		window.scroll(0,0); //scroll to top
+
 		var tab = $(".tab:visible");
 		if (curr_ind < (modelTabs.length-1)) {
 			$(".tab:visible").hide();
@@ -164,11 +204,14 @@ function uberNavTabs( modelTabs, subTabs ) {
 		}
 		if (curr_ind == (modelTabs.length-1)) {
 			$('.submit, #metaDataToggle, #metaDataText').show();
-			$(".next").hide();
+			$(".next").hide();	
 		}
 	});
 
 	$('.back').click(function () {
+
+		window.scroll(0, 0); //scroll to top
+
 		if (curr_ind > 0) {
 			$(".tab:visible").hide();
 			$("."+ uptab_pool[curr_ind]).addClass('tabUnsel').removeClass('tabSel');

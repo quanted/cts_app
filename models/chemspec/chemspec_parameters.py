@@ -5,6 +5,37 @@
 from django import forms
 from django.template import Context, Template
 from django.utils.safestring import mark_safe
+import logging
+
+	# """
+	# <div id="chemEditLookup">
+	# 	<table class="input_table tab tab_Chemical">
+	# 		<tr>
+	# 			<td colspan="2"><span>Lookup Chemical</span>	
+	# 			<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here" onClick="importMol()"></td>
+	# 		</tr>
+	# 		<tr>
+	# 			<td colspan="2"><textarea id="MolTxt" name="MolTxt">O=C1NN=C(N1)N(=O)=O</textarea></td>
+	# 		</tr>
+	# 	</table>
+	# </div>
+	# """
+
+def tmpl_chemstructCTS():
+	tmpl_chemstructCTS = """
+		<div id="chemEditLookup">
+		<table class="input_table tab tab_Chemical">
+			<tr>
+				<td colspan="2"><span>{{ header }}</span>
+				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here" onClick="importMol()"></td>
+			</tr>
+		{% for field in form %}
+			<tr><td>{{field}}</td></tr>
+		{% endfor %}
+		</table>
+		</div>
+		"""
+	return tmpl_chemstructCTS
 
 
 # Define Custom Templates
@@ -20,22 +51,24 @@ def tmpl_speciationCTS():
 	return tmpl_speciationCTS
 
 tmpl_speciationCTS = Template(tmpl_speciationCTS())
+tmpl_chemstructCTS = Template(tmpl_chemstructCTS())
 
 # Method(s) called from *_inputs.py
 def form():
+	form_cts_chemical_structure = cts_chemical_structure()
+	html = tmpl_chemstructCTS.render(Context(dict(form=form_cts_chemical_structure, header=mark_safe("Lookup Chemical")))) 
 	form_cts_speciation_pKa = cts_speciation_pKa()
-	html = tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_pKa, header=mark_safe("Ionization Constants (p<i>K</i>a) Parameters"))))
+	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_pKa, header=mark_safe("Ionization Constants (p<i>K</i>a) Parameters"))))
 	form_cts_speciation_tautomer = cts_speciation_tautomer()
 	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_tautomer, header="Dominate Tautomer Distribution")))
 	form_cts_speciation_stereoisomers = cts_speciation_stereoisomers()
 	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_stereoisomers, header="Stereoisomers")))
 	return html
 
-# Begin parameters declaration
-# Temporary/generic
-# class chemspecInp(forms.Form):
-#     chemical_name = forms.CharField(widget=forms.Textarea (attrs={'cols': 20, 'rows': 2}))
-#     body_weight_of_bird = forms.FloatField(required=True,label='NEED TO GET INPUTS.')
+
+# Chemical Editor
+class cts_chemical_structure(forms.Form):
+	chem_struct = forms.CharField(widget=forms.Textarea (attrs={'cols':50, 'rows':2}), initial='O=C1NN=C(N1)N(=O)=O', label='Chemical Structure')
 
 # Speciation
 class cts_speciation_pKa(forms.Form):

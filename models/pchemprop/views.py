@@ -1,3 +1,3 @@
 ################ How model name appears on web page ################
-header = 'Chemical Transformation'
+header = 'Chemical P-Chem Properties Workflow'
 ####################################################################

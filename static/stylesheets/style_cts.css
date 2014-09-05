@@ -1278,18 +1278,18 @@ th {
   text-align: center;
   margin-bottom: 20px;
 }*/
-#chemEditDraw table, #chemEditLookup table {
+#chemEditDraw table, #chemEditLookup table, #chemEditResults table {
   margin-left: auto;
   margin-bottom: 24px;
   min-width: 622px;
 }
-#chemEditDraw table textarea, #chemEditLookup table textarea {
+#chemEditDraw table textarea, #chemEditLookup table textarea, #chemEditResults table textarea {
   width: 100%;
 }
 /*#chemEditDraw table td {
   vertical-align: bottom;
 }*/
-#chemEditDraw span, #chemEditLookup span {
+#chemEditDraw span, #chemEditLookup span, #chemEditResults span {
   display: inline-block;
   margin: 5px 0 5px 5px;
   font-weight: 700;

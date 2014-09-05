@@ -3,29 +3,27 @@
    :synopsis: A useful module indeed.
 """
 
-import numpy
+# import numpy
 from django.template import Context, Template
-from django.utils.safestring import mark_safe
-import logging
-import time
+# from django.utils.safestring import mark_safe
+# import logging
+# import time
 import datetime
+from django.template.loader import render_to_string
+import logging
+import json
+from PIL import Image
+import urllib2
+from StringIO import StringIO
 
-logger = logging.getLogger("chemspecTables")
+# logger = logging.getLogger("chemspecTables")
 
-def getheadericp():
-	headings = ["Parameter", "Value", "Units"]
-	return headings
-
-def getheaderpvr():
-	headings = ["Parameter", "Acute", "Chronic","Units"]
-	return headings
-
-def getheaderpvrqaqc():
-    headings = ["Parameter", "Acute", "Acute-Expected", "Chronic", "Chronic-Expected","Units"]
+def getheaderpvu():
+    headings = ["Parameter", "Value"]
     return headings
 
-def getheadersum():
-    headings = ["Parameter", "Mean", "Std", "Min", "Max", "Unit"]
+def getheaderspecies():
+    headings = ["Parent Species", "Microspecies"]
     return headings
 
 def gethtmlrowsfromcols(data, headings):
@@ -63,149 +61,72 @@ def getdjtemplate():
     """
     return dj_template
 
-def gett1data(sip_obj):
+def gett1data(chemspec_obj):
     data = { 
-        "Parameter": ['Chemical Name',mark_safe('Solubility (in water @25&deg;C)'),mark_safe('Mammalian LD<sub>50</sub>'),'Body Weight of Tested Mammal','Body Weight of Assessed Mammal','Mammalian NOAEL',mark_safe('Avian LD<sub>50</sub>'),'Body Weight of Tested Bird','Body Weight of Assessed Bird','Mineau Scaling Factor','Avian NOAEC',],
-        "Value": [sip_obj.chemical_name,sip_obj.sol,sip_obj.ld50_m,sip_obj.bw_mamm,sip_obj.aw_mamm,sip_obj.noael,sip_obj.ld50_a,sip_obj.bw_bird,sip_obj.aw_bird,sip_obj.mineau,sip_obj.noaec,],
-        "Units": ['','mg/L','mg/kg-bw','g','g','mg/kg-bw','mg/kg-bw','g','g','','mg/kg-diet'],
+        "Parameter": ['Number of Decimals', 'pH Lower Limit', 'pH Upper Limit', 'pH Step Size','Generate Major Microspecies at pH', 'Isoelectric Point (pl) pH Step Size of Charge Distribution', 'Maximum Number of Structures', 'at pH', 'Maximum Number of Structures'],
+        "Value": [chemspec_obj.pKa_decimals, chemspec_obj.pKa_pH_lower, chemspec_obj.pKa_pH_upper, chemspec_obj.pKa_pH_increment, chemspec_obj.pH_microspecies, chemspec_obj.isoelectricPoint_pH_increment, chemspec_obj.tautomer_maxNoOfStructures, chemspec_obj.tautomer_maxNoOfStructures_pH, chemspec_obj.stereoisomers_maxNoOfStructures],
     }
     return data
 
-def gett1dataqaqc(sip_obj):
+# Returned data from http://pnnl.cloudapp.net/efsws/chemproptest.html
+def gett2data(chemspec_obj):
     data = { 
-        "Parameter": ['Chemical Name',mark_safe('Solubility (in water @25&deg;C)'),mark_safe('Mammalian LD<sub>50</sub>'),'Body Weight of Tested Mammal','Body Weight of Assessed Mammal','Mammalian NOAEL',mark_safe('Avian LD<sub>50</sub>'),'Body Weight of Tested Bird','Body Weight of Assessed Bird','Mineau Scaling Factor','Avian NOAEC',],
-        "Value": [sip_obj.chemical_name_expected,sip_obj.sol,sip_obj.ld50_m,sip_obj.bw_mamm,sip_obj.aw_mamm,sip_obj.noael,sip_obj.ld50_a,sip_obj.bw_bird,sip_obj.aw_bird,sip_obj.mineau,sip_obj.noaec,],
-        "Units": ['','mg/L','mg/kg-bw','g','g','mg/kg-bw','mg/kg-bw','g','g','','mg/kg-diet'],
+        "Parameter": ['Basic pKa Value(s)', 'Acidic pKa Value(s)'],
+        "Value": [chemspec_obj.basicpKaValues, chemspec_obj.acidicpKaValues],
     }
     return data
 
-def gett2data(sip_obj):
-    data = { 
-        "Parameter": ['Upper Bound Exposure', 'Adjusted Toxicity Value', 'Ratio of Exposure to Toxicity', 'Conclusion',],
-        "Acute": ['%.3e' % sip_obj.dose_mamm_out, '%.4f' % sip_obj.at_mamm_out, '%.4f' % sip_obj.acute_mamm_out, '%s' % sip_obj.acuconm_out,],
-        "Chronic": ['%.3e' % sip_obj.dose_mamm_out, '%.4f' % sip_obj.act_out, '%.4f' % sip_obj.chron_mamm_out, '%s' % sip_obj.chronconm_out,],
-        "Units": ['mg/kg-bw', 'mg/kg-bw', '', '',],
-    }
-    return data
+# Parent/Micro species data 
+def gett3data(chemspec_obj):
+    jsonData = json.dumps(chemspec_obj.result)
 
-def gett2dataqaqc(sip_obj):
-    data = { 
-        "Parameter": ['Upper Bound Exposure', 'Adjusted Toxicity Value', 'Ratio of Exposure to Toxicity', 'Conclusion',],
-        "Acute": ['%.3e' % sip_obj.dose_mamm_out, '%.4f' % sip_obj.at_mamm_out, '%.4f' % sip_obj.acute_mamm_out, '%s' % sip_obj.acuconm_out,],
-        "Acute-Expected": ['%.3e' % sip_obj.dose_mamm_out_expected,'%.4f' % sip_obj.at_mamm_out_expected,'%.4f' % sip_obj.acute_mamm_out_expected,'%s' % sip_obj.acuconm_out_expected,],
-        "Chronic": ['%.3e' % sip_obj.dose_mamm_out, '%.4f' % sip_obj.act_out, '%.4f' % sip_obj.chron_mamm_out, '%s' % sip_obj.chronconm_out,],
-        "Chronic-Expected": ['%.3e' % sip_obj.dose_mamm_out_expected,'%.4f' % sip_obj.act_out_expected,'%.4f' % sip_obj.chron_mamm_out_expected,'%s' % sip_obj.chronconm_out_expected,],
-        "Units": ['mg/kg-bw', 'mg/kg-bw', '', '',],
-    }
-    return data
+    # debugFile = open('C:\\Users\\nickpope\\Desktop\\debug_out.txt', 'w')
+    # debugFile.write(chemspec_obj.result['image'])
 
-def gett3data(sip_obj):
-    data = { 
-        "Parameter": ['Upper Bound Exposure', 'Adjusted Toxicity Value', 'Ratio of Exposure to Toxicity', 'Conclusion',],
-        "Acute": ['%.5e' % sip_obj.dose_bird_out, '%.4f' % sip_obj.at_bird_out,'%.4f' % sip_obj.acute_bird_out, '%s' % sip_obj.acuconb_out,],
-        "Chronic": ['%.5e' % sip_obj.dose_bird_out, '%.4f' % sip_obj.det_out,'%.4f' % sip_obj.chron_bird_out, '%s' % sip_obj.chronconb_out,],
-        "Units": ['mg/kg-bw', 'mg/kg-bw', '', '',],
-    }
-    return data
+    parentPath = str(chemspec_obj.result['image']['imageUrl']) # Image URL to parent chemical
+    parent_img = render_to_string('cts_display_image_test.html', {'path': parentPath})
 
-def gett3dataqaqc(sip_obj):
-    data = { 
-        "Parameter": ['Upper Bound Exposure', 'Adjusted Toxicity Value', 'Ratio of Exposure to Toxicity', 'Conclusion',],
-        "Acute": ['%.5e' % sip_obj.dose_bird_out, '%.4f' % sip_obj.at_bird_out,'%.4f' % sip_obj.acute_bird_out, '%s' % sip_obj.acuconb_out,],
-        "Acute-Expected": ['%.5e' % sip_obj.dose_bird_out_expected, '%.4f' % sip_obj.at_bird_out_expected, '%.4f' % sip_obj.acute_bird_out_expected, '%s' % sip_obj.acuconb_out_expected,],
-        "Chronic": ['%.5e' % sip_obj.dose_bird_out, '%.4f' % sip_obj.det_out,'%.4f' % sip_obj.chron_bird_out, '%s' % sip_obj.chronconb_out,],
-        "Chronic-Expected": ['%.5e' % sip_obj.dose_bird_out_expected,'%.4f' % sip_obj.det_out_expected,'%.4f' % sip_obj.chron_bird_out_expected,'%s' % sip_obj.chronconb_out_expected,],
-        "Units": ['mg/kg-bw', 'mg/kg-bw', '', '',],
-    }
-    return data
+    # Get paths of the microspecies:
+    microNum = len(chemspec_obj.microspecies)
+    micros = chemspec_obj.microspecies
+    microPaths = []
 
-def gettsumdata(bw_quail,bw_duck,bwb_other,bw_rat,bwm_other,sol,
-                    avian_ld50,mammalian_ld50,aw_bird,mineau,aw_mamm,noaec,noael):
-    data = { 
-        "Parameter": ['BW Quail', 'BW Duck', 'BW Bird Other', 'BW Rat', 'BW Mammal Other', 'Avian LD50', 'Mammalian LD50', 
-                    'Solubility','AW Bird' , 'Mineau', 'AW Mammalian', 'NOAEC','NOAEL'],
-        "Mean": ['%.2e' % numpy.mean(bw_quail),'%.2e' % numpy.mean(bw_duck),'%.2e' % numpy.mean(bwb_other), '%.2e' % numpy.mean(bw_rat), 
-                 '%.2e' % numpy.mean(bwm_other), '%.2e' % numpy.mean(sol), '%.2e' % numpy.mean(avian_ld50), '%.2e' % numpy.mean(mammalian_ld50),
-                 '%.2e' % numpy.mean(aw_bird), '%.2e' % numpy.mean(mineau), '%.2e' % numpy.mean(aw_mamm),
-                 '%.2e' % numpy.mean(noaec), '%.2e' % numpy.mean(noael),],
-        "Std": ['%.2e' % numpy.std(bw_quail),'%.2e' % numpy.std(bw_duck),'%.2e' % numpy.std(bwb_other), '%.2e' % numpy.std(bw_rat), 
-                '%.2e' % numpy.std(bwm_other), '%.2e' % numpy.std(sol), '%.2e' % numpy.std(avian_ld50), '%.2e' % numpy.std(mammalian_ld50),
-                 '%.2e' % numpy.std(aw_bird), '%.2e' % numpy.std(mineau), '%.2e' % numpy.std(aw_mamm),
-                 '%.2e' % numpy.std(noaec),'%.2e' % numpy.std(noael),],
-        "Min": ['%.2e' % numpy.min(bw_quail),'%.2e' % numpy.min(bw_duck),'%.2e' % numpy.min(bwb_other), '%.2e' % numpy.min(bw_rat), 
-                '%.2e' % numpy.min(bwm_other), '%.2e' % numpy.min(sol), '%.2e' % numpy.min(avian_ld50), '%.2e' % numpy.min(mammalian_ld50),
-                 '%.2e' % numpy.min(aw_bird), '%.2e' % numpy.min(mineau), '%.2e' % numpy.min(aw_mamm),
-                 '%.2e' % numpy.min(noaec),'%.2e' % numpy.min(noael),],
-         "Max": ['%.2e' % numpy.max(bw_quail),'%.2e' % numpy.max(bw_duck),'%.2e' % numpy.max(bwb_other), '%.2e' % numpy.max(bw_rat), 
-                '%.2e' % numpy.max(bwm_other), '%.2e' % numpy.max(sol), '%.2e' % numpy.max(avian_ld50), '%.2e' % numpy.max(mammalian_ld50),
-                 '%.2e' % numpy.max(aw_bird), '%.2e' % numpy.max(mineau), '%.2e' % numpy.max(aw_mamm),
-                 '%.2e' % numpy.max(noaec),'%.2e' % numpy.max(noael),],
-        "Unit": ['g', 'g', 'g', 'g', 'g','mg/kg-bw', 'mg/kg-bw', 'mg/L','g', '', 'g','mg/kg-diet', 'mg/kg-bw',],
-    }
-    return data
+    html = ''
 
-def gettsumdata_out(dose_bird_out, dose_mamm_out, at_bird_out, 
-                    at_mamm_out, det_out, act_out, acute_bird_out, acute_mamm_out, 
-                    chron_bird_out, chron_mamm_out):
+    for i in range(0, microNum - 1):
+        microPaths.append(str(micros[i]['image']['imageUrl']))
+
+        # microPaths[i] = render_to_string('cts_display_image_test.html', {'path': microPaths[i]})
+        html = html + render_to_string('cts_display_image_test.html', {'path': microPaths[i]})
+
+    
     data = {
-        "Parameter": ['Upper Bound Exposure - Avian', 'Upper Bound Exposure - Mammalian',
-                    'Adjusted Toxicity Value (Acute) - Avian',
-                    'Adjusted Toxicity Value (Acute) - Mammalian',
-                    'Adjusted Toxicity Value (Chronic) - Avian',
-                    'Adjusted Toxicity Value (Chronic) - Mammalian',
-                    'Ratio of Exposure to Toxicity (Acute) - Avian',
-                    'Ratio of Exposure to Toxicity (Acute) - Mammalian',
-                    'Ratio of Exposure to Toxicity (Chronic) - Avian',
-                    'Ratio of Exposure to Toxicity (Chronic) - Mammalian',],
+            "Parent Species": [parent_img], # Image of parent species
+            "Microspecies": [html] # Image(s) of microspecies
+        }
 
-        "Mean": [
-                 '%.2e' % numpy.mean(dose_bird_out), '%.2e' % numpy.mean(dose_mamm_out), '%.2e' % numpy.mean(at_bird_out),
-                 '%.2e' % numpy.mean(at_mamm_out), '%.2e' % numpy.mean(act_out), '%.2e' % numpy.mean(det_out),
-                 '%.2e' % numpy.mean(acute_bird_out), '%.2e' % numpy.mean(acute_mamm_out),
-                 '%.2e' % numpy.mean(chron_bird_out), '%.2e' % numpy.mean(chron_mamm_out),],
 
-        "Std": ['%.2e' % numpy.std(dose_bird_out), '%.2e' % numpy.std(dose_mamm_out), '%.2e' % numpy.std(at_bird_out),
-                '%.2e' % numpy.std(at_mamm_out), '%.2e' % numpy.std(act_out), '%.2e' % numpy.std(det_out),
-                '%.2e' % numpy.std(acute_bird_out), '%.2e' % numpy.std(acute_mamm_out),
-                '%.2e' % numpy.std(chron_bird_out), '%.2e' % numpy.std(chron_mamm_out),],
-
-        "Min": ['%.2e' % numpy.min(dose_bird_out), '%.2e' % numpy.min(dose_mamm_out), '%.2e' % numpy.min(at_bird_out),
-                '%.2e' % numpy.min(at_mamm_out), '%.2e' % numpy.min(act_out), '%.2e' % numpy.min(det_out),
-                '%.2e' % numpy.min(acute_bird_out), '%.2e' % numpy.min(acute_mamm_out),
-                '%.2e' % numpy.min(chron_bird_out), '%.2e' % numpy.min(chron_mamm_out),],
-
-         "Max": ['%.2e' % numpy.max(dose_bird_out), '%.2e' % numpy.min(dose_mamm_out), '%.2e' % numpy.min(at_bird_out),
-                '%.2e' % numpy.max(at_mamm_out), '%.2e' % numpy.max(act_out), '%.2e' % numpy.min(det_out),
-                '%.2e' % numpy.max(acute_bird_out), '%.2e' % numpy.min(acute_mamm_out),
-                '%.2e' % numpy.max(chron_bird_out), '%.2e' % numpy.max(chron_mamm_out),],
-
-        "Unit": ['mg/kg-bw', 'mg/kg-bw','mg/kg-bw', 'mg/kg-bw', 'mg/kg-bw', 'mg/kg-bw', '','', '', '',],
-    }
     return data
 
 
 pvuheadings = getheaderpvu()
-pvrheadings = getheaderpvr()
-pvrheadingsqaqc = getheaderpvrqaqc()
-sumheadings = getheadersum()
+speciesheadings = getheaderspecies()
+
 djtemplate = getdjtemplate()
 tmpl = Template(djtemplate)
 
-def table_all(sip_obj):
-    html_all = table_1(sip_obj)      
-    html_all = html_all + table_2(sip_obj)
-    html_all = html_all + table_3(sip_obj)
+
+def table_all(chemspec_obj):
+    # html_all = render_to_string(timestamp)
+    html_all = table_1(chemspec_obj)      
+    # html_all = html_all + table_2(chemspec_obj)
+    html_all = html_all + table_3(chemspec_obj)
+
     return html_all
 
-def table_all_qaqc(sip_obj):
-    html_all = table_1_qaqc(sip_obj)
-    html_all = html_all + table_2_qaqc(sip_obj)
-    html_all = html_all + table_3_qaqc(sip_obj)
-    return html_all
-
-def timestamp(sip_obj="", batch_jid=""):
-    if sip_obj:
-        st = datetime.datetime.strptime(sip_obj.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
+def timestamp(chemspec_obj="", batch_jid=""):
+    if chemspec_obj:
+        st = datetime.datetime.strptime(chemspec_obj.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     else:
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
@@ -218,141 +139,45 @@ def timestamp(sip_obj="", batch_jid=""):
     </div>"""
     return html
 
-def table_1(sip_obj):
+def table_1(chemspec_obj):
         html = """
         <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
         <div class="out_">
-            <H4 class="out_1 collapsible" id="section2"><span></span>Application and Chemical Information</H4>
-                <div class="out_ container_output">
         """
-        t1data = gett1data(sip_obj)
+        t1data = gett1data(chemspec_obj)
         t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
         html = html + tmpl.render(Context(dict(data=t1rows, headings=pvuheadings)))
         html = html + """
-                </div>
         </div>
         """
         return html
 
-def table_1_qaqc(sip_obj):
-        html = """
-        <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
-        <div class="out_">
-            <H4 class="out_1 collapsible" id="section2"><span></span>Application and Chemical Information</H4>
-                <div class="out_ container_output">
-        """
-        t1data = gett1dataqaqc(sip_obj)
-        t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
-        html = html + tmpl.render(Context(dict(data=t1rows, headings=pvuheadings)))
-        html = html + """
-                </div>
-        </div>
-        """
-        return html
-
-def table_2(sip_obj):
+def table_2(chemspec_obj):
         html = """
         <br>
-        <H3 class="out_1 collapsible" id="section3"><span></span>SIP Output</H3>
+        <H3 class="out_1 collapsible" id="section3"><span></span>Chemical Speciation Output</H3>
         <div class="out_1">
-            <H4 class="out_1 collapsible" id="section4"><span></span>Mammalian Results (%s g)</H4>
+            <H4 class="out_1 collapsible" id="section4"><span></span>pKa Values</H4>
                 <div class="out_ container_output">
-        """%(sip_obj.aw_mamm)
-        t2data = gett2data(sip_obj)
-        t2rows = gethtmlrowsfromcols(t2data,pvrheadings)
-        html = html + tmpl.render(Context(dict(data=t2rows, headings=pvrheadings)))
+        """
+        t2data = gett2data(chemspec_obj)
+        t2rows = gethtmlrowsfromcols(t2data,pvuheadings)
+        html = html + tmpl.render(Context(dict(data=t2rows, headings=pvuheadings)))
         html = html + """
                 </div>
+        </div>
         """
-        return html  
+        return html
 
-def table_2_qaqc(sip_obj):
+def table_3(chemspec_obj):
         html = """
-        <br>
-        <H3 class="out_1 collapsible" id="section3"><span></span>SIP Output</H3>
+        <H3 class="out_1 collapsible" id="section3"><span></span>pKa Calculations</H3>
         <div class="out_1">
-            <H4 class="out_1 collapsible" id="section4"><span></span>Mammalian Results (%s g)</H4>
-                <div class="out_ container_output">
-        """%(sip_obj.aw_mamm)
-        t2data = gett2dataqaqc(sip_obj)
-        t2rows = gethtmlrowsfromcols(t2data,pvrheadingsqaqc)
-        html = html + tmpl.render(Context(dict(data=t2rows, headings=pvrheadingsqaqc)))
+        """
+        t3data = gett3data(chemspec_obj)
+        t3rows = gethtmlrowsfromcols(t3data, speciesheadings)
+        html = html + tmpl.render(Context(dict(data=t3rows, headings=speciesheadings)))
         html = html + """
-                </div>
-        """
-        return html  
-
-def table_3(sip_obj):
-        html = """
-            <H4 class="out_1 collapsible" id="section4"><span></span>Avian Results (%s g)</H4>
-                <div class="out_ container_output">
-        """%(sip_obj.aw_bird)
-        t3data = gett3data(sip_obj)
-        t3rows = gethtmlrowsfromcols(t3data,pvrheadings)
-        html = html + tmpl.render(Context(dict(data=t3rows, headings=pvrheadings)))
-        html = html + """
-                </div>
-        </div>
-        """
-        return html
-
-def table_3_qaqc(sip_obj):
-        html = """
-            <H4 class="out_1 collapsible" id="section4"><span></span>Avian Results (%s g)</H4>
-                <div class="out_ container_output">
-        """%(sip_obj.aw_bird)
-        t3data = gett3dataqaqc(sip_obj)
-        t3rows = gethtmlrowsfromcols(t3data,pvrheadingsqaqc)
-        html = html + tmpl.render(Context(dict(data=t3rows, headings=pvrheadingsqaqc)))
-        html = html + """
-                </div>
-        </div>
-        """
-        return html
-
-
-def table_all_sum(sumheadings, tmpl, bw_quail,bw_duck,bwb_other,bw_rat,bwm_other,sol,
-                    avian_ld50,mammalian_ld50,aw_bird,mineau,aw_mamm,noaec,noael,
-                    dose_bird_out, dose_mamm_out, at_bird_out, 
-                    at_mamm_out, det_out, act_out, acute_bird_out, acute_mamm_out, 
-                    chron_bird_out, chron_mamm_out):
-    html_all_sum = table_sum_input(sumheadings, tmpl, bw_quail,bw_duck,bwb_other,bw_rat,bwm_other,sol,
-                    avian_ld50,mammalian_ld50,aw_bird,mineau,aw_mamm,noaec,noael)
-    html_all_sum += table_sum_output(sumheadings,tmpl,dose_bird_out,dose_mamm_out,at_bird_out, 
-                    at_mamm_out,det_out,act_out,acute_bird_out,acute_mamm_out,chron_bird_out,chron_mamm_out)
-    return html_all_sum
-
-def table_sum_input(sumheadings, tmpl, bw_quail,bw_duck,bwb_other,bw_rat,bwm_other,sol,
-                    avian_ld50,mammalian_ld50,aw_bird,mineau,aw_mamm,noaec,noael):
-        html = """
-        <H3 class="out_1 collapsible" id="section1"><span></span>Summary Statistics</H3>
-        <div class="out_">
-            <H4 class="out_1 collapsible" id="section4"><span></span>Batch Inputs</H4>
-                <div class="out_ container_output">
-        """
-        tsuminputdata = gettsumdata(bw_quail,bw_duck,bwb_other,bw_rat,bwm_other,sol,avian_ld50,mammalian_ld50,aw_bird,mineau,aw_mamm,noaec,noael)
-        tsuminputrows = gethtmlrowsfromcols(tsuminputdata, sumheadings)
-        html = html + tmpl.render(Context(dict(data=tsuminputrows, headings=sumheadings)))
-        html = html + """
-                </div>
-        """
-        return html
-
-def table_sum_output(sumheadings, tmpl, dose_bird_out, dose_mamm_out, at_bird_out, 
-                    at_mamm_out, det_out, act_out, acute_bird_out, acute_mamm_out, 
-                    chron_bird_out, chron_mamm_out):
-        html = """
-        <br>
-            <H4 class="out_1 collapsible" id="section3"><span></span>SIP Outputs</H4>
-                <div class="out_ container_output">
-        """
-        tsumoutputdata = gettsumdata_out(dose_bird_out, dose_mamm_out, at_bird_out, 
-                    at_mamm_out, det_out, act_out, acute_bird_out, acute_mamm_out, 
-                    chron_bird_out, chron_mamm_out)
-        tsumoutputrows = gethtmlrowsfromcols(tsumoutputdata, sumheadings)
-        html = html + tmpl.render(Context(dict(data=tsumoutputrows, headings=sumheadings)))
-        html = html + """
-                </div>
         </div>
         """
         return html
