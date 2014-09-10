@@ -9,7 +9,7 @@ import logging
 
 def pchempropInputPage(request, model='', header='Structural chemspec', formData=None):
     import pchemprop_parameters
-    # from models.chemspec import chemspec_parameters
+    from models.chemspec import chemspec_parameters
 
 
     html = render_to_string('04uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
@@ -26,9 +26,11 @@ def pchempropInputPage(request, model='', header='Structural chemspec', formData
                 }
             })
 
+    # chemspec inputs
+    html = html + str(chemspec_parameters.form()) # Loads the Chemical Speciation tables to the page
     html = html + render_to_string('cts.html', {})
 
-    #html = html + str(chemspec_parameters.form())
+    # pchemprop inputs
     html = html + render_to_string('cts_pchem.html', {})
     html = html + str(pchemprop_parameters.form()) # str(pchemprop_properties.form()) returns html table with ids
 

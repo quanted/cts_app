@@ -1335,3 +1335,15 @@ th {
 .tab_Transform ul {
   list-style: none;
 }
+
+/*#align_cell {
+  float:right;
+}*/
+
+/*.cts_reaction_sys table, th, tr, td {
+  border:0px none;
+}*/
+
+#no_border table, th, tr, td {
+  border:0px none;
+}

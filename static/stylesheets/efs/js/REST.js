@@ -39,6 +39,7 @@ var REST = {
   },
 
   Util: {
+    
     DetailsBySmiles : function(mol) {
       // used with Marvin4JS
       // finds IUPAC, SMILES, MOLWEIGHT, FORMULA

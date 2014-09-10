@@ -78,31 +78,34 @@ def gett2data(chemspec_obj):
 
 # Parent/Micro species data 
 def gett3data(chemspec_obj):
-    jsonData = json.dumps(chemspec_obj.result)
+    # jsonData = json.dumps(chemspec_obj.result)
 
     # debugFile = open('C:\\Users\\nickpope\\Desktop\\debug_out.txt', 'w')
     # debugFile.write(chemspec_obj.result['image'])
 
-    parentPath = str(chemspec_obj.result['image']['imageUrl']) # Image URL to parent chemical
-    parent_img = render_to_string('cts_display_image_test.html', {'path': parentPath})
+    # parentPath = str(chemspec_obj.result['image']['imageUrl']) # Image URL to parent chemical
+    # parent_img = render_to_string('cts_display_image_test.html', {'path': parentPath})
+
+    plot = render_to_string('cts_plot_microspecies_dist.html')
+    logging.warning(plot)
 
     # Get paths of the microspecies:
-    microNum = len(chemspec_obj.microspecies)
-    micros = chemspec_obj.microspecies
-    microPaths = []
+    # microNum = len(chemspec_obj.microspecies)
+    # micros = chemspec_obj.microspecies
+    # microPaths = []
 
-    html = ''
+    # html = ''
 
-    for i in range(0, microNum - 1):
-        microPaths.append(str(micros[i]['image']['imageUrl']))
+    # for i in range(0, microNum - 1):
+    #     microPaths.append(str(micros[i]['image']['imageUrl']))
 
-        # microPaths[i] = render_to_string('cts_display_image_test.html', {'path': microPaths[i]})
-        html = html + render_to_string('cts_display_image_test.html', {'path': microPaths[i]})
+    #     # microPaths[i] = render_to_string('cts_display_image_test.html', {'path': microPaths[i]})
+    #     html = html + render_to_string('cts_display_image_test.html', {'path': microPaths[i]})
 
     
     data = {
-            "Parent Species": [parent_img], # Image of parent species
-            "Microspecies": [html] # Image(s) of microspecies
+            "Parent Species": ['test'], # Image of parent species
+            "Microspecies": ['test'] # Image(s) of microspecies
         }
 
 
@@ -121,6 +124,8 @@ def table_all(chemspec_obj):
     html_all = table_1(chemspec_obj)      
     # html_all = html_all + table_2(chemspec_obj)
     html_all = html_all + table_3(chemspec_obj)
+
+    html_all = html_all + render_to_string('cts_plot_microspecies_dist.html')
 
     return html_all
 

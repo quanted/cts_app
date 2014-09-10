@@ -213,7 +213,8 @@ function importMol(smiles) {
 
   if (typeof smiles === 'undefined')
   {
-    mol = $('#id_chem_struct').val(); //Use lookup chemical textarea if no drawn chemical 
+    mol = $('#id_chem_struct').val(); //Use lookup chemical textarea if no drawn chemical
+   
   }
   else
   {
@@ -235,12 +236,13 @@ function importMol(smiles) {
     $('#weight').val(dataContent["mass"]);
     $('#formula').val(dataContent["formula"]);
     // $('#id_chem_struct').val($('#molecule').val());
-    if (smilesType === "string")
+    if (smilesType == "string")
     {
       $('#id_chem_struct').val(dataContent["smiles"]);
+      marvinSketcherInstance.importStructure("mrv", dataContent.structureData.structure); //draw molecule from lookup textarea
     }
 
-    marvinSketcherInstance.importStructure("mrv", jchemData.data[0].structureData.structure);
+    
 
   }
 
@@ -252,13 +254,23 @@ function importMol(smiles) {
 
 function importMolFromCanvas(s) {
 
-
   marvinSketcherInstance.exportStructure("mrv").then(function(source) {
+
+    if (source == '<cml><MDocument></MDocument></cml>') {
+      alert("Draw a chemical, then try again");
+      return;
+    }
     
     var smileData = REST.Util.MrvToSmiles(source);
 
-    importMol(smileData.structure);
-
+    if (smileData == 'Fail') {
+      alert("Error getting data from server...");
+      return;
+    }
+    else {
+      importMol(smileData.structure);
+    }
+    
 
   }, function(error) {
     alert("Molecule export failed:"+error); 

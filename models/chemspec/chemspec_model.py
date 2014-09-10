@@ -45,17 +45,19 @@ class chemspec(object):
 		include = ['pKa']
 		microDistPayload = {'structures':structures, 'include':include, 'parameters': microDistParams}
 
-		fileout = open('C:\\Users\\nickpope\\Desktop\\testOut.txt', 'w')
+		# fileout = open('C:\\Users\\nickpope\\Desktop\\testOut.txt', 'w')
 
-		fileout.write(str(microDistPayload))
-		fileout.write('\n')
+		# fileout.write(str(microDistPayload))
+		# fileout.write('\n')
 
-		response = jchem_rest.getStructureDetails(microDistPayload)
+		# jchem_rest.detailsBySmiles(self.chem_struct)
+
+		# response = jchem_rest.getStructureDetails('pka', microDistPayload)
 
 		output_val = json.loads(response.content)
 
 		
-		fileout.write(str(output_val))
+		# fileout.write(str(output_val))
 
 		logging.warning(output_val)
 

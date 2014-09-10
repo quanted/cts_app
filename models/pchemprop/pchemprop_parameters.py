@@ -19,7 +19,7 @@ def tmpl_ChemCalcsCTS():
 	{% for field in form %}
 		<tr>
 			<th>{{ field }} <span>{{ field.label }}</span></th>
-			<td id="{{ field.id_for_label }}_ChemAxon" class="{{ field | property_availability:"chemaxon" }}"></td>
+			<td id="{{ ChoiceFieldld.id_for_label }}_ChemAxon" class="{{ field | property_availability:"chemaxon" }}"></td>
 			<td id="{{ field.id_for_label }}_EPI" class="{{ field | property_availability:"epi" }}"></td>
 			<td id="{{ field.id_for_label }}_TEST" class="{{ field | property_availability:"test" }}"></td>
 			<td id="{{ field.id_for_label }}_SPARC" class="{{ field | property_availability:"sparc" }}"></td>

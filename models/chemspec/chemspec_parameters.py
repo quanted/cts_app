@@ -7,19 +7,6 @@ from django.template import Context, Template
 from django.utils.safestring import mark_safe
 import logging
 
-	# """
-	# <div id="chemEditLookup">
-	# 	<table class="input_table tab tab_Chemical">
-	# 		<tr>
-	# 			<td colspan="2"><span>Lookup Chemical</span>	
-	# 			<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here" onClick="importMol()"></td>
-	# 		</tr>
-	# 		<tr>
-	# 			<td colspan="2"><textarea id="MolTxt" name="MolTxt">O=C1NN=C(N1)N(=O)=O</textarea></td>
-	# 		</tr>
-	# 	</table>
-	# </div>
-	# """
 
 def tmpl_chemstructCTS():
 	tmpl_chemstructCTS = """

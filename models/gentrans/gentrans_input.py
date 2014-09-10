@@ -17,8 +17,6 @@ def gentransInputPage(request, model='', header='Chemical Speciation', formData=
             'model': model,
             'model_attributes': header+' Inputs'
     })
-
-    html = html + '<p><i>Enter a SMILES, IUPAC or CAS#, or draw a chemical or </i></p>'
     
     html = html + render_to_string('04uberinput_tabbed_nav.html', {
             'nav_dict': {
@@ -30,7 +28,8 @@ def gentransInputPage(request, model='', header='Chemical Speciation', formData=
     html = html + render_to_string('cts.html', {}) # Builds Marvin JS, lookup table, and results table
     
     # reaction pathway simulator segment:
-    html = html + render_to_string('cts_reaction_path_sim.html', {}) #remember, things can be passed if need-be
+    html = html + render_to_string('cts_reaction_path_sim.html', {})
+    html = html + str(gentrans_parameters.form())
 
     # p-chem calculator piece:
     html = html + render_to_string('cts_pchem.html', {})
