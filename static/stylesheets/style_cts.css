@@ -1336,6 +1336,16 @@ th {
   list-style: none;
 }
 
+.pchem_checked_col {
+  background:#FFFFFF;
+  color:#FFFFFF;
+}
+
+.pchem_unchecked_col {
+  background:#000000;
+  color:#000000;
+}
+
 /*#align_cell {
   float:right;
 }*/

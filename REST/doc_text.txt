@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<body>
+
+<h2> API Doc </h2>
+
+<p> This is the documentation page for the ubertool cts web services api </p>
+
+<hr>
+
+<h3> detailsBySmiles </h3>
+
+<p> url: /services/detailsBySmiles/<i>mol</i> </p>
+<p> <i>mol</i> - molecule's name in SMILES, IUPAC, or formula </p>
+
+</body>
+</html>

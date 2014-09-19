@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 import importlib
 import linksLeft
+import logging
 
 
 #######################################################################################
@@ -12,7 +13,7 @@ import linksLeft
 
 def fileNotFound(request):
     html = render_to_string('01cts_uberheader.html', {'title': 'Error'})
-    html = html + render_to_string('02uberintroblock_nomodellinks.html', {'title2':'File not found'})
+    html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {'title2':'File not found'})
     html = html + linksLeft.linksLeft()
     html = html + render_to_string('04ubertext_start.html', {
             'model_attributes': 'File Not Found',
@@ -26,6 +27,27 @@ def fileNotFound(request):
     response.write(html)
 
     return response
+
+def requestTimeout(request):
+    html = render_to_string('01cts_uberheader.html', {'title': 'Error'})
+    html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {'title2':'Request timed out'})
+    html = html + linksLeft.linksLeft()
+    # html = html + render_to_string('04ubertext_start.html', {
+            # 'model_attributes': 'Request timed out',
+            # 'text_paragraph': ""})
+    html = html + """<div class="articles"> 
+                    <img class="model_header" src="/static/images/408error.png" width="300" height="300">
+                    </div>"""
+    # html = html + render_to_string('04ubertext_end.html', {})
+    html = html + render_to_string('05cts_ubertext_links_right.html', {})
+    html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
+
+    logging.warning("Inside of views.misc.requestTimeout")
+
+    response = HttpResponse()
+    response.write(html)
+
+    return response    
 
 #######################################################################################
 ################################# Docs Redirect #######################################

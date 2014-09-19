@@ -10,6 +10,7 @@ from django.template.loader import render_to_string
 def gentransInputPage(request, model='', header='Chemical Speciation', formData=None):
     import gentrans_parameters
     from models.pchemprop import pchemprop_parameters
+    from models.chemspec import chemspec_parameters
 
     html = render_to_string('04uberinput_jquery.html', { 'model': model }) # loads scripts_gentrans.js
     html = html + render_to_string('cts-jquery.html', {})
@@ -24,6 +25,8 @@ def gentransInputPage(request, model='', header='Chemical Speciation', formData=
                 'tab_label': ['Chemical Editor', 'Reaction Pathway Simulator', 'p-Chem Calculator', 'Reaction Rate Calculator'],
                 }
             })
+
+    html = html + str(chemspec_parameters.form()) # Loads the Chemical Speciation tables to the page
 
     html = html + render_to_string('cts.html', {}) # Builds Marvin JS, lookup table, and results table
     

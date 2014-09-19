@@ -5,16 +5,18 @@ Access to jchem web services
 import requests
 import json
 import logging
+import views.misc
+from django.http import HttpResponse
 
-baseUrl = 'http://pnnl.cloudapp.net/webservices' # This will soon change to a local cgi server
+
 
 headers = {'Content-Type' : 'application/json'}
 
 
-Urls = {
-	'exportUrl'	:	'/webservices/rest-v0/util/calculate/molExport',
-	'utilUrl'	:	'webservices/rest-v0/util/detail',
-}
+# Urls = {
+# 	'exportUrl'	:	'/webservices/rest-v0/util/calculate/molExport',
+# 	'utilUrl'	:	'/rest-v0/util/detail',
+# }
 
 # From REST.js in static/stylesheets/efs/js
  # Urls: {
@@ -33,16 +35,50 @@ Urls = {
  #    setMetabolitesUrl: "/efsws/rest/chemical/save-metabolites",
  #  },
 
+class Urls:
+
+	base = 'http://pnnl.cloudapp.net/webservices'
+
+	exportUrl = '/rest-v0/util/calculate/molExport'
+	utilUrl = '/rest-v0/util/detail'
+
+
+
 """
-Gets details of molecule 
+API Documentation Page
 """
+def doc(request):
+	text_file2 = open('REST/doc_text.txt','r')
 
-def test_serverSide(text):
-	return "success - server side"
+	xx = text_file2.read()
 
-def detailsBySmiles(mol):
+	# html = xx
 
-	structures = [{ "structure" : mol }]
+	response = HttpResponse()
+	response.write(xx)
+
+	return response
+
+
+
+"""
+detailsBySmiles
+
+Inputs:
+chem - chemical name (format: iupac, smiles, or formula)
+Returns:
+The iupac, formula, mass, and smiles string of the chemical
+along with the mrv of the chemical (to display in marvinjs)
+"""
+def detailsBySmiles(request):
+
+	queryDict = request.POST
+
+	logging.warning(queryDict)
+
+	chem = queryDict.get('chemical')
+
+	structures = [{ "structure" : chem }]
 	include = ["structureData"]
 	additionalFields = {
 		"iupac" : "chemicalTerms(name)",
@@ -57,33 +93,109 @@ def detailsBySmiles(mol):
 
 	data = json.dumps(details)
 
-	url = baseUrl + '/rest-v0/util/detail/'
+	# logging.warning(data)
 
-	response = requests.post(url, data=data, headers=headers)
+	url = Urls.base + Urls.exportUrl
 
-	return response
+	callback_response = HttpResponse()
 
+	try:
+		response = requests.post(url, data=data, headers=headers)
+		logging.warning("SUCCESS, content: " + response.content)
 
+		callback_response.write(response.content)
 
-def getStructureDetails(request, inputDict):
+		return callback_response
 
-	url = ''
+	except:
+		response = views.misc.requestTimeout(request)
+		# logging.warning("ERROR, content: " + response.content)
+		callback_response.write(response.content)
 
-	if request == 'pka':
-
-		url = baseUrl + '/rest-v0/data/sample/table/ChEBI_lite_3star/detail/'
-
-	elif request == 'info':
-
-		url = baseUrl + '/rest-v0/data/sample/table/ChEBI_lite_3star/detail/'
-
-	data = json.dumps(inputDict)
-
-	# fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
-	# fileout.write(data)
-
-	response = requests.post(url, data=data, headers=headers)
-
-	return response
+		return callback_response
 
 
+
+def mrvToSmiles(request):
+
+	queryDict = request.POST
+
+	logging.warning(queryDict)
+
+	chemStruct = queryDict.get('chemical') # chemical in <cml> format (marvin sketch)
+
+
+	# var request = new Object();
+	# request.structure = mrv;
+	# request.inputFormat = "mrv";
+	# request.parameters = "smiles";
+
+	# // ajax params
+	# var params = new Object();
+	# params.url = REST.domain + REST.Urls.exportUrl;
+	# params.type = "POST";
+	# params.contentType = "application/json";
+	# params.data = request;
+
+	# return REST.ajax(params);
+
+	request = {
+		"structure" : chemStruct,
+		"inputFormat" : "mrv",
+		"parameters" : "smiles"
+	}
+
+
+	# structures = [{ "structure" : item }]
+	# include = ["structureData"]
+	# additionalFields = {
+	# 	"iupac" : "chemicalTerms(name)",
+	# 	"formula" :	"chemicalTerms(formula)",
+	# 	"mass" : "chemicalTerms(mass)",
+	# 	"smiles" : "chemicalTerms(molString('smiles'))"		 
+	# }
+	# parameters = { "structureData" : "mrv" }
+
+	# display = {"include":include, "additionalFields":additionalFields, "parameters":parameters}
+	# details = {"structures":structures, "display":display}
+
+
+
+	data = json.dumps(request)
+
+	url = Urls.base + Urls.exportUrl
+
+	logging.warning("inside jchem_rest - mrvToSmiles")
+
+	logging.warning(data)
+
+	fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
+	fileout.write(data)
+	fileout.close()
+
+	# return response
+
+	callback_response = HttpResponse()
+
+	try:
+		response = requests.post(url, data=data, headers=headers)
+		# logging.warning("chemical: " + chem)
+		logging.warning("SUCCESS, content: " + response.content)
+
+		# response comes back as json string. need to
+		# 
+
+		callback_response.write(response.content)
+
+		return callback_response
+	except:
+		response = views.misc.requestTimeout(request)
+		logging.warning("ERROR, content: " + response.content)
+		callback_response.write(response.content)
+
+		return callback_response
+
+
+
+
+	

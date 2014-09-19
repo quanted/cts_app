@@ -22,19 +22,9 @@ urlpatterns = patterns('views',
     (r'^cts/(?P<model>.*?)/pdf/?$', 'generateReport.pdfReceiver'),
     (r'^cts/(?P<model>.*?)/html/?$', 'generateReport.htmlReceiver'),
     (r'^cts/docs/?$', 'misc.docsRedirect'),
-    # (r'^cts/.*?/przm5_intermediate\.html', 'przm5_intermediate.przm5IntermediatePage'),
     (r'^cts/(?P<model>.*?)/?$', 'description.descriptionPage'),
-    # (r'^cts_index\.html$', 'landing.ctsLandingPage'),                        #Legacy links
-    # (r'^(?P<model>.*?)_description\.html$', 'description.descriptionPage'),  #Legacy links
-    # (r'^(?P<model>.*?)_input\.html$', 'input.inputPage'),                    #Legacy links
-    # (r'^(?P<model>.*?)_output\.html$', 'output.outputPage'),                 #Legacy links
-    # (r'^(?P<model>.*?)_algorithms\.html$', 'algorithms.algorithmPage'),      #Legacy links
-    # (r'^(?P<model>.*?)_references\.html$', 'references.referencesPage'),     #Legacy links
-    # (r'^(?P<model>.*?)_batchinput\.html$', 'batch.batchInputPage'),          #Legacy links
-    # (r'^(?P<model>.*?)_batchoutput\.html$', 'batch.batchOutputPage'),        #Legacy links
-    # (r'^(?P<model>.*?)_qaqc\.html$', 'qaqc.qaqcPage'),                       #Legacy links
-    # (r'^(?P<model>.*?)_history\.html$', 'history.historyPage'),              #Legacy links
-    # url(r'^admin/', include(admin.site.urls)),
+
+    (r'^services/', include('REST.urls')),
 )
 
 # 404 Error view (file not found)
@@ -43,4 +33,6 @@ handler404 = 'views.misc.fileNotFound'
 handler500 = 'views.misc.fileNotFound'
 # 403 Error view (forbidden)
 handler403 = 'views.misc.fileNotFound'
+# 408 Error view (request timeout)
+handler408 = 'views.misc.requestTimeout'
 

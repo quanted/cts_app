@@ -15,6 +15,9 @@ def descriptionPage(request, model='none', header='none'):
     html = html + render_to_string('04ubertext_start.html', {
             'model_attributes': header+' Overview',
             'text_paragraph':xx})
+
+    html = html + render_to_string('04ubertext_nav.html', {'model':model})
+
     html = html + render_to_string('04ubertext_end.html', {})
     html = html + render_to_string('05cts_ubertext_links_right.html', {})
     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})

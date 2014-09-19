@@ -204,53 +204,104 @@ function resetDynamicTable()
 //       });
 //   });​
 
-function importMol(smiles) {
-  // if(smiles) {
-  //   document.SmilesForm.MolTxt.value = smiles;
+// function importMol(smiles) {
+//   // if(smiles) {
+//   //   document.SmilesForm.MolTxt.value = smiles;
+//   // }
+
+//   var chemical = $('#id_chem_struct').val();
+
+//   $.ajax({
+//     url : "/services/detailsBySmiles/",
+//     // url : "/REST/service/" + chemical,
+//     type : "POST",
+//     data : {
+//         "chemical" : chemical
+//       },
+//       //async: false,
+//     dataType : "json",
+//     success : function(response) {
+//       results = REST.jsonRepack(response);
+
+//       // result_obj = JSON.parse(results);
+
+//       //results come back as json, need to select wanted properties to
+//       //fill in chem edit text boxes:
+
+//       // $('#id_chem_struct').val(results);
+
+//       var data = results.data[0];
+
+//       $('#molecule').val(data["smiles"]);
+//       $('#IUPAC').val(data["iupac"]);
+//       $('#formula').val(data["formula"]);
+//       $('#weight').val(data["mass"]);
+
+//       marvinSketcherInstance.importStructure("mrv", data.structureData.structure);
+
+//     },
+//     error : function(jqXHR, textStatus, errorThrown) {
+//       results = "Fail ";
+//       console.log(" " + JSON.stringify(errorThrown));
+//     }
+//   });
+
+  // $.ajax({
+  //   url : "/services/detailsBySmiles/" + chemical,
+  //   // url : "/REST/service/" + chemical,
+  //   type : "GET",
+  //   success : function(response) {
+  //     results = REST.jsonRepack(response);
+  //     $('#id_chem_struct').val(results);
+  //   },
+  //   error : function(jqXHR, textStatus, errorThrown) {
+  //     results = "Fail ";
+  //     console.log(" " + JSON.stringify(errorThrown));
+  //   }
+  // });
+
+  // var mol;
+
+  // if (typeof smiles === 'undefined')
+  // {
+  //   mol = $('#id_chem_struct').val(); //Use lookup chemical textarea if no drawn chemical
+   
+  // }
+  // else
+  // {
+  //   mol = smiles;
+  //   $('#id_chem_struct').val(mol);
   // }
 
-  var mol;
+  // if (mol != "") // entered value in textbox
+  // {
 
-  if (typeof smiles === 'undefined')
-  {
-    mol = $('#id_chem_struct').val(); //Use lookup chemical textarea if no drawn chemical
-   
-  }
-  else
-  {
-    mol = smiles;
-    $('#id_chem_struct').val(mol);
-  }
+  //   var jchemData = REST.Util.DetailsBySmiles(mol);
 
-  if (mol != "") // entered value in textbox
-  {
+  //   var dataContent = jchemData.data[0];
+  //   var smilesStr = dataContent["smiles"];
+  //   var smilesType = typeof(smilesStr);
 
-    var jchemData = REST.Util.DetailsBySmiles(mol);
-
-    var dataContent = jchemData.data[0];
-    var smilesStr = dataContent["smiles"];
-    var smilesType = typeof(smilesStr);
-
-    $('#molecule').val(smilesStr);
-    $('#IUPAC').val(dataContent["iupac"]);
-    $('#weight').val(dataContent["mass"]);
-    $('#formula').val(dataContent["formula"]);
-    // $('#id_chem_struct').val($('#molecule').val());
-    if (smilesType == "string")
-    {
-      $('#id_chem_struct').val(dataContent["smiles"]);
-      marvinSketcherInstance.importStructure("mrv", dataContent.structureData.structure); //draw molecule from lookup textarea
-    }
+  //   $('#molecule').val(smilesStr);
+  //   $('#IUPAC').val(dataContent["iupac"]);
+  //   $('#weight').val(dataContent["mass"]);
+  //   $('#formula').val(dataContent["formula"]);
+  //   // $('#id_chem_struct').val($('#molecule').val());
+  //   if (smilesType == "string")
+  //   {
+  //     $('#id_chem_struct').val(dataContent["smiles"]);
+  //     marvinSketcherInstance.importStructure("mrv", dataContent.structureData.structure); //draw molecule from lookup textarea
+  //   }
 
     
 
-  }
+  // }
 
   // if (smiles)
   // {
   //   setTimeout(function() {jQuery("#doDump1").click();}, 1000);
   // }
-}
+// }
 
 function importMolFromCanvas(s) {
 
@@ -260,16 +311,40 @@ function importMolFromCanvas(s) {
       alert("Draw a chemical, then try again");
       return;
     }
-    
-    var smileData = REST.Util.MrvToSmiles(source);
 
-    if (smileData == 'Fail') {
-      alert("Error getting data from server...");
-      return;
-    }
-    else {
-      importMol(smileData.structure);
-    }
+    $.ajax({
+      url : "/services/mrvToSmiles/",
+      // url : "/REST/service/" + chemical,
+      type : "POST",
+      data : {
+          "chemical" : source
+        },
+        //async: false,
+      dataType : "json",
+      success : function(response) {
+        results = REST.jsonRepack(response);
+
+
+        var data = results.data[0];
+
+      },
+      error : function(jqXHR, textStatus, errorThrown) {
+        results = "Fail ";
+        console.log(" " + JSON.stringify(errorThrown));
+      }
+    });
+  }
+// }
+    
+  var smileData = REST.Util.MrvToSmiles(source);
+
+  if (smileData == 'Fail') {
+    alert("Error getting data from server...");
+    return;
+  }
+  else {
+    importMol(smileData.structure);
+  }
     
 
   }, function(error) {

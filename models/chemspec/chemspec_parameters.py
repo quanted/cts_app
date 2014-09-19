@@ -14,7 +14,7 @@ def tmpl_chemstructCTS():
 		<table class="input_table tab tab_Chemical">
 			<tr>
 				<td colspan="2"><span>{{ header }}</span>
-				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here" onClick="importMol()"></td>
+				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here"></td>
 			</tr>
 		{% for field in form %}
 			<tr><td>{{field}}</td></tr>
@@ -55,7 +55,7 @@ def form():
 
 # Chemical Editor
 class cts_chemical_structure(forms.Form):
-	chem_struct = forms.CharField(widget=forms.Textarea (attrs={'cols':50, 'rows':2}), initial='O=C1NN=C(N1)N(=O)=O', label='Chemical Structure')
+	chem_struct = forms.CharField(widget=forms.Textarea (attrs={'cols':50, 'rows':2}), initial='', label='Chemical Structure')
 
 # Speciation
 class cts_speciation_pKa(forms.Form):

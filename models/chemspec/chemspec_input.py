@@ -32,6 +32,7 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
     html = html + render_to_string('cts.html', {}) # Builds marvin js and results table 
 
     html = html + render_to_string('04uberinput_tabbed_end.html', {'sub_title': 'Submit'})
+    
 
     # Check if tooltips dictionary exists
     try:
