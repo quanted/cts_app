@@ -7,7 +7,7 @@ var Urls = {
   detailsBySmiles : "/services/detailsBySmiles/",
   mrvToSmiles : "/services/mrvToSmiles/",
 
-}; //????
+};
 
 
 $(document).ready(function handleDocumentReady (e) {
@@ -46,44 +46,39 @@ function importMol(dataObj) {
 
   var chemical;
 
-  if (objType === "string") {
+  if (objType === "string")
+  {
     chemical = dataObj;
-    // molTxt = dataObj["smiles"];
-    // iupacTxt = dataObj["iupac"];
-    // formTxt = dataObj["formula"];
-    // weightTxt = dataObj["mass"];
   }
-  else {
-
+  else
+  {
     chemical = $('#id_chem_struct').val();
+  }
 
-    if (chemical == "") {
-      return;
-    }
+  if (chemical == "")
+  {
+    alert("Error getting chemical name, please try again...");
+    return;
+  }
 
-    var params = new Object();
-    params.url = Urls.detailsBySmiles;
-    params.type = "POST";
-    params.contentType = "application/json";
-    params.dataType = "json";
-    params.data = { "chemical" : chemical };
+  //Create POST data for web call:
+  var params = new Object();
+  params.url = Urls.detailsBySmiles;
+  params.type = "POST";
+  params.contentType = "application/json";
+  params.dataType = "json";
+  params.data = { "chemical" : chemical };
 
-    var results = ajaxCall(params);
+  var results = ajaxCall(params); //Get chemical information
 
-    var data = results.data[0];
+  var data = results.data[0];
 
-    molTxt = data["smiles"];
-    iupacTxt = data["iupac"];
-    formTxt = data["formula"];
-    weightTxt = data["mass"];
+  molTxt = data["smiles"];
+  iupacTxt = data["iupac"];
+  formTxt = data["formula"];
+  weightTxt = data["mass"];
 
-  } 
-
-  // $('#molecule').val(data["smiles"]);
-  // $('#IUPAC').val(data["iupac"]);
-  // $('#formula').val(data["formula"]);
-  // $('#weight').val(data["mass"]);
-
+  //Fill Results table:
   $('#molecule').val(molTxt);
   $('#IUPAC').val(iupacTxt);
   $('#formula').val(formTxt);
@@ -123,28 +118,6 @@ function importMolFromCanvas() {
     else {
       importMol(results["structure"]); //send data object 
     }
-
-    // $.ajax({
-    //   url : "/services/mrvToSmiles/",
-    //   // url : "/REST/service/" + chemical,
-    //   type : "POST",
-    //   data : {
-    //       "chemical" : source
-    //     },
-    //     //async: false,
-    //   dataType : "json",
-    //   success : function(response) {
-    //     results = jsonRepack(response);
-
-
-    //     var data = results.data[0];
-
-    //   },
-    //   error : function(jqXHR, textStatus, errorThrown) {
-    //     results = "Fail ";
-    //     console.log(" " + JSON.stringify(errorThrown));
-    //   }
-    // });
 
   });
 }

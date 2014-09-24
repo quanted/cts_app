@@ -9,21 +9,40 @@ import views.misc
 from django.http import HttpResponse
 
 
+
 headers = {'Content-Type' : 'application/json'}
 
 
+# Urls = {
+# 	'exportUrl'	:	'/webservices/rest-v0/util/calculate/molExport',
+# 	'utilUrl'	:	'/rest-v0/util/detail',
+# }
+
+# From REST.js in static/stylesheets/efs/js
+ # Urls: {
+ #    // jchem_kad urls
+ #    insertUrl     : "/webservices/rest-v0/data/jchem_kad/table/kad/operation",
+ #    detailUrl     : "/webservices/rest-v0/data/jchem_kad/table/kad/detail/",
+ #    searchUrl     : "/webservices/rest-v0/data/jchem_kad/table/kad/search",
+ #    imgUrl        : "/webservices/rest-v0/data/jchem_kad/table/kad/display/",
+
+ #    // computed util urls
+ #    exportUrl     : "/webservices/rest-v0/util/calculate/molExport",
+ #    utilUrl       : "/webservices/rest-v0/util/detail",
+
+ #    // EFS web services
+ #    getMetabolitesUrl: "/efsws/rest/metabolizer",
+ #    setMetabolitesUrl: "/efsws/rest/chemical/save-metabolites",
+ #  },
+
 class Urls:
 
-	# base = 'http://pnnl.cloudapp.net/webservices' # old ws location 
-	# base = 'http://134.67.114.2/webservices'
-	base = 'http://134.67.114.2/efsws/rest' # antiquated, but functioning, WS
+	# base = 'http://pnnl.cloudapp.net/webservices' # Old WS location 
+	base = 'http://134.67.114.2/webservices'
 
-	# jchem ws urls:
 	exportUrl = '/rest-v0/util/calculate/molExport'
 	utilUrl = '/rest-v0/util/detail'
 
-	# antiquated java ws urls:
-	massUrl = '/calculators/mass'
 
 
 """
@@ -33,6 +52,8 @@ def doc(request):
 	text_file2 = open('REST/doc_text.txt','r')
 
 	xx = text_file2.read()
+
+	# html = xx
 
 	response = HttpResponse()
 	response.write(xx)
@@ -60,11 +81,24 @@ def detailsBySmiles(request):
 
 	chem = queryDict.get('chemical')
 
-	data = json.dumps(queryDict)
+	structures = [{ "structure" : chem }]
+	include = ["structureData"]
+	additionalFields = {
+		"iupac" : "chemicalTerms(name)",
+		"formula" :	"chemicalTerms(formula)",
+		"mass" : "chemicalTerms(mass)",
+		"smiles" : "chemicalTerms(molString('smiles'))"		 
+	}
+	parameters = { "structureData" : "mrv" }
+
+	display = {"include":include, "additionalFields":additionalFields, "parameters":parameters}
+	details = {"structures":structures, "display":display}
+
+	data = json.dumps(details)
 
 	# logging.warning(data)
 
-	url = Urls.base + Urls.massUrl
+	url = Urls.base + Urls.utilUrl
 
 	callback_response = HttpResponse()
 

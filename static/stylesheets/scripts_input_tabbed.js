@@ -37,6 +37,7 @@ $( document ).ready(function() {
 	});
 
 
+	// default button
 	$('#resetbutton').click(
 		function(){
 			// Store Checkbox values
@@ -122,7 +123,7 @@ function uberNavTabs( modelTabs, subTabs ) {
 	// Setup tab defaults
 	var uptab_pool = modelTabs;
 	var curr_ind = 0;
-	$(".back, .submit, #metaDataToggle, #metaDataText").hide();
+	$(".back, .submit, #metaDataToggle, #metaDataText, #resetbutton").hide();
 
 	// Click handler
 	$('.input_nav ul li').click(function() {
@@ -138,9 +139,16 @@ function uberNavTabs( modelTabs, subTabs ) {
 			var liTabArrayMinusCurr = liTabArray.slice(0);
 			liTabArrayMinusCurr.splice(curr_ind,1);
 
+			if (modelTabs[curr_ind] == "Speciation")
+			{
+				$('#resetbutton').show();
+			}
+
 
 			if (curr_ind == 0) {
 
+				// chemical editor tab doesn't need defaults button:
+				// $('#resetbutton').hide();
 				
 				$(liTabArray[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 				$(liTabArrayMinusCurr.join(',')).addClass('tabUnsel').removeClass('tabSel');
@@ -153,7 +161,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 			}
 
 			if ( curr_ind > 0 && curr_ind < (modelTabs.length-1) ) {
-
 
 				$(liTabArray[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 				$(liTabArrayMinusCurr.join(',')).addClass('tabUnsel').removeClass('tabSel');
@@ -184,6 +191,15 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 		window.scroll(0,0); //scroll to top
 
+		if (modelTabs[curr_ind + 1] == "Speciation")
+		{
+			$('#resetbutton').show();
+		}
+		else
+		{
+			$('#resetbutton').hide();	
+		}
+
 		var tab = $(".tab:visible");
 		if (curr_ind < (modelTabs.length-1)) {
 			$(".tab:visible").hide();
@@ -211,6 +227,15 @@ function uberNavTabs( modelTabs, subTabs ) {
 	$('.back').click(function () {
 
 		window.scroll(0, 0); //scroll to top
+
+		if (modelTabs[curr_ind - 1] == "Speciation")
+		{
+			$('#resetbutton').show();
+		}
+		else
+		{
+			$('#resetbutton').hide();	
+		}
 
 		if (curr_ind > 0) {
 			$(".tab:visible").hide();

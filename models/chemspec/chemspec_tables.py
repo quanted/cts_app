@@ -7,7 +7,7 @@
 from django.template import Context, Template
 # from django.utils.safestring import mark_safe
 # import logging
-# import time
+import time
 import datetime
 from django.template.loader import render_to_string
 import logging

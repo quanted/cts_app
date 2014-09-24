@@ -1350,8 +1350,9 @@ th {
   float:right;
 }*/
 
-/*.cts_reaction_sys table, th, tr, td {
-  border:0px none;
+/*.cts_reaction_sys table {
+  border:1px;
+  border-color:black;
 }*/
 
 #no_border table, th, tr, td {

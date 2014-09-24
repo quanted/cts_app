@@ -7,7 +7,7 @@ def ctsLandingPage(request):
     text_file2 = open('views/main_text.txt','r')
     xx = text_file2.read()
 
-    html = render_to_string('01cts_uberheader_main.html', {})
+    html = render_to_string('01cts_uberheader.html', {})
     html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {})
     html = html + linksLeft.linksLeft()
     html = html + render_to_string('04ubertext_start_index.html', {

@@ -35,12 +35,12 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
     
 
     # Check if tooltips dictionary exists
-    try:
-        import chemspec_tooltips
-        hasattr(chemspec_tooltips, 'tooltips')
-        tooltips = chemspec_tooltips.tooltips
-    except:
-        tooltips = {}
-    html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
+    # try:
+    #     import chemspec_tooltips
+    #     hasattr(chemspec_tooltips, 'tooltips')
+    #     tooltips = chemspec_tooltips.tooltips
+    # except:
+    #     tooltips = {}
+    # html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
 
     return html

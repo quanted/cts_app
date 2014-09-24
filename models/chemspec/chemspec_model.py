@@ -12,6 +12,7 @@ import chemspec_parameters # Chemical Speciation parameters
 from REST import rest_funcs
 from REST import jchem_rest
 import logging
+from django.http import HttpRequest
 
 
 class chemspec(object):
@@ -53,6 +54,13 @@ class chemspec(object):
 		# jchem_rest.detailsBySmiles(self.chem_struct)
 
 		# response = jchem_rest.getStructureDetails('pka', microDistPayload)
+
+		# data = json.dumps(microDistPayload)
+
+		request = HttpRequest()
+		request.POST = microDistPayload
+
+		response = jchem_rest.detailsBySmiles(request) 
 
 		output_val = json.loads(response.content)
 

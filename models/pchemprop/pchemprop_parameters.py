@@ -59,16 +59,16 @@ def form():
 	return html
 
 class cts_CemCalcs_props(forms.Form):
-	melting_point = forms.BooleanField(required=False, label='Melting Point')
-	boiling_point = forms.BooleanField(required=False, label='Boiling Point')
-	water_sol = forms.BooleanField(required=False, label='Water Solubility')
-	vapor_press = forms.BooleanField(required=False, label='Vapor Pressure')
-	mol_diss = forms.BooleanField(required=False, label='Molecular Diffusivity (water)')
-	ionization_con = forms.BooleanField(required=False, label='Ionization Constant')
-	henrys_law_con = forms.BooleanField(required=False, label="Henry's Law Constant")
-	kow = forms.BooleanField(required=False, label='Octanol/Water Partition Coefficient')
-	koc = forms.BooleanField(required=False, label='Organic Catbon Partition Coefficient')
-	dist_coeff = forms.BooleanField(required=False, label='Distribution Coefficient')
+	melting_point = forms.BooleanField(required=False, label=mark_safe('Melting Point (&degC)'))
+	boiling_point = forms.BooleanField(required=False, label=mark_safe('Boiling Point (&degC)'))
+	water_sol = forms.BooleanField(required=False, label=mark_safe('Water Solubility'))
+	vapor_press = forms.BooleanField(required=False, label=mark_safe('Vapor Pressure'))
+	mol_diss = forms.BooleanField(required=False, label=mark_safe('Molecular Diffusivity (water)'))
+	ionization_con = forms.BooleanField(required=False, label=mark_safe('Ionization Constant'))
+	henrys_law_con = forms.BooleanField(required=False, label=mark_safe("Henry's Law Constant"))
+	kow = forms.BooleanField(required=False, label=mark_safe('Octanol/Water Partition Coefficient'))
+	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient'))
+	dist_coeff = forms.BooleanField(required=False, label=mark_safe('Distribution Coefficient'))
 
 
 

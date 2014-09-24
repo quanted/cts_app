@@ -18,6 +18,4 @@ def chemspecOutputPage(request):
     chemspec_obj = chemspec_model.chemspec("single", chemStruct, pKaDecs, pKaPhLow, pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
                     tautMaxNumStructs, tautMaxNumStructsPh, sterMaxNumStructs)
 
-    # Would I call jqplot here???
-
     return chemspec_obj

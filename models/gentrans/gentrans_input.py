@@ -44,12 +44,12 @@ def gentransInputPage(request, model='', header='Chemical Speciation', formData=
     html = html + render_to_string('04uberinput_tabbed_end.html', {'sub_title': 'Submit'})
 
     # Check if tooltips dictionary exists
-    try:
-        import gentrans_tooltips
-        hasattr(gentrans_tooltips, 'tooltips')
-        tooltips = gentrans_tooltips.tooltips
-    except:
-        tooltips = {}
-    html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
+    # try:
+    #     import gentrans_tooltips
+    #     hasattr(gentrans_tooltips, 'tooltips')
+    #     tooltips = gentrans_tooltips.tooltips
+    # except:
+    #     tooltips = {}
+    # html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
 
     return html

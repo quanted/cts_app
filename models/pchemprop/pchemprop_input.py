@@ -39,12 +39,12 @@ def pchempropInputPage(request, model='', header='Structural chemspec', formData
     html = html + render_to_string('04ubercts_end.html', {'sub_title': 'Submit'})
     
     # Check if tooltips dictionary exists
-    try:
-        import pchemprop_tooltips
-        hasattr(pchemprop_tooltips, 'tooltips')
-        tooltips = pchemprop_tooltips.tooltips
-    except:
-        tooltips = {}
-    html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
+    # try:
+    #     import pchemprop_tooltips
+    #     hasattr(pchemprop_tooltips, 'tooltips')
+    #     tooltips = pchemprop_tooltips.tooltips
+    # except:
+    #     tooltips = {}
+    # html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
 
     return html

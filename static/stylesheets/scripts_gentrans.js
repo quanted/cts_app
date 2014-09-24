@@ -66,7 +66,9 @@ $(document).ready(function() {
     // });
 
 
-    $('#id_reaction_systems').closest('tr').show();
+    // $('#id_reaction_systems').closest('tr').show();
+    $('#cts_path_sime').show();
+    $('#cts_react_sys').hide();
     $('#cts_respiration').hide();
     $('#cts_reaction_libs').hide();
     $('#cts_aerobic').hide();
@@ -75,10 +77,11 @@ $(document).ready(function() {
     $('#id_reaction_systems').val("0"); //Initialize with "Make a selection" value
     $('#id_respiration').val("0"); //Initialize with "Make a selection" value
 
-    $('#id_reaction_systems').change(function() {
+    $("input[name='reaction_paths']").change(function() {
         if ($(this).val() == "0") {
-            //If "Make a selection" is selected...
-            //Hide all the tables except for itself
+            //If "Reaction System" is selected
+            $('#cts_path_sim').show();
+            $('#cts_react_sys').show();
             $('#cts_respiration').hide();
             $('#cts_aerobic').hide();
             $('#cts_anaerobic').hide();
@@ -88,7 +91,9 @@ $(document).ready(function() {
         }
 
         else if ($(this).val() == "1") {
-            //If "Environmental" is checked..
+            //If "OECD Guidelines" is checked..
+            $('#cts_path_sim').show();
+            $('#cts_react_sys').hide();
             $('#cts_respiration').show();
             $('#cts_aerobic').hide();
             $('#cts_anaerobic').hide();
@@ -96,7 +101,36 @@ $(document).ready(function() {
             
         }
         else if ($(this).val() == "2") {
-            //Show Reaction Library with "Mammalian" checked
+            //Show Reaction Library with "Reaction Library" checked
+            $('#cts_path_sim').show();
+            $('#cts_react_sys').hide();
+            $('#cts_respiration').hide();
+            $('#cts_aerobic').hide();
+            $('#cts_anaerobic').hide();
+            $('#cts_reaction_libs').show();
+
+            //Set what's checkable in Reaction Libraries table
+            $('#id_mamm_metabolism').prop('checked', true);
+            $('#id_abiotic_hydrolysis').prop('disabled', true);
+            $('#id_aerobic_biodegrad').prop('disabled', true);
+            $('#id_photolysis').prop('disabled', true);
+            $('#id_abiotic_reduction').prop('disabled', true);
+            $('#id_anaerobic_biodegrad').prop('disabled', true);
+            $('#id_mamm_metabolism').prop('disabled', true);
+        }
+    });
+
+    $("input[name='reaction_system']").change(function() {
+        if ($(this).val() == "0") {
+            //If "Environmental" is selected..
+            $('#cts_respiration').show();
+            $('#cts_aerobic').hide();
+            $('#cts_anaerobic').hide();
+            $('#cts_reaction_libs').hide();
+            
+        }
+        else if ($(this).val() == "1") {
+            //Show Reaction Library with "Mammalian" selected
 
             $('#cts_respiration').hide();
             $('#cts_aerobic').hide();
@@ -114,15 +148,8 @@ $(document).ready(function() {
         }
     });
 
-    $('#id_respiration').change(function() {
+    $("input[name='respiration']").change(function() {
         if ($(this).val() == "0") {
-            //"Make a selection"...
-            $('#cts_respiration').show();
-            $('#cts_aerobic').hide();
-            $('#cts_anaerobic').hide();
-            $('#cts_reaction_libs').hide();
-        }
-        else if ($(this).val() == "1") {
             //Display aerobic table...
             $('#cts_respiration').show();
             $('#cts_aerobic').show();
@@ -138,7 +165,7 @@ $(document).ready(function() {
             $('#id_anaerobic_biodegrad').prop('disabled', true);
             $('#id_mamm_metabolism').prop('disabled', true);
         }
-        else if ($(this).val() == "2") {
+        else if ($(this).val() == "1") {
             //Display anaerobic table...
             $('#cts_respiration').show();
             $('#cts_aerobic').hide();
