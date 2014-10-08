@@ -7,6 +7,10 @@ import json
 import logging
 import views.misc
 from django.http import HttpResponse
+from django.http import HttpRequest
+from xml.sax.saxutils import escape
+import datetime
+import pytz
 
 
 headers = {'Content-Type' : 'application/json'}
@@ -14,16 +18,13 @@ headers = {'Content-Type' : 'application/json'}
 
 class Urls:
 
-	# base = 'http://pnnl.cloudapp.net/webservices' # old ws location 
+	base = 'http://pnnl.cloudapp.net/webservices' # old ws location 
 	# base = 'http://134.67.114.2/webservices'
-	base = 'http://134.67.114.2/efsws/rest' # antiquated, but functioning, WS
+	# base = 'http://134.67.114.2/efsws/rest' # antiquated, but functioning, WS
 
 	# jchem ws urls:
 	exportUrl = '/rest-v0/util/calculate/molExport'
-	utilUrl = '/rest-v0/util/detail'
-
-	# antiquated java ws urls:
-	massUrl = '/calculators/mass'
+	detailUrl = '/rest-v0/util/detail'
 
 
 """
@@ -42,7 +43,7 @@ def doc(request):
 
 
 """
-detailsBySmiles
+getChemDeats
 
 Inputs:
 chem - chemical name (format: iupac, smiles, or formula)
@@ -50,48 +51,24 @@ Returns:
 The iupac, formula, mass, and smiles string of the chemical
 along with the mrv of the chemical (to display in marvinjs)
 """
-def detailsBySmiles(request):
+def getChemDeats(request):
+
+	logging.warning("inside jchem_rest - getChemDeats")
 
 	queryDict = request.POST
+	chem = queryDict.get('chemical') # chemical name
 
-	logging.warning("inside jchem_rest - detailsBySmiles")
+	logging.warning(chem)
 
-	# logging.warning(queryDict)
+	ds = data_structures()
+	data = ds.getChemDeats(chem)
 
-	chem = queryDict.get('chemical')
+	logging.warning(data)
+	logging.warning(type(data))
 
-	data = json.dumps(queryDict)
+	url = Urls.base + Urls.detailUrl
 
-	# logging.warning(data)
-
-	url = Urls.base + Urls.massUrl
-
-	callback_response = HttpResponse()
-
-	try:
-		response = requests.post(url, data=data, headers=headers)
-
-		message = '\n' + "URL: " + '\n' + url + '\n\n'
-		message = message + "POST Data: " + '\n' + data + '\n\n'
-		message = message + "Response: " + '\n' + response.content + '\n\n'
-
-		logging.warning(message)
-
-		fileout = open("C:\\Documents and Settings\\npope\\Desktop\\out.txt", "w")
-		fileout.write(message)
-		fileout.close()
-
-		callback_response.write(response.content)
-
-		return callback_response
-
-	except:
-		response = views.misc.requestTimeout(request)
-		logging.warning("ERROR, content: " + response.content)
-		callback_response.write(response.content)
-
-		return callback_response
-
+	return web_call(url, request, data)
 
 
 """
@@ -102,10 +79,9 @@ in Marvin Sketch
 """
 def mrvToSmiles(request):
 
+	logging.warning("inside jchem_rest - mrvToSmiles")
+
 	queryDict = request.POST
-
-	# logging.warning(queryDict)
-
 	chemStruct = queryDict.get('chemical') # chemical in <cml> format (marvin sketch)
 
 	request = {
@@ -114,26 +90,69 @@ def mrvToSmiles(request):
 		"parameters" : "smiles"
 	}
 
-	data = json.dumps(request)
+	data = json.dumps(request) # serialize to json-formatted str
 
 	url = Urls.base + Urls.exportUrl
 
-	logging.warning("inside jchem_rest - mrvToSmiles")
+	smilesData = web_call(url, request, data) # get response
+	data = payload(smilesData.content) # create dict from json string
+
+	reqStr = '{ "chemical": "' + data.structure + '" }'
+
+	request = HttpRequest()
+	request.POST = json.loads(reqStr)
+
+	return getChemDeats(request)
+
+
+"""
+getChemSpecData
+
+Gets pKa values and microspecies distribution
+for a given chemical
+
+Inputs - data types to get (e.g., pka, tautomer, etc.),
+and all the fields from the 3 tables.
+"""
+def getChemSpecData(request):
+
+	logging.warning("inside jchem_rest - getChemSpecData")
+
+	# logging.warning(request.POST)
+
+	ds = data_structures()
+	data = ds.chemSpecStruct(request.POST)
+
+	data = json.dumps(data)
 
 	# logging.warning(data)
 
+	url = Urls.base + Urls.detailUrl
+
+	results = web_call(url, request, data)
+
+	return results
+
+"""
+Makes the request to a specified URL
+and POST data
+"""
+def web_call(url, request, data):
+
+	logging.warning("inside web_call")
+
 	callback_response = HttpResponse()
 
-	try:
-		response = requests.post(url, data=data, headers=headers)
-		# logging.warning("chemical: " + chem)
-		# logging.warning("SUCCESS, content: " + response.content)
+	message = '\n' + "URL: " + '\n' + url + '\n\n'
+	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
 
-		message = '\n' + "URL: " + '\n' + url + '\n\n'
-		message = message + "POST Data: " + '\n' + data + '\n\n'
+	try:
+		logging.warning("trying to get response...")
+		response = requests.post(url, data=data, headers=headers)
+
 		message = message + "Response: " + '\n' + response.content + '\n\n'
 
-		logging.warning(message)
+		# logging.warning(message)
 
 		fileout = open("C:\\Documents and Settings\\npope\\Desktop\\out.txt", "w")
 		fileout.write(message)
@@ -144,13 +163,49 @@ def mrvToSmiles(request):
 		return callback_response
 
 	except:
-		response = views.misc.requestTimeout(request)
-		logging.warning("ERROR, content: " + response.content)
-		callback_response.write(response.content)
+		# response = views.misc.requestTimeout(request)
+
+
+		logging.warning("Error")
+
+		callback_response.write(message)
 
 		return callback_response
 
 
+class data_structures:
 
+	def getChemDeats(self, chemical):
+		# return json data for chemical details
+		return """{"structures": [{"structure": """ + '"'  + chemical + '"' + """}], "display": {"include": ["structureData"], "additionalFields": {"formula": "chemicalTerms(formula)", "iupac": "chemicalTerms(name)", "mass": "chemicalTerms(mass)", "smiles": "chemicalTerms(molString('smiles'))"}, "parameters": {"structureData": "mrv"}}}"""
+		
+	def chemSpecStruct(self, dic):
+
+		structures = [ { "structure": dic["chem_struct"] } ]
+		includeList = [ "pKa", "stereoisomer", "tautomerization" ]
+		stereoDict = { "maxNumberOfStereoisomers": dic["stereoisomers_maxNoOfStructures"] }
+		tautDict = { "maxStructureCount": dic["tautomer_maxNoOfStructures"], "pH": dic["tautomer_pH"] }
+		pkaDict = { "pHLower": dic["pKa_pH_lower"], "pHUpper": dic["pKa_pH_upper"], "pHStep": dic["pKa_pH_increment"] }
+		paramsDict = { "pKa": pkaDict, "stereoisomer": stereoDict, "tautomerization": tautDict }
+		display = { "include": includeList, "parameters": paramsDict }
+		dataDict = { "structures": structures, "display": display }
+
+		return dataDict
+
+
+"""
+Converts json string into
+a python dictionary
+"""
+class payload(object):
+	def __init__(self, j):
+		self.__dict__ = json.loads(j)
+
+
+def gen_jid():
+    ts = datetime.datetime.now(pytz.UTC)
+    localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
+    jid = localDatetime.strftime('%Y%m%d%H%M%S%f')
+    return jid
 
 	

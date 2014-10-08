@@ -1358,3 +1358,12 @@ th {
 #no_border table, th, tr, td {
   border:0px none;
 }
+
+.alignChkbox {
+  float:left;
+}
+
+.shiftRight {
+  margin-left: 42px;
+  font-size:11px;
+}

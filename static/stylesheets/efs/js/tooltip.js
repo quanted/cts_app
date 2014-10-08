@@ -49,7 +49,7 @@ jQuery.noConflict();
 		/* Create a function that builds the tooltip
 		 markup. Then, prepend the tooltip to the body */
 		getTip = function() {
-			var tTip = '<div class="tip">' + '<div class="tipTop">' + '<a class="hideTip" href="#"><img alt="close" src="static/images/Button Close.png" border="0"></a>' + '<a class="add_ref" href="#"><img alt="add new reference" src="static/images/Button Add.png" border="0"></a>' + '</div>' + '<div class="tipMid">' + '<div class="inner" />' + '</div>' + '<div class="tipBtm">' + '</div>' + '</div>';
+			var tTip = '<div class="tip">' + '<div class="tipTop">' + '<a class="hideTip" href="#"><img alt="close" src="/static/images/Button Close.png" border="0"></a>' + '<a class="add_ref" href="#"><img alt="add new reference" src="/static/images/Button Add.png" border="0"></a>' + '</div>' + '<div class="tipMid">' + '<div class="inner" />' + '</div>' + '<div class="tipBtm">' + '</div>' + '</div>';
 			return tTip;
 		}
 		if ($(".tip").length < 1) {

@@ -15,14 +15,14 @@ from django.template.defaultfilters import stringfilter
 # Define Custom Templates
 def tmpl_ChemCalcsCTS():
 	tmpl_ChemCalcsCTS = """
-	{% load my_filter %}
+	{% load color_table %}
 	{% for field in form %}
 		<tr>
 			<th class="chemprop">{{ field }} <span>{{ field.label }}</span></th>
-			<td id="{{ field.id_for_label }}_ChemAxon" class="{{ field | property_availability:"chemaxon" }} chemaxon"></td>
-			<td id="{{ field.id_for_label }}_EPI" class="{{ field | property_availability:"epi" }} epi"></td>
-			<td id="{{ field.id_for_label }}_TEST" class="{{ field | property_availability:"test" }} test"></td>
-			<td id="{{ field.id_for_label }}_SPARC" class="{{ field | property_availability:"sparc" }} sparc"></td>
+			<td id="{{ field.id_for_label }}_ChemAxon" class="{{ field | color_filter:"chemaxon" }} chemaxon"></td>
+			<td id="{{ field.id_for_label }}_EPI" class="{{ field | color_filter:"epi" }} epi"></td>
+			<td id="{{ field.id_for_label }}_TEST" class="{{ field | color_filter:"test" }} test"></td>
+			<td id="{{ field.id_for_label }}_SPARC" class="{{ field | color_filter:"sparc" }} sparc"></td>
 		</tr>
 	{% endfor %}
 		<tr>

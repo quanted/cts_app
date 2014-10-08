@@ -8,12 +8,9 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('REST',
     # url(r'^docs/', include('docs.urls')),
     (r'^$', 'jchem_rest.doc'),  # Landing page
-    # (r'^cts/?$', 'landing.ctsLandingPage'),
-    # (r'^cts/(?P<model>.*?)/description/?$', 'description.descriptionPage'),
-
-    # (r'^detailsBySmiles/(?P<chem>\w+)', 'jchem_rest.detailsBySmiles'),
-    (r'^detailsBySmiles/?$', 'jchem_rest.detailsBySmiles'),
+    (r'^getChemDeats/?$', 'jchem_rest.getChemDeats'),
     (r'^mrvToSmiles/?$', 'jchem_rest.mrvToSmiles'),
+    (r'^getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
 
 )
 

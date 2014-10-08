@@ -23,8 +23,8 @@ sparc_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_availa
 
 # value - chemical property (melting point, etc)
 # args - data source (e.g., chemaxon)
-@register.filter(name='property_availability')
-def property_availability(value, args):
+@register.filter(name='color_filter')
+def color_filter(value, args):
 	
 
 	service_props = []

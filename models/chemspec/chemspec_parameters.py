@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: J.Flaishans
+@author: np
 """
 from django import forms
 from django.template import Context, Template
@@ -28,11 +28,26 @@ def tmpl_chemstructCTS():
 # Define Custom Templates
 def tmpl_speciationCTS():
 	tmpl_speciationCTS = """
+	{% load filter_tags %}
+	{% with form|get_class as name %}
+
 	<table class="input_table tab tab_Speciation" style="display:none">
-		<tr><th colspan="2" class="ctsInputHeader">{{ header }}</th></tr>
+
+	{% if name == "cts_speciation_pKa" %}
+		<tr><th colspan="2" class="ctsInputHeader">{{ form.pka_chkbox }} {{ header }}</th></tr>
+	{% elif name == "cts_speciation_tautomer" %}
+		<tr><th colspan="2" class="ctsInputHeader">{{ form.tautomer_chkbox }} {{ header }}</th></tr>
+	{% elif name == "cts_speciation_stereoisomers" %}
+		<tr><th colspan="2" class="ctsInputHeader">{{ form.steroisomer_chkbox }} {{ header }}</th></tr>
+	{% endif %}
+		
 	{% for field in form %}
-		<tr><th>{{ field.label_tag }}</th><td>{{ field }}</td></tr>
+		{% if not field|is_checkbox %}
+			<tr><th>{{ field.label_tag }}</th><td>{{ field }}</td></tr>
+		{% endif %}
 	{% endfor %}
+
+	{% endwith %}
 	</table>
 	"""
 	return tmpl_speciationCTS
@@ -68,9 +83,17 @@ class cts_speciation_pKa(forms.Form):
 
 	isoelectricPoint_pH_increment = forms.FloatField(label=mark_safe('Isoelectric Point (pl) <br> pH Step Size for Charge Distribution'), initial='0.5')
 
+	# Check box for selecting table
+	# pka_chkbox = forms.BooleanField(label='', widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}))
+	pka_chkbox = forms.BooleanField(label='', widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}))
+
 class cts_speciation_tautomer(forms.Form):
 	tautomer_maxNoOfStructures = forms.FloatField(label='Maximum Number of Structures', initial='100')
-	tautomer_maxNoOfStructures_pH = forms.FloatField(label='at pH', initial='7.0')
+	tautomer_pH = forms.FloatField(label='at pH', initial='7.0')
+
+	tautomer_chkbox = forms.BooleanField(label='', widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}))
 
 class cts_speciation_stereoisomers(forms.Form):
 	stereoisomers_maxNoOfStructures = forms.FloatField(label='Maximum Number of Structures', initial='100')
+
+	steroisomer_chkbox = forms.BooleanField(label='', widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}))

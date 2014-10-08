@@ -506,7 +506,7 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(../static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
   background-position: 0 0;
 }
 #fadeExport_pdf * {
@@ -516,14 +516,14 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(../static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
   background-position: 0 -38px;
 }
 #fadeExport_html {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(../static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
   background-position: -34px 0;
 }
 #fadeExport_html * {
@@ -533,14 +533,14 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(../static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
   background-position: -34px -38px;
 }
 /*#fadeExport_doc {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(../static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
   background-position: -68px 0;
 }
 #fadeExport_doc * {
@@ -550,7 +550,7 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(../static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
   background-position: -68px -38px;
 }*/
 .popup {
@@ -563,7 +563,7 @@ ul.nobullet {
   z-index: 999999;
 }
 #popup_loader {
-  background: url(../static/images/loader.gif);
+  background: url(/static/images/loader.gif);
   width: 32px;
   height: 32px;
   margin-top: 16px;
@@ -595,14 +595,14 @@ ul.nobullet {
   z-index: 99999;
 }
 .collapse-open span {
-    background:url(../static/images/collapsible/minus.gif) center left no-repeat;
+    background:url(/static/images/collapsible/minus.gif) center left no-repeat;
     display: block;
     float: left;
     padding: 9px 8px;
     cursor: default;
 }
 .collapse-close span {
-    background:url(../static/images/collapsible/plus.gif) center left no-repeat;
+    background:url(/static/images/collapsible/plus.gif) center left no-repeat;
     display: block;
     float: left;
     padding: 9px 8px;

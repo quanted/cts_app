@@ -4,8 +4,9 @@ var marvinSketcherInstance;
 //Url mapping for ubertool-cts web services:
 var Urls = {
 
-  detailsBySmiles : "/services/detailsBySmiles/",
+  getChemDeats : "/services/getChemDeats/",
   mrvToSmiles : "/services/mrvToSmiles/",
+  getChemSpecData : "/services/getChemSpecData/",
 
 };
 
@@ -63,7 +64,7 @@ function importMol(dataObj) {
 
   //Create POST data for web call:
   var params = new Object();
-  params.url = Urls.detailsBySmiles;
+  params.url = Urls.getChemDeats;
   params.type = "POST";
   params.contentType = "application/json";
   params.dataType = "json";
@@ -73,16 +74,7 @@ function importMol(dataObj) {
 
   var data = results.data[0];
 
-  molTxt = data["smiles"];
-  iupacTxt = data["iupac"];
-  formTxt = data["formula"];
-  weightTxt = data["mass"];
-
-  //Fill Results table:
-  $('#molecule').val(molTxt);
-  $('#IUPAC').val(iupacTxt);
-  $('#formula').val(formTxt);
-  $('#weight').val(weightTxt);
+  populateResultsTbl(data);
 
   //Load chemical to marvin sketch:
   marvinSketcherInstance.importStructure("mrv", data.structureData.structure);
@@ -109,17 +101,27 @@ function importMolFromCanvas() {
 
     var results = ajaxCall(params);
 
-    // var smileData = REST.Util.MrvToSmiles(source);
-
     if (results == 'Fail') {
       alert("Error getting data from server...");
       return;
     }
     else {
-      importMol(results["structure"]); //send data object 
+      // importMol(results["structure"]); //send data object 
+      populateResultsTbl(results.data[0]);
     }
 
   });
+}
+
+
+function populateResultsTbl(data) {
+
+  $('#id_chem_struct').val(data["smiles"]); //Enter SMILES txtbox
+  $('#molecule').val(data["smiles"]); //SMILES string txtbox - results table
+  $('#IUPAC').val(data["iupac"]); //IUPAC txtbox - results table
+  $('#formula').val(data["formula"]); //Formula txtbox - results table
+  $('#weight').val(data["mass"]); //Mass txtbox - results table
+
 }
 
 

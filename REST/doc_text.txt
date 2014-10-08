@@ -8,10 +8,17 @@
 
 <hr>
 
-<h3> detailsBySmiles </h3>
+<h3> getChemDeats </h3>
 
-<p> url: /services/detailsBySmiles/<i>mol</i> </p>
-<p> <i>mol</i> - molecule's name in SMILES, IUPAC, or formula </p>
+<p> url: /services/detailsBySmiles/ </p>
+<p> data structure: </p>
+
+<br>
+
+<h3> mrvToSmiles </h3>
+
+<p> url: /services/mrvToSmiles/ </p>
+<p> data structure: </p>
 
 </body>
 </html>

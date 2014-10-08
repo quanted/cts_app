@@ -25,14 +25,6 @@ $(document).ready(function() {
 
     var isChecked_ChemCalcs = [];
     $("#id_all").click(function() {
-        // for (var i=0;1<noOfInput_ChemCalcs;i++) {
-        //     if ($(".tab_ChemCalcs input").prop( "checked" )) {
-
-        //     }
-        // }
-        // if ($(".tab_ChemCalcs input").prop( "checked" )) {
-        //     console.log($(".tab_ChemCalcs input").attr('id'));
-        // }
         switch(isAllChecked_ChemCalcs) {
             case 1:
                 isAllChecked_ChemCalcs = 0;
@@ -48,4 +40,5 @@ $(document).ready(function() {
                 console.log('JavaScript Error');
         }
     });
+
 });

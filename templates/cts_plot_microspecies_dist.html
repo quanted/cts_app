@@ -3,11 +3,27 @@
 <script type="text/javascript" src="/static/stylesheets/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
 <!-- <script type="text/javascript" src="/static/stylesheets/scripts_microDistPlot.js"></script> -->
 
-
-
 <script type="text/javascript">
 $(document).ready(function(){
-  var plot1 = $.jqplot ('chart1', [[3,7,9,1,4,6,8,2,5]]); //Make simple line graph
+
+  var plot1 = $.jqplot ('chart1', [{{data.microspecies1}}, {{data.microspecies2}}], {
+  		title: 'Microspecies Distribution',
+  		axesDefaults: {
+        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+      	},
+      	axes: {
+      		xaxis: {
+      			label: 'pH',
+      			min: 0,
+      			max: 14,
+      			tickInterval: 1
+      		},
+      	},
+      	seriesDefaults: {
+      		showMarker: false
+      	}
+  });
+
 });
 </script>
 
