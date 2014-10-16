@@ -15,9 +15,7 @@ import pytz
 
 headers = {'Content-Type' : 'application/json'}
 
-pkaKeys = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment", "pH_microspecies", "isoelectricPoint_pH_increment"]
-tautKeys = ["tautomer_maxNoOfStructures", "tautomer_pH"]
-stereoKeys = ["stereoisomers_maxNoOfStructures"]
+
 
 
 class Urls:
@@ -181,6 +179,10 @@ class data_structures:
 		return """{"structures": [{"structure": """ + '"'  + chemical + '"' + """}], "display": {"include": ["structureData"], "additionalFields": {"formula": "chemicalTerms(formula)", "iupac": "chemicalTerms(name)", "mass": "chemicalTerms(mass)", "smiles": "chemicalTerms(molString('smiles'))"}, "parameters": {"structureData": "mrv"}}}"""
 		
 	def chemSpecStruct(self, dic):
+
+		pkaKeys = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment", "pH_microspecies", "isoelectricPoint_pH_increment"]
+		tautKeys = ["tautomer_maxNoOfStructures", "tautomer_pH"]
+		stereoKeys = ["stereoisomers_maxNoOfStructures"]
 
 		logging.warning("DIC: " + str(dic))
 

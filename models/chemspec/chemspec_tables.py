@@ -93,6 +93,7 @@ def getImagesTemplate():
         <dt class="imgHeader"><b>Microspecies</b></dt>
         <dd>
         {% if data.Microspecies %}
+            
             {% for item in data.Microspecies %}
                 <img src="{{item}}">
             {% endfor %}

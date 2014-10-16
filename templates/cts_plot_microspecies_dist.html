@@ -9,7 +9,6 @@ $(document).ready(function() {
   var dataArr = [];
 
   {% for key,value in data.items %}
-    {{value}}
     dataArr.push({{value}});
   {% endfor %}
 
@@ -30,12 +29,12 @@ $(document).ready(function() {
   	},
   	seriesDefaults: {
   		showMarker: false
-  	},
-    legend: { 
-      show: true, 
-      placement: 'insideGrid', 
-      location: 'ne', 
-      showLabels: true },
+  	}
+    // legend: { 
+    //   show: true, 
+    //   placement: 'insideGrid', 
+    //   location: 'ne', 
+    //   showLabels: true },
   });
 
 });

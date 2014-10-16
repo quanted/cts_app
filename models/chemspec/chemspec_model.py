@@ -90,13 +90,16 @@ class chemspec(object):
 		# Build results dictionaries
 		if 'pKa' in data_root:
 			self.pkaDict = getPkaInfo(output_val)
-			logging.warning("PKA IN ROOT")
+			# logging.warning("PKA IN ROOT")
 		if 'stereoisomer' in data_root:
 			self.stereoDict = getStereoInfo(output_val)
-			logging.warning("STEREO IN ROOT")
+			# logging.warning("STEREO IN ROOT")
 		if 'tautomerization' in data_root:
 			self.tautDict = getTautInfo(output_val)
-			logging.warning("TAUT IN ROOT")
+			# logging.warning("TAUT IN ROOT")
+
+		# Get microspecies names and other info:
+		
 
 		for key, value in output_val.items():	
 			logging.info(key, value)
@@ -144,6 +147,8 @@ def getPkaInfo(output_val):
 				microDistData.update({ms['key'] : valuesList})
 
 			pkaDict.update({'microDistData': microDistData})
+
+	logging.warning("PKA DICT: " + str(pkaDict))
 
 	return pkaDict
 
