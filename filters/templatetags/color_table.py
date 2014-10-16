@@ -25,21 +25,20 @@ sparc_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_availa
 # args - data source (e.g., chemaxon)
 @register.filter(name='color_filter')
 def color_filter(value, args):
-	
 
-	service_props = []
+	if value.name != "kow_ph":
 
-	if args == 'chemaxon':
-		service_props = chemaxon_props
-	elif args == 'epi':
-		service_props = epi_props
-	elif args == 'test':
-		service_props = test_props
-	elif args == 'sparc':
-		service_props = sparc_props
+		service_props = []
 
-	gen_dict = dict(zip(props_list, service_props)) # Make key/value pairs out of props list and service list
-	# logging.warning("prop:" + prop)
-	logging.warning("value:" + str(value.name))
-	return gen_dict[value.name]
-	# logging.warning(str(gen_dict[prop]))
+		if args == 'chemaxon':
+			service_props = chemaxon_props
+		elif args == 'epi':
+			service_props = epi_props
+		elif args == 'test':
+			service_props = test_props
+		elif args == 'sparc':
+			service_props = sparc_props
+
+		gen_dict = dict(zip(props_list, service_props)) # Make key/value pairs out of props list and service list
+
+		return gen_dict[value.name]

@@ -10,6 +10,10 @@ def chemspecOutputPage(request):
     formula = request.POST.get('formula')
     mass = request.POST.get('mass')
 
+    pkaChkbox = request.POST.get('pka_chkbox', 'off')
+    tautChkbox = request.POST.get('tautomer_chkbox', 'off')
+    stereoChkbox = request.POST.get('stereoisomer_chkbox', 'off')
+
     pKaDecs = request.POST.get('pKa_decimals')
     pKaPhLow = request.POST.get('pKa_pH_lower')
     pKaPhUp = request.POST.get('pKa_pH_upper')
@@ -20,7 +24,9 @@ def chemspecOutputPage(request):
     tautMaxNumStructsPh = request.POST.get('tautomer_pH')
     sterMaxNumStructs = request.POST.get('stereoisomers_maxNoOfStructures')
 
-    chemspec_obj = chemspec_model.chemspec("single", chemStruct, smiles, name, formula, mass, pKaDecs, pKaPhLow, pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
+    chemspec_obj = chemspec_model.chemspec("single", chemStruct, smiles, name, formula, 
+                    mass, pkaChkbox, tautChkbox, stereoChkbox, pKaDecs, pKaPhLow, 
+                    pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
                     tautMaxNumStructs, tautMaxNumStructsPh, sterMaxNumStructs)
 
     return chemspec_obj

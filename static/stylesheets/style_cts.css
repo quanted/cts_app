@@ -1161,7 +1161,8 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
   display:block;
   text-decoration:none;
   color:#FFFFFF;
-  background-color:#356697;
+  /*background-color:#356697;*/
+  background-color:#479147;
 }
 .tabUnsel {
   color: #1F262A;
@@ -1238,6 +1239,7 @@ th {
   color:#fff;
   font-weight:normal;
 }
+
 
 /* CTS Inputs */
 
@@ -1346,15 +1348,6 @@ th {
   color:#000000;
 }
 
-/*#align_cell {
-  float:right;
-}*/
-
-/*.cts_reaction_sys table {
-  border:1px;
-  border-color:black;
-}*/
-
 #no_border table, th, tr, td {
   border:0px none;
 }
@@ -1366,4 +1359,15 @@ th {
 .shiftRight {
   margin-left: 42px;
   font-size:11px;
+}
+
+/* Error list from django validation */
+.errorlist {
+  list-style: none;
+  color: red;
+}
+
+/* Input table structures for model inputs */
+.input_table {
+  font-size:12px;
 }

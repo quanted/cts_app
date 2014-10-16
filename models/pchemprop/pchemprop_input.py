@@ -29,12 +29,12 @@ def pchempropInputPage(request, model='', header='Structural chemspec', formData
             })
 
     # chemspec inputs
-    html = html + str(chemspec_parameters.form()) # Loads the Chemical Speciation tables to the page
+    html = html + str(chemspec_parameters.form(formData)) # Loads the Chemical Speciation tables to the page
     html = html + render_to_string('cts.html', {})
 
     # pchemprop inputs
     html = html + render_to_string('cts_pchem.html', {})
-    html = html + str(pchemprop_parameters.form()) # str(pchemprop_properties.form()) returns html table with ids
+    html = html + str(pchemprop_parameters.form(formData)) # str(pchemprop_properties.form()) returns html table with ids
 
     html = html + render_to_string('04ubercts_end.html', {'sub_title': 'Submit'})
     

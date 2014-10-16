@@ -128,3 +128,12 @@ def validate_degrees_latitude(value):
 		pass
 	else:
 		raise ValidationError(u'Range between -90 and 90')
+
+# def validate_chemical(value):
+# 	"""
+# 	Form Validation Rule: Chemical in chem_struct txt field is valid
+
+# 	value: Form input
+# 	raises: ValidationError 
+# 	"""
+# 	

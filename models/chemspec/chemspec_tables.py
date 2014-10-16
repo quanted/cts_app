@@ -73,7 +73,7 @@ def getdjtemplate():
     <dl class="shiftRight">
     {% for label, value in data %}
         <dd>
-        <b>{{label}}</b> {{value}}
+        <b>{{label}}</b> {{value|default:"none"}}
         </dd>
     {% endfor %}
     </dl>
@@ -97,7 +97,7 @@ def getImagesTemplate():
                 <img src="{{item}}">
             {% endfor %}
         {% else %}
-            No microspecies available
+            <p class="shiftRight">No microspecies</p>
         {% endif %}
         </dd>
     {% else %}
@@ -116,11 +116,6 @@ def getImagesTemplate():
     """
     return images_template
 
-def getStereoImagesTemplate():
-    images_template = """
-
-    """
-
 
 def getMolTblData(chemspec_obj):
     data = {
@@ -128,7 +123,6 @@ def getMolTblData(chemspec_obj):
         "Value": [chemspec_obj.chem_struct, chemspec_obj.smiles, chemspec_obj.name, chemspec_obj.formula, chemspec_obj.mass],
         # "Image": [chemspec_obj.parentImage]
     }
-
     return data
 
 
@@ -225,7 +219,7 @@ def table_struct(chemspec_obj):
     <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
     <div class="out_">
-        <H4 class="out_1 collapsible" id="section3"><span></span><b>Molecular Information</b></H4>
+        <H4 class="out_1 collapsible" id="section2"><span></span><b>Molecular Information</b></H4>
             <div class="out_ container_output">
     """
 
@@ -246,89 +240,105 @@ def table_struct(chemspec_obj):
 pKa User Input Table
 """
 def table_pka_input(chemspec_obj):
-    html = """
-    <H4 class="out_1 collapsible" id="section3"><span></span><b>Ionization Constants (pKa) Parameters</b></H4>
-        <div class="out_ container_output">
-    """
-    t1data = getPkaData(chemspec_obj)
-    t1rows = gethtmlrowsfromcols(t1data,pvheadings)
-    # t2data = gett2data(chemspec_obj)
-    # t2rows = gethtmlrowsfromcols(t2data, pvheadings)
-    html = html + tmpl.render(Context(dict(data=t1rows, headings=pvheadings)))
-    # html = html + tmpl.render(Context(dict(data=t2rows, headings=pvheadings)))
-    html = html + """
-    </div>
-    """
-    return html
+    if chemspec_obj.pkaDict:
+        html = """
+        <H4 class="out_1 collapsible" id="section3"><span></span><b>Ionization Constants (pKa) Parameters</b></H4>
+            <div class="out_ container_output">
+        """
+        t1data = getPkaData(chemspec_obj)
+        t1rows = gethtmlrowsfromcols(t1data,pvheadings)
+        # t2data = gett2data(chemspec_obj)
+        # t2rows = gethtmlrowsfromcols(t2data, pvheadings)
+        html = html + tmpl.render(Context(dict(data=t1rows, headings=pvheadings)))
+        # html = html + tmpl.render(Context(dict(data=t2rows, headings=pvheadings)))
+        html = html + """
+        </div>
+        """
+        return html
+    else:
+        return ""
 
 
 """
 Tautomer User Input Table
 """
 def table_taut_input(chemspec_obj):
-    html = """
-    <H4 class="out_1 collapsible" id="section3"><span></span><b>Dominate Tautomer Distribution Parameters</b></H4>
-                <div class="out_ container_output">
-    """
-    tblData = getTautData(chemspec_obj)
-    tblRows = gethtmlrowsfromcols(tblData, pvheadings)
-    html = html + tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
-    html = html + """
-    </div>
-    """
-    return html
+    if chemspec_obj.tautDict:
+        html = """
+        <H4 class="out_1 collapsible" id="section4"><span></span><b>Dominate Tautomer Distribution Parameters</b></H4>
+                    <div class="out_ container_output">
+        """
+        tblData = getTautData(chemspec_obj)
+        tblRows = gethtmlrowsfromcols(tblData, pvheadings)
+        html = html + tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        html = html + """
+        </div>
+        """
+        return html
+    else:
+        return ""
 
 
 """
 Stereoisomers User Input Table
 """
 def table_stereo_input(chemspec_obj):
-    html = """
-    <H4 class="out_1 collapsible" id="section3"><span></span><b>Stereoisomers Parameters</b></H4>
-                <div class="out_ container_output">
-    """
-    tblData = getStereoData(chemspec_obj)
-    tblRows = gethtmlrowsfromcols(tblData, pvheadings)
-    html = html + tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
-    html = html + """
-    </div></div>
-    """
-    return html
+    if chemspec_obj.stereoDict:
+        html = """
+        <H4 class="out_1 collapsible" id="section5"><span></span><b>Stereoisomers Parameters</b></H4>
+                    <div class="out_ container_output">
+        """
+        tblData = getStereoData(chemspec_obj)
+        tblRows = gethtmlrowsfromcols(tblData, pvheadings)
+        html = html + tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        html = html + """
+        </div></div>
+        """
+        return html
+    else:
+        return "</div>" #close out Molecular Info div (last input checked)
 
 
 """
 pKa Calculations Table
 """
 def table_pka_results(chemspec_obj):
-    html = """
-    <H3 class="out_1 collapsible" id="section4"><span></span>pKa</H3>
-    <div class="out_">
-        <H4 class="out_1 collapsible" id="section3"><span></span><b>Most Acidic/Basic</b></H4>
-                <div class="out_ container_output">
-    """
-    t3data = getParentMicroData(chemspec_obj)
-    t3rows = gethtmlrowsfromcols(t3data, pvheadings)
-    html = html + tmpl.render(Context(dict(data=t3rows, headings=pvheadings)))
-    html = html + """
-    </div>
-    """
-    return html
+    if chemspec_obj.pkaDict:
+        html = """
+        <H3 class="out_1 collapsible" id="section6"><span></span>pKa</H3>
+        <div class="out_">
+            <H4 class="out_1 collapsible" id="section7"><span></span><b>Most Acidic/Basic</b></H4>
+                    <div class="out_ container_output">
+        """
+        t3data = getParentMicroData(chemspec_obj)
+        t3rows = gethtmlrowsfromcols(t3data, pvheadings)
+        html = html + tmpl.render(Context(dict(data=t3rows, headings=pvheadings)))
+        html = html + """
+        </div>
+        """
+        return html
+    else:
+        return ""
 
 
 """
 parent and microspecies images table
 """
 def table_images(chemspec_obj):
-    html = """
-    <H4 class="out_1 collapsible" id="section4"><span></span><b>Parent/Microspecies Images</b></H4>
-    <div class="out_">
-    """
-    tblData = getSpeciesImages(chemspec_obj)
-    html = html + tmplImg.render(Context(dict(data=tblData)))
-    html = html + """
-    </div>
-    """
-    return html
+
+    if chemspec_obj.pkaDict:
+        html = """
+        <H4 class="out_1 collapsible" id="section8"><span></span><b>Parent/Microspecies Images</b></H4>
+        <div class="out_">
+        """
+        tblData = getSpeciesImages(chemspec_obj)
+        html = html + tmplImg.render(Context(dict(data=tblData)))
+        html = html + """
+        </div>
+        """
+        return html
+    else:
+        return ""
 
 
 """
@@ -336,20 +346,23 @@ Microspecies Distribution Plot "Table"
 """
 def table_microplot(chemspec_obj):
 
-    if chemspec_obj.pkaDict['microDistData']:
+    if chemspec_obj.pkaDict:
         html = """
-        <H4 class="out_1 collapsible" id="section4"><span></span><b>Microspecies Distribution Plot</b></H4>
-        <div class="out_">
+        <H4 class="out_1 collapsible" id="section9"><span></span><b>Microspecies Distribution Plot</b></H4>
+        <div class="out_" id="section6">
         """
-        html = html + render_to_string('cts_plot_microspecies_dist.html', {'data':chemspec_obj.pkaDict['microDistData']})
+        if chemspec_obj.pkaDict['microDistData']:
+            html = html + render_to_string('cts_plot_microspecies_dist.html', {'data':chemspec_obj.pkaDict['microDistData']})
+        else:
+            html = html + """
+            <p class="shiftRight">No microspecies for plotting</p>
+            """
         html = html + """
         </div></div>
         """
+        return html
     else:
-        html = """
-        <br><br>
-        """
-    return html
+        return ""
 
 
 """
@@ -357,9 +370,11 @@ Stereoisomers Image Table
 """
 def table_stereo_results(chemspec_obj):
 
-    if chemspec_obj.stereoDict['stereoImageUrl']:
+    logging.warning(str(chemspec_obj.stereoDict))
+
+    if chemspec_obj.stereoDict:
         html = """
-        <H3 class="out_1 collapsible" id="section1"><span></span>Stereoisomers</H3>
+        <H3 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H3>
         <div class="out_">
         """
         html = html + tmplImg.render(Context(dict(data=chemspec_obj.stereoDict)))
@@ -367,6 +382,8 @@ def table_stereo_results(chemspec_obj):
         </div>
         """
         return html
+    else:
+        return ""
 
 
 """
@@ -374,13 +391,15 @@ Tautomer Image Table
 """
 def table_taut_results(chemspec_obj):
 
-    if chemspec_obj.tautDict['tautImageUrl']:
+    if chemspec_obj.tautDict:
         html = """
-        <H3 class="out_1 collapsible" id="section1"><span></span>Tautomerization</H3>
+        <H3 class="out_1 collapsible" id="section11"><span></span>Tautomerization</H3>
         <div class="out_">
         """
         html = html + tmplImg.render(Context(dict(data=chemspec_obj.tautDict)))
         html = html + """
-        </div>
+        </div><br><br>
         """
-        return html 
+        return html
+    else:
+        return "" 

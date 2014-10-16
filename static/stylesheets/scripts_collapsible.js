@@ -7,14 +7,14 @@ $(document).ready(function () {
     }).get().join();
 	$('.collapsible').collapsible({
 		speed: 'slow',
-		//defaultOpen: ""+sect_all+"", //original code 
-        defaultOpen: "", //(np)
+		defaultOpen: ""+sect_all+"", //original code 
+        // defaultOpen: "chart1", //(np)
         //replace the standard slideDown with custom function
-        animateClose: function (elem, opts) {
+        animateOpen: function (elem, opts) {
             elem.next().slideFadeToggle(opts.speed);
         },
         //replace the standard slideUp with custom function
-        animateOpen: function (elem, opts) {
+        animateClose: function (elem, opts) {
             elem.next().slideFadeToggle(opts.speed);
         }
 	});

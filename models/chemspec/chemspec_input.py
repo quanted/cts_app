@@ -6,7 +6,6 @@ from django import forms
 from django.template.loader import render_to_string
 import logging    
 
-
     
 def chemspecInputPage(request, model='', header='Chemical Speciation', formData=None):
     import chemspec_parameters
@@ -27,7 +26,16 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
                 }
             })
     
-    html = html + str(chemspec_parameters.form()) # Loads the Chemical Speciation tables to the page
+    # html = html + str(chemspec_parameters.ChemspecInp(formData))
+
+    fileout = open("C:\\Documents and Settings\\npope\\Desktop\\out.txt", "w")
+    fileout.write(str(chemspec_parameters.ChemspecInp(formData)))
+    # fileout.write(str(formData))
+    fileout.close()
+
+    html = html + str(chemspec_parameters.form(formData)) # Loads the Chemical Speciation tables to the page
+
+    # html = html + str(sip_parameters.SipInp(formData)) # from ubertool-eco SIP input page
 
     html = html + render_to_string('cts.html', {}) # Builds marvin js and results table 
 

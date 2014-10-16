@@ -4,29 +4,43 @@
 <!-- <script type="text/javascript" src="/static/stylesheets/scripts_microDistPlot.js"></script> -->
 
 <script type="text/javascript">
-$(document).ready(function(){
+$(document).ready(function() {
 
-  var plot1 = $.jqplot ('chart1', [{{data.microspecies1}}, {{data.microspecies2}}], {
-  		title: 'Microspecies Distribution',
-  		axesDefaults: {
-        	labelRenderer: $.jqplot.CanvasAxisLabelRenderer
-      	},
-      	axes: {
-      		xaxis: {
-      			label: 'pH',
-      			min: 0,
-      			max: 14,
-      			tickInterval: 1
-      		},
-      	},
-      	seriesDefaults: {
-      		showMarker: false
-      	}
+  var dataArr = [];
+
+  {% for key,value in data.items %}
+    {{value}}
+    dataArr.push({{value}});
+  {% endfor %}
+
+  var n = dataArr;
+
+  var plot1 = $.jqplot ('chart1', dataArr, {
+		title: 'Microspecies Distribution',
+		// axesDefaults: {
+  //     	// labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+  //   },
+  	axes: {
+  		xaxis: {
+  			label: 'pH',
+  			min: 0,
+  			max: 14,
+  			tickInterval: 1
+  		},
+  	},
+  	seriesDefaults: {
+  		showMarker: false
+  	},
+    legend: { 
+      show: true, 
+      placement: 'insideGrid', 
+      location: 'ne', 
+      showLabels: true },
   });
 
 });
 </script>
 
-<div id="chart1">
+<div id="chart1" class="collapsible">
 
 </div>

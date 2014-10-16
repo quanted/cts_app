@@ -26,17 +26,17 @@ def gentransInputPage(request, model='', header='Chemical Speciation', formData=
                 }
             })
 
-    html = html + str(chemspec_parameters.form()) # Loads the Chemical Speciation tables to the page
+    html = html + str(chemspec_parameters.form(formData)) # Loads the Chemical Speciation tables to the page
 
     html = html + render_to_string('cts.html', {}) # Builds Marvin JS, lookup table, and results table
     
     # reaction pathway simulator segment:
     html = html + render_to_string('cts_reaction_path_sim.html', {})
-    html = html + str(gentrans_parameters.form())
+    html = html + str(gentrans_parameters.form(formData))
 
     # p-chem calculator piece:
     html = html + render_to_string('cts_pchem.html', {})
-    html = html + str(pchemprop_parameters.form())
+    html = html + str(pchemprop_parameters.form(formData))
 
     #html = html + str(gentrans_parameters.form())
 #        html = html + render_to_string('jschemeditor.html', {})

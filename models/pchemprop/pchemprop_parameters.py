@@ -10,6 +10,8 @@ from django.template import Context, Template
 from django.utils.safestring import mark_safe
 import logging
 from django.template.defaultfilters import stringfilter
+from django.core import validators
+from models.forms import validation
 
 
 # Define Custom Templates
@@ -17,13 +19,24 @@ def tmpl_ChemCalcsCTS():
 	tmpl_ChemCalcsCTS = """
 	{% load color_table %}
 	{% for field in form %}
-		<tr>
+		{% if field.id_for_label == "id_kow" %}
+			<tr>
+			<th class="chemprop">{{ field }} <span>{{ field.label }}</span>
+		{% elif field.id_for_label == "id_kow_ph" %}
+			<span>{{field.label}}</span> {{field}}</th>
+			<td id="id_kow_ChemAxon" class="{{form.kow|color_filter:"chemaxon"}} chemaxon"></td>
+			<td id="id_kow_EPI" class="{{form.kow|color_filter:"epi"}} epi"></td>
+			<td id="id_kow_TEST" class="{{form.kow|color_filter:"test"}} test"></td>
+			<td id="id_kow_SPARC" class="{{form.kow|color_filter:"sparc"}} sparc"></td>
+		{% else %}
+			<tr>
 			<th class="chemprop">{{ field }} <span>{{ field.label }}</span></th>
 			<td id="{{ field.id_for_label }}_ChemAxon" class="{{ field | color_filter:"chemaxon" }} chemaxon"></td>
 			<td id="{{ field.id_for_label }}_EPI" class="{{ field | color_filter:"epi" }} epi"></td>
 			<td id="{{ field.id_for_label }}_TEST" class="{{ field | color_filter:"test" }} test"></td>
 			<td id="{{ field.id_for_label }}_SPARC" class="{{ field | color_filter:"sparc" }} sparc"></td>
-		</tr>
+			</tr>
+		{% endif %}
 	{% endfor %}
 		<tr>
 			<th></th>
@@ -34,70 +47,35 @@ def tmpl_ChemCalcsCTS():
 	"""
 	return tmpl_ChemCalcsCTS
 
-# def tmpl_TransformCTS():
-# 	tmpl_TransformCTS = """
-# 	<table class="input_table tab tab_Transform" style="display:none">
-# 	{% for field in form %}
-# 		<tr>
-# 			<th>{{ field.label }}</th>
-# 			<td>{{ field }}</td>
-# 		</tr>
-# 	{% endfor %}
-# 	</table>
-# 	"""
-# 	return tmpl_TransformCTS
 
 tmpl_ChemCalcsCTS = Template(tmpl_ChemCalcsCTS())
-# tmpl_TransformCTS = Template(tmpl_TransformCTS())
+
 
 # Method(s) called from *_inputs.py
-def form():
-	form_cts_ChemCalcs_props = cts_CemCalcs_props()
+def form(formData):
+	form_cts_ChemCalcs_props = cts_chemCalcs_props(formData)
 	html = tmpl_ChemCalcsCTS.render(Context(dict(form=form_cts_ChemCalcs_props)))
 	# form_cts_Transform = cts_Transform()
 	# html = html + tmpl_TransformCTS.render(Context(dict(form=form_cts_Transform)))
 	return html
 
-class cts_CemCalcs_props(forms.Form):
+class cts_chemCalcs_props(forms.Form):
 	melting_point = forms.BooleanField(required=False, label=mark_safe('Melting Point (&degC)'))
 	boiling_point = forms.BooleanField(required=False, label=mark_safe('Boiling Point (&degC)'))
-	water_sol = forms.BooleanField(required=False, label=mark_safe('Water Solubility'))
-	vapor_press = forms.BooleanField(required=False, label=mark_safe('Vapor Pressure'))
-	mol_diss = forms.BooleanField(required=False, label=mark_safe('Molecular Diffusivity (water)'))
+	water_sol = forms.BooleanField(required=False, label=mark_safe('Water Solubility (mg/L)'))
+	vapor_press = forms.BooleanField(required=False, label=mark_safe('Vapor Pressure (mmHg)'))
+	mol_diss = forms.BooleanField(required=False, label=mark_safe('Molecular Diffusivity (cm<sup>2</sup>/s)'))
 	ionization_con = forms.BooleanField(required=False, label=mark_safe('Ionization Constant'))
-	henrys_law_con = forms.BooleanField(required=False, label=mark_safe("Henry's Law Constant"))
+	henrys_law_con = forms.BooleanField(required=False, label=mark_safe("Henry's Law Constant (atm-m<sup>3</sup>/mol)"))
 	kow = forms.BooleanField(required=False, label=mark_safe('Octanol/Water Partition Coefficient'))
+	kow_ph = forms.CharField (
+				required=False, 
+				label=mark_safe('at ph:'), 
+				widget=forms.TextInput(attrs={'size':1}),
+				initial=7.4
+			)
 	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient'))
-	dist_coeff = forms.BooleanField(required=False, label=mark_safe('Distribution Coefficient'))
+	dist_coeff = forms.BooleanField(required=False, label=mark_safe('Distribution Coefficient (L/kg)'))
 
-
-
-
-
-
-
-# class cts_Transform(forms.Form):
-# 	reactionSys_CHOICES = (('Environmental', 'reactionSys_envir'),('Mammalian', 'reactionSys_mamm'))
-# 	reactionSys = forms.ChoiceField(widget=forms.RadioSelect, choices=reactionSys_CHOICES, required=False, label='Reaction System')
-
-# 	respiration_CHOICES = (('Aerobic', 'respiration_aerobic'),('Anaerobic', 'respiration_anaerobic'))
-# 	respiration = forms.ChoiceField(widget=forms.RadioSelect, choices=respiration_CHOICES, required=False, label='Respiration')
-
-	# reactionSys_CHOICES = (('', ''),('', ''),('', ''),('', ''))
-	# aerobic_surfaceWater = 
-	# aerobic_surfaceSoil = 
-	# aerobic_vadose = 
-	# aerobic_groundWater = 
-
-	# reactionSys_CHOICES = (('', ''),('', ''),('', ''))
-	# anaerobic_waterColumn = 
-	# anaerobic_benthicSed = 
-	# anaerobic_groundWater = 
-
-	# reactionSys_CHOICES = (('', ''),('', ''),('', ''),('', ''),('', ''))
-	# library_abioticHyd = 
-	# library_aerobicBio = 
-	# library_photolysis = 
-	# library_abioticRed = 
-	# library_anaerobicBio = 
-	# library_mammalMeta = 
+class PchempropInp(cts_chemCalcs_props):
+	pass

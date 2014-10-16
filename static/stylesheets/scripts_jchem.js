@@ -23,11 +23,11 @@ $(document).ready(function handleDocumentReady (e) {
 
   // $('#chemEditLookup').find('input:text').val(''); //clear all input fields at document load
 
-  $('#id_chem_struct').val('');
-  $('#molecule').val('');
-  $('#IUPAC').val('');
-  $('#formula').val('');
-  $('#weight').val('');
+  // $('#id_chem_struct').val('');
+  // $('#molecule').val('');
+  // $('#IUPAC').val('');
+  // $('#formula').val('');
+  // $('#weight').val('');
 
 
   // $('#setSmilesButton').on('click', { dataObj: null }, importMol(null));

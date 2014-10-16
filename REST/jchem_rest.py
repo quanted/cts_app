@@ -15,6 +15,10 @@ import pytz
 
 headers = {'Content-Type' : 'application/json'}
 
+pkaKeys = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment", "pH_microspecies", "isoelectricPoint_pH_increment"]
+tautKeys = ["tautomer_maxNoOfStructures", "tautomer_pH"]
+stereoKeys = ["stereoisomers_maxNoOfStructures"]
+
 
 class Urls:
 
@@ -61,7 +65,7 @@ def getChemDeats(request):
 	logging.warning(chem)
 
 	ds = data_structures()
-	data = ds.getChemDeats(chem)
+	data = ds.getChemDeats(chem) # format request to jchem
 
 	logging.warning(data)
 	logging.warning(type(data))
@@ -118,14 +122,10 @@ def getChemSpecData(request):
 
 	logging.warning("inside jchem_rest - getChemSpecData")
 
-	# logging.warning(request.POST)
-
 	ds = data_structures()
-	data = ds.chemSpecStruct(request.POST)
+	data = ds.chemSpecStruct(request.POST) # format request to jchem
 
 	data = json.dumps(data)
-
-	# logging.warning(data)
 
 	url = Urls.base + Urls.detailUrl
 
@@ -148,7 +148,8 @@ def web_call(url, request, data):
 
 	try:
 		logging.warning("trying to get response...")
-		response = requests.post(url, data=data, headers=headers)
+		response = requests.post(url, data=data, headers=headers, timeout=60)
+		logging.warning("success.")
 
 		message = message + "Response: " + '\n' + response.content + '\n\n'
 
@@ -181,14 +182,39 @@ class data_structures:
 		
 	def chemSpecStruct(self, dic):
 
-		structures = [ { "structure": dic["chem_struct"] } ]
-		includeList = [ "pKa", "stereoisomer", "tautomerization" ]
-		stereoDict = { "maxNumberOfStereoisomers": dic["stereoisomers_maxNoOfStructures"] }
-		tautDict = { "maxStructureCount": dic["tautomer_maxNoOfStructures"], "pH": dic["tautomer_pH"] }
-		pkaDict = { "pHLower": dic["pKa_pH_lower"], "pHUpper": dic["pKa_pH_upper"], "pHStep": dic["pKa_pH_increment"] }
-		paramsDict = { "pKa": pkaDict, "stereoisomer": stereoDict, "tautomerization": tautDict }
-		display = { "include": includeList, "parameters": paramsDict }
-		dataDict = { "structures": structures, "display": display }
+		logging.warning("DIC: " + str(dic))
+
+		structures = []
+		if 'chem_struct' in dic:
+			structures = [ { "structure": dic["chem_struct"] } ]
+		# else:
+		# 	pass # Add better error checking
+
+		pkaDict, tautDict, stereoDict = {}, {}, {}
+		for key in dic.keys():
+			if key in pkaKeys:
+				pkaDict.update({key: dic[key]})
+			if key in tautKeys:
+				tautDict.update({key: dic[key]})
+			if key in stereoKeys:
+				stereoDict.update({key: dic[key]})
+
+		paramsDict, inlcudeList = {}, []
+		if pkaDict:
+			paramsDict.update(pkaDict)
+			inlcudeList.append("pKa")
+		if tautDict:
+			paramsDict.update(tautDict)
+			inlcudeList.append("tautomerization")
+		if stereoDict:
+			paramsDict.update(stereoDict)
+			inlcudeList.append("stereoisomer")
+
+		display = {"include": inlcudeList, "parameters": paramsDict}
+
+		dataDict = {"structures": structures, "display": display}
+
+		logging.warning("DATA DICT: " + str(dataDict))
 
 		return dataDict
 

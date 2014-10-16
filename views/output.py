@@ -70,7 +70,14 @@ def outputPage(request, model='none', header=''):
             return outputPageView(request, model, header)
 
         else:
-            logging.info(form.errors)
+            logging.warning(form.errors)
+            # logging.warning(str(form))
+            logging.warning(request.POST)
+
+            # fileout = open("C:\\Documents and Settings\\npope\\Desktop\\out.txt", "w")
+            # fileout.write(str(form))
+            # fileout.close()
+
             inputmodule = importlib.import_module('.'+model+'_input', 'models.'+model)
 
             # Render input page view with POSTed values and show errors
@@ -91,6 +98,6 @@ def outputPage(request, model='none', header=''):
 
     except:
         
-        logging.info("E X C E P T")
+        logging.warning("E X C E P T")
 
         return outputPageView(request, model, header)

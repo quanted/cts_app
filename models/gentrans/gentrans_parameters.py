@@ -133,17 +133,17 @@ tmpl_respirationTable = Template(tmpl_respirationTable())
 tmpl_oecdGuidelines = Template(tmpl_oecdGuidelines())
 
 # Method(s) called from *_inputs.py
-def form():
+def form(formData):
 
 	html = '<div class="input_table tab tab_ReactionPathSim" style="display:none">'
 
-	form_cts_reaction_paths= cts_reaction_paths()
+	form_cts_reaction_paths= cts_reaction_paths(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_paths)))
 
-	form_oecd_guidelines= cts_oecd_guidelines()
+	form_oecd_guidelines= cts_oecd_guidelines(formData)
 	html = html + tmpl_oecdGuidelines.render(Context(dict(form=form_oecd_guidelines)))
 
-	form_cts_reaction_sys = cts_reaction_sys()
+	form_cts_reaction_sys = cts_reaction_sys(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_sys, header=mark_safe("Reaction System"))))
 	
 	html = html + """<table id="respiration_tbl">
@@ -151,7 +151,7 @@ def form():
 	<tr>
 	"""
 
-	form_cts_respiration = cts_respiration()
+	form_cts_respiration = cts_respiration(formData)
 	html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_respiration, header=mark_safe("Respiration"))))
 
 	# form_cts_aerobic = cts_aerobic()
@@ -162,7 +162,7 @@ def form():
 
 	html = html + '</tr></table>'
 
-	form_cts_reaction_libs = cts_reaction_libs()
+	form_cts_reaction_libs = cts_reaction_libs(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, header=mark_safe("Reaction Libraries"))))
 
 	html = html + '</div>'
@@ -170,15 +170,15 @@ def form():
 	return html
 
 
-reaction_pathway_CHOICES = (('0', 'Reaction System'), ('1', 'OECD Guidelines'), ('2', 'Reaction Library'))
+reaction_pathway_CHOICES = (('0', 'Reaction System Guidelines'), ('1', 'OCSPP Guidelines'), ('2', 'User selected (advanced)'))
 reaction_sys_CHOICES = (('0', 'Environmental'), ('1', 'Mammalian'))
-respiration_CHOICES = (('0', 'Aerobic'), ('1', 'Anaerobic'))
+respiration_CHOICES = (('0', 'Make a selection'), ('1', 'Aerobic'), ('2', 'Anaerobic'))
 
 aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
 anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))
 
 oecd_guidelines_CHOICES = (('0', 'Fate, Transport, and Transformation (Series 835)'), ('1', 'Health Effects (Series 870)'))
-ftt_CHOICES = (('0', 'Laboratory Abiotic Transformation Guidelines'), ('1', 'Transformation in Water and Soil Test Guidelines'), ('2', 'Transformation Chemical-Specific Test Guidelines'))
+ftt_CHOICES = (('0', 'Make a selection'), ('1', 'Laboratory Abiotic Transformation Guidelines'), ('2', 'Transformation in Water and Soil Test Guidelines'), ('3', 'Transformation Chemical-Specific Test Guidelines'))
 labAbioTrans_CHOICES = (('0', 'Abiotic Hydrolysis (835.2120)'), ('1', 'Abiotic Reduction (no available guideline)'), ('2', 'Photolysis in Water (currently under development) (835.22440)'))
 transWaterSoil_CHOICES = (('0', 'Aerobic Soil Biodegradation (835.4100)'), ('1', 'Anaerobic Soil Biodegradation (currently under development) (835.4200)'))
 transChemSpec_CHOICES = [('0', 'Anaerobic Biodegradation in the Subsurface (currently under development) (835.5154)')]
@@ -189,7 +189,8 @@ specialStudies_CHOICES = [('0', 'Metabolism and Pharmacokinetics (870.7485)')]
 class cts_reaction_paths(forms.Form):
 
 	reaction_paths = forms.ChoiceField(
-					label='Reaction Paths',
+					# label='Reaction Paths',
+					label='Options for selecting Reaction Libraries',
 					choices=reaction_pathway_CHOICES,
 					widget=forms.RadioSelect())
 
@@ -204,8 +205,7 @@ class cts_reaction_sys(forms.Form):
 class cts_respiration(forms.Form):
 
 	respiration = forms.ChoiceField(
-				choices=respiration_CHOICES,
-				widget=forms.RadioSelect())
+				choices=respiration_CHOICES)
 
 	aerobic = forms.ChoiceField(
 				choices=aerobic_CHOICES,
@@ -250,8 +250,8 @@ class cts_oecd_guidelines(forms.Form):
 	# Fate, Transport, and Transformation Selections:
 
 	ftt_selection = forms.ChoiceField(
-					choices=ftt_CHOICES,
-					widget=forms.RadioSelect())
+					choices=ftt_CHOICES)
+					# widget=forms.RadioSelect())
 
 	labAbioTrans_selection = forms.ChoiceField(
 					choices=labAbioTrans_CHOICES,
@@ -271,5 +271,8 @@ class cts_oecd_guidelines(forms.Form):
 					choices=specialStudies_CHOICES,
 					widget=forms.RadioSelect())
 
+
+class GentransInp(cts_reaction_paths, cts_reaction_sys, cts_respiration, cts_reaction_libs, cts_oecd_guidelines):
+	pass
 
 
