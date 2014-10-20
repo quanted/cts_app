@@ -113,7 +113,8 @@ $(document).ready(function() {
         }
     });
 
-    $("#id_respiration").change(function() {
+    // $("#id_respiration").change(function() {
+    $('select[name="respiration"]').change(function() {
 
         $('#cts_reaction_libs input[type="checkbox"]').prop('disabled', true);
 
@@ -226,7 +227,8 @@ $(document).ready(function() {
         }
     });
 
-    $("#id_ftt_selection").change(function() {
+    // $("#id_ftt_selection").change(function() {
+    $('select[name="ftt_selection"]').change(function() {
 
         $('#cts_reaction_libs input[type="checkbox"]').prop('disabled', true);
 
