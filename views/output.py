@@ -74,10 +74,6 @@ def outputPage(request, model='none', header=''):
             # logging.warning(str(form))
             logging.warning(request.POST)
 
-            # fileout = open("C:\\Documents and Settings\\npope\\Desktop\\out.txt", "w")
-            # fileout.write(str(form))
-            # fileout.close()
-
             inputmodule = importlib.import_module('.'+model+'_input', 'models.'+model)
 
             # Render input page view with POSTed values and show errors
