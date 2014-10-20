@@ -111,10 +111,6 @@ def detailsBySmiles(request):
 
 		logging.warning(message)
 
-		fileout = open("C:\\Documents and Settings\\npope\\Desktop\\out.txt", "w")
-		fileout.write(message)
-		fileout.close()
-
 		callback_response.write(response.content)
 
 		return callback_response
@@ -169,10 +165,6 @@ def mrvToSmiles(request):
 		message = message + "Response: " + '\n' + response.content + '\n\n'
 
 		logging.warning(message)
-
-		fileout = open("C:\\Documents and Settings\\npope\\Desktop\\out.txt", "w")
-		fileout.write(message)
-		fileout.close()
 
 		callback_response.write(response.content)
 

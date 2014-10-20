@@ -153,10 +153,6 @@ def web_call(url, request, data):
 
 		# logging.warning(message)
 
-		fileout = open("C:\\Documents and Settings\\npope\\Desktop\\out.txt", "w")
-		fileout.write(message)
-		fileout.close()
-
 		callback_response.write(response.content)
 
 		return callback_response
