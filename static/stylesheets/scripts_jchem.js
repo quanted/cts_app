@@ -72,7 +72,11 @@ function importMol(dataObj) {
 
   var results = ajaxCall(params); //Get chemical information
 
-  var data = results.data[0];
+  var data;
+
+  if (typeof results !== "undefined") {
+    data = results.data[0];
+  }
 
   populateResultsTbl(data);
 

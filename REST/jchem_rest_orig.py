@@ -150,9 +150,6 @@ def mrvToSmiles(request):
 
 	logging.warning("inside jchem_rest - mrvToSmiles")
 
-
-	logging.warning("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-
 	callback_response = HttpResponse()
 
 	try:
