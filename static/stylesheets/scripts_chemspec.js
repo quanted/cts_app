@@ -53,12 +53,12 @@ $(document).ready(function() {
         var tblName = $('input[name="' + chkName + '"]').closest('table').attr("name");
 
         if (isChecked) {
-            $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', false);
+            $('table[name="' + tblName + '"] input[type="number"], input[type="text"]').prop('disabled', false);
             // $('table ').prop('disabled', false);
         }
         else {
             // $('table.cts_speciation_pka input[type="number"]').prop('disabled', true);
-            $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', true);
+            $('table[name="' + tblName + '"] input[type="number"], input[type="text"]').prop('disabled', true);
         }
     
         //Submit only enabled if a checkbox is selected:
