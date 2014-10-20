@@ -33,7 +33,7 @@ def tmpl_speciationCTS():
 	{% load filter_tags %}
 	{% with form|get_class as name %}
 
-	<table class="input_table tab tab_Speciation" style="display:none">
+	<table class="input_table tab tab_Speciation" name="{{name}}" style="display:none">
 
 	{% if name == "cts_speciation_pKa" %}
 		<tr><th colspan="2" class="ctsInputHeader">{{ form.pka_chkbox }} {{ header }}</th></tr>
@@ -62,11 +62,11 @@ def form(formData):
 	form_cts_chemical_structure = cts_chemical_structure(formData)
 	html = tmpl_chemstructCTS.render(Context(dict(form=form_cts_chemical_structure, header=mark_safe("Lookup Chemical")))) 
 	form_cts_speciation_pKa = cts_speciation_pKa(formData)
-	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_pKa, header=mark_safe("Ionization Constants (p<i>K</i>a) Parameters"))))
+	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_pKa, header=mark_safe("Calculate Ionization Constants (p<i>K</i>a) Parameters"))))
 	form_cts_speciation_tautomer = cts_speciation_tautomer(formData)
-	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_tautomer, header="Dominate Tautomer Distribution")))
+	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_tautomer, header="Calculate Dominant Tautomer Distribution")))
 	form_cts_speciation_stereoisomers = cts_speciation_stereoisomers(formData)
-	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_stereoisomers, header="Stereoisomers")))
+	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_stereoisomers, header="Calculate Stereoisomers")))
 	return html
 
 

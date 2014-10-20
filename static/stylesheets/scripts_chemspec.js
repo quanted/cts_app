@@ -41,4 +41,37 @@ $(document).ready(function() {
         }
     });
 
+    //Gray out fields if checkbox is not checked:
+
+    $('input').not('input[type="checkbox"], input[type="button"]').prop('disabled', true); //disable all input fields unless checked
+
+    $('input[type="checkbox"]').change(function() {
+
+        // var isChecked = $(this).val();
+        var isChecked = $(this).is(":checked");
+        var chkName = $(this).attr("name");
+        var tblName = $('input[name="' + chkName + '"]').closest('table').attr("name");
+
+        if (isChecked) {
+            $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', false);
+            // $('table ').prop('disabled', false);
+        }
+        else {
+            // $('table.cts_speciation_pka input[type="number"]').prop('disabled', true);
+            $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', true);
+        }
+    
+        //Submit only enabled if a checkbox is selected:
+
+        if ($('input[type="checkbox"]').is(":checked")) {
+            $('input[type="submit"]').prop('disabled', false);
+        }
+        else {
+            $('input[type="submit"]').prop('disabled', true);
+        }
+
+    });
+
+
+
 });

@@ -5,20 +5,20 @@ register = template.Library()
 
 # List of properties for p-chem calculator:
 props_list = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 
-				'ionization_con', 'henrys_law_con', 'kow', 'koc', 'dist_coeff']
+				'ionization_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc']
 
 # List of each provider's available properties (see props list):
 chemaxon_props = ['ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available', 
-					'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available']
+					'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable']
 
 epi_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available']
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available']
 
 test_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
  				'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 
 sparc_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available']
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable']
 
 
 # value - chemical property (melting point, etc)
