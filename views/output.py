@@ -72,7 +72,6 @@ def outputPage(request, model='none', header=''):
         else:
             logging.warning(form.errors)
             # logging.warning(str(form))
-            logging.warning(request.POST)
 
             inputmodule = importlib.import_module('.'+model+'_input', 'models.'+model)
 

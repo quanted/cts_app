@@ -6,6 +6,7 @@
 """
 
 from django.core.exceptions import ValidationError
+import logging
 
 # Built-in Django validation rules
 
@@ -78,7 +79,7 @@ def validate_integer(value):
 	if int(value) == value:
 		pass
 	else:
-		raise ValidationError('Value must be an integer')
+		raise ValidationError(u'Value must be an integer')
 
 def validate_greaterthan0(value):
 	""" Form Validation Rule: Valid if value > 0
@@ -129,11 +130,32 @@ def validate_degrees_latitude(value):
 	else:
 		raise ValidationError(u'Range between -90 and 90')
 
-# def validate_chemical(value):
-# 	"""
-# 	Form Validation Rule: Chemical in chem_struct txt field is valid
+def validate_number(value):
+	""" Form Validation Rule: value must be int or dbl, and
+		value must go < 2 decimals places to the right
 
-# 	value: Form input
-# 	raises: ValidationError 
+	:param value: form input field value
+	:raises: ValidationError
+	"""
+	# if int(value) == value or float(value) == value:
+	# if not value:
+	# 	raise ValidationError(u'value must not be blank')
+	# logging.warning('VALUE: ' + str(value))
+
+	if int(value) == value:
+		pass
+	else:
+		raise ValidationError(u'value must be a number')
+
+# def validate_existence(value):
+# 	""" Form Validation rule: value must not be blank
+
+# 	:param value: form input field value
+# 	:raises: ValidationError
 # 	"""
-# 	
+# 	logging.warning("INSIDE VALIDATE EXISTENCE")
+
+# 	if value:
+# 		pass
+# 	else:
+# 		raise ValidationError(u'value must not be blank')

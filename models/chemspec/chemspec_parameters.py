@@ -16,7 +16,8 @@ def tmpl_chemstructCTS():
 		<table class="input_table tab tab_Chemical">
 			<tr>
 				<td colspan="2"><span>{{ header }}</span>
-				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here"></td>
+				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here">
+				<br>{{form.field.errors}}</td>
 			</tr>
 		{% for field in form %}
 			<tr><td>{{field}}</td></tr>
@@ -35,11 +36,11 @@ def tmpl_speciationCTS():
 
 	<table class="input_table tab tab_Speciation" name="{{name}}" style="display:none">
 
-	{% if name == "cts_speciation_pKa" %}
+	{% if name == "CTS_Speciation_Pka" %}
 		<tr><th colspan="2" class="ctsInputHeader">{{ form.pka_chkbox }} {{ header }}</th></tr>
-	{% elif name == "cts_speciation_tautomer" %}
+	{% elif name == "CTS_Speciation_Tautomer" %}
 		<tr><th colspan="2" class="ctsInputHeader">{{ form.tautomer_chkbox }} {{ header }}</th></tr>
-	{% elif name == "cts_speciation_stereoisomers" %}
+	{% elif name == "CTS_Speciation_Stereoisomers" %}
 		<tr><th colspan="2" class="ctsInputHeader">{{ form.stereoisomer_chkbox }} {{ header }}</th></tr>
 	{% endif %}
 		
@@ -59,19 +60,19 @@ tmpl_chemstructCTS = Template(tmpl_chemstructCTS())
 
 # Method(s) called from *_inputs.py
 def form(formData):
-	form_cts_chemical_structure = cts_chemical_structure(formData)
+	form_cts_chemical_structure = CTS_Chemical_Structure(formData)
 	html = tmpl_chemstructCTS.render(Context(dict(form=form_cts_chemical_structure, header=mark_safe("Lookup Chemical")))) 
-	form_cts_speciation_pKa = cts_speciation_pKa(formData)
+	form_cts_speciation_pKa = CTS_Speciation_Pka(formData)
 	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_pKa, header=mark_safe("Calculate Ionization Constants (p<i>K</i>a) Parameters"))))
-	form_cts_speciation_tautomer = cts_speciation_tautomer(formData)
+	form_cts_speciation_tautomer = CTS_Speciation_Tautomer(formData)
 	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_tautomer, header="Calculate Dominant Tautomer Distribution")))
-	form_cts_speciation_stereoisomers = cts_speciation_stereoisomers(formData)
+	form_cts_speciation_stereoisomers = CTS_Speciation_Stereoisomers(formData)
 	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_stereoisomers, header="Calculate Stereoisomers")))
 	return html
 
 
 """Chemical Editor"""
-class cts_chemical_structure(forms.Form):
+class CTS_Chemical_Structure(forms.Form):
 
 	chem_struct = forms.CharField (
 					widget=forms.Textarea(attrs={'cols':50, 'rows':2}),
@@ -85,39 +86,46 @@ class cts_chemical_structure(forms.Form):
 """Chemical Speciation"""
 
 # pka table
-class cts_speciation_pKa(forms.Form):
+class CTS_Speciation_Pka(forms.Form):
 
 
 	pKa_decimals = forms.FloatField (
 						label='Number of Decimals', 
 						initial='2', 
+						required=True,
 						validators=[validation.validate_greaterthan0]
 					)
 
 	pKa_pH_lower = forms.FloatField (
 						label='pH Lower Limit',
-						initial='0'
+						initial='0',
+						required=False,
+						validators=[validation.validate_number]
 					)
 
 	pKa_pH_upper = forms.FloatField (
 						label='pH Upper Limit',
-						initial='14'
+						initial='14',
+						required=False
 					)
 
 	pKa_pH_increment = forms.FloatField (
 						label='pH Step Size',
 						initial='0.2',
-						validators=[validation.validate_greaterthan0]
+						validators=[validation.validate_greaterthan0, validators.MaxValueValidator(14)],
+						required=False
 					)
 
 	pH_microspecies = forms.FloatField (
 						label='Generate Major Microspeices at pH',
-						initial='7.0'
+						initial='7.0',
+						required=False
 					)
 
 	isoelectricPoint_pH_increment = forms.FloatField (
 						label=mark_safe('Isoelectric Point (pl) <br> pH Step Size for Charge Distribution'),
-						initial='0.5'
+						initial='0.5',
+						required=False
 					)
 
 	# Check box for selecting table
@@ -127,48 +135,44 @@ class cts_speciation_pKa(forms.Form):
 						required=False
 					)
 
-	# custom validation for the whole Form (not just pka table)
+	"""
+	For validating all fields in this form at once
+ 	(some fields are dependent on others)
+	"""
 	# def clean(self):
 		
-	# 	cleaned_data = super(cts_speciation_pKa, self).clean()
+	# 	cleaned_data = super(CTS_Speciation_Pka, self).clean()
 
-	# 	pka_chkbox = cleaned_data.get("pka_chkbox")
-	# 	tautomer_chkbox = cleaned_data.get("tautomer_chkbox")
-	# 	stereoisomer_chkbox = cleaned_data.get("stereoisomer_chkbox")
+	# 	# pKa_decimals = cleaned_data.get("pKa_decimals")
+	# 	# pKa_pH_lower = cleaned_data.get("pKa_pH_lower")
+	# 	# pKa_pH_upper = cleaned_data.get("pKa_pH_upper")
 
-	# 	logging.warning("FORM " + str(cleaned_data))
+	# 	logging.warning("INSIDE CLEAN()")
 
-	# 	if (pka_chkbox or tautomer_chkbox or stereoisomer_chkbox) == False:
-	# 		logging.warning("no checkboxes selected...")
-	# 		raise forms.ValidationError("You must select at least one table")
+	# 	for key,value in cleaned_data.items():
+	# 		logging.warning("key: " + str(key) + ", value: " + str(value))
+		# 	if value is None:
+		# 		self.add_error(key, "value must not be blank")
 
-		# if pka_chkbox:
-		# 	for field in cleaned_data:
-		# 		logging.warning(str(field) + ", " + str(cleaned_data.get(field)))
-
-
-		# cleaned_data = super(ContactForm, self).clean()
-  #       cc_myself = cleaned_data.get("cc_myself")
-  #       subject = cleaned_data.get("subject")
-
-  #       if cc_myself and subject:
-  #           # Only do something if both fields are valid so far.
-  #           if "help" not in subject:
-  #               raise forms.ValidationError("Did not send for 'help' in "
-  #                       "the subject despite CC'ing yourself.")
+		# if pKa_pH_lower != None and pKa_pH_upper != None:
+		# 	if pKa_pH_lower >= pKa_pH_upper:
+		# 		self.add_error('pKa_pH_lower', "value must be lower than upper bound")
+		# 		self.add_error('pKa_pH_upper', "value must be greater than lower bound")
 
 
 # tautomerization table
-class cts_speciation_tautomer(forms.Form):
+class CTS_Speciation_Tautomer(forms.Form):
 
 	tautomer_maxNoOfStructures = forms.FloatField (
 						label='Maximum Number of Structures', 
-						initial='100'
+						initial='100',
+						required=False
 					)
 
 	tautomer_pH = forms.FloatField (
 						label='at pH',
-						initial='7.0'
+						initial='7.0',
+						required=False
 					)
 
 	tautomer_chkbox = forms.BooleanField (
@@ -179,11 +183,12 @@ class cts_speciation_tautomer(forms.Form):
 
 
 # stereoisomer table
-class cts_speciation_stereoisomers(forms.Form):
+class CTS_Speciation_Stereoisomers(forms.Form):
 
 	stereoisomers_maxNoOfStructures = forms.FloatField (
 						label='Maximum Number of Structures',
-						initial='100'
+						initial='100',
+						required=False
 					)
 
 	stereoisomer_chkbox = forms.BooleanField (
@@ -192,5 +197,20 @@ class cts_speciation_stereoisomers(forms.Form):
 						required=False
 					)
 
-class ChemspecInp(cts_chemical_structure, cts_speciation_pKa, cts_speciation_tautomer, cts_speciation_stereoisomers):
-	pass
+class ChemspecInp(CTS_Chemical_Structure, CTS_Speciation_Pka, CTS_Speciation_Tautomer, CTS_Speciation_Stereoisomers):
+
+	def clean(self):
+		
+		# cleaned_data = super(CTS_Speciation_Pka, self).clean()
+		cleaned_data = super(ChemspecInp, self).clean()
+
+		# pKa_decimals = cleaned_data.get("pKa_decimals")
+		# pKa_pH_lower = cleaned_data.get("pKa_pH_lower")
+		# pKa_pH_upper = cleaned_data.get("pKa_pH_upper")
+
+		logging.warning("INSIDE CLEAN()")
+
+		for key,value in cleaned_data.items():
+			logging.warning("key: " + str(key) + ", value: " + str(value))
+
+		logging.warning("END CLEAN()")

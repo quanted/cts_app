@@ -4,16 +4,19 @@ from django.views.decorators.http import require_POST
 def chemspecOutputPage(request):
     import chemspec_model
 
+    # Chemical Editor tab
     chemStruct = request.POST.get('chem_struct')
     smiles = request.POST.get('smiles')
     name = request.POST.get('name')
     formula = request.POST.get('formula')
     mass = request.POST.get('mass')
 
+    # Checmial Speciation tab - checkboxes
     pkaChkbox = request.POST.get('pka_chkbox', 'off')
     tautChkbox = request.POST.get('tautomer_chkbox', 'off')
     stereoChkbox = request.POST.get('stereoisomer_chkbox', 'off')
 
+    # Checmial Speciation tab - inputs 
     pKaDecs = request.POST.get('pKa_decimals')
     pKaPhLow = request.POST.get('pKa_pH_lower')
     pKaPhUp = request.POST.get('pKa_pH_upper')

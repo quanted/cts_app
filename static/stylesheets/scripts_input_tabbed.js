@@ -22,7 +22,8 @@ $( document ).ready(function() {
 			var valuesCheckbox = [];
 			var selectedCheckbox = $("input:checkbox").each(
 				function(){
-					valuesCheckbox.push( $(this).is(':checked'));
+					// valuesCheckbox.push( $(this).is(':checked'));
+					valuesCheckbox.push( $(this));
 			});
 
 			// Create array of hidden tabs
@@ -71,16 +72,26 @@ $( document ).ready(function() {
 			}
 	});
 
-	$('#clearbutton').click(
-		function(){
-		$("table[class^='tab']:visible").find(':input').each(function() {
+	$('#clearbutton').click(function(){
+		// $("table[class^='tab']:visible").find(':input').each(function() {
+		$('input').each(function() {
 			switch(this.type) {
 				case 'text':
+					$(this).val('');
+					break;
 				case 'textarea':
 					$(this).val('');
 					break;
 				case 'radio':
 					this.checked = false;
+					break;
+				case 'number':
+					$(this).val('');
+					break;
+				case 'checkbox':
+					//need .change() to trigger chkbox change event...
+					$(this).prop('checked', false).change(); 
+					break;
 			}
 		});
 	});

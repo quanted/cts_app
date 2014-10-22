@@ -16,8 +16,6 @@ import pytz
 headers = {'Content-Type' : 'application/json'}
 
 
-
-
 class Urls:
 
 	base = 'http://pnnl.cloudapp.net/webservices' # old ws location 
@@ -27,6 +25,16 @@ class Urls:
 	# jchem ws urls:
 	exportUrl = '/rest-v0/util/calculate/molExport'
 	detailUrl = '/rest-v0/util/detail'
+
+
+class CTS_To_Jchem:
+
+	pkaKeys = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment"]
+	majorMicroKeys = ["pH_microspecies"]
+	isoPtKeys = ["isoelectricPoint_pH_increment"]
+
+	tautKeys = ["tautomer_maxNoOfStructures", "tautomer_pH"]
+	stereoKeys = ["stereoisomers_maxNoOfStructures"]	
 
 
 """
@@ -176,22 +184,33 @@ class data_structures:
 		
 	def chemSpecStruct(self, dic):
 
-		pkaKeys = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment", "pH_microspecies", "isoelectricPoint_pH_increment"]
+		# don't forget about pKa_decimal
+		pkaKeys = ["pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment"]
+		majorMicroKeys = ["pH_microspecies"]
+		isoPtKeys = ["isoelectricPoint_pH_increment"]
+
 		tautKeys = ["tautomer_maxNoOfStructures", "tautomer_pH"]
 		stereoKeys = ["stereoisomers_maxNoOfStructures"]
 
-		logging.warning("DIC: " + str(dic))
+		pkaDictJchem = {}
+		for key in pkaKeys:
+
+		# logging.warning("DIC: " + str(dic))
 
 		structures = []
 		if 'chem_struct' in dic:
 			structures = [ { "structure": dic["chem_struct"] } ]
-		# else:
-		# 	pass # Add better error checking
 
-		pkaDict, tautDict, stereoDict = {}, {}, {}
+		pkaDict, majorMicroDict, isoPtDict = {}, {}, {}  
+		tautDict, stereoDict = {}, {}
+
 		for key in dic.keys():
 			if key in pkaKeys:
 				pkaDict.update({key: dic[key]})
+			if key in majorMicroKeys:
+				majorMicroDict.update({key: dic[key]})
+			if key in isoPtKeys:
+				isoPtDict.update({key: dic[key]})
 			if key in tautKeys:
 				tautDict.update({key: dic[key]})
 			if key in stereoKeys:
@@ -199,20 +218,24 @@ class data_structures:
 
 		paramsDict, inlcudeList = {}, []
 		if pkaDict:
-			paramsDict.update(pkaDict)
+			paramsDict["pKa"] = pkaDict
+			paramsDict["majorMicrospecies"] = majorMicroDict
+			paramsDict["isoelectricPoint"] = isoPtDict
 			inlcudeList.append("pKa")
+			inlcudeList.append("majorMicrospecies")
+			inlcudeList.append("isoelectricPoint")
 		if tautDict:
-			paramsDict.update(tautDict)
+			paramsDict["tautomerization"] = tautDict
 			inlcudeList.append("tautomerization")
 		if stereoDict:
-			paramsDict.update(stereoDict)
+			paramsDict["stereoisomer"] = stereoDict
 			inlcudeList.append("stereoisomer")
 
 		display = {"include": inlcudeList, "parameters": paramsDict}
 
 		dataDict = {"structures": structures, "display": display}
 
-		logging.warning("DATA DICT: " + str(dataDict))
+		# logging.warning("DATA DICT: " + str(dataDict))
 
 		return dataDict
 

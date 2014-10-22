@@ -11,7 +11,6 @@ urlpatterns = patterns('REST',
     (r'^getChemDeats/?$', 'jchem_rest.getChemDeats'),
     (r'^mrvToSmiles/?$', 'jchem_rest.mrvToSmiles'),
     (r'^getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
-
 )
 
 # 404 Error view (file not found)

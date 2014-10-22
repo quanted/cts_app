@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@author: J.Flaishans
+@author: (np)
 """
 import os
 os.environ['DJANGO_SETTINGS_MODULE']='settings'

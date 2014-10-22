@@ -18,11 +18,11 @@ import chemspec_tables
 
 # Dict keys for chemical speciation parameters
 pkaKeysOut = ['mostBasicPka', 'mostAcidicPka', 'parentImage', 'msImageUrlList', 'microDistData']
-pkaKeysIn = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment", "pH_microspecies", "isoelectricPoint_pH_increment"]
-tautKeysOut = ['tautImageUrl']
-tautKeysIn = ["tautomer_maxNoOfStructures", "tautomer_pH"]
-stereoKeysOut = ['stereoImageUrl']
-stereoKeysIn = ["stereoisomers_maxNoOfStructures"]
+# pkaKeysIn = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment", "pH_microspecies", "isoelectricPoint_pH_increment"]
+# tautKeysOut = ['tautImageUrl']
+# tautKeysIn = ["tautomer_maxNoOfStructures", "tautomer_pH"]
+# stereoKeysOut = ['stereoImageUrl']
+# stereoKeysIn = ["stereoisomers_maxNoOfStructures"]
 
 
 class chemspec(object):
@@ -53,9 +53,11 @@ class chemspec(object):
 
 		dataDict = {"chem_struct":self.chem_struct}
 
+		############# don't forget about pKa_decimal ###############
+
 		if pkaChkbox == 'on':
 			pkaInputsDict = {
-				"pKa_decimals":self.pKa_decimals, 
+				# "pKa_decimals":self.pKa_decimals, 
 				"pKa_pH_lower":self.pKa_pH_lower,
 				"pKa_pH_upper":self.pKa_pH_upper,
 				"pKa_pH_increment":self.pKa_pH_increment,
@@ -82,6 +84,10 @@ class chemspec(object):
 		results = jchem_rest.getChemSpecData(request) # gets json string response of chemical data
 
 		output_val = json.loads(results.content) # convert json to dict
+
+		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		fileout.write(json.dumps(output_val))
+		fileout.close()
 
 		self.pkaDict, self.stereoDict, self.tautDict = {}, {}, {}
 
