@@ -3,9 +3,13 @@ from django.conf.urls import patterns, include, url
 # from django.contrib import admin
 # admin.autodiscover()
 
+# The previous urlpatterns is using views as a prefix breaking the use of django apps 
+urlpatterns = patterns('',
+    url(r'^test_cts/', include('test_cts.urls'))  # Pavan added this to include the test suite django app
+)
 
 # All view functions here must be in '/views/views.py'
-urlpatterns = patterns('views',
+urlpatterns += patterns('views',
     # url(r'^docs/', include('docs.urls')),
     (r'^$', 'landing.ctsLandingPage'),  # Landing page
     (r'^cts/?$', 'landing.ctsLandingPage'),
@@ -23,7 +27,6 @@ urlpatterns = patterns('views',
     (r'^cts/(?P<model>.*?)/html/?$', 'generateReport.htmlReceiver'),
     (r'^cts/docs/?$', 'misc.docsRedirect'),
     (r'^cts/(?P<model>.*?)/?$', 'description.descriptionPage'),
-
     (r'^services/', include('REST.urls')),
 )
 
