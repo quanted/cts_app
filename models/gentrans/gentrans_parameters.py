@@ -215,19 +215,6 @@ class cts_respiration(forms.Form):
 				choices=anaerobic_CHOICES,
 				widget=forms.RadioSelect())
 
-# Aerobic 
-# class cts_aerobic(forms.Form):
-
-# 	surface_water = forms.BooleanField(required=False, label='Surface Water')
-# 	surface_soil = forms.BooleanField(required=False, label='Surface Soil')
-# 	vadose_zone = forms.BooleanField(required=False, label='Vadose Zone')
-# 	aGroundwater = forms.BooleanField(required=False, label='Groundwater')
-
-# Anaerobic 
-# class cts_anaerobic(forms.Form):
-# 	water_col = forms.BooleanField(required=False, label='Water Column')
-# 	benthic_sediment = forms.BooleanField(required=False, label='Benthic Sediment')
-# 	anGroundwater = forms.BooleanField(required=False, label='Anaerobic Groundwater')
 
 # Reaction Libraries
 class cts_reaction_libs(forms.Form):
@@ -237,6 +224,7 @@ class cts_reaction_libs(forms.Form):
 	abiotic_reduction = forms.BooleanField(required=False, label='Abiotic Reduction')
 	anaerobic_biodegrad = forms.BooleanField(required=False, label='Anaerobic Biodegradation')
 	mamm_metabolism = forms.BooleanField(required=False, label='Mammalian Metabolism')
+
 
 # OECD Guidelines Selection
 class cts_oecd_guidelines(forms.Form):

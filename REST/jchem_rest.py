@@ -192,8 +192,8 @@ class data_structures:
 		tautKeys = ["tautomer_maxNoOfStructures", "tautomer_pH"]
 		stereoKeys = ["stereoisomers_maxNoOfStructures"]
 
-		pkaDictJchem = {}
-		for key in pkaKeys:
+		# pkaDictJchem = {}
+		# for key in pkaKeys:
 
 		# logging.warning("DIC: " + str(dic))
 
