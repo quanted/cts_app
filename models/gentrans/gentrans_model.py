@@ -6,8 +6,10 @@ import urllib2
 import json
 import requests
 import gentrans_parameters # Chemical Speciation parameters
-from REST import rest_funcs
+# from REST import rest_funcs
+from REST import jchem_rest
 import logging
+from django.http import HttpRequest 
 
 baseUrl = 'http://pnnl.cloudapp.net/efsws/rest/'
 
@@ -18,64 +20,80 @@ headers = {'Content-Type' : 'application/json'}
 
 
 class gentrans(object):
-	def __init__(self, run_type, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies, 
-			isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_maxNoOfStructures_pH, stereoisomers_maxNoOfStructures):
+	def __init__(self, run_type, chem_struct, abiotic_hydrolysis, abiotic_reduction, gen_limit, pop_limit, likely_limit):
 
-		self.jid = rest_funcs.gen_jid()
+		# self.jid = rest_funcs.gen_jid()
+		self.jid = jchem_rest.gen_jid()
 
-		self.run_type = run_type # hardcoded in pchemprop_output.py
-		self.pKa_decimals = pKa_decimals
-		self.pKa_pH_lower = pKa_pH_lower
-		self.pKa_pH_upper = pKa_pH_upper
-		self.pKa_pH_increment = pKa_pH_increment
-		self.pH_microspecies = pH_microspecies
-		self.isoelectricPoint_pH_increment = isoelectricPoint_pH_increment
-		self.tautomer_maxNoOfStructures = tautomer_maxNoOfStructures
-		self.tautomer_maxNoOfStructures_pH = tautomer_maxNoOfStructures_pH
-		self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
+		self.run_type = run_type
+		self.chem_struct = chem_struct
+		self.abiotic_hydrolysis = abiotic_hydrolysis
+		self.abiotic_reduction = abiotic_reduction
+		self.gen_limit = gen_limit
+		self.pop_limit = pop_limit
+		self.likely_limit = likely_limit
 
-		all_dic = {"pKa_decimals":self.pKa_decimals, "pKa_pH_lower":self.pKa_pH_lower, "pKa_pH_upper":self.pKa_pH_upper,
-					"pKa_pH_increment":self.pKa_pH_increment, "pH_microspecies":self.pH_microspecies, 
-					"isoelectricPoint_pH_increment":self.isoelectricPoint_pH_increment, 
-					"tautomer_maxNoOfStructures":self.tautomer_maxNoOfStructures,
-					"tautomer_maxNoOfStructures_pH":self.tautomer_maxNoOfStructures_pH, 
-					"stereoisomers_maxNoOfStructures":self.stereoisomers_maxNoOfStructures}
+		self.trans_libs = ["hydrolysis","abiotic_reduction"]
 
-		#data = json.dumps(all_dic)
+		logging.warning("GEN LIMIT: " + self.gen_limit)
+		logging.warning("CHEM: " + self.chem_struct)
 
-		# url = baseUrl + 
-		
-		#self.jid = rest_funcs.gen_jid()
-				
-  #       url=os.environ['UBERTOOL_REST_SERVER'] + '/trex2/' + self.jid 
-  #       response = requests.post(url, data=data, headers=http_headers, timeout=60)
-  #       output_val = json.loads(response.content, cls=rest_funcs.NumPyDecoder)['result']
-  #       output_val_uni=json.loads(output_val, cls=rest_funcs.NumPyDecoder)
-  #       for key, value in output_val_uni.items():
-  #           setattr(self, key, value)
+		dataDict = {
+					'structure': self.chem_struct,
+					'generationLimit': self.gen_limit,
+					'populationLimit': self.pop_limit,
+					'likelyLimit': self.likely_limit,
+					'transformationLibraries': self.trans_libs,
+					'excludeCondition': "",
+					'generateImages': True
+					}
 
-		url = baseUrl + 'calculators/pka'
+		logging.warning("DATA DICT: " + dataDict['structure'])
 
-		parameters = {'basicLowerLimit':'-10.0', 'acidicUpperLimit':'20.0', 'pHLowerLimit':self.pKa_pH_lower, 'pHUpperLimit':self.pKa_pH_upper, 'temperature':'298.0'}
+		request = HttpRequest()
+		request.POST = dataDict
+		results = jchem_rest.getTransProducts(request)
 
-		#payload = {'parameters':{'basicLowerLimit':'-10.0', 'acidicUpperLimit':'20.0', 'pHLowerLimit':self.pKa_pH_lower, 'pHUpperLimit':self.pKa_pH_upper, 'temperature':'298.0'}, 'property':'pKa', 'provider':'chemaxon', 'substrate':''}
-		payload = {'parameters':parameters, 'property':'pKa', 'provider':'chemaxon', 'substrate':'O=C1NN=C(N1)N(=O)=O'}
+		# results = json.loads(results.content)
+		# results = results.content
 
-		data = json.dumps(payload)
+		self.results = results.content
 
-  		#url = 'http://localhost:3443/Default.aspx'
-        #payload = {'option':'nhdplus', 'huc':self.huc8, 'dt':Datatypes_for_NHDPlus_CHOICES}
+		new_result = ''
+
+		for char in self.results:
+			if char == '"':
+				char = '&quot;'
+			new_result = new_result + char
+
+		self.results = new_result
+
+		logging.warning("TYPE " + str(type(self.results)))
+		logging.warning("RESULTS " + str(self.results))
+		# logging.warning("NEW RESULTS " + str(new_result))
+
+		# for key, value in results.items():
+		# 	logging.warning(key)
+		# 	logging.warning(value)
+
+		# logging.warning("type: " + str(type(results)))
+
+		# self.results = '{'
+		# for key, value in results.items():
+		# 	self.results = self.results + str(key) + ': ' + str(value) + ', '
+		# self.results = self.results + '}' 
+
+		# logging.warning(type(self.results))
+
+		# logging.warning("CONTENT: " + str(self.results))
         
-		response = requests.post(url, data=data, headers=headers)
-		logging.info(response.content)
-        
-		output_val = json.loads(response.content)['results']
+		# output_val = json.loads(results.content)
 
-		logging.info(output_val)
+		# logging.info(output_val)
 
-		logging.info(output_val.items())
+		# logging.info(output_val.items())
 
-		for key, value in output_val.items():
-			logging.info(key, value)
-			setattr(self, key, value)
+		# for key, value in output_val.items():
+		# 	logging.info(key, value)
+		# 	setattr(self, key, value)
 

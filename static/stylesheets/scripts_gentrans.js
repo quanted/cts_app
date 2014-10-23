@@ -24,6 +24,7 @@ $(document).ready(function() {
     $('#cts_reaction_sys').hide();
     $('#respiration_tbl').hide();
     $('#cts_reaction_libs').hide();
+    $('#cts_reaction_options').hide();
 
     //Respiration table contents
     $('#aerobic_picks').hide();
@@ -48,6 +49,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').show();
             $('#respiration_tbl').hide();
             $('#cts_reaction_libs').hide();
+            $('#cts_reaction_options').hide();
         }
 
         else if ($(this).val() == "1") {
@@ -59,6 +61,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').hide();
             $('#respiration_tbl').hide();
             $('#cts_reaction_libs').hide();
+            $('#cts_reaction_options').hide();
         }
 
         else if ($(this).val() == "2") {
@@ -70,6 +73,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').hide();
             $('#respiration_tbl').hide();
             $('#cts_reaction_libs').show();
+            $('#cts_reaction_options').show();
 
             //Set Reaction Libraries table...
             // $('#cts_reaction_libs input[type="checkbox"]').prop('disabled', false);
@@ -96,6 +100,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').show();
             $('#respiration_tbl').show();
             $('#cts_reaction_libs').hide();
+            $('#cts_reaction_options').hide();
         }
         else if ($(this).val() == "1") {
             //Show Reaction Library with "Mammalian" selected
@@ -106,6 +111,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').show();
             $('#respiration_tbl').hide();
             $('#cts_reaction_libs').show();
+            $('#cts_reaction_options').show();
 
             // $('#cts_reaction_libs input[type="checkbox"]').prop('disabled', true);
 
@@ -132,6 +138,7 @@ $(document).ready(function() {
         $('#cts_reaction_sys').show();
         $('#respiration_tbl').show();
         $('#cts_reaction_libs').show();
+        $('#cts_reaction_options').show();
 
         if ($(this).val() == "0") {
 
@@ -142,6 +149,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').show();
             $('#respiration_tbl').show();
             $('#cts_reaction_libs').hide();
+            $('#cts_reaction_options').hide();
 
         }
 
@@ -157,6 +165,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').show();
             $('#respiration_tbl').show();
             $('#cts_reaction_libs').show();
+            $('#cts_reaction_options').show();
 
             //Set Reaction Libraries ...
             $('#id_abiotic_hydrolysis').prop({'checked': true, 'disabled':false});
@@ -179,6 +188,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').show();
             $('#respiration_tbl').show();
             $('#cts_reaction_libs').show();
+            $('#cts_reaction_options').show();
 
             //Set Reaction Libraries table...
             $('#id_abiotic_hydrolysis').prop({'checked': true, 'disabled':false});
@@ -210,6 +220,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').hide();
             $('#respiration_tbl').hide();
             $('#cts_reaction_libs').hide();
+            $('#cts_reaction_options').hide();
         }
         else if ($(this).val() == "1") {
             //If "Health Effects" is selected
@@ -222,6 +233,7 @@ $(document).ready(function() {
             $('#cts_reaction_sys').hide();
             $('#respiration_tbl').hide();
             $('#cts_reaction_libs').show();
+            $('#cts_reaction_options').show();
 
             $('#id_abiotic_hydrolysis').prop({'checked': false, 'disabled':true});
             $('#id_aerobic_biodegrad').prop({'checked': false, 'disabled':true});  
@@ -247,6 +259,7 @@ $(document).ready(function() {
         $('#cts_reaction_sys').hide();
         $('#respiration_tbl').hide();
         $('#cts_reaction_libs').show();
+        $('#cts_reaction_options').show();
 
         if ($(this).val() == "0") {
 
@@ -257,7 +270,8 @@ $(document).ready(function() {
             $('#cts_reaction_sys').hide();
             $('#respiration_tbl').hide();
             $('#cts_reaction_libs').hide();
-
+            $('#cts_reaction_options').hide();
+            
         }
 
         if ($(this).val() == "1") {

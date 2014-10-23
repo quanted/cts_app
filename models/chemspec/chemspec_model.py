@@ -85,9 +85,9 @@ class chemspec(object):
 
 		output_val = json.loads(results.content) # convert json to dict
 
-		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		fileout.write(json.dumps(output_val))
-		fileout.close()
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(json.dumps(output_val))
+		# fileout.close()
 
 		self.pkaDict, self.stereoDict, self.tautDict = {}, {}, {}
 

@@ -19,12 +19,15 @@ headers = {'Content-Type' : 'application/json'}
 class Urls:
 
 	base = 'http://pnnl.cloudapp.net/webservices' # old ws location 
+	base2 = 'http://pnnl.cloudapp.net/efsws' # metabolizer base
 	# base = 'http://134.67.114.2/webservices'
 	# base = 'http://134.67.114.2/efsws/rest' # antiquated, but functioning, WS
 
 	# jchem ws urls:
 	exportUrl = '/rest-v0/util/calculate/molExport'
 	detailUrl = '/rest-v0/util/detail'
+
+	metabolizerUrl = '/rest/metabolizer'
 
 
 class CTS_To_Jchem:
@@ -138,6 +141,29 @@ def getChemSpecData(request):
 	results = web_call(url, request, data)
 
 	return results
+
+
+"""
+Makes request to metabolizer on pnnl server
+"""
+def getTransProducts(request):
+
+	logging.warning("REQUEST: " + str(request.POST))
+
+	url = Urls.base2 + Urls.metabolizerUrl
+
+	# logging.warning(str(request.POST))
+
+	data = json.dumps(request.POST)
+
+	logging.warning("DUMPED " + data)
+
+	# data = '{ "structure": "' + str(request.POST.get('structure')) + '", "transformationLibraries": "' + request.POST.get('transformationLibraries') + '", "generationLimit": "' + request.POST.get('generationLimit') + '", "populationLimit": "' + request.POST.get('populationLimit') + '", "likelyLimit": "' + request.POST.get('likelyLimit') + '", "excludeCondition": "' + request.POST.get('excludeCondition') + '"}'
+
+	results = web_call(url, request, data)
+
+	return results
+
 
 """
 Makes the request to a specified URL

@@ -48,110 +48,111 @@ function getContent(smile, mol, imgsOn) {
   return result;
 }
 
-function reaction() {
-  chemicals = {};
-  list = "";
-  GUI.chemicalList = {};
+// function reaction() {
+//   chemicals = {};
+//   list = "";
+//   GUI.chemicalList = {};
 
-  // Clear the selection list and results table
-  document.getElementById("molQuerySel").options.length = 0;
-  document.getElementById("molQsarSel").options.length = 0;
-  document.getElementById("spreadsheetResult").innerHTML = "";
-  document.getElementById("numResults").innerHTML = "Ready";
-  document.getElementById("qsarResults").innerHTML = "";
+//   // Clear the selection list and results table
+//   // document.getElementById("molQuerySel").options.length = 0;
+//   // document.getElementById("molQsarSel").options.length = 0;
+//   // document.getElementById("spreadsheetResult").innerHTML = "";
+//   // document.getElementById("numResults").innerHTML = "Ready";
+//   // document.getElementById("qsarResults").innerHTML = "";
 
-  resetDynamicTable();
+//   // resetDynamicTable();
 
-  // make ajax call with these params
-  var metabProducts = REST.Metabolizer.getMetabolites({
-    smiles: jQuery('#molecule').val(),
-    genLimit : jQuery('#genLimit').val(),
-    popLimit : jQuery('#popLimit').val(),
-    likelyLimit : jQuery('#lklyLimit').val(),
-    transLibs : ["hydrolysis","abiotic_reduction","human_biotransformation"],
-    excludeCondition : "",
-    generateImages : false
-  });
+//   // make ajax call with these params
+//   var metabProducts = REST.Metabolizer.getMetabolites({
+//     smiles: jQuery('#id_chem_struct').val(),
+//     genLimit : jQuery('#id_gen_limit').val(),
+//     popLimit : jQuery('#id_pop_limit').val(),
+//     likelyLimit : jQuery('#id_likely_limit').val(),
+//     transLibs : ["hydrolysis","abiotic_reduction", "human_biotransformation"],
+//     excludeCondition : "",
+//     generateImages : true
+//   });
 
-  // if not the ajax call fails
-  if (metabProducts != "Fail ") {
-    var status = metabProducts.status;
-    var results = metabProducts.results;
-    var imgs = jQuery('#showImages').is(':checked');
+//   // if not the ajax call fails
+//   if (metabProducts != "Fail ") {
+//     var status = metabProducts.status;
+//     var results = metabProducts.results;
+//     // var imgs = jQuery('#showImages').is(':checked');
+//     var imgs = true;
 
-    var addListItem = function(params) {
-      var smiles = params.smiles;
-      var iupac = params.iupac;
-      var parentSmiles = params.parentSmiles;
-      var routes = params.routes;
+//     var addListItem = function(params) {
+//       var smiles = params.smiles;
+//       var iupac = params.iupac;
+//       var parentSmiles = params.parentSmiles;
+//       var routes = params.routes;
       
-      // three lists for nearly the same reason, we should consolidate
-      // list for pysiochemical API and saving properties
-      if (list == "") {
-        list = smiles + ';' + iupac;
-      } else {
-        list = list + ';' + smiles + ';' + iupac;
-      }
+//       // three lists for nearly the same reason, we should consolidate
+//       // list for pysiochemical API and saving properties
+//       if (list == "") {
+//         list = smiles + ';' + iupac;
+//       } else {
+//         list = list + ';' + smiles + ';' + iupac;
+//       }
       
-      // list for GUI elements
-      GUI.chemicalList[iupac] = smiles;
+//       // list for GUI elements
+//       GUI.chemicalList[iupac] = smiles;
 
-      // list for saving metabolites
-      chemicals[smiles] = {};
-      chemicals[smiles].parent = parentSmiles;
-      chemicals[smiles].routes = routes;
-      chemicals[smiles].iupac = iupac;
-    };
+//       // list for saving metabolites
+//       chemicals[smiles] = {};
+//       chemicals[smiles].parent = parentSmiles;
+//       chemicals[smiles].routes = routes;
+//       chemicals[smiles].iupac = iupac;
+//     };
 
-    var metabolites = {};
-    var parentSmiles = "";
+//     var metabolites = {};
+//     var parentSmiles = "";
     
-    var recurseNodes = function(obj, treeObj, parentSmiles) {
-      for (smiles in obj.metabolites) {
-        if (obj.metabolites.hasOwnProperty(smiles)) {
-          var content = getContent(smiles, obj.metabolites[smiles], imgs);
-          addListItem({smiles:smiles,
-                       parentSmiles:parentSmiles,
-                       iupac:content.iupac,
-                       routes:obj.metabolites[smiles].routes});/*,
-                       rate:obj.metabolites[smiles].rate});*/
+//     var recurseNodes = function(obj, treeObj, parentSmiles) {
+//       for (smiles in obj.metabolites) {
+//         if (obj.metabolites.hasOwnProperty(smiles)) {
+//           var content = getContent(smiles, obj.metabolites[smiles], imgs);
+//           addListItem({smiles:smiles,
+//                        parentSmiles:parentSmiles,
+//                        iupac:content.iupac,
+//                        routes:obj.metabolites[smiles].routes});/*,
+//                        rate:obj.metabolites[smiles].rate});*/
           
-          var newObj = {};
-          newObj.Content = content.html;
-          newObj.Nodes = new Array();
-          treeObj.Nodes.push(newObj);
+//           var newObj = {};
+//           newObj.Content = content.html;
+//           newObj.Nodes = new Array();
+//           treeObj.Nodes.push(newObj);
           
-          recurseNodes(obj.metabolites[smiles], newObj, smiles);
-        }
-      }
-    }
+//           recurseNodes(obj.metabolites[smiles], newObj, smiles);
+//         }
+//       }
+//     }
     
-    if (status == "success") {
-      // hopefully this is only one
-      // it should always be the smiles of the parent compound
-      for (smiles in results) { 
-        if (results.hasOwnProperty(smiles)) {
-          var content = getContent(smiles, results[smiles], imgs);
-          addListItem({smiles:smiles,
-                       parentSmiles:null,
-                       iupac:content.iupac,
-                       routes:null});
-          metabolites = {Content: content.html};
-          metabolites.Nodes = new Array();
-          recurseNodes(results[smiles], metabolites, smiles);
-        }
-      }
+//     if (status == "success") {
+//       // hopefully this is only one
+//       // it should always be the smiles of the parent compound
+//       for (smiles in results) { 
+//         if (results.hasOwnProperty(smiles)) {
+//           var content = getContent(smiles, results[smiles], imgs);
+//           addListItem({smiles:smiles,
+//                        parentSmiles:null,
+//                        iupac:content.iupac,
+//                        routes:null});
+//           metabolites = {Content: content.html};
+//           metabolites.Nodes = new Array();
+//           recurseNodes(results[smiles], metabolites, smiles);
+//         }
+//       }
       
-      DrawTree({
-        Container: document.getElementById("degrade"),
-        RootNode: metabolites,
-        Layout: "Horizontal"
-      });
+//       DrawTree({
+//         Container: document.getElementById("degrade"),
+//         RootNode: metabolites,
+//         Layout: "Horizontal"
+//       });
       
-      GUI.fillChemListControls();
-    }
-  }
-}
+//       GUI.fillChemListControls();
+//     }
+//   }
+// }
 
 // needs chemicals from reaction()
 function saveReaction() {
@@ -303,56 +304,55 @@ function resetDynamicTable()
   // }
 // }
 
-function importMolFromCanvas(s) {
+// function importMolFromCanvas(s) {
 
-  marvinSketcherInstance.exportStructure("mrv").then(function(source) {
+//   marvinSketcherInstance.exportStructure("mrv").then(function(source) {
 
-    if (source == '<cml><MDocument></MDocument></cml>') {
-      alert("Draw a chemical, then try again");
-      return;
-    }
+//     if (source == '<cml><MDocument></MDocument></cml>') {
+//       alert("Draw a chemical, then try again");
+//       return;
+//     }
 
-    $.ajax({
-      url : "/services/mrvToSmiles/",
-      // url : "/REST/service/" + chemical,
-      type : "POST",
-      data : {
-          "chemical" : source
-        },
-        //async: false,
-      dataType : "json",
-      success : function(response) {
-        results = REST.jsonRepack(response);
+//     $.ajax({
+//       url : "/services/mrvToSmiles/",
+//       // url : "/REST/service/" + chemical,
+//       type : "POST",
+//       data : {
+//           "chemical" : source
+//         },
+//         //async: false,
+//       dataType : "json",
+//       success : function(response) {
+//         results = REST.jsonRepack(response);
 
 
-        var data = results.data[0];
+//         var data = results.data[0];
 
-      },
-      error : function(jqXHR, textStatus, errorThrown) {
-        results = "Fail ";
-        console.log(" " + JSON.stringify(errorThrown));
-      }
-    });
-  }
+//       },
+//       error : function(jqXHR, textStatus, errorThrown) {
+//         results = "Fail ";
+//         console.log(" " + JSON.stringify(errorThrown));
+//       }
+//     });
+//   // }
+// // }
+    
+//   var smileData = REST.Util.MrvToSmiles(source);
+
+//   if (smileData == 'Fail') {
+//     alert("Error getting data from server...");
+//     return;
+//   }
+//   else {
+//     importMol(smileData.structure);
+//   }
+    
+
+//   }, function(error) {
+//     alert("Molecule export failed:"+error); 
+//   );
+
 // }
-    
-  var smileData = REST.Util.MrvToSmiles(source);
-
-  if (smileData == 'Fail') {
-    alert("Error getting data from server...");
-    return;
-  }
-  else {
-    importMol(smileData.structure);
-  }
-    
-
-  }, function(error) {
-    alert("Molecule export failed:"+error); 
-  });
-
-
-}
 
 function setElementValueAndBackgroundColor(elementID, value, booleanExpression, trueColor, falseColor) {
   document.getElementById(elementID).innerHTML = value;

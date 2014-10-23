@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-nickp
+(np)
 """
 from django import forms
 from django.template import Context, Template
@@ -45,7 +45,7 @@ def tmpl_reactionSysCTS():
 	{% load filter_tags %}
 	{% with form|get_class as name %}
 
-	<table id={{name}}>
+	<table id={{name}} class="input_table">
 
 	{% if name == "cts_reaction_paths" or name == "cts_reaction_sys" %}
 		{% for field in form %}
@@ -56,13 +56,19 @@ def tmpl_reactionSysCTS():
 			{% endfor %}
 			</tr>
 		{% endfor %}
-	{% elif name == "cts_reaction_libs" %}
-		<tr><th> Reaction Libraries </th></tr>
-		<tr><td>
+	{% else %}
+		<tr><th colspan="2"> {{header}} </th></tr>
 		{% for field in form %}
-			{{field}} {{field.label}} <br>
+			<tr>
+			{% if field|is_checkbox %}
+				<td>{{field}}</td>
+				<td>{{field.label}}</td>
+			{% else %}
+				<td>{{field.label}}</td>
+				<td>{{field}}</td>
+			{% endif %}
+			</tr>
 		{% endfor %}
-		</tr></td>
 	{% endif %}
 
 	{% endwith %}
@@ -77,7 +83,7 @@ def tmpl_oecdGuidelines():
 	tmpl_oecdGuidelines = """
 	{% load filter_tags %}
 
-	<table id="oecd_selection">
+	<table id="oecd_selection" class="input_table">
 	<tr><th colspan="2">OECD Selection</th></tr>
 	<tr>
 	{% for choice in form.oecd_selection %}
@@ -86,7 +92,7 @@ def tmpl_oecdGuidelines():
 	</tr>
 	</table>
 
-	<table id="ftt_selection">
+	<table id="ftt_selection" class="input_table">
 	<tr><th colspan="4">Fate, Transport, and Transformation</th></tr>
 	<tr>
 	<td>
@@ -112,7 +118,7 @@ def tmpl_oecdGuidelines():
 	</tr>
 	</table>
 
-	<table id="health_selection">
+	<table id="health_selection" class="input_table">
 	<tr><th colspan="2">Health Effects</th></tr>
 	<tr>
 	<td>Special Studies Test Guidelines: </td>
@@ -146,7 +152,7 @@ def form(formData):
 	form_cts_reaction_sys = cts_reaction_sys(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_sys, header=mark_safe("Reaction System"))))
 	
-	html = html + """<table id="respiration_tbl">
+	html = html + """<table id="respiration_tbl" class="input_table">
 	<tr><th colspan="3"> Select a respiration type </th></tr>
 	<tr>
 	"""
@@ -162,10 +168,22 @@ def form(formData):
 
 	html = html + '</tr></table>'
 
+	# html = html + '<table id="cts_reaction_options" class="tbl_wrap"><tr><td>' # table wrapper for react libs and options 
+	html = html + '<div id="alignLibAndOptions">'
+
 	form_cts_reaction_libs = cts_reaction_libs(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, header=mark_safe("Reaction Libraries"))))
 
-	html = html + '</div>'
+	# html = html + '</td><td>'
+
+	form_cts_reaction_options = cts_reaction_options(formData)
+	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_options, header=mark_safe("Reaction Options"))))
+
+	html = html + """
+	<input id="metabolize" type="button" value="Generate Production Products" onclick="reaction()">
+	</div>
+	</div>
+	"""
 
 	return html
 
@@ -173,6 +191,10 @@ def form(formData):
 reaction_pathway_CHOICES = (('0', 'Reaction System Guidelines'), ('1', 'OCSPP Guidelines'), ('2', 'User selected (advanced)'))
 reaction_sys_CHOICES = (('0', 'Environmental'), ('1', 'Mammalian'))
 respiration_CHOICES = (('0', 'Make a selection'), ('1', 'Aerobic'), ('2', 'Anaerobic'))
+
+# Reaction Options
+gen_limit_CHOICES = (('1', '1'), ('2', '2'), ('3', '3')) # generation limit
+pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8')) # population limit
 
 aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
 anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))
@@ -192,28 +214,33 @@ class cts_reaction_paths(forms.Form):
 					# label='Reaction Paths',
 					label='Options for selecting Reaction Libraries',
 					choices=reaction_pathway_CHOICES,
-					widget=forms.RadioSelect())
+					widget=forms.RadioSelect(),
+					required=False)
 
 # Reaction System
 class cts_reaction_sys(forms.Form):
 
 	reaction_system = forms.ChoiceField(
 					choices=reaction_sys_CHOICES,
-					widget=forms.RadioSelect())
+					widget=forms.RadioSelect(),
+					required=False)
 
 # Respiration
 class cts_respiration(forms.Form):
 
 	respiration = forms.ChoiceField(
-				choices=respiration_CHOICES)
+				choices=respiration_CHOICES,
+				required=False)
 
 	aerobic = forms.ChoiceField(
 				choices=aerobic_CHOICES,
-				widget=forms.RadioSelect())
+				widget=forms.RadioSelect(),
+				required=False)
 
 	anaerobic = forms.ChoiceField(
 				choices=anaerobic_CHOICES,
-				widget=forms.RadioSelect())
+				widget=forms.RadioSelect(),
+				required=False)
 
 
 # Reaction Libraries
@@ -226,6 +253,27 @@ class cts_reaction_libs(forms.Form):
 	mamm_metabolism = forms.BooleanField(required=False, label='Mammalian Metabolism')
 
 
+# Reaction Options (e.g., generation limit, likely limit, etc.)
+class cts_reaction_options(forms.Form):
+	gen_limit = forms.ChoiceField (
+					choices=gen_limit_CHOICES,
+					label='Generation Limit:',
+					required=False
+				)
+	pop_limit = forms.ChoiceField (
+					choices=pop_limit_CHOICES,
+					label='Population Limit:',
+					required=False
+				)
+	likely_limit = forms.FloatField (
+						label='Likely Limit:',
+						initial='0.001',
+						required=False,
+
+						# validators=''
+					)
+
+
 # OECD Guidelines Selection
 class cts_oecd_guidelines(forms.Form):
 
@@ -233,7 +281,8 @@ class cts_oecd_guidelines(forms.Form):
 	oecd_selection = forms.ChoiceField(
 					label="OECD Selection",
 					choices=oecd_guidelines_CHOICES,
-					widget=forms.RadioSelect())
+					widget=forms.RadioSelect(),
+					required=False)
 
 	# Fate, Transport, and Transformation Selections:
 
@@ -243,21 +292,25 @@ class cts_oecd_guidelines(forms.Form):
 
 	labAbioTrans_selection = forms.ChoiceField(
 					choices=labAbioTrans_CHOICES,
-					widget=forms.RadioSelect())
+					widget=forms.RadioSelect(),
+					required=False)
 
 	transWaterSoil_selection = forms.ChoiceField(
 					choices=transWaterSoil_CHOICES,
-					widget=forms.RadioSelect())
+					widget=forms.RadioSelect(),
+					required=False)
 
 	transChemSpec_selection = forms.ChoiceField(
 					choices=transChemSpec_CHOICES,
-					widget=forms.RadioSelect())
+					widget=forms.RadioSelect(),
+					required=False)
 
 	# Health Effects Selections:
 
 	specialStudies_selection = forms.ChoiceField(
 					choices=specialStudies_CHOICES,
-					widget=forms.RadioSelect())
+					widget=forms.RadioSelect(),
+					required=False)
 
 
 class GentransInp(cts_reaction_paths, cts_reaction_sys, cts_respiration, cts_reaction_libs, cts_oecd_guidelines):

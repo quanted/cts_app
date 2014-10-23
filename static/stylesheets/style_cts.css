@@ -1371,3 +1371,16 @@ th {
 .input_table {
   font-size:12px;
 }
+
+#alignLibAndOptions {
+  display: table;
+  margin: 0 auto;
+}
+
+#alignLibAndOptions table {
+  display: inline-block;
+}
+
+/*.tbl_wrap table tr td {
+  vertical-align: center;
+}*/
