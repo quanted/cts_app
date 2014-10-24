@@ -16,8 +16,8 @@ from django.http import HttpRequest
 import chemspec_tables
 
 
-# Dict keys for chemical speciation parameters
-pkaKeysOut = ['mostBasicPka', 'mostAcidicPka', 'parentImage', 'msImageUrlList', 'microDistData']
+# Dict keys for chemical speciation parameters (accessed in chemspec_tables.py)
+
 # pkaKeysIn = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment", "pH_microspecies", "isoelectricPoint_pH_increment"]
 # tautKeysOut = ['tautImageUrl']
 # tautKeysIn = ["tautomer_maxNoOfStructures", "tautomer_pH"]
@@ -89,20 +89,23 @@ class chemspec(object):
 		# fileout.write(json.dumps(output_val))
 		# fileout.close()
 
-		self.pkaDict, self.stereoDict, self.tautDict = {}, {}, {}
+		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
-		data_root = output_val['data'][0] #could have more than one in future (i.e., multiple chemical request)
+		data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
+
+		logging.warning("inside model")
 
 		# Build results dictionaries
 		if 'pKa' in data_root:
 			self.pkaDict = getPkaInfo(output_val)
-			# logging.warning("PKA IN ROOT")
+		if 'isoelectricPoint' in data_root:
+			self.isoPtDict = getIsoelectricPtInfo(output_val)
+		if 'majorMicrospecies' in data_root:
+			self.majorMsDict = getMajorMicrospecies(output_val)
 		if 'stereoisomer' in data_root:
 			self.stereoDict = getStereoInfo(output_val)
-			# logging.warning("STEREO IN ROOT")
 		if 'tautomerization' in data_root:
 			self.tautDict = getTautInfo(output_val)
-			# logging.warning("TAUT IN ROOT")
 
 		# Get microspecies names and other info:
 		
@@ -112,14 +115,57 @@ class chemspec(object):
 			setattr(self, key, value)
 
 
+# Builds isoelectricPoint dictionary
+def getIsoelectricPtInfo(output_val):
+
+	isoPtKeys = ['isoPt']
+
+	isoPtDict = {}
+	isoPtDict = {key: None for key in isoPtKeys} # initialize dict with None values
+
+	isoPtData = output_val['data'][0]['isoelectricPoint']
+
+	if isoPtData['hasIsoelectricPoint']:
+		isoPtDict.update({'isoPt': isoPtData['isoelectricPoint']})
+
+	if 'chartData' in isoPtData:
+		isoPtList = isoPtData['chartData']['values'] # get list of xy values for isoPt
+
+		valsList = []
+
+		for pt in isoPtList:
+			xyPair = []
+			for key,value in pt.items():
+				xyPair.append(value)
+			valsList.append(xyPair)
+
+		isoPtDict.update({'isoPtChartData': valsList})
+
+	return isoPtDict
+
+
+def getMajorMicrospecies(output_val):
+
+	majorMsData = output_val['data'][0]['majorMicrospecies']
+	logging.warning("INSIDE MAJOR MS")
+	majorMsDict = {}
+
+	if 'result' in majorMsData:
+		majorMsDict.update({"majorMsImage": majorMsData['result']['image']['imageUrl']})
+
+		logging.warning("MAJOR MS: " + str(majorMsDict))
+
+	return majorMsDict
+
+
 # Builds pKa dictionary 
 def getPkaInfo(output_val):
 
 	pkaDict = {}
 
-	# pkaKeys = ['mostBasicPka', 'mostAcidicPka', 'parentImage', 'msImageUrlList', 'microDistData']
+	pkaKeys = ['mostBasicPka', 'mostAcidicPka', 'parentImage', 'msImageUrlList', 'microDistData']
 
-	pkaDict = {key: None for key in pkaKeysOut} # Initialize dict values to None
+	pkaDict = {key: None for key in pkaKeys} # Initialize dict values to None
 
 	# Check if pka data exist
 	if 'result' in output_val['data'][0]['pKa']:
@@ -141,7 +187,7 @@ def getPkaInfo(output_val):
 			# get microspecies distribution data for plotting
 			microDist = output_val['data'][0]['pKa']['chartData']
 
-			microDistData = {}		
+			microDistData = []		
 			for ms in microDist:
 				valuesList = [] # format: [[ph1,con1], [ph2, con2], ...] per ms
 				for vals in ms['values']:
@@ -150,11 +196,12 @@ def getPkaInfo(output_val):
 					xy.append(vals['concentration'])
 					valuesList.append(xy)
 
-				microDistData.update({ms['key'] : valuesList})
+				# microDistData.update({ms['key'] : valuesList})
+				microDistData.append(valuesList)
 
 			pkaDict.update({'microDistData': microDistData})
 
-	logging.warning("PKA DICT: " + str(pkaDict))
+	# logging.warning("PKA DICT: " + str(pkaDict))
 
 	return pkaDict
 

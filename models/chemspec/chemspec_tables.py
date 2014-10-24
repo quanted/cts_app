@@ -127,6 +127,15 @@ def getMolTblData(chemspec_obj):
     return data
 
 
+def getIsoPtData(chemspec_obj):
+    data = {
+        "Parameter": ['isoelectric point:'],
+        "Value": [chemspec_obj.isoPtDict['isoPt']]
+        # "Value": ['test']
+    }
+    return data
+
+
 # Ionization Constants (pKa) Parameters Data
 def getPkaData(chemspec_obj):
     data = {
@@ -189,11 +198,15 @@ def table_all(chemspec_obj):
     html_all = html_all + table_pka_input(chemspec_obj)     
     html_all = html_all + table_taut_input(chemspec_obj)
     html_all = html_all + table_stereo_input(chemspec_obj) 
+    html_all = html_all + table_isoPt_results(chemspec_obj)
+    html_all = html_all + table_isoPt_plot(chemspec_obj)
+    html_all = html_all + table_majorMs_Images(chemspec_obj)
     html_all = html_all + table_pka_results(chemspec_obj)
     html_all = html_all + table_images(chemspec_obj)
     html_all = html_all + table_microplot(chemspec_obj)
     html_all = html_all + table_stereo_results(chemspec_obj)
     html_all = html_all + table_taut_results(chemspec_obj)
+    html_all = html_all + render_to_string('cts_plot_microspecies_dist.html')
     return html_all
 
 def timestamp(chemspec_obj="", batch_jid=""):
@@ -301,6 +314,81 @@ def table_stereo_input(chemspec_obj):
 
 
 """
+isoelectricPoint Calculations Table
+"""
+def table_isoPt_results(chemspec_obj):
+    if chemspec_obj.isoPtDict:
+        html = """
+        <H3 class="out_1 collapsible" id="section6"><span></span>Isoelectric Point</H3>
+        <div class="out_">
+        """
+        tblData = getIsoPtData(chemspec_obj)
+        tblRows = gethtmlrowsfromcols(tblData, pvheadings)
+        html = html + tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        html = html + """
+
+        """
+        return html
+    else:
+        return ""
+
+
+def table_isoPt_plot(chemspec_obj):
+    if chemspec_obj.isoPtDict:
+        html = """
+        <H4 class="out_1 collapsible" id="section9"><span></span><b>Isoelectric Point Plot</b></H4>
+        <div class="out_" id="section6">
+        """
+        # if chemspec_obj.isoPtDict['isoPtChartData']:
+        if 'isoPtChartData' in chemspec_obj.isoPtDict:
+            html = html + """
+            <div id="isoelectric-point" class="plot"></div>
+            <div id="isoPtData" class="hideData">
+            """
+            html = html + mark_safe(json.dumps(chemspec_obj.isoPtDict['isoPtChartData']))
+            html = html + """
+            </div>
+            """
+            # html = html + """
+            # "></div>
+            # """
+            # html = html + render_to_string('cts_plot_microspecies_dist.html', 
+            #             {
+            #                 'title': 'Isoelectric Point',
+            #                 'data': chemspec_obj.isoPtDict['isoPtChartData']
+            #             })
+        else:
+            html = html + """
+            <p class="shiftRight">No isoelectric point</p>
+            """
+        html = html + """
+        </div></div>
+        """
+        return html
+    else:
+        return ""
+
+
+"""
+majorMicrospecies Image Table
+"""
+def table_majorMs_Images(chemspec_obj):
+    if chemspec_obj.majorMsDict:
+        html = """
+        <H3 class="out_1 collapsible" id="section6"><span></span>majorMicrospecies</H3>
+        <div class="out_">
+        <img src="
+        """
+        html = html + chemspec_obj.majorMsDict['majorMsImage']
+        html = html + """
+        " alt="majorMicrospecies"></div>
+        """
+        return html
+    else:
+        return ""
+
+
+"""
 pKa Calculations Table
 """
 def table_pka_results(chemspec_obj):
@@ -353,7 +441,22 @@ def table_microplot(chemspec_obj):
         <div class="out_" id="section6">
         """
         if chemspec_obj.pkaDict['microDistData']:
-            html = html + render_to_string('cts_plot_microspecies_dist.html', {'data':chemspec_obj.pkaDict['microDistData']})
+            html = html + """
+            <div id="microspecies-distribution" class="plot"></div>
+            <div id="microDistData1" class="hideData">
+            """
+            html = html + mark_safe(json.dumps(chemspec_obj.pkaDict['microDistData']))
+            html = html + """
+            </div>
+            """
+            # html = html + """
+            # "></div>
+            # """
+            # html = html + render_to_string('cts_plot_microspecies_dist.html', 
+            #             {
+            #                 'title': 'Microspecies Distribution',
+            #                 'data': chemspec_obj.pkaDict['microDistData']
+            #             })
         else:
             html = html + """
             <p class="shiftRight">No microspecies for plotting</p>

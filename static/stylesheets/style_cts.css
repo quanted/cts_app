@@ -1381,6 +1381,10 @@ th {
   display: inline-block;
 }
 
+.hideData {
+  display:none;
+}
+
 /*.tbl_wrap table tr td {
   vertical-align: center;
 }*/

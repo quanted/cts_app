@@ -180,7 +180,6 @@ def form(formData):
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_options, header=mark_safe("Reaction Options"))))
 
 	html = html + """
-	<input id="metabolize" type="button" value="Generate Production Products" onclick="reaction()">
 	</div>
 	</div>
 	"""
