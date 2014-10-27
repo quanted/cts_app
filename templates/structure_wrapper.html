@@ -1,0 +1,26 @@
+<!-- Wraps image url and label in table -->
+<!-- Also appends structure info table to appear upon hover-->
+<script>
+ $(function() {
+
+ 	var info = {};
+ 	info.formula = "{{formula}}";
+ 	info.iupac = "{{iupac}}";
+ 	info.smiles = "{{smiles}}";
+ 	info.mass = "{{mass}}";
+
+    $( "#{{iupac|slugify}}" ).tooltip({
+       content: buildInfoTable(info),
+       track: true
+    });
+ });
+</script>
+
+<table id="{{iupac|slugify}}" class="wrapped_molecule">
+<tr>
+<td align="center">{{iupac}}</td>
+</tr>
+<tr>
+<td><img src="{{image}}" alt="{{formula}}" title="tooltip"></td>
+</tr>
+</table>

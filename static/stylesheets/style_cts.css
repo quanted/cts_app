@@ -1385,6 +1385,12 @@ th {
   display:none;
 }
 
-/*.tbl_wrap table tr td {
-  vertical-align: center;
-}*/
+.wrapped_molecule {
+  background-color: transparent;
+  border-style: none;
+  font-size: 12px;
+}
+
+.wrapped_molecule td {
+  background-color: transparent;
+}

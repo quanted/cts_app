@@ -108,14 +108,16 @@ def mrvToSmiles(request):
 	url = Urls.base + Urls.exportUrl
 
 	smilesData = web_call(url, request, data) # get response
-	data = payload(smilesData.content) # create dict from json string
+	logging.warning("SMILES" + str(smilesData.content))
+	# data = payload(smilesData.content) # create dict from json string
+	data = json.loads(smilesData.content)
 
 	reqStr = '{ "chemical": "' + data.structure + '" }'
 
 	request = HttpRequest()
 	request.POST = json.loads(reqStr)
 
-	return getChemDeats(request)
+	return getChemDeats(request) # return smiles along with other info
 
 
 """

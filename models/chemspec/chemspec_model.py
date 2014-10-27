@@ -93,8 +93,6 @@ class chemspec(object):
 
 		data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
 
-		logging.warning("inside model")
-
 		# Build results dictionaries
 		if 'pKa' in data_root:
 			self.pkaDict = getPkaInfo(output_val)
@@ -146,14 +144,25 @@ def getIsoelectricPtInfo(output_val):
 
 def getMajorMicrospecies(output_val):
 
-	majorMsData = output_val['data'][0]['majorMicrospecies']
-	logging.warning("INSIDE MAJOR MS")
+	majorMsRoot = output_val['data'][0]['majorMicrospecies']
 	majorMsDict = {}
+	majorMsImage = '' # image path of structure
 
-	if 'result' in majorMsData:
-		majorMsDict.update({"majorMsImage": majorMsData['result']['image']['imageUrl']})
+	if 'result' in majorMsRoot:
 
-		logging.warning("MAJOR MS: " + str(majorMsDict))
+		# Get image data from result:
+		if 'image' in majorMsRoot['result']:
+			majorMsImage = majorMsRoot['result']['image']['imageUrl']
+			majorMsDict.update({"image": majorMsRoot['result']['image']['imageUrl']})
+		else:
+			majorMsImage = 'No major microspecies'
+
+		# Get structure data from result:
+		structInfo = getStructInfo(majorMsRoot) # get info such as iupac, mass, etc.
+		majorMsDict.update(structInfo)
+
+	else:
+		majorMsDict = None
 
 	return majorMsDict
 
@@ -162,30 +171,43 @@ def getMajorMicrospecies(output_val):
 def getPkaInfo(output_val):
 
 	pkaDict = {}
-
 	pkaKeys = ['mostBasicPka', 'mostAcidicPka', 'parentImage', 'msImageUrlList', 'microDistData']
-
 	pkaDict = {key: None for key in pkaKeys} # Initialize dict values to None
 
+	pkaRoot = output_val['data'][0]['pKa']
+
 	# Check if pka data exist
-	if 'result' in output_val['data'][0]['pKa']:
-		pkaDict.update({'mostBasicPka': output_val['data'][0]['pKa']['mostBasic']})
-		pkaDict.update({'mostAcidicPka': output_val['data'][0]['pKa']['mostAcidic']})
-		pkaDict.update({'parentImage': output_val['data'][0]['pKa']['result']['image']['imageUrl']})
+	if 'result' in pkaRoot:
+		pkaDict.update({'mostBasicPka': pkaRoot['mostBasic']})
+		pkaDict.update({'mostAcidicPka': pkaRoot['mostAcidic']})
+
+		# parentDict = {}
+		# parentDict = getStructInfo
+
+		pkaDict.update({'parentImage': pkaRoot['result']['image']['imageUrl']})
 
 		# Check if 'microspecies' key exist in dict
-		if 'microspecies' in output_val['data'][0]['pKa']:
+		if 'microspecies' in pkaRoot:
 			# need to declare all the microspecies images:
-			microspeciesList = output_val['data'][0]['pKa']['microspecies']
+			microspeciesList = pkaRoot['microspecies']
 
 			msImageUrlList = [] # list of microspecies image urls
 			for ms in microspeciesList:
-				msImageUrlList.append(ms['image']['imageUrl'])
+
+				# logging.warning("START STRUCTURE")
+				# logging.warning(str(ms['structureData']['structure']))
+				# logging.warning("END STRUCTURE")
+
+				msStructDict = {} # list element in msImageUrlList
+				msStructDict.update({"image": ms['image']['imageUrl']})
+				structInfo = getStructInfo(ms['structureData']['structure'])
+				msStructDict.update(structInfo)
+				msImageUrlList.append(msStructDict)
 
 			pkaDict.update({'msImageUrlList': msImageUrlList})
 
 			# get microspecies distribution data for plotting
-			microDist = output_val['data'][0]['pKa']['chartData']
+			microDist = pkaRoot['chartData']
 
 			microDistData = []		
 			for ms in microDist:
@@ -229,3 +251,35 @@ def getTautInfo(output_val):
 			tautDict['tautImageUrl'] = [taut['image']['imageUrl']] #append to list
 
 	return tautDict
+
+
+"""
+Appends structure info to image url 
+Input: .mrv format structure
+Output: dict with structure's info (i.e., formula, iupac, mass, smiles)
+"""
+def getStructInfo(mrvData):
+
+	request = HttpRequest()
+	request.POST = {"chemical": mrvData}
+
+	response = jchem_rest.mrvToSmiles(request)
+
+	structDict = json.loads(response.content)
+
+	infoDict = {} # dict to be returned
+	struct_root = {} # root of data in structInfo
+
+	if 'data' in structDict:
+
+		struct_root = structDict['data'][0]
+
+		infoDict.update({"formula": struct_root['formula']})
+		infoDict.update({"iupac":  struct_root['iupac']})
+		infoDict.update({"mass":  struct_root['mass']})
+		infoDict.update({"smiles":  struct_root['smiles']})
+
+		return infoDict
+
+	else:
+		return None

@@ -164,7 +164,7 @@ def getStereoData(chemspec_obj):
 
 
 # Parent/Micro species data dictionary for templating
-def getParentMicroData(chemspec_obj):
+def getPkaValues(chemspec_obj):
     # jsonData = json.dumps(chemspec_obj.result)
     
     data = { 
@@ -194,7 +194,8 @@ tmplImg = Template(imagesTemplate)
 
 
 def table_all(chemspec_obj):
-    html_all = table_struct(chemspec_obj)
+    html_all = '<script type="text/javascript" src="/static/stylesheets/structure_wrapper.js"></script>'
+    html_all = html_all + table_struct(chemspec_obj)
     html_all = html_all + table_pka_input(chemspec_obj)     
     html_all = html_all + table_taut_input(chemspec_obj)
     html_all = html_all + table_stereo_input(chemspec_obj) 
@@ -349,14 +350,6 @@ def table_isoPt_plot(chemspec_obj):
             html = html + """
             </div>
             """
-            # html = html + """
-            # "></div>
-            # """
-            # html = html + render_to_string('cts_plot_microspecies_dist.html', 
-            #             {
-            #                 'title': 'Isoelectric Point',
-            #                 'data': chemspec_obj.isoPtDict['isoPtChartData']
-            #             })
         else:
             html = html + """
             <p class="shiftRight">No isoelectric point</p>
@@ -375,13 +368,12 @@ majorMicrospecies Image Table
 def table_majorMs_Images(chemspec_obj):
     if chemspec_obj.majorMsDict:
         html = """
-        <H3 class="out_1 collapsible" id="section6"><span></span>majorMicrospecies</H3>
+        <H3 class="out_1 collapsible" id="section6"><span></span>Major Microspecies</H3>
         <div class="out_">
-        <img src="
         """
-        html = html + chemspec_obj.majorMsDict['majorMsImage']
+        html = html + wrap_molecule(chemspec_obj.majorMsDict)
         html = html + """
-        " alt="majorMicrospecies"></div>
+        </div>
         """
         return html
     else:
@@ -399,7 +391,7 @@ def table_pka_results(chemspec_obj):
             <H4 class="out_1 collapsible" id="section7"><span></span><b>Most Acidic/Basic</b></H4>
                     <div class="out_ container_output">
         """
-        t3data = getParentMicroData(chemspec_obj)
+        t3data = getPkaValues(chemspec_obj)
         t3rows = gethtmlrowsfromcols(t3data, pvheadings)
         html = html + tmpl.render(Context(dict(data=t3rows, headings=pvheadings)))
         html = html + """
@@ -420,8 +412,14 @@ def table_images(chemspec_obj):
         <H4 class="out_1 collapsible" id="section8"><span></span><b>Parent/Microspecies Images</b></H4>
         <div class="out_">
         """
-        tblData = getSpeciesImages(chemspec_obj)
-        html = html + tmplImg.render(Context(dict(data=tblData)))
+        html = html + "Parent:"
+        html = html + wrap_molecule(chemspec_obj.pkaDict['parentImage'])
+
+        # tblData = getSpeciesImages(chemspec_obj)
+        # html = html + tmplImg.render(Context(dict(data=tblData)))
+        html = html + "Microspecies:"
+        for item in chemspec_obj.pkaDict['msImageUrlList']:
+            html = html + wrap_molecule(item)
         html = html + """
         </div>
         """
@@ -449,14 +447,6 @@ def table_microplot(chemspec_obj):
             html = html + """
             </div>
             """
-            # html = html + """
-            # "></div>
-            # """
-            # html = html + render_to_string('cts_plot_microspecies_dist.html', 
-            #             {
-            #                 'title': 'Microspecies Distribution',
-            #                 'data': chemspec_obj.pkaDict['microDistData']
-            #             })
         else:
             html = html + """
             <p class="shiftRight">No microspecies for plotting</p>
@@ -506,4 +496,34 @@ def table_taut_results(chemspec_obj):
         """
         return html
     else:
-        return "" 
+        return ""
+
+
+"""
+Wraps molecule image result with a table
+and populates said table with molecular details.
+
+Inputs: property dict (e.g., pka, taut)
+Outputs: data wrapped in table with image and name
+"""
+def wrap_molecule(propDict):
+
+    # TODO: make this work with list instead of single value
+
+    image = propDict['image']
+    formula = propDict['formula']
+    iupac = propDict['iupac']
+    mass = propDict['mass']
+    smiles = propDict['smiles']
+
+    infoDict = {
+        "image": image,
+        "formula": formula,
+        "iupac": iupac,
+        "mass": mass,
+        "smiles": smiles
+    }
+
+    html = render_to_string('structure_wrapper.html', infoDict)
+
+    return html 

@@ -23,8 +23,7 @@ urlpatterns = patterns('views',
     (r'^cts/(?P<model>.*?)/html/?$', 'generateReport.htmlReceiver'),
     (r'^cts/docs/?$', 'misc.docsRedirect'),
     (r'^cts/(?P<model>.*?)/?$', 'description.descriptionPage'),
-
-    (r'^services/', include('REST.urls')),
+    (r'^jchem-cts/', include('REST.urls')),
 )
 
 # 404 Error view (file not found)

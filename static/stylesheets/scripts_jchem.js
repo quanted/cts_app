@@ -4,9 +4,9 @@ var marvinSketcherInstance;
 //Url mapping for ubertool-cts web services:
 var Urls = {
 
-  getChemDeats : "/services/getChemDeats/",
-  mrvToSmiles : "/services/mrvToSmiles/",
-  getChemSpecData : "/services/getChemSpecData/",
+  getChemDeats : "/jchem-cts/ws/getChemDeats/",
+  mrvToSmiles : "/jchem-cts/ws/mrvToSmiles/",
+  getChemSpecData : "/jchem-cts/ws/getChemSpecData/",
 
 };
 

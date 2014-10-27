@@ -5,12 +5,14 @@ from django.conf.urls import patterns, include, url
 
 
 # All view functions here must be in '/views/views.py'
+# path: serverLocation/jchem/...
 urlpatterns = patterns('REST',
     # url(r'^docs/', include('docs.urls')),
-    (r'^$', 'jchem_rest.doc'),  # Landing page
-    (r'^getChemDeats/?$', 'jchem_rest.getChemDeats'),
-    (r'^mrvToSmiles/?$', 'jchem_rest.mrvToSmiles'),
-    (r'^getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
+    # (r'^$', 'jchem_rest.doc'),  # Landing page
+    (r'^docs/?$', 'jchem_rest.doc'),
+    (r'^ws/getChemDeats/?$', 'jchem_rest.getChemDeats'),
+    (r'^ws/mrvToSmiles/?$', 'jchem_rest.mrvToSmiles'),
+    (r'^ws/getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
 )
 
 # 404 Error view (file not found)
