@@ -1162,7 +1162,8 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
   text-decoration:none;
   color:#FFFFFF;
   /*background-color:#356697;*/
-  background-color:#479147;
+  /*background-color:#479147;*/
+  background-color: #7993AE;
 }
 .tabUnsel {
   color: #1F262A;

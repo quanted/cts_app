@@ -83,11 +83,23 @@ tmpl = Template(djtemplate)
 
 def table_all(gentrans_obj):
     # html_all = render_to_string(timestamp)
-    html_all = table_1(gentrans_obj)
+    # html_all = table_1(gentrans_obj)
 
-    html_all = html_all = '<div id="degrade"></div>'  
+    html_all = table_metabolites(gentrans_obj)
 
-    html_all = html_all + '<input type="hidden" id="jsonResult" value="' + str(gentrans_obj.results) + '">'
+    html_all = html_all + """
+    <input type="button" onclick="init();" value="show tree">
+    <div id="cont">
+    <div id="center-cont">
+        <div id="infovis"></div>    
+    </div>
+    <div id="log"></div>
+    </div>
+    """
+
+    # html_all = html_all = '<div id="degrade"></div>'  
+
+    # html_all = html_all + '<input type="hidden" id="jsonResult" value="' + str(gentrans_obj.results) + '">'
 
 
     # html_all = html_all + table_2(gentrans_obj)<%=Response.HTMLEncode(strQ)%>">
@@ -140,4 +152,53 @@ def table_2(gentrans_obj):
         html = html + """
                 </div>
         """
-        return html 
+        return html
+
+
+"""
+Populate input with hidden value
+of metabolites as a json string
+"""
+def table_metabolites(gentrans_obj):
+
+    # jsonStr = """
+    # {
+    #     "id": "SMILES1",
+    #     "name": "SMILES1",
+    #     "data": {},
+    #     "children": [{
+    #         "id": "SMILES2a",
+    #         "name": "SMILES2a",
+    #         "data": {},
+    #         "children": [{
+    #             "id": "SMILES3a",
+    #             "name": "SMILES3a",
+    #             "data": {},
+    #             "children": []
+    #         }]
+    #     }, {
+    #         "id": "SMILES2b",
+    #         "name": "SMILES2b",
+    #         "data": {},
+    #         "children": []
+    #     }, {
+    #         "id": "SMILES2c",
+    #         "name": "SMILES2c",
+    #         "data": {},
+    #         "children": []
+    #     }]
+    # }
+    # """
+    # new_result = ''
+    # for char in jsonStr:
+    #     if char == '"':
+    #         char = '&quot;'
+    #     new_result = new_result + char
+
+    # jsonStr = new_result
+
+    html = '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
+
+    return html
+
+
