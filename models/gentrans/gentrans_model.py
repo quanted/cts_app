@@ -63,40 +63,12 @@ class gentrans(object):
 
 
 		self.results = results.content
-		# self.results = """
-	 #    {
-	 #        "id": "SMILES1",
-	 #        "name": "SMILES1",
-	 #        "data": {},
-	 #        "children": [{
-	 #            "id": "SMILES2a",
-	 #            "name": "SMILES2a",
-	 #            "data": {},
-	 #            "children": [{
-	 #                "id": "SMILES3a",
-	 #                "name": "SMILES3a",
-	 #                "data": {},
-	 #                "children": []
-	 #            }]
-	 #        }, {
-	 #            "id": "SMILES2b",
-	 #            "name": "SMILES2b",
-	 #            "data": {},
-	 #            "children": []
-	 #        }, {
-	 #            "id": "SMILES2c",
-	 #            "name": "SMILES2c",
-	 #            "data": {},
-	 #            "children": []
-	 #        }]
-	 #    }
-	 #    """
 
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
-		fileout.write(results.content)
-		fileout.close()
+		# fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
+		# fileout.write(results.content)
+		# fileout.close()
 
 		# new_result = ''
 
@@ -118,31 +90,45 @@ class gentrans(object):
 
 		# logging.info(output_val.items())
 
+		"""
+		{
+			"id":
+			"name":
+			"data":{}
+			"children":[{
+				"id":
+			}]
+		}
+		"""
+
 		# for key, value in output_val.items():
 		# 	logging.info(key, value)
 		# 	setattr(self, key, value)
 
 
 def parseJsonForJit(jsonStr):
-
 	jsonDict = json.loads(jsonStr)
-
 	root = jsonDict['results']
 	parent = root.keys()[0]
-
-	recurse(root)
-
+	newDict = {}
+	newDict = recurse(root)
+	fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+	fileout.write(json.dumps(newDict))
+	fileout.close()
+	logging.warning("RESULTANT DICTIONARY: " + str(newDict))
 
 	return jsonStr
 
 def recurse(root):
-
-	logging.warning("above loop")
-	#foreach node 
-	for key in root.keys():
-		logging.warning(key)
-		if key in root:
-			root = root[key]['metabolites']
-			recurse(root)
-		else:
-			logging.warning("key " + str(key) + " not in dict")
+	newDict = {}
+	newDict.update({root.keys()[0]: {}})
+	for key, value in root.items():
+		if isinstance(value, dict):
+			dict0 = {}
+			dict0.update({key: {}})
+			root2 = root[key]['metabolites']
+			if len(root2) > 0: 
+				newDict.update({key : recurse(root2)})
+			else:
+				newDict.update({key: None})
+	return newDict
