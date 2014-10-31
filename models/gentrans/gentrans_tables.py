@@ -93,6 +93,43 @@ def table_all(gentrans_obj):
     <div id="center-cont">
         <div id="infovis"></div>    
     </div>
+    <div id="right-cont">
+    <h4>Change Tree Orientation</h4>
+    <table>
+        <tr>
+            <td>
+                <label for="r-left">left </label>
+            </td>
+            <td>
+                <input type="radio" id="r-left" name="orientation" checked="checked" value="left" />
+            </td>
+        </tr>
+        <tr>
+             <td>
+                <label for="r-top">top </label>
+             </td>
+             <td>
+                <input type="radio" id="r-top" name="orientation" value="top" />
+             </td>
+        <tr>
+             <td>
+                <label for="r-bottom">bottom </label>
+              </td>
+              <td>
+                <input type="radio" id="r-bottom" name="orientation" value="bottom" />
+              </td>
+        </tr>
+        <tr>
+              <td>
+                <label for="r-right">right </label>
+              </td> 
+              <td> 
+               <input type="radio" id="r-right" name="orientation" value="right" />
+              </td>
+        </tr>
+    </table>
+
+    </div>
     <div id="log"></div>
     </div>
     """
@@ -161,34 +198,6 @@ of metabolites as a json string
 """
 def table_metabolites(gentrans_obj):
 
-    # jsonStr = """
-    # {
-    #     "id": "SMILES1",
-    #     "name": "SMILES1",
-    #     "data": {},
-    #     "children": [{
-    #         "id": "SMILES2a",
-    #         "name": "SMILES2a",
-    #         "data": {},
-    #         "children": [{
-    #             "id": "SMILES3a",
-    #             "name": "SMILES3a",
-    #             "data": {},
-    #             "children": []
-    #         }]
-    #     }, {
-    #         "id": "SMILES2b",
-    #         "name": "SMILES2b",
-    #         "data": {},
-    #         "children": []
-    #     }, {
-    #         "id": "SMILES2c",
-    #         "name": "SMILES2c",
-    #         "data": {},
-    #         "children": []
-    #     }]
-    # }
-    # """
     # new_result = ''
     # for char in jsonStr:
     #     if char == '"':

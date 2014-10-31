@@ -1,6 +1,8 @@
 function init(){
 
     //init data
+    var strJson = $('#hiddenJson').val();
+
     var json = $.parseJSON($('#hiddenJson').val());
     
     //init Spacetree
@@ -122,7 +124,8 @@ function init(){
         left = $jit.id('r-left'), 
         bottom = $jit.id('r-bottom'), 
         right = $jit.id('r-right'),
-        normal = $jit.id('s-normal');
+        normal = true;
+        // normal = $jit.id('s-normal');
         
     
     function changeHandler() {
@@ -136,8 +139,8 @@ function init(){
         }
     };
     
-    // top.onchange = left.onchange = bottom.onchange = right.onchange = changeHandler;
-    //end
+    top.onchange = left.onchange = bottom.onchange = right.onchange = changeHandler;
+    // end
 
 }
 

@@ -9,12 +9,10 @@ import gentrans_parameters # Chemical Speciation parameters
 # from REST import rest_funcs
 from REST import jchem_rest
 import logging
-from django.http import HttpRequest 
+from django.http import HttpRequest
+import data_walks 
 
 baseUrl = 'http://pnnl.cloudapp.net/efsws/rest/'
-
-# From sip_model.py in ubertool_eco
-# http_headers = {'Authorization' : 'Basic %s' % base64string, 'Content-Type' : 'application/json'}
 
 headers = {'Content-Type' : 'application/json'}
 
@@ -61,74 +59,68 @@ class gentrans(object):
 		request.POST = dataDict
 		results = jchem_rest.getTransProducts(request)
 
-
 		self.results = results.content
 
+		logging.warning("parsing results...")
+
+		# reformat data for outputting to tree structure:
+		data_walks.metID = 0
+		self.results = data_walks.recursive(self.results)
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
-		# fileout.write(results.content)
+		# fileout.write(self.results)
 		# fileout.close()
 
-		# new_result = ''
+		logging.warning("end parsing...")
 
-		# for char in self.results:
-		# 	if char == '"':
-		# 		char = '&quot;'
-		# 	new_result = new_result + char
+		new_result = ''
 
-		# self.results = new_result
+		for char in self.results:
+			if char == '"':
+				char = '&quot;'
+			new_result = new_result + char
 
-		self.results = parseJsonForJit(self.results)
-
-		# self.results = 
-
-		
-		# output_val = json.loads(results.content)
-
-		# logging.info(output_val)
-
-		# logging.info(output_val.items())
-
-		"""
-		{
-			"id":
-			"name":
-			"data":{}
-			"children":[{
-				"id":
-			}]
-		}
-		"""
-
-		# for key, value in output_val.items():
-		# 	logging.info(key, value)
-		# 	setattr(self, key, value)
+		self.results = new_result		
 
 
-def parseJsonForJit(jsonStr):
-	jsonDict = json.loads(jsonStr)
-	root = jsonDict['results']
-	parent = root.keys()[0]
-	newDict = {}
-	newDict = recurse(root)
-	fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-	fileout.write(json.dumps(newDict))
-	fileout.close()
-	logging.warning("RESULTANT DICTIONARY: " + str(newDict))
+# def parseJsonForJit(jsonStr):
+# 	jsonDict = json.loads(jsonStr)
+# 	root = jsonDict['results']
 
-	return jsonStr
+# 	reDict = {}
+# 	parent = root.keys()[0]
+# 	reDict.update({"id": metID, "name": parent, "data": {}, "children": []})
+# 	root = root[parent]['metabolites']
+# 	reDict.update(recurse(root))
 
-def recurse(root):
-	newDict = {}
-	newDict.update({root.keys()[0]: {}})
-	for key, value in root.items():
-		if isinstance(value, dict):
-			dict0 = {}
-			dict0.update({key: {}})
-			root2 = root[key]['metabolites']
-			if len(root2) > 0: 
-				newDict.update({key : recurse(root2)})
-			else:
-				newDict.update({key: None})
-	return newDict
+# 	return json.dumps(reDict)
+
+
+# # metID = 0 # unique id for each node
+# # logging.warning("metID: " + str(metID))
+
+# ##### WORKING VERSION ASIDE FROM metID recompile issue ######
+# def recurse(root):
+# 	global metID
+# 	metID += 1
+# 	newDict ={}
+
+# 	logging.warning(root.keys())
+
+# 	if metID == 1:
+# 		parent = root.keys()[0]
+# 		newDict.update({"id": metID, "name": parent, "data": {}, "children": []})
+# 		root = root[parent]
+# 	else:
+# 		newDict.update({"id": metID, "name": root['smiles'], "data": {}, "children": []})
+# 		newDict['data'].update({"degradation": root['degradation']})
+
+# 	for key, value in root.items():
+# 		if isinstance(value, dict):
+# 			for key2, value2 in root[key].items():
+# 				root2 = root[key][key2]
+# 				if len(root2) > 0: 
+# 					newDict['children'].append(recurse(root2))
+
+# 	return newDict
+# #################################################################
