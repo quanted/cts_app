@@ -1387,11 +1387,21 @@ th {
 }
 
 .wrapped_molecule {
-  background-color: transparent;
+  background-color: white;
   border-style: none;
   font-size: 12px;
 }
 
 .wrapped_molecule td {
   background-color: transparent;
+}
+
+.metabolite {
+  background-color: white;
+  width: 90px;
+  height: 60px;
+}
+
+.metabolite img {
+  height: 100%;
 }

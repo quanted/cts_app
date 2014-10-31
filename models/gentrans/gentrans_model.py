@@ -71,16 +71,7 @@ class gentrans(object):
 		# fileout.write(self.results)
 		# fileout.close()
 
-		logging.warning("end parsing...")
-
-		new_result = ''
-
-		for char in self.results:
-			if char == '"':
-				char = '&quot;'
-			new_result = new_result + char
-
-		self.results = new_result		
+		logging.warning("end parsing...")		
 
 
 # def parseJsonForJit(jsonStr):

@@ -127,51 +127,52 @@ function init() {
         }
       ]
     };
-    var jsonpie = {
-      'id': 'root',
-      'name': 'RGraph based Pie Chart',
-      'data': {
-          '$type': 'none'
-      },
-      'children':[
-        {
-            'id':'pie1',
-            'name': 'pie1',
-            'data': {
-                '$angularWidth': 20,
-                '$color': '#55f'
-            },
-            'children': []
-        },
-        {
-            'id':'pie2',
-            'name': 'pie2',
-            'data': {
-                '$angularWidth': 40,
-                '$color': '#77f'
-            },
-            'children': []
-        },
-        {
-            'id':'pie3',
-            'name': 'pie3',
-            'data': {
-                '$angularWidth': 10,
-                '$color': '#99f'
-            },
-            'children': []
-        },
-        {
-            'id':'pie4',
-            'name': 'pie4',
-            'data': {
-                '$angularWidth': 30,
-                '$color': '#bbf'
-            },
-            'children': []
-        }
-      ]
-    };
+    var jsonpie = {}
+    // var jsonpie = {
+    //   'id': 'root',
+    //   'name': 'RGraph based Pie Chart',
+    //   'data': {
+    //       '$type': 'none'
+    //   },
+    //   'children':[
+    //     {
+    //         'id':'pie1',
+    //         'name': 'pie1',
+    //         'data': {
+    //             '$angularWidth': 20,
+    //             '$color': '#55f'
+    //         },
+    //         'children': []
+    //     },
+    //     {
+    //         'id':'pie2',
+    //         'name': 'pie2',
+    //         'data': {
+    //             '$angularWidth': 40,
+    //             '$color': '#77f'
+    //         },
+    //         'children': []
+    //     },
+    //     {
+    //         'id':'pie3',
+    //         'name': 'pie3',
+    //         'data': {
+    //             '$angularWidth': 10,
+    //             '$color': '#99f'
+    //         },
+    //         'children': []
+    //     },
+    //     {
+    //         'id':'pie4',
+    //         'name': 'pie4',
+    //         'data': {
+    //             '$angularWidth': 30,
+    //             '$color': '#bbf'
+    //         },
+    //         'children': []
+    //     }
+    //   ]
+    // };
     //end
     
     //init nodetypes

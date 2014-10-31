@@ -91,44 +91,8 @@ def table_all(gentrans_obj):
     <input type="button" onclick="init();" value="show tree">
     <div id="cont">
     <div id="center-cont">
+        <!-- the canvas container -->
         <div id="infovis"></div>    
-    </div>
-    <div id="right-cont">
-    <h4>Change Tree Orientation</h4>
-    <table>
-        <tr>
-            <td>
-                <label for="r-left">left </label>
-            </td>
-            <td>
-                <input type="radio" id="r-left" name="orientation" checked="checked" value="left" />
-            </td>
-        </tr>
-        <tr>
-             <td>
-                <label for="r-top">top </label>
-             </td>
-             <td>
-                <input type="radio" id="r-top" name="orientation" value="top" />
-             </td>
-        <tr>
-             <td>
-                <label for="r-bottom">bottom </label>
-              </td>
-              <td>
-                <input type="radio" id="r-bottom" name="orientation" value="bottom" />
-              </td>
-        </tr>
-        <tr>
-              <td>
-                <label for="r-right">right </label>
-              </td> 
-              <td> 
-               <input type="radio" id="r-right" name="orientation" value="right" />
-              </td>
-        </tr>
-    </table>
-
     </div>
     <div id="log"></div>
     </div>
@@ -198,13 +162,13 @@ of metabolites as a json string
 """
 def table_metabolites(gentrans_obj):
 
-    # new_result = ''
-    # for char in jsonStr:
-    #     if char == '"':
-    #         char = '&quot;'
-    #     new_result = new_result + char
+    new_result = ''
+    for char in gentrans_obj.results:
+        if char == '"':
+            char = '&quot;'
+        new_result = new_result + char
 
-    # jsonStr = new_result
+    gentrans_obj.results = new_result
 
     html = '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
 

@@ -1,5 +1,6 @@
 """
 Access to jchem web services
+(np)
 """
 
 import requests
@@ -67,21 +68,41 @@ along with the mrv of the chemical (to display in marvinjs)
 def getChemDeats(request):
 
 	logging.warning("inside jchem_rest - getChemDeats")
-
 	queryDict = request.POST
 	chem = queryDict.get('chemical') # chemical name
-
-	logging.warning(chem)
 
 	ds = data_structures()
 	data = ds.getChemDeats(chem) # format request to jchem
 
-	logging.warning(data)
-	logging.warning(type(data))
-
 	url = Urls.base + Urls.detailUrl
 
 	return web_call(url, request, data)
+
+
+"""
+smilesToImage
+
+Returns image (.png) url for a 
+given SMILES
+"""
+def smilesToImage(request):
+	logging.warning("inside jchem_rest - smilesToImage")
+	logging.warning(type(request))
+	smiles = request.POST.get('smiles')
+	logging.warning(smiles)
+	request = {
+		"structures": [
+			{"structure": smiles}
+		],
+		"display": {
+			"include": ["image"]
+		}
+	}
+	data = json.dumps(request) # to json string
+	url = Urls.base + Urls.detailUrl
+	imgData = web_call(url, request, data) # get response from jchem ws
+	logging.warning(imgData.content)
+	return imgData # return dict of image data
 
 
 """
@@ -96,26 +117,20 @@ def mrvToSmiles(request):
 
 	queryDict = request.POST
 	chemStruct = queryDict.get('chemical') # chemical in <cml> format (marvin sketch)
-
 	request = {
 		"structure" : chemStruct,
 		"inputFormat" : "mrv",
 		"parameters" : "smiles"
 	}
-
 	data = json.dumps(request) # serialize to json-formatted str
 
 	url = Urls.base + Urls.exportUrl
 
-	smilesData = web_call(url, request, data) # get response
-	logging.warning("SMILES" + str(smilesData.content))
-	# data = payload(smilesData.content) # create dict from json string
+	smilesData = web_call(url, request, data) # get responset))
 	data = json.loads(smilesData.content)
 
-	reqStr = '{ "chemical": "' + data.structure + '" }'
-
 	request = HttpRequest()
-	request.POST = json.loads(reqStr)
+	request.POST = { "chemical": data['structure'] }
 
 	return getChemDeats(request) # return smiles along with other info
 
@@ -130,18 +145,12 @@ Inputs - data types to get (e.g., pka, tautomer, etc.),
 and all the fields from the 3 tables.
 """
 def getChemSpecData(request):
-
 	logging.warning("inside jchem_rest - getChemSpecData")
-
 	ds = data_structures()
 	data = ds.chemSpecStruct(request.POST) # format request to jchem
-
 	data = json.dumps(data)
-
 	url = Urls.base + Urls.detailUrl
-
 	results = web_call(url, request, data)
-
 	return results
 
 
@@ -149,27 +158,18 @@ def getChemSpecData(request):
 Makes request to metabolizer on pnnl server
 """
 def getTransProducts(request):
-
 	logging.warning("REQUEST: " + str(request.POST))
-
 	url = Urls.base2 + Urls.metabolizerUrl
-
-	# logging.warning(str(request.POST))
-
 	data = json.dumps(request.POST)
-
 	logging.warning("DUMPED " + data)
-
 	# data = '{ "structure": "' + str(request.POST.get('structure')) + '", "transformationLibraries": "' + request.POST.get('transformationLibraries') + '", "generationLimit": "' + request.POST.get('generationLimit') + '", "populationLimit": "' + request.POST.get('populationLimit') + '", "likelyLimit": "' + request.POST.get('likelyLimit') + '", "excludeCondition": "' + request.POST.get('excludeCondition') + '"}'
-
 	results = web_call(url, request, data)
-
 	return results
 
 
 """
 Makes the request to a specified URL
-and POST data
+and POST data. Returns an http response.
 """
 def web_call(url, request, data):
 
@@ -184,23 +184,13 @@ def web_call(url, request, data):
 		logging.warning("trying to get response...")
 		response = requests.post(url, data=data, headers=headers, timeout=60)
 		logging.warning("success.")
-
 		message = message + "Response: " + '\n' + response.content + '\n\n'
-
-		# logging.warning(message)
-
 		callback_response.write(response.content)
-
 		return callback_response
 
 	except:
-		# response = views.misc.requestTimeout(request)
-
-
-		logging.warning("Error")
-
+		logging.warning("Error in web call")
 		callback_response.write(message)
-
 		return callback_response
 
 
@@ -211,7 +201,6 @@ class data_structures:
 		return """{"structures": [{"structure": """ + '"'  + chemical + '"' + """}], "display": {"include": ["structureData"], "additionalFields": {"formula": "chemicalTerms(formula)", "iupac": "chemicalTerms(name)", "mass": "chemicalTerms(mass)", "smiles": "chemicalTerms(molString('smiles'))"}, "parameters": {"structureData": "mrv"}}}"""
 		
 	def chemSpecStruct(self, dic):
-
 		# don't forget about pKa_decimal
 		pkaKeys = ["pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment"]
 		majorMicroKeys = ["pH_microspecies"]
@@ -219,11 +208,6 @@ class data_structures:
 
 		tautKeys = ["tautomer_maxNoOfStructures", "tautomer_pH"]
 		stereoKeys = ["stereoisomers_maxNoOfStructures"]
-
-		# pkaDictJchem = {}
-		# for key in pkaKeys:
-
-		# logging.warning("DIC: " + str(dic))
 
 		structures = []
 		if 'chem_struct' in dic:
@@ -263,18 +247,7 @@ class data_structures:
 
 		dataDict = {"structures": structures, "display": display}
 
-		# logging.warning("DATA DICT: " + str(dataDict))
-
 		return dataDict
-
-
-"""
-Converts json string into
-a python dictionary
-"""
-class payload(object):
-	def __init__(self, j):
-		self.__dict__ = json.loads(j)
 
 
 def gen_jid():
@@ -282,5 +255,7 @@ def gen_jid():
     localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
     jid = localDatetime.strftime('%Y%m%d%H%M%S%f')
     return jid
+
+
 
 	

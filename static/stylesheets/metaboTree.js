@@ -1,3 +1,31 @@
+var labelType, useGradients, nativeTextSupport, animate;
+
+(function() {
+  var ua = navigator.userAgent,
+      iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
+      typeOfCanvas = typeof HTMLCanvasElement,
+      nativeCanvasSupport = (typeOfCanvas == 'object' || typeOfCanvas == 'function'),
+      textSupport = nativeCanvasSupport 
+        && (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
+  //I'm setting this based on the fact that ExCanvas provides text support for IE
+  //and that as of today iPhone/iPad current text support is lame
+  labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
+  nativeTextSupport = labelType == 'Native';
+  useGradients = nativeCanvasSupport;
+  animate = !(iStuff || !nativeCanvasSupport);
+})();
+
+var Log = {
+  elem: false,
+  write: function(text) {
+    if (!this.elem) 
+      this.elem = document.getElementById('log');
+    this.elem.innerHTML = text;
+    this.elem.style.left = (500 - this.elem.offsetWidth / 2) + 'px';
+  }
+
+};
+
 function init(){
 
     //init data
@@ -11,7 +39,7 @@ function init(){
         //id of viz cont element
         injectInto: 'infovis',
         //set duration for the animation
-        duration: 800,
+        duration: 500,
         //set animation transition type
         transition: $jit.Trans.Quart.easeInOut,
         //set distance between node and its children
@@ -19,17 +47,20 @@ function init(){
         //enable panning
         Navigation: {
           enable:true,
-          panning:true
+          panning:true,
+          zooming:50
         },
         //set node and edge styles
         //set overridable=true for styling individual
         //nodes or edges
         Node: {
-            height: 20,
-            width: 60,
-            type: 'rectangle',
-            color: '#aaa',
-            overridable: true
+            // height: 20,
+            // width: 60,
+            type: 'none', //was 'rectangle'
+            autoHeight: true,
+            autoWidth: true
+            // color: '#aaa',
+            // overridable: true
         },
         
         Edge: {
@@ -38,7 +69,8 @@ function init(){
         },
         
         onBeforeCompute: function(node){
-            Log.write("loading " + node.name);
+            // Log.write("loading " + node.name);
+            Log.write("loading " + node.id);
         },
         
         onAfterCompute: function(){
@@ -142,32 +174,16 @@ function init(){
     top.onchange = left.onchange = bottom.onchange = right.onchange = changeHandler;
     // end
 
+    // function loadImages() {
+    //     st.graph.eachNode(function(node) {
+    //         if (node.getData('type') == 'image') {
+    //             var img = new Image();
+    //             img.addEventListener('load', function() {
+    //                 node.setData('image', img); //store this image object in node
+    //             }, false);
+    //             img.src = node.getData('url');
+    //         }
+    //     });
+    // }
+
 }
-
-var labelType, useGradients, nativeTextSupport, animate;
-
-(function() {
-  var ua = navigator.userAgent,
-      iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
-      typeOfCanvas = typeof HTMLCanvasElement,
-      nativeCanvasSupport = (typeOfCanvas == 'object' || typeOfCanvas == 'function'),
-      textSupport = nativeCanvasSupport 
-        && (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
-  //I'm setting this based on the fact that ExCanvas provides text support for IE
-  //and that as of today iPhone/iPad current text support is lame
-  labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
-  nativeTextSupport = labelType == 'Native';
-  useGradients = nativeCanvasSupport;
-  animate = !(iStuff || !nativeCanvasSupport);
-})();
-
-var Log = {
-  elem: false,
-  write: function(text) {
-    if (!this.elem) 
-      this.elem = document.getElementById('log');
-    this.elem.innerHTML = text;
-    this.elem.style.left = (500 - this.elem.offsetWidth / 2) + 'px';
-  }
-
-};
