@@ -54,11 +54,11 @@ function init(){
         //set overridable=true for styling individual
         //nodes or edges
         Node: {
-            // height: 20,
-            // width: 60,
+            height: 100,
+            width: 200,
             type: 'none', //was 'rectangle'
-            autoHeight: true,
-            autoWidth: true
+            // autoHeight: true
+            // autoWidth: true
             // color: '#aaa',
             // overridable: true
         },
@@ -92,8 +92,8 @@ function init(){
             };
             //set label styles
             var style = label.style;
-            style.width = 60 + 'px';
-            style.height = 17 + 'px';            
+            // style.width = 60 + 'px';
+            // style.height = 17 + 'px';            
             style.cursor = 'pointer';
             style.color = '#333';
             style.fontSize = '0.8em';

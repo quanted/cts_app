@@ -68,15 +68,21 @@ def imgTemplate(smiles):
 	# 2. Get imageUrl out of results
 	data = json.loads(results.content) # json string --> dict
 	imageUrl = ''
+	imageHeight = 0
+	imageWidth = 0
 	if 'data' in data:
-		imageUrl = data['data'][0]['image']['imageUrl']
+		root = data['data'][0]['image']
+		imageUrl = root['imageUrl']
+		imageHeight = root['height']
+		imageWidth = root['width'] 
 
 	# 3. Wrap imageUrl with <img>
 	html = """
-	<div class="metabolite">
 	<img class="metabolite" alt="chemical" src="
 	"""
 	html += imageUrl
+	html += '" height="' + str(imageHeight) + '"'
+	html += 'width="' + str(imageWidth) + '"'
 	html += """
 	"></div>
 	"""
