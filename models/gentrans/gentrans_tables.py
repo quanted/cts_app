@@ -114,7 +114,7 @@ def timestamp(gentrans_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div class="out_">
-        <b>SIP <a href="http://www.epa.gov/oppefed1/models/terrestrial/sip/sip_user_guide.html">Version 1.0</a> (Beta)<br>
+        <b>Generate Transformation Pathways Version 1.0</a> (Alpha)<br>
     """
     html = html + st
     html = html + " (EST)</b>"

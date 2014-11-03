@@ -51,7 +51,6 @@ Wraps image html tag around
 the molecule's image source
 """
 def imageWrapper(smiles):
-	logging.warning(smiles)
 
 	# 1. Get image from smiles
 	post = {"smiles": smiles}
@@ -61,15 +60,13 @@ def imageWrapper(smiles):
 
 	# 2. Get imageUrl out of results
 	data = json.loads(results.content) # json string --> dict
-	imageUrl = ''
+	imageUrl, imageHeight, imageWidth = '', '', ''
 	if 'data' in data:
 		root = data['data'][0]['image']
-		imageUrl = root['imageUrl']
-		imageHeight = root['height']
-		imageWidth = root['width']
-
-	logging.warning("HEIGHT: " + str(imageHeight))
-	logging.warning("WIDTH: " + str(imageWidth)) 
+		if 'imageUrl' in root:
+			imageUrl = root['imageUrl']
+			imageHeight = root['height']
+			imageWidth = root['width']
 
 	# 3. Wrap imageUrl with <img>
 	html = '<img class="metabolite"'

@@ -96,8 +96,8 @@ def smilesToImage(request):
 			"include": ["image"],
 			"parameters": {
 				"image": {
-					"width": 150,
-					"height": 192
+					"width": 100,
+					"height": 114
 				}
 			}
 		}

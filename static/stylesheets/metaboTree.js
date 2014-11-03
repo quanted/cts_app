@@ -33,8 +33,10 @@ function init(){
 
     var json = $.parseJSON($('#hiddenJson').val());
 
-    var nodeHeight = 192;
-    var nodeWidth = 150;
+    // var nodeHeight = 192;
+    // var nodeWidth = 150;
+    var nodeHeight = 114;
+    var nodeWidth = 100;
     
     //init Spacetree
     //Create a new ST instance
@@ -42,7 +44,9 @@ function init(){
         //id of viz cont element
         injectInto: 'infovis',
 
-        offsetX: 200, //TODO: make more general, i.e., dependent on canvas size
+        offsetX: 0, //TODO: make more general, i.e., dependent on canvas size
+
+        levelsToShow: 2,
 
         //set duration for the animation
         duration: 500,
@@ -51,11 +55,11 @@ function init(){
         //set distance between node and its children
         levelDistance: 50,
         //enable panning
-        Navigation: {
-          enable:true,
-          panning:true,
+        // Navigation: {
+        //   enable:true
+          // panning:'avoid nodes',
           // zooming:50
-        },
+        // },
         //set node and edge styles
         //set overridable=true for styling individual
         //nodes or edges
@@ -70,7 +74,7 @@ function init(){
         
         Edge: {
             type: 'bezier',
-            overridable: true,
+            overridable: true
         },
         
         onBeforeCompute: function(node){
@@ -145,14 +149,24 @@ function init(){
                 delete adj.data.$color;
                 delete adj.data.$lineWidth;
             }
+        },
+
+        Events: {
+            enable: true,
+            onMouseEnter: function(node, eventInfo, e) {
+                node.height = 500,
+                node.width = 500
+            }
         }
+
     });
     //load json data
     st.loadJSON(json);
     //compute node positions and layout
     st.compute();
     //optional: make a translation of the tree
-    st.geom.translate(new $jit.Complex(-200, 0), "current");
+    // st.geom.translate(new $jit.Complex(-200, 0), "current");
+    // st.geom.translate(new $jit.Complex(0, 0), "start");
     //emulate a click on the root node.
     st.onClick(st.root);
     //end
