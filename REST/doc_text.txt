@@ -1,24 +1,51 @@
 <!DOCTYPE html>
 
+<head>
+<title> Jchem-CTS Doc </title>
+</head>
+
 <body>
 
 <h2> API Doc </h2>
 
-<p> This is the documentation page for the ubertool cts web services api </p>
+<p> This is the documentation page for the ubertool cts web services api for 
+<a href="http://www.chemaxon.com/products/jchem-web-services/">jchem</a> </p>
 
 <hr>
 
 <h3> getChemDeats </h3>
-
-<p> url: /services/detailsBySmiles/ </p>
-<p> data structure: </p>
+<p> Returns iupac, formula, smiles, and mass of provided molecule </p>
+<p> url: /jchem-cts/ws/detailsBySmiles/ </p>
+<u>post data</u>
+<table>
+<tr>
+<td><i>chemical</i>:</td><td>(string) molecule in any format (mrv, smiles, ipuac, etc.)</td>
+</tr>
+</table>
 
 <br>
 
 <h3> mrvToSmiles </h3>
+<p> Gets SMILES for chemical drawn in MarvinJS </p>
+<p> url: /jchem-cts/ws/mrvToSmiles/ </p>
+<u>post data</u>
+<table>
+<tr>
+<td><i>chemical</i>:</td><td>(string) molecule in any format (mrv, smiles, ipuac, etc.)</td>
+</tr>
+</table>
 
-<p> url: /services/mrvToSmiles/ </p>
-<p> data structure: </p>
+<br>
+
+<h3> smilesToImage </h3>
+<p> Returns png image url for a given SMILES
+<p> url: /jchem-cts/ws/smilesToImage </p>
+<u>post data</u>
+<table>
+<tr>
+<td><i>smiles</i>:</td><td>(string) SMILES of molecule</td>
+</tr>
+</table>
 
 </body>
 </html>

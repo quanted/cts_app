@@ -87,21 +87,24 @@ given SMILES
 """
 def smilesToImage(request):
 	logging.warning("inside jchem_rest - smilesToImage")
-	logging.warning(type(request))
 	smiles = request.POST.get('smiles')
-	logging.warning(smiles)
 	request = {
 		"structures": [
 			{"structure": smiles}
 		],
 		"display": {
-			"include": ["image"]
+			"include": ["image"],
+			"parameters": {
+				"image": {
+					"width": 150,
+					"height": 192
+				}
+			}
 		}
 	}
 	data = json.dumps(request) # to json string
 	url = Urls.base + Urls.detailUrl
 	imgData = web_call(url, request, data) # get response from jchem ws
-	logging.warning(imgData.content)
 	return imgData # return dict of image data
 
 
@@ -128,6 +131,8 @@ def mrvToSmiles(request):
 
 	smilesData = web_call(url, request, data) # get responset))
 	data = json.loads(smilesData.content)
+
+	logging.warning(str(data))
 
 	request = HttpRequest()
 	request.POST = { "chemical": data['structure'] }

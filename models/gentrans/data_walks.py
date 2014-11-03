@@ -22,24 +22,18 @@ def recursive(jsonStr):
 
 metID = 0 # unique id for each node
 
-
 def traverse(root):
+
 	global metID
 	metID += 1
 	newDict ={}
 
-	logging.warning(root.keys())
-
 	if metID == 1:
 		parent = root.keys()[0]
-		# newDict.update({"id": metID, "name": parent, "data": {}, "children": []})
-		# newDict.update({"id": metID, "name": '<img src="http://www.clipartbest.com/cliparts/niB/XxL/niBXxLaoT.png" width="30" height="30">', "data": {}, "children": []})
-		newDict.update({"id": metID, "name": imgTemplate(parent), "data": {}, "children": []})
+		newDict.update({"id": metID, "name": imageWrapper(parent), "data": {}, "children": []})
 		root = root[parent]
 	else:
-		# newDict.update({"id": metID, "name": root['smiles'], "data": {}, "children": []})
-		# newDict.update({"id": metID, "name": metID, "data": {}, "children": []})
-		newDict.update({"id": metID, "name": imgTemplate(root['smiles']), "data": {}, "children": []})
+		newDict.update({"id": metID, "name": imageWrapper(root['smiles']), "data": {}, "children": []})
 		newDict['data'].update({"degradation": root['degradation']})
 
 	for key, value in root.items():
@@ -56,7 +50,7 @@ def traverse(root):
 Wraps image html tag around
 the molecule's image source
 """
-def imgTemplate(smiles):
+def imageWrapper(smiles):
 	logging.warning(smiles)
 
 	# 1. Get image from smiles
@@ -68,22 +62,17 @@ def imgTemplate(smiles):
 	# 2. Get imageUrl out of results
 	data = json.loads(results.content) # json string --> dict
 	imageUrl = ''
-	imageHeight = 0
-	imageWidth = 0
 	if 'data' in data:
 		root = data['data'][0]['image']
 		imageUrl = root['imageUrl']
 		imageHeight = root['height']
-		imageWidth = root['width'] 
+		imageWidth = root['width']
+
+	logging.warning("HEIGHT: " + str(imageHeight))
+	logging.warning("WIDTH: " + str(imageWidth)) 
 
 	# 3. Wrap imageUrl with <img>
-	html = """
-	<img class="metabolite" alt="chemical" src="
-	"""
-	html += imageUrl
-	html += '" height="' + str(imageHeight) + '"'
-	html += 'width="' + str(imageWidth) + '"'
-	html += """
-	"></div>
-	"""
+	html = '<img class="metabolite"'
+	html += 'alt="' + smiles + '"'
+	html += 'src="' + imageUrl + '"/>'
 	return html

@@ -1398,10 +1398,11 @@ th {
 
 .metabolite {
   background-color: white;
-  width: 200px;
-  height: 100px;
+/*  width: 200px;
+  height: 100px;*/
 }
 
-.metabolite img {
-  height: 100%;
+/* For jchem-cts docs page */
+.basic_table {
+  border: 1px solid black;
 }
