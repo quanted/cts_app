@@ -8769,6 +8769,11 @@ $jit.ST= (function() {
             if(move.enable) {
                 this.geom.translate(node.endPos.add(offset).$scale(-1), "end");
             }
+            //added 11-04-14 for static tree (np)
+            else {
+              this.geom.translate($C(offset.x, offset.y).$scale(-1), "end");
+            }
+            //end edit
             this.fx.animate($.merge(this.controller, { modes: ['linear'] }, onComplete));
          },
       

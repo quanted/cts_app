@@ -1,3 +1,15 @@
+<!-- ### JIT REFERENCES ### -->
+<!-- CSS Files -->
+<link type="text/css" href="/static/stylesheets/metaboTree.css" rel="stylesheet" />
+<link type="text/css" href="/static/stylesheets/Jit/Examples/css/Spacetree.css" rel="stylesheet" />
+<!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
+<!-- JIT Library File -->
+<script language="javascript" type="text/javascript" src="/static/stylesheets/Jit/jit.js"></script>
+<!-- Output File Script -->
+<!-- <script language="javascript" type="text/javascript" src="/static/stylesheets/metaboTree.js"></script> -->
+<!-- ### END JIT REFERENCES ### -->
+
+<script>
 var labelType, useGradients, nativeTextSupport, animate;
 
 (function() {
@@ -13,6 +25,7 @@ var labelType, useGradients, nativeTextSupport, animate;
   nativeTextSupport = labelType == 'Native';
   useGradients = nativeCanvasSupport;
   animate = !(iStuff || !nativeCanvasSupport);
+
 })();
 
 var Log = {
@@ -30,8 +43,9 @@ function init(){
 
     //init data
     var strJson = $('#hiddenJson').val();
-
     var json = $.parseJSON($('#hiddenJson').val());
+
+    // var json = $.parseJSON('{{metabolites}}')
 
     // smallest everthing-visible size
     // var nodeHeight = 192;
@@ -49,7 +63,7 @@ function init(){
         offsetX: 300, //TODO: make more general, i.e., dependent on canvas size
         // offsetY: 400,
 
-        // levelsToShow: 2, //changed nothing.
+        levelsToShow: 2, //changed nothing.
 
         //set duration for the animation
         duration: 500,
@@ -83,7 +97,7 @@ function init(){
         
         onBeforeCompute: function(node){
             // Log.write("loading " + node.name);
-            Log.write("loading " + node.data.smiles);
+            Log.write("loading...");
         },
         
         onAfterCompute: function(){
@@ -97,7 +111,7 @@ function init(){
             label.id = node.id;            
             label.innerHTML = node.name;
             label.onclick = function(){
-            	// st.onClick(node.id);
+                // st.onClick(node.id);
                 st.onClick(node.id, {
                     Move: {
                         enable: false
@@ -156,28 +170,23 @@ function init(){
             }
         },
 
-        // Events: {
-        //     enable: true,
-        //     onDragStart: function(node, eventInfo, e) {
-        //         var test = "test";
-        //         Tips: {
-        //             enable: false
-        //         }
-        //     },
-        //     onDragMove: function(node, eventInfo, e) {
-        //         Tips: {
-        //             enable: false
-        //         }
-        //     }
-        // },
-
         Tips: {
             enable: true,
             type: 'auto',
             onShow: function(tip, node) {
                 tip.innerHTML = node.data.html;
             }
-        }
+        },
+
+        // Events: {
+        //     enable: true,
+        //     onClick: function(node, eventInfo, e) {
+        //         if (node.id == 1) {
+        //             st.controller.constrained = false;
+        //             st.controller.levelsToShow = 100;
+        //         }
+        //     }
+        // }
 
     });
     //load json data
@@ -191,3 +200,16 @@ function init(){
     //end
 
 }
+</script>
+
+<div id="cont">
+    <div id="center-cont">
+        <!-- the canvas container -->
+        <div id="infovis"></div>    
+    </div>
+    <div id="log"></div>
+</div>
+
+<script type="text/javascript">
+init();
+</script>

@@ -88,6 +88,8 @@ given SMILES
 def smilesToImage(request):
 	logging.warning("inside jchem_rest - smilesToImage")
 	smiles = request.POST.get('smiles')
+	imageWidth = request.POST.get('width')
+	imageHeight = request.POST.get('height')
 	request = {
 		"structures": [
 			{"structure": smiles}
@@ -96,8 +98,8 @@ def smilesToImage(request):
 			"include": ["image"],
 			"parameters": {
 				"image": {
-					"width": 100,
-					"height": 114
+					"width": imageWidth,
+					"height": imageHeight
 				}
 			}
 		}

@@ -10,6 +10,9 @@ from django.template import Context, Template
 # import time
 import datetime
 from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
+import logging
+import json
 
 # logger = logging.getLogger("gentransTables")
 
@@ -82,29 +85,11 @@ djtemplate = getdjtemplate()
 tmpl = Template(djtemplate)
 
 def table_all(gentrans_obj):
-    # html_all = render_to_string(timestamp)
-    # html_all = table_1(gentrans_obj)
 
-    html_all = table_metabolites(gentrans_obj)
+    # html_all = table_metabolites(gentrans_obj)
+    html_all = '<br>'
+    html_all += table_metabolites(gentrans_obj)
 
-    html_all = html_all + """
-    <input type="button" onclick="init();" value="show tree">
-    <div id="cont">
-    <div id="center-cont">
-        <!-- the canvas container -->
-        <div id="infovis"></div>    
-    </div>
-    <div id="log"></div>
-    </div>
-    """
-
-    # html_all = html_all = '<div id="degrade"></div>'  
-
-    # html_all = html_all + '<input type="hidden" id="jsonResult" value="' + str(gentrans_obj.results) + '">'
-
-
-    # html_all = html_all + table_2(gentrans_obj)<%=Response.HTMLEncode(strQ)%>">
-    #html_all = html_all + table_3(gentrans_obj)
     return html_all
 
 def timestamp(gentrans_obj="", batch_jid=""):
@@ -170,7 +155,23 @@ def table_metabolites(gentrans_obj):
 
     gentrans_obj.results = new_result
 
+    # logging.warning(gentrans_obj.results)
+
     html = '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
+    html += render_to_string('cts_gentrans_tree.html')
+
+    # html = """
+    # <input type="button" onclick="init();" value="show tree">
+    # <div id="cont">
+    # <div id="center-cont">
+    #     <!-- the canvas container -->
+    #     <div id="infovis"></div>    
+    # </div>
+    # <div id="log"></div>
+    # </div>
+    # """
+
+    # html = '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
 
     return html
 

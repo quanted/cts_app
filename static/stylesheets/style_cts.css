@@ -1396,13 +1396,8 @@ th {
   background-color: transparent;
 }
 
-.metabolite {
+/*.metabolite {
   background-color: white;
 /*  width: 200px;
   height: 100px;*/
-}
-
-/* For jchem-cts docs page */
-.basic_table {
-  border: 1px solid black;
-}
+/*}*/

@@ -30,11 +30,13 @@ def traverse(root):
 
 	if metID == 1:
 		parent = root.keys()[0]
-		newDict.update({"id": metID, "name": imageWrapper(parent), "data": {}, "children": []})
+		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100), "data": {}, "children": []})
+		newDict['data'].update(dataWrapper({"smiles":parent}))
 		root = root[parent]
 	else:
-		newDict.update({"id": metID, "name": imageWrapper(root['smiles']), "data": {}, "children": []})
-		newDict['data'].update({"degradation": root['degradation']})
+		newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100), "data": {}, "children": []})
+		# newDict['data'].update({"degradation": root['degradation']})
+		newDict['data'].update(dataWrapper(root))
 
 	for key, value in root.items():
 		if isinstance(value, dict):
@@ -50,10 +52,14 @@ def traverse(root):
 Wraps image html tag around
 the molecule's image source
 """
-def imageWrapper(smiles):
+def nodeWrapper(smiles, height, width):
 
 	# 1. Get image from smiles
-	post = {"smiles": smiles}
+	post = {
+		"smiles": smiles,
+		"height": height,
+		"width": width
+	}
 	request = HttpRequest()
 	request.POST = post
 	results = jchem_rest.smilesToImage(request)
@@ -73,3 +79,28 @@ def imageWrapper(smiles):
 	html += 'alt="' + smiles + '"'
 	html += 'src="' + imageUrl + '"/>'
 	return html
+
+
+"""
+Wraps data in table to be displayed
+at a node mouseover event
+"""
+def dataWrapper(root):
+
+	propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
+	dataProps = {key: None for key in propKeys} # metabolite properties 
+
+	html = '<table class="metabolite_data">'
+	html += '<tr><td rowspan="' + str(len(propKeys) + 1) + '">' 
+	html += nodeWrapper(root['smiles'], 192, 150)
+	html += '</td></tr>'
+	for key, value in root.items():
+		if key in propKeys:
+			dataProps[key] = value
+			html += '<tr><td>' + key + '</td>'
+			html += '<td>' + str(value) + '</td></tr>'
+	html += '</table>'
+
+	dataProps["html"] = html 
+
+	return dataProps 
