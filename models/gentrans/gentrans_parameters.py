@@ -192,7 +192,7 @@ reaction_sys_CHOICES = (('0', 'Environmental'), ('1', 'Mammalian'))
 respiration_CHOICES = (('0', 'Make a selection'), ('1', 'Aerobic'), ('2', 'Anaerobic'))
 
 # Reaction Options
-gen_limit_CHOICES = (('1', '1'), ('2', '2'), ('3', '3')) # generation limit
+gen_limit_CHOICES = (('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')) # generation limit
 pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8')) # population limit
 
 aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
@@ -268,8 +268,6 @@ class cts_reaction_options(forms.Form):
 						label='Likely Limit:',
 						initial='0.001',
 						required=False,
-
-						# validators=''
 					)
 
 
@@ -305,7 +303,6 @@ class cts_oecd_guidelines(forms.Form):
 					required=False)
 
 	# Health Effects Selections:
-
 	specialStudies_selection = forms.ChoiceField(
 					choices=specialStudies_CHOICES,
 					widget=forms.RadioSelect(),

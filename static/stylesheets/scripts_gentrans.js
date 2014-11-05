@@ -31,7 +31,8 @@ $(document).ready(function() {
     $('#anaerobic_picks').hide();
 
     //Options for these options are currently not available
-    $('select[name="ftt_selection"] option[value="2"], option[value="3"]').prop('disabled', true);
+    $('select[name="ftt_selection"] option[value="2"]').prop('disabled', true);
+    $('select[name="ftt_selection"] option[value="3"]').prop('disabled', true);
 
     $('#id_aerobic_biodegrad').prop('disabled', true);
     $('#id_anaerobic_biodegrad').prop('disabled', true);

@@ -66,16 +66,11 @@ The iupac, formula, mass, and smiles string of the chemical
 along with the mrv of the chemical (to display in marvinjs)
 """
 def getChemDeats(request):
-
-	logging.warning("inside jchem_rest - getChemDeats")
 	queryDict = request.POST
 	chem = queryDict.get('chemical') # chemical name
-
 	ds = data_structures()
 	data = ds.getChemDeats(chem) # format request to jchem
-
 	url = Urls.base + Urls.detailUrl
-
 	return web_call(url, request, data)
 
 
@@ -86,7 +81,6 @@ Returns image (.png) url for a
 given SMILES
 """
 def smilesToImage(request):
-	logging.warning("inside jchem_rest - smilesToImage")
 	smiles = request.POST.get('smiles')
 	imageWidth = request.POST.get('width')
 	imageHeight = request.POST.get('height')
@@ -117,9 +111,6 @@ Gets SMILES string for chemical drawn
 in Marvin Sketch
 """
 def mrvToSmiles(request):
-
-	logging.warning("inside jchem_rest - mrvToSmiles")
-
 	queryDict = request.POST
 	chemStruct = queryDict.get('chemical') # chemical in <cml> format (marvin sketch)
 	request = {
@@ -128,17 +119,11 @@ def mrvToSmiles(request):
 		"parameters" : "smiles"
 	}
 	data = json.dumps(request) # serialize to json-formatted str
-
 	url = Urls.base + Urls.exportUrl
-
 	smilesData = web_call(url, request, data) # get responset))
 	data = json.loads(smilesData.content)
-
-	logging.warning(str(data))
-
 	request = HttpRequest()
 	request.POST = { "chemical": data['structure'] }
-
 	return getChemDeats(request) # return smiles along with other info
 
 
@@ -152,7 +137,6 @@ Inputs - data types to get (e.g., pka, tautomer, etc.),
 and all the fields from the 3 tables.
 """
 def getChemSpecData(request):
-	logging.warning("inside jchem_rest - getChemSpecData")
 	ds = data_structures()
 	data = ds.chemSpecStruct(request.POST) # format request to jchem
 	data = json.dumps(data)
@@ -165,11 +149,8 @@ def getChemSpecData(request):
 Makes request to metabolizer on pnnl server
 """
 def getTransProducts(request):
-	logging.warning("REQUEST: " + str(request.POST))
 	url = Urls.base2 + Urls.metabolizerUrl
 	data = json.dumps(request.POST)
-	logging.warning("DUMPED " + data)
-	# data = '{ "structure": "' + str(request.POST.get('structure')) + '", "transformationLibraries": "' + request.POST.get('transformationLibraries') + '", "generationLimit": "' + request.POST.get('generationLimit') + '", "populationLimit": "' + request.POST.get('populationLimit') + '", "likelyLimit": "' + request.POST.get('likelyLimit') + '", "excludeCondition": "' + request.POST.get('excludeCondition') + '"}'
 	results = web_call(url, request, data)
 	return results
 
@@ -179,14 +160,9 @@ Makes the request to a specified URL
 and POST data. Returns an http response.
 """
 def web_call(url, request, data):
-
-	logging.warning("inside web_call")
-
 	callback_response = HttpResponse()
-
 	message = '\n' + "URL: " + '\n' + url + '\n\n'
 	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
-
 	try:
 		logging.warning("trying to get response...")
 		response = requests.post(url, data=data, headers=headers, timeout=60)
@@ -194,7 +170,6 @@ def web_call(url, request, data):
 		message = message + "Response: " + '\n' + response.content + '\n\n'
 		callback_response.write(response.content)
 		return callback_response
-
 	except:
 		logging.warning("Error in web call")
 		callback_response.write(message)

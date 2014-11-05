@@ -6,7 +6,6 @@ import urllib2
 import json
 import requests
 import gentrans_parameters # Chemical Speciation parameters
-# from REST import rest_funcs
 from REST import jchem_rest
 import logging
 from django.http import HttpRequest
@@ -18,30 +17,34 @@ headers = {'Content-Type' : 'application/json'}
 
 
 class gentrans(object):
-	def __init__(self, run_type, chem_struct, abiotic_hydrolysis, abiotic_reduction, gen_limit, pop_limit, likely_limit):
+	def __init__(self, run_type, chem_struct, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, gen_limit, pop_limit, likely_limit):
 
-		# self.jid = rest_funcs.gen_jid()
-		self.jid = jchem_rest.gen_jid()
+		self.jid = jchem_rest.gen_jid() # get time of run
+		self.run_type = run_type # single or batch
+		self.chem_struct = chem_struct # chemical structure
 
-		self.run_type = run_type
-		self.chem_struct = chem_struct
-		self.abiotic_hydrolysis = abiotic_hydrolysis
+		#Reaction Libraries
+		self.abiotic_hydrolysis = abiotic_hydrolysis # values: on or None
 		self.abiotic_reduction = abiotic_reduction
-		self.gen_limit = gen_limit
-		self.pop_limit = pop_limit
+		self.mamm_metabolism = mamm_metabolism
+
+		self.gen_limit = gen_limit # generation limit
+		self.pop_limit = pop_limit # population limit
 		self.likely_limit = likely_limit
 
-		self.trans_libs = ["hydrolysis","abiotic_reduction", "human_biotransformation"]
+		# Known keys for metabolizer on pnnl server (11-5-14)
+		metabolizerList = ["hydrolysis","abiotic_reduction", "human_biotransformation"]
 
-		logging.warning("GEN LIMIT: " + self.gen_limit)
-		logging.warning("CHEM: " + self.chem_struct)
+		reactionLibs = {
+			"hydrolysis": self.abiotic_hydrolysis,
+			"abiotic_reduction": self.abiotic_reduction,
+			"human_biotransformation": self.mamm_metabolism
+		}
 
-
-
-		#########################################
-		self.gen_limit = 3
-		#######################################
-
+		self.trans_libs = []
+		for key,value in reactionLibs.items():
+			if value:
+				self.trans_libs.append(key)
 
 		dataDict = {
 					'structure': self.chem_struct,
@@ -50,10 +53,8 @@ class gentrans(object):
 					'likelyLimit': self.likely_limit,
 					'transformationLibraries': self.trans_libs,
 					'excludeCondition': "",
-					'generateImages': True
+					'generateImages': False
 					}
-
-		logging.warning("DATA DICT: " + dataDict['structure'])
 
 		request = HttpRequest()
 		request.POST = dataDict
@@ -65,10 +66,6 @@ class gentrans(object):
 		# fileout.write(self.results)
 		# fileout.close()
 
-		logging.warning("parsing results...")
-
 		# reformat data for outputting to tree structure:
 		data_walks.metID = 0
 		self.results = data_walks.recursive(self.results)
-
-		logging.warning("end parsing...")
