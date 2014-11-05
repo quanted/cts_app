@@ -1,0 +1,173 @@
+<html>
+<head>
+<script src="http://handsontable.com/lib/jquery.min.js"></script>
+<script src="http://handsontable.com/dist/jquery.handsontable.full.js"></script>
+<link rel="stylesheet" media="screen" href="http://handsontable.com/dist/jquery.handsontable.full.css">
+<script>
+$(document).ready(function () {
+
+  var isChemAxonChecked, isTESTChecked, curPos;
+  
+  var customRenderer = function (instance, td) {
+    Handsontable.renderers.TextRenderer.apply(this, arguments);
+    if (isChemAxonChecked) {
+      td.style.backgroundColor = 'yellow';
+    }
+    else {
+      td.style.backgroundColor = 'yellow';
+    }
+    return td;
+  };
+  curPos = 0;
+  var TESTRenderer = function (instance, td) {
+    Handsontable.renderers.TextRenderer.apply(this, arguments);
+    if (isTESTChecked) {
+        switch (curPos) {
+          case 5:
+            td.innerHTML = "-179.21";
+            td.style.backgroundColor = "#356697";
+            break;
+          case 6:
+            td.innerHTML = "-63.82";
+            td.style.backgroundColor = "#356697";
+            break;
+          case 7:
+            td.innerHTML = "94.60";
+            td.style.backgroundColor = "#356697";
+            break;
+          case 8:
+            td.innerHTML = "12103.27";
+            td.style.backgroundColor = "#356697";
+            break;
+          case 9:
+            td.innerHTML = "";
+            td.style.backgroundColor = "grey";
+            break;
+          case 10:
+            td.innerHTML = "";
+            td.style.backgroundColor = "grey";
+            break;
+          case 11:
+            td.innerHTML = "";
+            td.style.backgroundColor = "grey";
+            break;
+          case 12:
+            td.innerHTML = "1.757";
+            td.style.backgroundColor = "#356697";
+            break;
+          case 13:
+            td.innerHTML = "";
+            td.style.backgroundColor = "grey";
+            break;
+          case 14:
+            td.innerHTML = "";
+            td.style.backgroundColor = "grey";
+            curPos = -1;
+            break;
+        }
+        curPos++;
+    }
+    else {
+      td.style.backgroundColor = 'grey';
+    }
+    return td;
+  };
+
+  var data= [
+  {
+    prop: "Melting Point",
+  },
+  {
+    prop: "Boiling Point",
+  },
+  {
+    prop: "Water Solubility",
+  },
+  {
+    prop: "Vapor Pressure",
+  },
+  {
+    prop: "Molecular Diffusivity (water)",
+  },
+  {
+    prop: "Ionization Constant",
+  },
+  {
+    prop: "Henry's Law Constant",
+  },
+  {
+    prop: "Octanol/Water Partition Coefficient",
+  },
+  {
+    prop: "Organic Carbon Partition Coefficient",
+  },
+  {
+    prop: "Distribution Coefficient",
+  },
+
+  ]; 
+  var $container = $("#example2");
+  $container.handsontable({
+    data: data,
+    startCols: 5,
+    columns: [
+      {data: "prop"},
+      {renderer: customRenderer},
+      {renderer: customRenderer},
+      {renderer: TESTRenderer},
+      {renderer: customRenderer},
+      {renderer: customRenderer}
+    ],
+    colHeaders: function (col) {
+      switch (col) {
+        case 0:
+          return "<em>CTS Properties</em>";
+        case 1:
+          var txt = "ChemAxon <input type='checkbox' class='checker' ";
+          txt += isChemAxonChecked ? 'checked="checked"' : '';
+          txt += ">";
+          return txt;
+        case 2:
+          var txt = "EPI Suite <input type='checkbox' class='checker' ";
+          txt += isChemAxonChecked ? 'checked="checked"' : '';
+          txt += ">";
+          return txt;
+        case 3:
+          var txt = "TEST <input type='checkbox' class='TESTchecker' ";
+          txt += isTESTChecked ? 'checked="checked"' : '';
+          txt += ">";
+          return txt;
+        case 4:
+          var txt = "SPARC <input type='checkbox' class='checker' ";
+          txt += isChemAxonChecked ? 'checked="checked"' : '';
+          txt += ">";
+          return txt;
+        case 5:
+          var txt = "Measured <input type='checkbox' class='checker' ";
+          txt += isChemAxonChecked ? 'checked="checked"' : '';
+          txt += ">";
+          return txt;
+      }
+    }
+  });
+  
+  $container.on('mousedown', 'input.checker', function (event) {
+    event.stopPropagation();
+  });
+  
+  $container.on('mouseup', 'input.checker', function (event) {
+    isChemAxonChecked = !$(this).is(':checked');
+    $container.handsontable('render');
+  });
+  
+  $container.on('mouseup', 'input.TESTchecker', function (event) {
+    isTESTChecked = !$(this).is(':checked');
+    $container.handsontable('render');
+  });
+  
+});</script>
+</head>
+<body>
+<div id="example2" class="handsontable"></div>
+</body>
+</html>
