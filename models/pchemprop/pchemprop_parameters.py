@@ -67,7 +67,7 @@ class cts_chemCalcs_props(forms.Form):
 	water_sol = forms.BooleanField(required=False, label=mark_safe('Water Solubility (mg/L)'))
 	vapor_press = forms.BooleanField(required=False, label=mark_safe('Vapor Pressure (mmHg)'))
 	mol_diss = forms.BooleanField(required=False, label=mark_safe('Molecular Diffusivity (cm<sup>2</sup>/s)'))
-	ionization_con = forms.BooleanField(required=False, label=mark_safe('Ionization Constant'))
+	ion_con = forms.BooleanField(required=False, label=mark_safe('Ionization Constant'))
 	henrys_law_con = forms.BooleanField(required=False, label=mark_safe("Henry's Law Constant (atm-m<sup>3</sup>/mol)"))
 	kow_no_ph = forms.BooleanField(required=False, label=mark_safe("Octanol/Water Partition Coefficient"))
 	kow_wph = forms.BooleanField(required=False, label=mark_safe('Octanol/Water Partition Coefficient'))

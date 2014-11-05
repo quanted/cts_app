@@ -2,7 +2,6 @@
 2014-08-13 (np)
 """
 
-import urllib2
 import json
 import requests
 import gentrans_parameters # Chemical Speciation parameters
@@ -58,14 +57,20 @@ class gentrans(object):
 
 		request = HttpRequest()
 		request.POST = dataDict
-		results = jchem_rest.getTransProducts(request)
+		response = jchem_rest.getTransProducts(request)
 
-		self.results = results.content
-
-		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		fileout.write(self.results)
-		fileout.close()
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(self.results)
+		# fileout.close()
 
 		# reformat data for outputting to tree structure:
 		data_walks.metID = 0
-		self.results = data_walks.recursive(self.results)
+		self.results = data_walks.recursive(response.content)
+
+		self.rawData = response.content
+		new_result = ''
+		for char in self.rawData:
+			if char == '"':
+				char = '&quot;'
+			new_result = new_result + char
+		self.rawData = new_result

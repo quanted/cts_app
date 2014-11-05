@@ -156,6 +156,13 @@ def getTransProducts(request):
 
 
 """
+Gets pchem properties
+"""
+# def getPchemProps(request):
+	
+
+
+"""
 Makes the request to a specified URL
 and POST data. Returns an http response.
 """

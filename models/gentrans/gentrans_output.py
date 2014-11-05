@@ -13,8 +13,6 @@ def gentransOutputPage(request):
     popLimit = request.POST.get('pop_limit')
     likelyLimit = request.POST.get('likely_limit')
 
-    logging.warning("OUTPUT: " + str(genLimit))
-
     gentrans_obj = gentrans_model.gentrans("single", chemStruct, abioticHydrolysis, abioticRecuction,
                                     mammMetabolism, genLimit, popLimit, likelyLimit)
 

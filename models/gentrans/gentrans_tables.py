@@ -68,21 +68,13 @@ def getInputData(gentrans_obj):
     return data
 
 
-# def gett2data(gentrans_obj):
-#     data = { 
-#         "Parameter": ['Basic pKa Value(s)', 'Acidic pKa Value(s)'],
-#         "Value": [gentrans_obj.basicpKaValues, gentrans_obj.acidicpKaValues],
-#         "Units": [''],
-#     }
-#     return data
-
-
 pvuheadings = getheaderpvu()
 pvrheadings = getheaderpvr()
 # pvrheadingsqaqc = getheaderpvrqaqc()
 # sumheadings = getheadersum()
 djtemplate = getdjtemplate()
 tmpl = Template(djtemplate)
+
 
 def table_all(gentrans_obj):
 
@@ -91,6 +83,7 @@ def table_all(gentrans_obj):
     html_all += table_metabolites(gentrans_obj)
 
     return html_all
+
 
 def timestamp(gentrans_obj="", batch_jid=""):
     if gentrans_obj:
@@ -106,6 +99,7 @@ def timestamp(gentrans_obj="", batch_jid=""):
     html = html + """
     </div>"""
     return html
+
 
 def table_1(gentrans_obj):
         html = """
@@ -155,23 +149,9 @@ def table_metabolites(gentrans_obj):
 
     gentrans_obj.results = new_result
 
-    # logging.warning(gentrans_obj.results)
-
     html = '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
     html += render_to_string('cts_gentrans_tree.html')
-
-    # html = """
-    # <input type="button" onclick="init();" value="show tree">
-    # <div id="cont">
-    # <div id="center-cont">
-    #     <!-- the canvas container -->
-    #     <div id="infovis"></div>    
-    # </div>
-    # <div id="log"></div>
-    # </div>
-    # """
-
-    # html = '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
+    html += '<br> Raw Data: <input type="text" value="' + gentrans_obj.rawData + '">'
 
     return html
 
