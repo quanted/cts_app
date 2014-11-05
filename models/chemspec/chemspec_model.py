@@ -16,15 +16,6 @@ from django.http import HttpRequest
 import chemspec_tables
 
 
-# Dict keys for chemical speciation parameters (accessed in chemspec_tables.py)
-
-# pkaKeysIn = ["pKa_decimals", "pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment", "pH_microspecies", "isoelectricPoint_pH_increment"]
-# tautKeysOut = ['tautImageUrl']
-# tautKeysIn = ["tautomer_maxNoOfStructures", "tautomer_pH"]
-# stereoKeysOut = ['stereoImageUrl']
-# stereoKeysIn = ["stereoisomers_maxNoOfStructures"]
-
-
 class chemspec(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, pkaChkbox, tautChkbox, stereoChkbox, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies, 
 			isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
@@ -85,9 +76,9 @@ class chemspec(object):
 
 		output_val = json.loads(results.content) # convert json to dict
 
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(json.dumps(output_val))
-		# fileout.close()
+		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		fileout.write(json.dumps(output_val))
+		fileout.close()
 
 		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
@@ -108,9 +99,9 @@ class chemspec(object):
 		# Get microspecies names and other info:
 		
 
-		for key, value in output_val.items():	
-			logging.info(key, value)
-			setattr(self, key, value)
+		# for key, value in output_val.items():	
+		# 	logging.info(key, value)
+		# 	setattr(self, key, value)
 
 
 # Builds isoelectricPoint dictionary
@@ -153,12 +144,15 @@ def getMajorMicrospecies(output_val):
 		# Get image data from result:
 		if 'image' in majorMsRoot['result']:
 			majorMsImage = majorMsRoot['result']['image']['imageUrl']
-			majorMsDict.update({"image": majorMsRoot['result']['image']['imageUrl']})
+			majorMsDict.update({"image": majorMsImage})
+			# majorMsDict.update({"image": majorMsRoot['result']['image']['imageUrl']})
 		else:
 			majorMsImage = 'No major microspecies'
 
 		# Get structure data from result:
-		structInfo = getStructInfo(majorMsRoot) # get info such as iupac, mass, etc.
+		# structInfo = getStructInfo(majorMsRoot) # get info such as iupac, mass, etc.
+		structInfo = getStructInfo(majorMsRoot['result']['structureData']['structure'])
+
 		majorMsDict.update(structInfo)
 
 	else:
@@ -181,10 +175,11 @@ def getPkaInfo(output_val):
 		pkaDict.update({'mostBasicPka': pkaRoot['mostBasic']})
 		pkaDict.update({'mostAcidicPka': pkaRoot['mostAcidic']})
 
-		# parentDict = {}
-		# parentDict = getStructInfo
+		parentDict = {'image': pkaRoot['result']['image']['imageUrl']}
+		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
 
-		pkaDict.update({'parentImage': pkaRoot['result']['image']['imageUrl']})
+		pkaDict.update({'parent': parentDict})
+		# pkaDict.update({'parent': pkaRoot['result']['image']['imageUrl']})
 
 		# Check if 'microspecies' key exist in dict
 		if 'microspecies' in pkaRoot:
@@ -193,11 +188,6 @@ def getPkaInfo(output_val):
 
 			msImageUrlList = [] # list of microspecies image urls
 			for ms in microspeciesList:
-
-				# logging.warning("START STRUCTURE")
-				# logging.warning(str(ms['structureData']['structure']))
-				# logging.warning("END STRUCTURE")
-
 				msStructDict = {} # list element in msImageUrlList
 				msStructDict.update({"image": ms['image']['imageUrl']})
 				structInfo = getStructInfo(ms['structureData']['structure'])
@@ -222,8 +212,6 @@ def getPkaInfo(output_val):
 				microDistData.append(valuesList)
 
 			pkaDict.update({'microDistData': microDistData})
-
-	# logging.warning("PKA DICT: " + str(pkaDict))
 
 	return pkaDict
 
@@ -265,7 +253,11 @@ def getStructInfo(mrvData):
 
 	response = jchem_rest.mrvToSmiles(request)
 
+	# logging.warning("Response: " + str(type(response.content)))
+
 	structDict = json.loads(response.content)
+
+	# logging.warning("Response: " + str(type(structDict)))
 
 	infoDict = {} # dict to be returned
 	struct_root = {} # root of data in structInfo

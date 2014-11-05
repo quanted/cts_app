@@ -198,19 +198,19 @@ class CTS_Speciation_Stereoisomers(forms.Form):
 					)
 
 class ChemspecInp(CTS_Chemical_Structure, CTS_Speciation_Pka, CTS_Speciation_Tautomer, CTS_Speciation_Stereoisomers):
-
-	def clean(self):
+	pass
+	# def clean(self):
 		
-		# cleaned_data = super(CTS_Speciation_Pka, self).clean()
-		cleaned_data = super(ChemspecInp, self).clean()
+	# 	# cleaned_data = super(CTS_Speciation_Pka, self).clean()
+	# 	cleaned_data = super(ChemspecInp, self).clean()
 
-		# pKa_decimals = cleaned_data.get("pKa_decimals")
-		# pKa_pH_lower = cleaned_data.get("pKa_pH_lower")
-		# pKa_pH_upper = cleaned_data.get("pKa_pH_upper")
+	# 	# pKa_decimals = cleaned_data.get("pKa_decimals")
+	# 	# pKa_pH_lower = cleaned_data.get("pKa_pH_lower")
+	# 	# pKa_pH_upper = cleaned_data.get("pKa_pH_upper")
 
-		logging.warning("INSIDE CLEAN()")
+	# 	logging.warning("INSIDE CLEAN()")
 
-		for key,value in cleaned_data.items():
-			logging.warning("key: " + str(key) + ", value: " + str(value))
+	# 	for key,value in cleaned_data.items():
+	# 		logging.warning("key: " + str(key) + ", value: " + str(value))
 
-		logging.warning("END CLEAN()")
+	# 	logging.warning("END CLEAN()")

@@ -171,9 +171,9 @@ def web_call(url, request, data):
 	message = '\n' + "URL: " + '\n' + url + '\n\n'
 	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
 	try:
-		logging.warning("trying to get response...")
+		# logging.warning("trying to get response...")
 		response = requests.post(url, data=data, headers=headers, timeout=60)
-		logging.warning("success.")
+		# logging.warning("success.")
 		message = message + "Response: " + '\n' + response.content + '\n\n'
 		callback_response.write(response.content)
 		return callback_response

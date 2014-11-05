@@ -412,14 +412,18 @@ def table_images(chemspec_obj):
         <H4 class="out_1 collapsible" id="section8"><span></span><b>Parent/Microspecies Images</b></H4>
         <div class="out_">
         """
-        html = html + "Parent:"
-        html = html + wrap_molecule(chemspec_obj.pkaDict['parentImage'])
+        html = html + "Parent: "
+        html = html + wrap_molecule(chemspec_obj.pkaDict['parent'])
 
         # tblData = getSpeciesImages(chemspec_obj)
         # html = html + tmplImg.render(Context(dict(data=tblData)))
-        html = html + "Microspecies:"
-        for item in chemspec_obj.pkaDict['msImageUrlList']:
-            html = html + wrap_molecule(item)
+        html = html + "Microspecies: "
+        logging.warning(chemspec_obj.pkaDict['msImageUrlList'])
+        if chemspec_obj.pkaDict['msImageUrlList']:
+            for item in chemspec_obj.pkaDict['msImageUrlList']:
+                html = html + wrap_molecule(item)
+        else:
+            html += "none"
         html = html + """
         </div>
         """
@@ -507,8 +511,6 @@ Inputs: property dict (e.g., pka, taut)
 Outputs: data wrapped in table with image and name
 """
 def wrap_molecule(propDict):
-
-    # TODO: make this work with list instead of single value
 
     image = propDict['image']
     formula = propDict['formula']
