@@ -52,8 +52,8 @@ class gentrans(object):
 					'populationLimit': self.pop_limit,
 					'likelyLimit': self.likely_limit,
 					'transformationLibraries': self.trans_libs,
-					'excludeCondition': "",
-					'generateImages': False
+					'excludeCondition': ""
+					# 'generateImages': False
 					}
 
 		request = HttpRequest()
@@ -62,9 +62,9 @@ class gentrans(object):
 
 		self.results = results.content
 
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(self.results)
-		# fileout.close()
+		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		fileout.write(self.results)
+		fileout.close()
 
 		# reformat data for outputting to tree structure:
 		data_walks.metID = 0
