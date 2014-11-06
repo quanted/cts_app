@@ -1161,9 +1161,9 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
   display:block;
   text-decoration:none;
   color:#FFFFFF;
-  /*background-color:#356697;*/
-  /*background-color:#479147;*/
-  background-color: #7993AE;
+  /*background-color:#356697;*/ /*original dark blue*/
+  /*background-color: #7993AE;*/
+  background-color: #9AB2CB;
 }
 .tabUnsel {
   color: #1F262A;
@@ -1357,9 +1357,10 @@ th {
   float:left;
 }
 
+/* Text in chemspec output*/
 .shiftRight {
-  margin-left: 42px;
-  font-size:11px;
+  margin-left: 36px;
+  font-size:12px;
 }
 
 /* Error list from django validation */
@@ -1386,18 +1387,27 @@ th {
   display:none;
 }
 
+.showData {
+  display: inline;
+}
+
+/* Image of molecule wrapped in 
+table for ChemSpec output */
 .wrapped_molecule {
-  background-color: white;
-  border-style: none;
+  background-color: transparent;
   font-size: 12px;
+}
+
+.wrapped_molecule table {
+  border: 1px solid #1a1a1a;
 }
 
 .wrapped_molecule td {
   background-color: transparent;
 }
 
-/*.metabolite {
-  background-color: white;
-/*  width: 200px;
-  height: 100px;*/
-/*}*/
+/* jqplot div styling */
+.plot {
+  height: 300px;
+  width: 700px;
+}

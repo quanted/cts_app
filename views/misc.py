@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 import importlib
 import linksLeft
 import logging
@@ -42,12 +42,15 @@ def requestTimeout(request):
     html = html + render_to_string('05cts_ubertext_links_right.html', {})
     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
 
-    logging.warning("Inside of views.misc.requestTimeout")
-
     response = HttpResponse()
     response.write(html)
 
-    return response    
+    return response
+
+
+def contact(request):
+    return render(request, 'contact.html')
+
 
 #######################################################################################
 ################################# Docs Redirect #######################################

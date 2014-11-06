@@ -68,9 +68,3 @@ class gentrans(object):
 		self.results = data_walks.recursive(response.content)
 
 		self.rawData = response.content
-		new_result = ''
-		for char in self.rawData:
-			if char == '"':
-				char = '&quot;'
-			new_result = new_result + char
-		self.rawData = new_result

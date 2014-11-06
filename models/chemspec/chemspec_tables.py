@@ -46,28 +46,6 @@ def gethtmlrowsfromcols(data, headings):
     return rows
 
 
-# def getdjtemplate():
-#     dj_template ="""
-#     <table class="out_">
-#     {# headings #}
-#         <tr>
-#         {% for heading in headings %}
-#             <th>{{ heading }}</th>
-#         {% endfor %}
-#         </tr>
-#     {# data #}
-#     {% for row in data %}
-#     <tr>
-#         {% for val in row %}
-#             <td>{{ val|default:'None' }}</td>
-#         {% endfor %}
-#     </tr>
-#     {% endfor %}
-#     </table>
-#     """
-#     return dj_template
-
-
 def getdjtemplate():
     dj_template ="""
     <dl class="shiftRight">
@@ -120,8 +98,8 @@ def getImagesTemplate():
 
 def getMolTblData(chemspec_obj):
     data = {
-        "Parameter": ['Structure:', 'SMILES:', 'IUPAC:', 'Formula:', 'Mass:'],
-        "Value": [chemspec_obj.chem_struct, chemspec_obj.smiles, chemspec_obj.name, chemspec_obj.formula, chemspec_obj.mass],
+        "Parameter": ['SMILES:', 'IUPAC:', 'Formula:', 'Mass:'],
+        "Value": [chemspec_obj.smiles, chemspec_obj.name, chemspec_obj.formula, chemspec_obj.mass],
         # "Image": [chemspec_obj.parentImage]
     }
     return data
@@ -129,7 +107,7 @@ def getMolTblData(chemspec_obj):
 
 def getIsoPtData(chemspec_obj):
     data = {
-        "Parameter": ['isoelectric point:'],
+        "Parameter": ['Isoelectric Point:'],
         "Value": [chemspec_obj.isoPtDict['isoPt']]
         # "Value": ['test']
     }
@@ -194,20 +172,20 @@ tmplImg = Template(imagesTemplate)
 
 
 def table_all(chemspec_obj):
-    html_all = '<script type="text/javascript" src="/static/stylesheets/structure_wrapper.js"></script>'
-    html_all = html_all + table_struct(chemspec_obj)
-    html_all = html_all + table_pka_input(chemspec_obj)     
-    html_all = html_all + table_taut_input(chemspec_obj)
-    html_all = html_all + table_stereo_input(chemspec_obj) 
-    html_all = html_all + table_isoPt_results(chemspec_obj)
-    html_all = html_all + table_isoPt_plot(chemspec_obj)
-    html_all = html_all + table_majorMs_Images(chemspec_obj)
-    html_all = html_all + table_pka_results(chemspec_obj)
-    html_all = html_all + table_images(chemspec_obj)
-    html_all = html_all + table_microplot(chemspec_obj)
-    html_all = html_all + table_stereo_results(chemspec_obj)
-    html_all = html_all + table_taut_results(chemspec_obj)
-    html_all = html_all + render_to_string('cts_plot_microspecies_dist.html')
+    # html_all = '<script type="text/javascript" src="/static/stylesheets/structure_wrapper.js"></script>'
+    html_all = table_struct(chemspec_obj)
+    html_all += table_pka_input(chemspec_obj)     
+    html_all += table_taut_input(chemspec_obj)
+    html_all += table_stereo_input(chemspec_obj) 
+    html_all += table_isoPt_results(chemspec_obj)
+    html_all += table_isoPt_plot(chemspec_obj)
+    html_all += table_majorMs_Images(chemspec_obj)
+    html_all += table_pka_results(chemspec_obj)
+    html_all += table_images(chemspec_obj)
+    html_all += table_microplot(chemspec_obj)
+    html_all += table_stereo_results(chemspec_obj)
+    html_all += table_taut_results(chemspec_obj)
+    html_all += render_to_string('cts_display_raw_data.html', {'rawData': chemspec_obj.rawData})
     return html_all
 
 def timestamp(chemspec_obj="", batch_jid=""):
@@ -216,12 +194,12 @@ def timestamp(chemspec_obj="", batch_jid=""):
     else:
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
-    <div class="out_">
+    <div>
         <b>Chemical Speciation - Version 1.0 (Alpha)<br>
     """
-    html = html + st
-    html = html + " (EST)</b>"
-    html = html + """
+    html += st
+    html += " (EST)</b>"
+    html += """
     </div>"""
     return html
 
@@ -240,12 +218,12 @@ def table_struct(chemspec_obj):
 
     molTblData = getMolTblData(chemspec_obj)
     molTblRows = gethtmlrowsfromcols(molTblData, pvheadings)
-    html = html + tmpl.render(Context(dict(data=molTblRows, headings=pvheadings)))
+    html += tmpl.render(Context(dict(data=molTblRows, headings=pvheadings)))
 
     #try to add structure image:
-    # html = html + mark_safe('<img src="' + chemspec_obj.image + '" alt="Structure Image"></img>')
+    # html += mark_safe('<img src="' + chemspec_obj.image + '" alt="Structure Image"></img>')
 
-    html = html + """
+    html += """
     </div>
     """
     return html
@@ -264,9 +242,9 @@ def table_pka_input(chemspec_obj):
         t1rows = gethtmlrowsfromcols(t1data,pvheadings)
         # t2data = gett2data(chemspec_obj)
         # t2rows = gethtmlrowsfromcols(t2data, pvheadings)
-        html = html + tmpl.render(Context(dict(data=t1rows, headings=pvheadings)))
-        # html = html + tmpl.render(Context(dict(data=t2rows, headings=pvheadings)))
-        html = html + """
+        html += tmpl.render(Context(dict(data=t1rows, headings=pvheadings)))
+        # html += tmpl.render(Context(dict(data=t2rows, headings=pvheadings)))
+        html += """
         </div>
         """
         return html
@@ -285,8 +263,8 @@ def table_taut_input(chemspec_obj):
         """
         tblData = getTautData(chemspec_obj)
         tblRows = gethtmlrowsfromcols(tblData, pvheadings)
-        html = html + tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
-        html = html + """
+        html += tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        html += """
         </div>
         """
         return html
@@ -305,8 +283,8 @@ def table_stereo_input(chemspec_obj):
         """
         tblData = getStereoData(chemspec_obj)
         tblRows = gethtmlrowsfromcols(tblData, pvheadings)
-        html = html + tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
-        html = html + """
+        html += tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        html += """
         </div></div>
         """
         return html
@@ -325,8 +303,8 @@ def table_isoPt_results(chemspec_obj):
         """
         tblData = getIsoPtData(chemspec_obj)
         tblRows = gethtmlrowsfromcols(tblData, pvheadings)
-        html = html + tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
-        html = html + """
+        html += tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        html += """
 
         """
         return html
@@ -342,19 +320,16 @@ def table_isoPt_plot(chemspec_obj):
         """
         # if chemspec_obj.isoPtDict['isoPtChartData']:
         if 'isoPtChartData' in chemspec_obj.isoPtDict:
-            html = html + """
-            <div id="isoelectric-point" class="plot"></div>
-            <div id="isoPtData" class="hideData">
-            """
-            html = html + mark_safe(json.dumps(chemspec_obj.isoPtDict['isoPtChartData']))
-            html = html + """
-            </div>
-            """
+            html += '<div id="isoPtData" class="hideData">'
+            html += mark_safe(json.dumps(chemspec_obj.isoPtDict['isoPtChartData']))
+            html += '</div>'
+            html += render_to_string('cts_plot_isoelectricPoint.html')
         else:
-            html = html + """
-            <p class="shiftRight">No isoelectric point</p>
+            html += """<dl class="shiftRight"><dd>
+            No isoelectric point
+            </dd></dl>
             """
-        html = html + """
+        html += """
         </div></div>
         """
         return html
@@ -371,8 +346,8 @@ def table_majorMs_Images(chemspec_obj):
         <H3 class="out_1 collapsible" id="section6"><span></span>Major Microspecies</H3>
         <div class="out_">
         """
-        html = html + wrap_molecule(chemspec_obj.majorMsDict)
-        html = html + """
+        html += wrap_molecule(chemspec_obj.majorMsDict)
+        html += """
         </div>
         """
         return html
@@ -393,8 +368,8 @@ def table_pka_results(chemspec_obj):
         """
         t3data = getPkaValues(chemspec_obj)
         t3rows = gethtmlrowsfromcols(t3data, pvheadings)
-        html = html + tmpl.render(Context(dict(data=t3rows, headings=pvheadings)))
-        html = html + """
+        html += tmpl.render(Context(dict(data=t3rows, headings=pvheadings)))
+        html += """
         </div>
         """
         return html
@@ -412,19 +387,16 @@ def table_images(chemspec_obj):
         <H4 class="out_1 collapsible" id="section8"><span></span><b>Parent/Microspecies Images</b></H4>
         <div class="out_">
         """
-        html = html + "Parent: "
-        html = html + wrap_molecule(chemspec_obj.pkaDict['parent'])
-
-        # tblData = getSpeciesImages(chemspec_obj)
-        # html = html + tmplImg.render(Context(dict(data=tblData)))
-        html = html + "Microspecies: "
+        html += "Parent: "
+        html += wrap_molecule(chemspec_obj.pkaDict['parent'])
+        html += "Microspecies: "
         logging.warning(chemspec_obj.pkaDict['msImageUrlList'])
         if chemspec_obj.pkaDict['msImageUrlList']:
             for item in chemspec_obj.pkaDict['msImageUrlList']:
-                html = html + wrap_molecule(item)
+                html += wrap_molecule(item)
         else:
             html += "none"
-        html = html + """
+        html += """
         </div>
         """
         return html
@@ -443,19 +415,15 @@ def table_microplot(chemspec_obj):
         <div class="out_" id="section6">
         """
         if chemspec_obj.pkaDict['microDistData']:
-            html = html + """
-            <div id="microspecies-distribution" class="plot"></div>
-            <div id="microDistData1" class="hideData">
-            """
-            html = html + mark_safe(json.dumps(chemspec_obj.pkaDict['microDistData']))
-            html = html + """
-            </div>
-            """
+            html += '<div id="microDistData1" class="hideData">'
+            html += mark_safe(json.dumps(chemspec_obj.pkaDict['microDistData']))
+            html += '</div>'
+            html += render_to_string('cts_plot_microspecies_dist.html')
         else:
-            html = html + """
+            html += """
             <p class="shiftRight">No microspecies for plotting</p>
             """
-        html = html + """
+        html += """
         </div></div>
         """
         return html
@@ -468,15 +436,13 @@ Stereoisomers Image Table
 """
 def table_stereo_results(chemspec_obj):
 
-    logging.warning(str(chemspec_obj.stereoDict))
-
     if chemspec_obj.stereoDict:
         html = """
         <H3 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H3>
         <div class="out_">
         """
-        html = html + tmplImg.render(Context(dict(data=chemspec_obj.stereoDict)))
-        html = html + """
+        html += tmplImg.render(Context(dict(data=chemspec_obj.stereoDict)))
+        html += """
         </div>
         """
         return html
@@ -494,8 +460,8 @@ def table_taut_results(chemspec_obj):
         <H3 class="out_1 collapsible" id="section11"><span></span>Tautomerization</H3>
         <div class="out_">
         """
-        html = html + tmplImg.render(Context(dict(data=chemspec_obj.tautDict)))
-        html = html + """
+        html += tmplImg.render(Context(dict(data=chemspec_obj.tautDict)))
+        html += """
         </div><br><br>
         """
         return html
@@ -528,4 +494,4 @@ def wrap_molecule(propDict):
 
     html = render_to_string('structure_wrapper.html', infoDict)
 
-    return html 
+    return html

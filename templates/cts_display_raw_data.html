@@ -1,0 +1,12 @@
+<!-- Displays raw data on button click in a text field on the output page -->
+<br>
+<input id="showData" type="button" value="Get Raw Data">
+<input id="copyData" class="hideData" type="text" value="{{rawData}}">
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#showData').click(function(){
+        $('#copyData').toggleClass("hideData").select();
+    }); 
+});
+</script>

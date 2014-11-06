@@ -1,48 +1,26 @@
-<script type="text/javascript" src="/static/stylesheets/jqplot/jquery.jqplot.js"></script>
-<script type="text/javascript" src="/static/stylesheets/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
-<script type="text/javascript" src="/static/stylesheets/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<div id="microspecies-distribution" class="plot"></div>
 
 <script type="text/javascript">
-$(document).ready(function() {
-
+function plotMicroDist() {
   var dataArr = JSON.parse($('#microDistData1').text());
-
-    $.jqplot ('microspecies-distribution', dataArr, {
-      title: 'Microspecies Distribution',
-      axes: {
-        xaxis: {
-          label: 'pH',
-          min: 0,
-          max: 14,
-          tickInterval: 1
-        },
+  $.jqplot ('microspecies-distribution', dataArr, {
+    title: 'Microspecies Distribution',
+    axes: {
+      xaxis: {
+        label: 'pH',
+        min: 0,
+        max: 14,
+        tickInterval: 1
       },
-      seriesDefaults: {
-        showMarker: false
-      }
-    });
-});
+    },
+    seriesDefaults: {
+      showMarker: false
+    }
+  });
+}
 </script>
 
 <script type="text/javascript">
-$(document).ready(function() {
-
-    var dataArr = JSON.parse($('#isoPtData').text());
-
-    $.jqplot ('isoelectric-point', [dataArr], {
-      title: 'Isoelectric Point',
-      axes: {
-        xaxis: {
-          label: 'pH',
-          min: 0,
-          max: 14,
-          tickInterval: 1
-        }
-      },
-      seriesDefaults: {
-        showMarker: false
-      }
-    });
-});
+plotMicroDist();
 </script>
 

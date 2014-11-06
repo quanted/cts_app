@@ -68,8 +68,9 @@ along with the mrv of the chemical (to display in marvinjs)
 def getChemDeats(request):
 	queryDict = request.POST
 	chem = queryDict.get('chemical') # chemical name
-	ds = data_structures()
-	data = ds.getChemDeats(chem) # format request to jchem
+	ds = Data_Structures()
+	data = ds.chemDeatsStruct(chem) # format request to jchem
+	data = json.dumps(data) # convert dict to json string
 	url = Urls.base + Urls.detailUrl
 	return web_call(url, request, data)
 
@@ -108,7 +109,9 @@ def smilesToImage(request):
 mrvToSmiles
 
 Gets SMILES string for chemical drawn
-in Marvin Sketch
+in Marvin Sketch. Also calls getChemDeats
+to get chemical info (should probably not 
+tie these together)
 """
 def mrvToSmiles(request):
 	queryDict = request.POST
@@ -121,10 +124,11 @@ def mrvToSmiles(request):
 	data = json.dumps(request) # serialize to json-formatted str
 	url = Urls.base + Urls.exportUrl
 	smilesData = web_call(url, request, data) # get responset))
-	data = json.loads(smilesData.content)
-	request = HttpRequest()
-	request.POST = { "chemical": data['structure'] }
-	return getChemDeats(request) # return smiles along with other info
+	return smilesData
+	# data = json.loads(smilesData.content)
+	# request = HttpRequest()
+	# request.POST = { "chemical": data['structure'] }
+	# return getChemDeats(request) # return smiles along with other info
 
 
 """
@@ -137,7 +141,7 @@ Inputs - data types to get (e.g., pka, tautomer, etc.),
 and all the fields from the 3 tables.
 """
 def getChemSpecData(request):
-	ds = data_structures()
+	ds = Data_Structures()
 	data = ds.chemSpecStruct(request.POST) # format request to jchem
 	data = json.dumps(data)
 	url = Urls.base + Urls.detailUrl
@@ -183,57 +187,51 @@ def web_call(url, request, data):
 		return callback_response
 
 
-class data_structures:
+class Data_Structures:
 
-	def getChemDeats(self, chemical):
+	def chemDeatsStruct(self, chemical):
 		# return json data for chemical details
-		return """{"structures": [{"structure": """ + '"'  + chemical + '"' + """}], "display": {"include": ["structureData"], "additionalFields": {"formula": "chemicalTerms(formula)", "iupac": "chemicalTerms(name)", "mass": "chemicalTerms(mass)", "smiles": "chemicalTerms(molString('smiles'))"}, "parameters": {"structureData": "mrv"}}}"""
-		
-	def chemSpecStruct(self, dic):
-		# don't forget about pKa_decimal
-		pkaKeys = ["pKa_pH_lower","pKa_pH_upper", "pKa_pH_increment"]
-		majorMicroKeys = ["pH_microspecies"]
-		isoPtKeys = ["isoelectricPoint_pH_increment"]
+		chemDeatsDict =  {
+			"structures": [
+				{ "structure": chemical }
+			],
+			"display": {
+				"include": [
+					"structureData"
+				],
+				"additionalFields": {
+					"formula": "chemicalTerms(formula)",
+					"iupac": "chemicalTerms(name)",
+					"mass": "chemicalTerms(mass)",
+					"smiles": "chemicalTerms(molString('smiles'))"
+				},
+				"parameters": {
+					"structureData": "mrv"
+				}
+			}
+		}
+		return chemDeatsDict
 
-		tautKeys = ["tautomer_maxNoOfStructures", "tautomer_pH"]
-		stereoKeys = ["stereoisomers_maxNoOfStructures"]
+
+	def chemSpecStruct(self, dic):
+
+		# don't forget about pKa_decimal
+
+		keys = ["isoelectricPoint", "pKa", "majorMicrospecies", "stereoisomer", "tautomerization"]
 
 		structures = []
 		if 'chem_struct' in dic:
 			structures = [ { "structure": dic["chem_struct"] } ]
 
-		pkaDict, majorMicroDict, isoPtDict = {}, {}, {}  
-		tautDict, stereoDict = {}, {}
+		includeList = []
+		paramsDict = {} # dict of dict where latter dict has key of param and vals of param vals
 
-		for key in dic.keys():
-			if key in pkaKeys:
-				pkaDict.update({key: dic[key]})
-			if key in majorMicroKeys:
-				majorMicroDict.update({key: dic[key]})
-			if key in isoPtKeys:
-				isoPtDict.update({key: dic[key]})
-			if key in tautKeys:
-				tautDict.update({key: dic[key]})
-			if key in stereoKeys:
-				stereoDict.update({key: dic[key]})
+		for key, value in dic.items():
+			if key in keys:
+				includeList.append(key) # add parameter to "include" list
+				paramsDict.update({key: value})
 
-		paramsDict, inlcudeList = {}, []
-		if pkaDict:
-			paramsDict["pKa"] = pkaDict
-			paramsDict["majorMicrospecies"] = majorMicroDict
-			paramsDict["isoelectricPoint"] = isoPtDict
-			inlcudeList.append("pKa")
-			inlcudeList.append("majorMicrospecies")
-			inlcudeList.append("isoelectricPoint")
-		if tautDict:
-			paramsDict["tautomerization"] = tautDict
-			inlcudeList.append("tautomerization")
-		if stereoDict:
-			paramsDict["stereoisomer"] = stereoDict
-			inlcudeList.append("stereoisomer")
-
-		display = {"include": inlcudeList, "parameters": paramsDict}
-
+		display = {"include": includeList, "parameters": paramsDict}
 		dataDict = {"structures": structures, "display": display}
 
 		return dataDict
@@ -244,7 +242,3 @@ def gen_jid():
     localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
     jid = localDatetime.strftime('%Y%m%d%H%M%S%f')
     return jid
-
-
-
-	

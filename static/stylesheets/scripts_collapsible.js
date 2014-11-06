@@ -7,8 +7,8 @@ $(document).ready(function () {
     }).get().join();
 	$('.collapsible').collapsible({
 		speed: 'slow',
-		defaultOpen: ""+sect_all+"", //original code 
-        // defaultOpen: "chart1", //(np)
+		// defaultOpen: ""+sect_all+"",
+        defaultClose: ""+sect_all+"",
         //replace the standard slideDown with custom function
         animateOpen: function (elem, opts) {
             elem.next().slideFadeToggle(opts.speed);
@@ -20,9 +20,19 @@ $(document).ready(function () {
 	});
 
 
-    //For Parent/Microspecies image tree 
-    $('dt').click(function() {
-        $(this).nextUntil('dt').slideToggle(700);
-    });
+    // Hover over output headings
+    $('.collapsible').hover(
+        function() {
+            $(this).data('bgcolor', $(this).css('background-color')).css({
+                                                                        'background-color': '#9AB2CB',
+                                                                        'cursor': 'pointer'
+                                                                    });
+        },
+        function() {
+            $(this).css('background-color', $(this).data('bgcolor'));
+        }
+    );
+
+
 
 });

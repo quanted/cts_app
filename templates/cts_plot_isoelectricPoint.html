@@ -1,37 +1,27 @@
-<script type="text/javascript" src="/static/stylesheets/jqplot/jquery.jqplot.js"></script>
-<script type="text/javascript" src="/static/stylesheets/jqplot/plugins/jqplot.canvasTextRenderer.min.js"></script>
-<script type="text/javascript" src="/static/stylesheets/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></script>
-
+<div id="isoelectric-point" class="plot"></div>
 
 <script type="text/javascript">
-$(window).load(function() {
+function plotIsoPt() {
 
-  var dataArr = [];
+  var dataArr = JSON.parse($('#isoPtData').text());
 
-  {% for key,value in data.items %}
-    dataArr.push({{value}});
-  {% endfor %}
-
-  var n = dataArr;
-
-  var plot1 = $.jqplot ('chart2', dataArr, {
-		title: 'Isoelectric Point Data',
-  	axes: {
-  		xaxis: {
-  			label: 'pH',
-  			min: 0,
-  			max: 14,
-  			tickInterval: 1
-  		},
-  	},
-  	seriesDefaults: {
-  		showMarker: false
-  	}
+  $.jqplot ('isoelectric-point', [dataArr], {
+    title: 'Isoelectric Point',
+    axes: {
+      xaxis: {
+        label: 'pH',
+        min: 0,
+        max: 14,
+        tickInterval: 1
+      }
+    },
+    seriesDefaults: {
+      showMarker: false
+    }
   });
-
-});
+}
 </script>
 
-<div id="chart2" class="collapsible">
-
-</div>
+<script type="text/javascript">
+plotIsoPt();
+</script>

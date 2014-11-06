@@ -6,6 +6,7 @@ function buildInfoTable(info) {
 				 	  	"Mass": info.mass
 					};
 
+	//popup table on mouseover event
 	var htmlWrapper = "<table>"
  	for (var key in structInfo) {
  		if (structInfo.hasOwnProperty(key)) {

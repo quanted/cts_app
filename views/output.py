@@ -38,10 +38,6 @@ def outputPageView(request, model='none', header=''):
     html = html + render_to_string('04uberoutput_start.html', {
             'model_attributes': header+' Output'})
 
-    if model == 'gentrans':
-        html = html + render_to_string('cts_addGentransResults.html')
-        html = html + render_to_string('cts-jquery.html')
-
     html = html + modelOutputHTML
     html = html + render_to_string('export.html', {})
     html = html + render_to_string('04uberoutput_end.html', {'model':model})
@@ -75,8 +71,6 @@ def outputPage(request, model='none', header=''):
             return outputPageView(request, model, header)
 
         else:
-            logging.warning(form.errors)
-            # logging.warning(str(form))
 
             inputmodule = importlib.import_module('.'+model+'_input', 'models.'+model)
 

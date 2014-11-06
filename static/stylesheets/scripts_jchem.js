@@ -72,17 +72,12 @@ function importMol(dataObj) {
 
   var results = ajaxCall(params); //Get chemical information
 
-  var data;
-
   if (typeof results !== "undefined") {
     data = results.data[0];
+    populateResultsTbl(data);
+    //Load chemical to marvin sketch:
+    marvinSketcherInstance.importStructure("mrv", data.structureData.structure); 
   }
-
-  populateResultsTbl(data);
-
-  //Load chemical to marvin sketch:
-  marvinSketcherInstance.importStructure("mrv", data.structureData.structure);
-
 }
 
 
@@ -111,6 +106,13 @@ function importMolFromCanvas() {
     }
     else {
       // importMol(results["structure"]); //send data object 
+      params = new Object();
+      params.url = Urls.getChemDeats;
+      params.type = "POST";
+      params.contentType = "application/json";
+      params.dataType = "json";
+      params.data = {"chemical": results.structure};
+      results = ajaxCall(params);
       populateResultsTbl(results.data[0]);
     }
 

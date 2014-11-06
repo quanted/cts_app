@@ -13,6 +13,7 @@ urlpatterns += patterns('views',
     # url(r'^docs/', include('docs.urls')),
     (r'^$', 'landing.ctsLandingPage'),  # Landing page
     (r'^cts/?$', 'landing.ctsLandingPage'),
+    (r'^cts/contact/?$', 'misc.contact'),
     (r'^cts/(?P<model>.*?)/description/?$', 'description.descriptionPage'),
     (r'^cts/(?P<model>.*?)/input/?$', 'input.inputPage'),
     (r'^cts/(?P<model>.*?)/output/?$', 'output.outputPage'),

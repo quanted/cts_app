@@ -81,6 +81,7 @@ def table_all(gentrans_obj):
     # html_all = table_metabolites(gentrans_obj)
     html_all = '<br>'
     html_all += table_metabolites(gentrans_obj)
+    html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
 
     return html_all
 
@@ -151,7 +152,6 @@ def table_metabolites(gentrans_obj):
 
     html = '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
     html += render_to_string('cts_gentrans_tree.html')
-    html += '<br> Raw Data: <input type="text" value="' + gentrans_obj.rawData + '">'
 
     return html
 

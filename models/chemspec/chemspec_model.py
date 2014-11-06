@@ -29,7 +29,7 @@ class chemspec(object):
 		self.smiles = smiles
 		self.name = name
 		self.formula = formula
-		self.mass = mass
+		self.mass = mass + 'g'
 
 		# Chemical Speciation Tab
 		self.pKa_decimals = pKa_decimals
@@ -49,42 +49,49 @@ class chemspec(object):
 		if pkaChkbox == 'on':
 			pkaInputsDict = {
 				# "pKa_decimals":self.pKa_decimals, 
-				"pKa_pH_lower":self.pKa_pH_lower,
-				"pKa_pH_upper":self.pKa_pH_upper,
-				"pKa_pH_increment":self.pKa_pH_increment,
-				"pH_microspecies":self.pH_microspecies, 
-				"isoelectricPoint_pH_increment":self.isoelectricPoint_pH_increment
+				"pHLower":self.pKa_pH_lower,
+				"pHUpper":self.pKa_pH_upper,
+				"pHStep":self.pKa_pH_increment,
 			}
-			dataDict.update(pkaInputsDict)
+			mmsInputsDict = {
+				"pH": self.pH_microspecies
+			}
+			isoInputsDict = {
+				"pHStep": self.isoelectricPoint_pH_increment
+			}  
+			dataDict.update({"pKa": pkaInputsDict})
+			dataDict.update({"majorMicrospecies": mmsInputsDict})
+			dataDict.update({"isoelectricPoint": isoInputsDict})
 		
 		if tautChkbox == 'on':
 			tautInputsDict = {
-				"tautomer_maxNoOfStructures":self.tautomer_maxNoOfStructures,
-				"tautomer_pH":self.tautomer_pH
+				"maxStructureCount":self.tautomer_maxNoOfStructures,
+				"pH":self.tautomer_pH,
+				"considerPH": True
 			}
-			dataDict.update(tautInputsDict)
+			dataDict.update({"tautomerization": tautInputsDict})
 
 		if stereoChkbox == 'on':
 			stereoInputsDict = {
-				"stereoisomers_maxNoOfStructures":self.stereoisomers_maxNoOfStructures
+				"maxNumberOfStereoisomers":self.stereoisomers_maxNoOfStructures
 			}
-			dataDict.update(stereoInputsDict)
+			dataDict.update({"stereoisomer": stereoInputsDict})
 
 		request = HttpRequest()
 		request.POST = dataDict
-		results = jchem_rest.getChemSpecData(request) # gets json string response of chemical data
+		response = jchem_rest.getChemSpecData(request) # gets json string response of chemical data
 
-		output_val = json.loads(results.content) # convert json to dict
+		self.rawData = response.content
 
-		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		fileout.write(json.dumps(output_val))
-		fileout.close()
+		output_val = json.loads(response.content) # convert json to dict
+
+		
 
 		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
 		data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
 
-		# Build results dictionaries
+		# Build response dictionaries
 		if 'pKa' in data_root:
 			self.pkaDict = getPkaInfo(output_val)
 		if 'isoelectricPoint' in data_root:
@@ -98,6 +105,9 @@ class chemspec(object):
 
 		# Get microspecies names and other info:
 		
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(json.dumps(response))
+		# fileout.close()
 
 		# for key, value in output_val.items():	
 		# 	logging.info(key, value)
@@ -175,8 +185,15 @@ def getPkaInfo(output_val):
 		pkaDict.update({'mostBasicPka': pkaRoot['mostBasic']})
 		pkaDict.update({'mostAcidicPka': pkaRoot['mostAcidic']})
 
-		parentDict = {'image': pkaRoot['result']['image']['imageUrl']}
-		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
+		# parentDict = {'image': pkaRoot['result']['image']['imageUrl']}
+		parentDict = getStructInfo(pkaRoot['result']['structureData']['structure'])
+		logging.warning(parentDict)
+
+		imgRequest = HttpRequest()
+		imgRequest.POST = {'smiles':parentDict['smiles'], 'height':192, 'width':150}
+		response = jchem_rest.smilesToImage(imgRequest)
+		response = json.loads(response.content)
+		parentDict.update({'image':response['data'][0]['image']['imageUrl']})
 
 		pkaDict.update({'parent': parentDict})
 		# pkaDict.update({'parent': pkaRoot['result']['image']['imageUrl']})
@@ -250,22 +267,22 @@ def getStructInfo(mrvData):
 
 	request = HttpRequest()
 	request.POST = {"chemical": mrvData}
-
 	response = jchem_rest.mrvToSmiles(request)
+	smilesDict = json.loads(response.content)
 
-	# logging.warning("Response: " + str(type(response.content)))
+	logging.warning(smilesDict)
 
+	request = HttpRequest()
+	request.POST = {"chemical": smilesDict["structure"]}
+	response = jchem_rest.getChemDeats(request)
 	structDict = json.loads(response.content)
 
-	# logging.warning("Response: " + str(type(structDict)))
+	logging.warning(response.content)
 
 	infoDict = {} # dict to be returned
 	struct_root = {} # root of data in structInfo
-
 	if 'data' in structDict:
-
 		struct_root = structDict['data'][0]
-
 		infoDict.update({"formula": struct_root['formula']})
 		infoDict.update({"iupac":  struct_root['iupac']})
 		infoDict.update({"mass":  struct_root['mass']})
