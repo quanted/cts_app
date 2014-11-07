@@ -2,12 +2,13 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 import importlib
 import linksLeft
+import os
 
 def algorithmPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'models.'+model)
     header = viewmodule.header
 
-    text_file1 = open('models/'+model+'/'+model+'_algorithm.txt','r')
+    text_file1 = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_algorithm.txt'),'r')
     x = text_file1.read()
     html = render_to_string('01cts_uberheader.html', {'title': header+' Algorithms'})
     html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'algorithm'})

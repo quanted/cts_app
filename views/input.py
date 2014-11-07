@@ -4,7 +4,6 @@ import importlib
 import linksLeft
 
 
-
 def inputPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'models.'+model)
     inputmodule = importlib.import_module('.'+model+'_input', 'models.'+model)

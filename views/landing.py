@@ -2,9 +2,10 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 import importlib
 import linksLeft
+import os
 
 def ctsLandingPage(request):
-    text_file2 = open('views/main_text.txt','r')
+    text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'views/main_text.txt'),'r')
     xx = text_file2.read()
 
     html = render_to_string('01cts_uberheader.html', {})

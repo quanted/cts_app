@@ -2,7 +2,8 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 import importlib
 import linksLeft
-# from REST import rest_funcs
+from REST import rest_funcs
+
 
 def historyPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'models.'+model)
@@ -15,8 +16,8 @@ def historyPage(request, model='none', header='none'):
             'model_attributes': header+' User History'})
     html = html + render_to_string('history_pagination.html', {})   
 
-    # hist_obj = rest_funcs.user_hist('admin', model)
-    # html = html + table_all(hist_obj)
+    hist_obj = rest_funcs.user_hist('admin', model)
+    html = html + table_all(hist_obj)
 
     html = html + render_to_string('04ubertext_end.html', {})
     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
@@ -30,8 +31,7 @@ def historyPageRevist(request):
     jid = request.GET.get('jid')
     model_name = request.GET.get('model_name')
     print jid, model_name
-    # html = rest_funcs.get_output_html(jid, model_name)
-    html = '' # remove later
+    html = rest_funcs.get_output_html(jid, model_name)
 
     response = HttpResponse()
     response.write(html)

@@ -1,9 +1,11 @@
 from django.views.decorators.http import require_POST
 import StringIO
 from django.http import HttpResponse
+from django.conf import settings
 import datetime
 import pytz
 import json
+import os
 
 import logging
 
@@ -35,16 +37,55 @@ def parsePOST(request):
 
     return input_str
 
+def link_callback(uri, rel):
+    """
+    Convert HTML URIs to absolute system paths for xhtml2pdf to access those resoures
+    """
+    # use short variable names
+    sUrl = settings.STATIC_URL      # Typically /static/
+    # os.path.abspath(os.path.dirname(__file__))
+    sRoot = os.path.join(settings.PROJECT_ROOT, 'static')    # Typically /home/userX/project_static/
+    # mUrl = settings.MEDIA_URL       # Typically /static/media/
+    # mRoot = settings.MEDIA_ROOT     # Typically /home/userX/project_static/media/
+
+    # convert URIs to absolute system paths
+    # if uri.startswith(mUrl):
+    #     path = os.path.join(mRoot, uri.replace(mUrl, ""))
+    # elif uri.startswith(sUrl):
+    if uri.startswith(sUrl):
+        path = os.path.join(sRoot, uri.replace(sUrl, ""))
+
+    # make sure that file exists
+    if not os.path.isfile(path):
+            raise Exception(
+                    # 'media URI must start with %s or %s' % \
+                    # (sUrl, mUrl))
+                    'media URI must start with %s' % \
+                    (sUrl))
+    return path
+
 
 @require_POST
 def pdfReceiver(request, model=''):
-
+    """
+    PDF Generation Receiver function.
+    Sends POST data as string to xhtml2pdf library for processing
+    """
     from xhtml2pdf import pisa
+    # viewmodule = importlib.import_module('.views', 'models.'+model)
+    # Open description txt
+    text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
+    description = text_description.read()
+    # Open algorithm txt
+    #text_algorithm = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_algorithm.txt'),'r')
+    #algorithms = text_algorithm.read()
 
-    input_str = parsePOST(request)
+    input_str = description
+    input_str = input_str + parsePOST(request)
+    #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
 
     packet = StringIO.StringIO() #write to memory
-    pisa.CreatePDF(input_str, dest=packet)
+    pisa.CreatePDF(input_str, dest = packet, link_callback = link_callback)
 
     # Create timestamp
     ts = datetime.datetime.now(pytz.UTC)
@@ -60,7 +101,11 @@ def pdfReceiver(request, model=''):
 @require_POST
 def htmlReceiver(request, model=''):
 
-    input_str = parsePOST(request)
+    text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
+    description = text_description.read()
+    
+    input_str = description
+    input_str = input_str + parsePOST(request)
 
     packet = StringIO.StringIO(input_str) #write to memory
 
