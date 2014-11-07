@@ -8,21 +8,26 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-import os
+import os, sys
 import secret
+
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 # Define ENVIRONMENTAL VARIABLES for project (replaces the app.yaml)
 os.environ.update({
     'UBERTOOL_BATCH_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com/',
     'UBERTOOL_MONGO_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',
-    'UBERTOOL_SECURE_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',
-    # 'UBERTOOL_REST_SERVER': 'http://localhost:80',
-    'UBERTOOL_REST_SERVER': 'http://54.83.18.251:80',
+    'UBERTOOL_SECURE_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',   
+    #'UBERTOOL_REST_SERVER': 'http://localhost:80',                         # Local REST server
+    #'UBERTOOL_REST_SERVER': 'http://54.83.18.251:80',                      # Tao's EC2 REST server 
+    #'UBERTOOL_REST_SERVER': 'http://54.210.118.56'                         # EB Pilot REST server
+    'UBERTOOL_REST_SERVER': 'http://172.20.100.15:7777',                           # CGI Internal
+    'PROJECT_PATH': PROJECT_ROOT,
+    'SITE_SKIN': 'EPA'                          # Leave empty ('') for default skin, 'EPA' for EPA skin
 })
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -35,7 +40,16 @@ DEBUG = True
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '134.67.114.1',
+#    'intranet.epa.gov/ubertool'
+    #'ord-uber-vm001',
+    #'ord-uber-vm001.'
+]
+
+ADMINS = (
+    ('Jon F.', 'funkswing@gmail.com')
+)
 
 APPEND_SLASH = True
 
@@ -44,7 +58,6 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates').replace('\\','/'),
-
 )
 
 # List of callables that know how to import templates from various sources.
@@ -63,14 +76,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'docs'
-    'filters',
-    # 'templatetags.my_filter'
-    'test_cts' # Pavan added this for the TEST suite CTS app.  Not to be confused with any other test software.
+    'mod_wsgi.server',
+    #'docs'
 )
-
-# This breaks the pattern of a "pluggable" TEST_CTS django app, but it also makes it convenient to describe the server hosting the TEST API.
-TEST_CTS_PROXY_URL = "http://10.0.2.2:7080/"
 
 MIDDLEWARE_CLASSES = (
     # 'django.contrib.sessions.middleware.SessionMiddleware',
@@ -83,7 +91,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-WSGI_APPLICATION = 'wsgi_local.application'
+WSGI_APPLICATION = 'wsgi_apache.application'
 
 
 # Database
