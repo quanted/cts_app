@@ -48,8 +48,8 @@ def requestTimeout(request):
     return response
 
 
-def contact(request):
-    return render(request, 'contact.html')
+def blankLanding(request):
+    return render(request, 'blank_landing.html')
 
 
 #######################################################################################
