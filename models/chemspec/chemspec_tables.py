@@ -4,7 +4,7 @@
 """
 
 # import numpy
-from django.template import Context, Template
+from django.template import Context, Template, defaultfilters
 # from django.utils.safestring import mark_safe
 # import logging
 import time
@@ -16,6 +16,7 @@ from PIL import Image
 import urllib2
 from StringIO import StringIO
 from django.utils.safestring import mark_safe
+from models.gentrans import data_walks  
 
 # logger = logging.getLogger("chemspecTables")
 
@@ -173,7 +174,9 @@ tmplImg = Template(imagesTemplate)
 
 def table_all(chemspec_obj):
     # html_all = '<script type="text/javascript" src="/static/stylesheets/structure_wrapper.js"></script>'
-    html_all = table_struct(chemspec_obj)
+    html_all = '<script type="text/javascript" src="/static/stylesheets/qtip/jquery.qtip.js"></script>'
+    html_all += '<link type="text/css" rel="stylesheet" href="/static/stylesheets/qtip/jquery.qtip.css"></link>'
+    html_all += table_struct(chemspec_obj)
     html_all += table_pka_input(chemspec_obj)     
     html_all += table_taut_input(chemspec_obj)
     html_all += table_stereo_input(chemspec_obj) 
@@ -185,7 +188,32 @@ def table_all(chemspec_obj):
     html_all += table_microplot(chemspec_obj)
     html_all += table_stereo_results(chemspec_obj)
     html_all += table_taut_results(chemspec_obj)
-    html_all += render_to_string('cts_display_raw_data.html', {'rawData': chemspec_obj.rawData})
+    html_all += render_to_string('cts_display_raw_data.html', {'rawData': chemspec_obj.rawData}) # temporary
+    html_all += """
+    <script>
+    function tipit() {
+        // Using qtip2 for tooltip
+        $('.wrapped_molecule').each(function() {
+            $(this).qtip({
+                content: {
+                    text: $(this).next('.tooltiptext')
+                },
+                style: {
+                    classes: 'qtip-light'
+                },
+                position: {
+                    my: 'top left',
+                    at: 'center right',
+                    target: $(this)
+                }
+            });
+        });
+    }
+    </script>
+    <script>
+    tipit();
+    </script>
+    """
     return html_all
 
 def timestamp(chemspec_obj="", batch_jid=""):
@@ -385,15 +413,16 @@ def table_images(chemspec_obj):
     if chemspec_obj.pkaDict:
         html = """
         <H4 class="out_1 collapsible" id="section8"><span></span><b>Parent/Microspecies Images</b></H4>
-        <div class="out_">
+        <div class="out_ shiftRight">
         """
-        html += "Parent: "
-        html += wrap_molecule(chemspec_obj.pkaDict['parent'])
-        html += "Microspecies: "
-        logging.warning(chemspec_obj.pkaDict['msImageUrlList'])
+        html += '<b>Parent: </b>'
+        html += wrap_molecule(chemspec_obj.pkaDict['parent']) + "<br>"
+        html += "<b>Microspecies: </b>"
         if chemspec_obj.pkaDict['msImageUrlList']:
+            html += '<dl style="display:inline-block">'
             for item in chemspec_obj.pkaDict['msImageUrlList']:
-                html += wrap_molecule(item)
+                html += '<dd style="float:left;">' + wrap_molecule(item) + '</dd>'
+            html += "</dl>"
         else:
             html += "none"
         html += """
@@ -420,8 +449,9 @@ def table_microplot(chemspec_obj):
             html += '</div>'
             html += render_to_string('cts_plot_microspecies_dist.html')
         else:
-            html += """
-            <p class="shiftRight">No microspecies for plotting</p>
+            html += """<dl class="shiftRight"><dd>
+            No microspecies for plotting
+            </dd></dl>
             """
         html += """
         </div></div>
@@ -441,7 +471,8 @@ def table_stereo_results(chemspec_obj):
         <H3 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H3>
         <div class="out_">
         """
-        html += tmplImg.render(Context(dict(data=chemspec_obj.stereoDict)))
+        html += wrap_molecule(chemspec_obj.stereoDict)
+        # html += tmplImg.render(Context(dict(data=chemspec_obj.stereoDict)))
         html += """
         </div>
         """
@@ -460,7 +491,16 @@ def table_taut_results(chemspec_obj):
         <H3 class="out_1 collapsible" id="section11"><span></span>Tautomerization</H3>
         <div class="out_">
         """
-        html += tmplImg.render(Context(dict(data=chemspec_obj.tautDict)))
+        # html += tmplImg.render(Context(dict(data=chemspec_obj.tautDict)))
+
+        if 'tautStructs' in chemspec_obj.tautDict:
+            html += '<dl style="display:inline-block">'
+            for item in chemspec_obj.tautDict['tautStructs']:
+                html += '<dd style="float:left;">' + wrap_molecule(item) + '</dd>'
+            html += "</dl>"
+        else:
+            html += "none"
+
         html += """
         </div><br><br>
         """
@@ -469,16 +509,19 @@ def table_taut_results(chemspec_obj):
         return ""
 
 
-"""
-Wraps molecule image result with a table
-and populates said table with molecular details.
-
-Inputs: property dict (e.g., pka, taut)
-Outputs: data wrapped in table with image and name
-"""
 def wrap_molecule(propDict):
+    """
+    Wraps molecule image result with a table
+    and populates said table with molecular details.
 
-    image = propDict['image']
+    Inputs: property dict (e.g., pka, taut)
+    Outputs: data wrapped in table with image and name
+    """
+
+    logging.warning("Properties dict: " + str(propDict))
+
+    # image = propDict['image']
+    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100)) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
     mass = propDict['mass']
@@ -492,6 +535,10 @@ def wrap_molecule(propDict):
         "smiles": smiles
     }
 
-    html = render_to_string('structure_wrapper.html', infoDict)
+    html = '<table class="' + defaultfilters.slugify(infoDict['iupac']) +' wrapped_molecule">'
+    html += '<tr><td align="center">' + infoDict['iupac'] + '</td></tr>'
+    html += '<tr><td>' + infoDict['image'] + '</td></tr></table>' 
+    wrappedDict = data_walks.dataWrapper(infoDict, ['formula', 'iupac', 'mass', 'smiles']) # popup table image
+    html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
 
     return html
