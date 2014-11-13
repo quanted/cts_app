@@ -9,8 +9,8 @@ import logging
 # As of 10/22/14, TEST is responding to endpoints that include ALL, ALOGP, BP, KLOGP, MLOGP, MP, TEMPLATE, VP, WS, XLOGP, BP/MEASURED, MP/MEASURED, VP/MEASURED, and WS/MEASURED
 # TODO: this function is strongly generic, it may be worth considering to use this as a component of the larger ubertool project for CTS/upstream. 
 def simple_proxy(request, path):
-  # TEST_URL = settings.TEST_CTS_PROXY_URL + path
-  TEST_URL = "http://127.0.0.1:8000/test_cts/api/" + path
+  TEST_URL = settings.TEST_CTS_PROXY_URL + path
+  # TEST_URL = "http://127.0.0.1:8000/test_cts/api/" + path
   logging.warning(request)
 
   try:

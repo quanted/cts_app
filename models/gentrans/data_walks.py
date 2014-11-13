@@ -21,6 +21,7 @@ def recursive(jsonStr):
 
 
 metID = 0 # unique id for each node
+metabolite_keys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
 
 def traverse(root):
 
@@ -31,12 +32,12 @@ def traverse(root):
 	if metID == 1:
 		parent = root.keys()[0]
 		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100), "data": {}, "children": []})
-		newDict['data'].update(dataWrapper({"smiles":parent}))
+		newDict['data'].update(dataWrapper({"smiles":parent}, metabolite_keys))
 		root = root[parent]
 	else:
 		newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100), "data": {}, "children": []})
 		# newDict['data'].update({"degradation": root['degradation']})
-		newDict['data'].update(dataWrapper(root))
+		newDict['data'].update(dataWrapper(root, metabolite_keys))
 
 	for key, value in root.items():
 		if isinstance(value, dict):
@@ -48,11 +49,15 @@ def traverse(root):
 	return newDict
 
 
-"""
-Wraps image html tag around
-the molecule's image source
-"""
 def nodeWrapper(smiles, height, width):
+	"""
+	Wraps image html tag around
+	the molecule's image source
+
+	Inputs: smiles, height, width
+
+	Returns: html of wrapped image
+	"""
 
 	# 1. Get image from smiles
 	post = {
@@ -75,27 +80,35 @@ def nodeWrapper(smiles, height, width):
 			imageWidth = root['width']
 
 	# 3. Wrap imageUrl with <img>
-	html = '<img class="metabolite"'
-	html += 'alt="' + smiles + '"'
+	html = '<img class="metabolite" '
+	html += 'alt="' + smiles + '" '
 	html += 'src="' + imageUrl + '"/>'
 	return html
 
 
-"""
-Wraps data in table to be displayed
-at a node mouseover event
-"""
-def dataWrapper(root):
+def dataWrapper(root, keys):
+	"""
+	Wraps molecule data (e.g., formula, iupac, mass, 
+	smiles, image) in table
 
-	propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
-	dataProps = {key: None for key in propKeys} # metabolite properties 
+	Inputs 
+	root - dictionary of items to wrap in table
+	keys - keys to use for building table
 
-	html = '<table class="metabolite_data">'
-	html += '<tr><td rowspan="' + str(len(propKeys) + 1) + '">' 
+	Returns dictionary where html key is 
+	the wrapped html and the other keys are
+	same as the input keys 
+	"""
+
+	# propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
+	dataProps = {key: None for key in keys} # metabolite properties 
+
+	html = '<table class="wrapped_molecule">'
+	html += '<tr><td rowspan="' + str(len(keys) + 1) + '">' 
 	html += nodeWrapper(root['smiles'], 192, 150)
 	html += '</td></tr>'
 	for key, value in root.items():
-		if key in propKeys:
+		if key in keys:
 			dataProps[key] = value
 			html += '<tr><td>' + key + '</td>'
 			html += '<td>' + str(value) + '</td></tr>'
