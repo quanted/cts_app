@@ -7,8 +7,8 @@ $(document).ready(function () {
     }).get().join();
 	$('.collapsible').collapsible({
 		speed: 'slow',
-		// defaultOpen: ""+sect_all+"",
-        defaultClose: ""+sect_all+"",
+		defaultOpen: ""+sect_all+"", //all open on page load
+        // defaultClose: ""+sect_all+"", //all collapsed on page load
         //replace the standard slideDown with custom function
         animateOpen: function (elem, opts) {
             elem.next().slideFadeToggle(opts.speed);
@@ -20,7 +20,7 @@ $(document).ready(function () {
 	});
 
 
-    // Hover over output headings
+    // Highlights output headings on mouseover event 
     $('.collapsible').hover(
         function() {
             $(this).data('bgcolor', $(this).css('background-color')).css({
