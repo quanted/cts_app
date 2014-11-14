@@ -1416,12 +1416,6 @@ table for ChemSpec output */
   background-color: transparent;
 }
 
-/* jqplot div styling */
-.plot {
-  height: 300px;
-  width: 700px;
-}
-
 /* qtip2 stuff */
 .tooltiptext {
   display: none;
