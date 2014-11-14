@@ -10,8 +10,24 @@ function plotMicroDist() {
 
   var dataArr = JSON.parse($('#microDistData1').text());
 
-  $.jqplot ('microspecies-distribution', dataArr, {
+  var seriesInfo = [];
+  var plotData = [];
+
+  //get keys for series labels, then convert back to list for plotting
+  for (var key in dataArr) {
+    if (dataArr.hasOwnProperty(key)) {
+      //do stuff with dict items not in prototype object
+      var seriesObj = {
+        label:key
+      };
+      seriesInfo.push(seriesObj);
+      plotData.push(dataArr[key]);
+    }
+  }
+
+  var plot = $.jqplot ('microspecies-distribution', plotData, {
     title: 'Microspecies Distribution',
+    series: seriesInfo,
     axes: {
       xaxis: {
         label: 'pH',
@@ -22,13 +38,22 @@ function plotMicroDist() {
     },
     seriesDefaults: {
       showMarker: false
-    },
-    legend: {
-      show: true,
-      location: 'ne',
-      placement: 'inside'
     }
+    // legend: {
+    //   show: true,
+    //   location: 'n',
+    //   placement: 'outside',
+    //   showSwatches: true
+    // }
   });
+
+  //Get series colors to make microspecies image border
+  //the same as its series color
+  for (var series in plot['series']) {
+    var color = plot['series'][series]['color']; //series color
+    var name = plot['series'][series]['label']; //series name
+    $('#' + name).css('border', '2px solid ' + color);
+  }
 }
 </script>
 

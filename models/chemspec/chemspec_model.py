@@ -188,7 +188,7 @@ def getPkaInfo(output_val):
 
 		parentDict = {'image': pkaRoot['result']['image']['imageUrl']}
 		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
-		logging.warning(parentDict)
+		# logging.warning(parentDict)
 
 		pkaDict.update({'parent': parentDict})
 		# pkaDict.update({'parent': pkaRoot['result']['image']['imageUrl']})
@@ -199,12 +199,10 @@ def getPkaInfo(output_val):
 			microspeciesList = pkaRoot['microspecies']
 
 			msImageUrlList = [] # list of microspecies image urls
-			inc = 1
 			for ms in microspeciesList:
 				msStructDict = {} # list element in msImageUrlList
 				msStructDict.update({"image": ms['image']['imageUrl']})
 				structInfo = getStructInfo(ms['structureData']['structure'])
-
 				msStructDict.update(structInfo)
 				msImageUrlList.append(msStructDict)
 
@@ -213,7 +211,9 @@ def getPkaInfo(output_val):
 			# get microspecies distribution data for plotting
 			microDist = pkaRoot['chartData']
 
-			microDistData = []		
+			# microDistData = []	
+			microDistData = {}
+			inc = 0	
 			for ms in microDist:
 				valuesList = [] # format: [[ph1,con1], [ph2, con2], ...] per ms
 				for vals in ms['values']:
@@ -222,8 +222,11 @@ def getPkaInfo(output_val):
 					xy.append(vals['concentration'])
 					valuesList.append(xy)
 
-				# microDistData.update({ms['key'] : valuesList})
-				microDistData.append(valuesList)
+				# microDistData.update({msImageUrlList[inc]['iupac'] : valuesList})
+				microDistData.update({ms['key'] : valuesList})
+				msImageUrlList[inc].update({"key":ms['key']})
+				inc += 1
+				# microDistData.append(valuesList)
 
 			pkaDict.update({'microDistData': microDistData})
 

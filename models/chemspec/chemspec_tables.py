@@ -204,7 +204,7 @@ def table_all(chemspec_obj):
                 position: {
                     my: 'top left',
                     at: 'center right',
-                    target: $(this)
+                    target: 'mouse'
                 }
             });
         });
@@ -417,9 +417,9 @@ def table_images(chemspec_obj):
         """
         html += '<b>Parent: </b>'
         html += wrap_molecule(chemspec_obj.pkaDict['parent']) + "<br>"
-        html += "<b>Microspecies: </b>"
+        html += "<b>Microspecies: </b><br>"
         if chemspec_obj.pkaDict['msImageUrlList']:
-            html += '<dl style="display:inline-block">'
+            html += '<dl id="microspecies" style="display:inline-block">'
             for item in chemspec_obj.pkaDict['msImageUrlList']:
                 html += '<dd style="float:left;">' + wrap_molecule(item) + '</dd>'
             html += "</dl>"
@@ -433,10 +433,10 @@ def table_images(chemspec_obj):
         return ""
 
 
-"""
-Microspecies Distribution Plot "Table"
-"""
 def table_microplot(chemspec_obj):
+    """
+    Microspecies Distribution Plot "Table"
+    """
 
     if chemspec_obj.pkaDict:
         html = """
@@ -518,10 +518,13 @@ def wrap_molecule(propDict):
     Outputs: data wrapped in table with image and name
     """
 
-    logging.warning("Properties dict: " + str(propDict))
+    key = None
+    if 'key' in propDict:
+        key = propDict['key']
+        logging.warning("KEY: " + key)
 
     # image = propDict['image']
-    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100)) # displayed image
+    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100, key)) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
     mass = propDict['mass']
@@ -538,7 +541,7 @@ def wrap_molecule(propDict):
     html = '<table class="' + defaultfilters.slugify(infoDict['iupac']) +' wrapped_molecule">'
     html += '<tr><td align="center">' + infoDict['iupac'] + '</td></tr>'
     html += '<tr><td>' + infoDict['image'] + '</td></tr></table>' 
-    wrappedDict = data_walks.dataWrapper(infoDict, ['formula', 'iupac', 'mass', 'smiles']) # popup table image
+    wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key) # popup table image
     html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
 
     return html

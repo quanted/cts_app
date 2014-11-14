@@ -32,12 +32,12 @@ def traverse(root):
 	if metID == 1:
 		parent = root.keys()[0]
 		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100), "data": {}, "children": []})
-		newDict['data'].update(dataWrapper({"smiles":parent}, metabolite_keys))
+		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys))
 		root = root[parent]
 	else:
 		newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100), "data": {}, "children": []})
 		# newDict['data'].update({"degradation": root['degradation']})
-		newDict['data'].update(dataWrapper(root, metabolite_keys))
+		newDict['data'].update(popupBuilder(root, metabolite_keys))
 
 	for key, value in root.items():
 		if isinstance(value, dict):
@@ -49,7 +49,7 @@ def traverse(root):
 	return newDict
 
 
-def nodeWrapper(smiles, height, width):
+def nodeWrapper(smiles, height, width, key=None):
 	"""
 	Wraps image html tag around
 	the molecule's image source
@@ -81,12 +81,14 @@ def nodeWrapper(smiles, height, width):
 
 	# 3. Wrap imageUrl with <img>
 	html = '<img class="metabolite" '
+	if key != None:
+		html += 'id="' + key + '" '
 	html += 'alt="' + smiles + '" '
 	html += 'src="' + imageUrl + '"/>'
 	return html
 
 
-def dataWrapper(root, keys):
+def popupBuilder(root, paramKeys, molKey=None):
 	"""
 	Wraps molecule data (e.g., formula, iupac, mass, 
 	smiles, image) in table
@@ -101,14 +103,14 @@ def dataWrapper(root, keys):
 	"""
 
 	# propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
-	dataProps = {key: None for key in keys} # metabolite properties 
+	dataProps = {key: None for key in paramKeys} # metabolite properties 
 
 	html = '<table class="wrapped_molecule">'
-	html += '<tr><td rowspan="' + str(len(keys) + 1) + '">' 
+	html += '<tr><td rowspan="' + str(len(paramKeys) + 1) + '">' 
 	html += nodeWrapper(root['smiles'], 192, 150)
 	html += '</td></tr>'
 	for key, value in root.items():
-		if key in keys:
+		if key in paramKeys:
 			dataProps[key] = value
 			html += '<tr><td>' + key + '</td>'
 			html += '<td>' + str(value) + '</td></tr>'
