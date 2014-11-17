@@ -2,6 +2,7 @@ import logging
 import json
 from django.http import HttpRequest
 from REST import jchem_rest
+from django.utils.encoding import smart_text
 
 """
 10-31-14 (np)
@@ -99,7 +100,7 @@ def popupBuilder(root, paramKeys, molKey=None):
 
 	Returns dictionary where html key is 
 	the wrapped html and the other keys are
-	same as the input keys 
+	same as the input keys
 	"""
 
 	# propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
@@ -111,9 +112,15 @@ def popupBuilder(root, paramKeys, molKey=None):
 	html += '</td></tr>'
 	for key, value in root.items():
 		if key in paramKeys:
+
+			# Convert other types (e.g., float, int) to string
+			if not isinstance(value, unicode):
+				value = str(value)
+
 			dataProps[key] = value
+
 			html += '<tr><td>' + key + '</td>'
-			html += '<td>' + str(value) + '</td></tr>'
+			html += '<td>' + value + '</td></tr>'
 	html += '</table>'
 
 	dataProps["html"] = html 

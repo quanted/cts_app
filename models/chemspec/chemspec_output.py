@@ -1,4 +1,6 @@
 from django.views.decorators.http import require_POST
+from django.utils.encoding import smart_text
+import logging
 
 @require_POST
 def chemspecOutputPage(request):
@@ -7,7 +9,9 @@ def chemspecOutputPage(request):
     # Chemical Editor tab
     chemStruct = request.POST.get('chem_struct')
     smiles = request.POST.get('smiles')
+
     name = request.POST.get('name')
+
     formula = request.POST.get('formula')
     mass = request.POST.get('mass')
 

@@ -1404,16 +1404,29 @@ table for ChemSpec output */
 .wrapped_molecule {
   background-color: transparent;
   font-size: 11px;
-  /*border: 1px solid #1a1a1a;*/
 }
 
+/*any child <img> of parent with class wrapped_molecule*/
 .wrapped_molecule img {
   border: 1px solid #1a1a1a;
   background-color: white;
+  margin: 0px;
 }
+/* img.wrapped_molecule - selects <img> with class wrapped_molecule */
+/*img.wrapped_molecule {
+  position: center;
+}*/
+
 
 .wrapped_molecule td {
   background-color: transparent;
+  width: 150px;
+}
+
+/*popup molecule image*/
+.metabolite {
+  background-color: white;
+  border: 1px solid #1a1a1a;
 }
 
 /* qtip2 stuff */

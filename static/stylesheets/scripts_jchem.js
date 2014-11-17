@@ -151,6 +151,9 @@ function populateResultsTbl(data) {
     $('#weight').val(""); //Mass txtbox - results table
   }
   else {
+
+    var type = typeof data["iupac"];
+
     $('#id_chem_struct').val(data["smiles"]); //Enter SMILES txtbox
     $('#molecule').val(data["smiles"]); //SMILES string txtbox - results table
     $('#IUPAC').val(data["iupac"]); //IUPAC txtbox - results table

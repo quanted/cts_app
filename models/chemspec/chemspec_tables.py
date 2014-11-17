@@ -540,7 +540,7 @@ def wrap_molecule(propDict):
 
     html = '<table class="' + defaultfilters.slugify(infoDict['iupac']) +' wrapped_molecule">'
     html += '<tr><td align="center">' + infoDict['iupac'] + '</td></tr>'
-    html += '<tr><td>' + infoDict['image'] + '</td></tr></table>' 
+    html += '<tr><td align="center">' + infoDict['image'] + '</td></tr></table>' 
     wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key) # popup table image
     html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
 
