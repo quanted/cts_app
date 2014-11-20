@@ -9,6 +9,7 @@ import logging
 import views.misc
 from django.http import HttpResponse
 from django.http import HttpRequest
+from django.utils.safestring import mark_safe
 from xml.sax.saxutils import escape
 import datetime
 import pytz
@@ -16,13 +17,15 @@ import pytz
 
 headers = {'Content-Type' : 'application/json'}
 
+logging.basicConfig(level=logging.INFO)
+
 
 class Urls:
 
-	jchemBase = 'http://pnnl.cloudapp.net/webservices' # old ws location 
-	efsBase = 'http://pnnl.cloudapp.net/efsws' # metabolizer base
-	# base = 'http://134.67.114.2/webservices'
-	# base = 'http://134.67.114.2/efsws/rest' # antiquated, but functioning, WS
+	# jchemBase = 'http://pnnl.cloudapp.net/webservices' # old ws location 
+	# efsBase = 'http://pnnl.cloudapp.net/efsws' # metabolizer base
+	jchemBase = 'http://134.67.114.2/webservices'
+	efsBase = 'http://134.67.114.2/efsws/rest'
 
 	# jchem ws urls:
 	exportUrl = '/rest-v0/util/calculate/molExport'
@@ -30,21 +33,18 @@ class Urls:
 	# standardizerUrl = '/rest-v0/util/convert/standardizer'
 
 	metabolizerUrl = '/rest/metabolizer'
-	standardizerUrl = '/rest/standardizer'
+	# standardizerUrl = '/rest/standardizer'
+	standardizerUrl = '/rest-v0/util/convert/standardizer'
 
 
 def doc(request):
 	"""
 	API Documentation Page
 	"""
-
 	text_file2 = open('REST/doc_text.txt','r')
-
 	xx = text_file2.read()
-
 	response = HttpResponse()
 	response.write(xx)
-
 	return response
 
 
@@ -58,7 +58,6 @@ def getChemDeats(request):
 	The iupac, formula, mass, and smiles string of the chemical
 	along with the mrv of the chemical (to display in marvinjs)
 	"""
-
 	queryDict = request.POST
 	chem = queryDict.get('chemical') # chemical name
 	ds = Data_Structures()
@@ -75,7 +74,6 @@ def smilesToImage(request):
 	Returns image (.png) url for a 
 	given SMILES
 	"""
-
 	smiles = request.POST.get('smiles')
 	imageWidth = request.POST.get('width')
 	imageHeight = request.POST.get('height')
@@ -103,12 +101,9 @@ def mrvToSmiles(request):
 	"""
 	mrvToSmiles
 
-	Gets SMILES string for chemical drawn
-	in Marvin Sketch. Also calls getChemDeats
-	to get chemical info (should probably not 
-	tie these together)
+	Inputs: chemical as mrv 
+	Returns: SMILES string of chemical
 	"""
-
 	queryDict = request.POST
 	chemStruct = queryDict.get('chemical') # chemical in <cml> format (marvin sketch)
 	request = {
@@ -120,10 +115,6 @@ def mrvToSmiles(request):
 	url = Urls.jchemBase + Urls.exportUrl
 	smilesData = web_call(url, request, data) # get responset))
 	return smilesData
-	# data = json.loads(smilesData.content)
-	# request = HttpRequest()
-	# request.POST = { "chemical": data['structure'] }
-	# return getChemDeats(request) # return smiles along with other info
 
 
 def getChemSpecData(request):
@@ -140,6 +131,11 @@ def getChemSpecData(request):
 	ds = Data_Structures()
 	data = ds.chemSpecStruct(request.POST) # format request to jchem
 	data = json.dumps(data)
+
+	fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+	fileout.write(data)
+	fileout.close()
+
 	url = Urls.jchemBase + Urls.detailUrl
 	results = web_call(url, request, data)
 	return results
@@ -149,7 +145,6 @@ def getTransProducts(request):
 	"""
 	Makes request to metabolizer on pnnl server
 	"""
-
 	url = Urls.efsBase + Urls.metabolizerUrl
 	data = json.dumps(request.POST)
 	results = web_call(url, request, data)
@@ -163,24 +158,20 @@ def standardizer(request):
 	perfrom on the structure (e.g., aromatize, daromatize,
 	clear stereo, tautomerize, add explicit H, remove
 	explicit H, transform, and neutralize). 
-	*Currently just uses aromatize by default.*
+	NOTE: Currently just uses aromatize by default.
 
 	Returns molecule in mrv format
 	"""
-	url = Urls.efsBase + Urls.standardizerUrl
+	url = Urls.jchemBase + Urls.standardizerUrl
 	structure = request.POST.get('chemical')
-
-	# logging.warning(structure)
-	# data = json.dumps({"structure": structure})
 	data = {
 		"structure": structure,
-		"actions": [
-			"aromatize"
-		]
+		"parameters": {
+        	"standardizerDefinition": '<?xml version="1.0" encoding="UTF-8"?><StandardizerConfiguration><Actions><Aromatize ID="Aromatize"/></Actions></StandardizerConfiguration>'
+    	}
 	}
 	data = json.dumps(data)
 	results = web_call(url, request, data)
-	# logging.warning(results.content)
 	return results
 
 
@@ -194,14 +185,14 @@ def web_call(url, request, data):
 	message = '\n' + "URL: " + '\n' + url + '\n\n'
 	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
 	try:
-		# logging.warning("trying to get response...")
+		# logger.info("Making Call: " + message)
 		response = requests.post(url, data=data, headers=headers, timeout=60)
-		# logging.warning("success.")
+		# logger.info("Call successful")
 		message = message + "Response: " + '\n' + response.content + '\n\n'
 		callback_response.write(response.content)
 		return callback_response
 	except:
-		logging.warning("Error in web call")
+		logging.info("Error in web call")
 		callback_response.write(message)
 		return callback_response
 
@@ -240,7 +231,7 @@ class Data_Structures:
 
 		structures = []
 		if 'chem_struct' in dic:
-			structures = [ { "structure": dic["chem_struct"] } ]
+			structures = [{"structure": dic["chem_struct"]}]
 
 		includeList = []
 		paramsDict = {} # dict of dict where latter dict has key of param and vals of param vals

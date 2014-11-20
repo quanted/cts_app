@@ -1370,11 +1370,7 @@ th {
 }
 
 .redFont {
-  color: red;
-}
-
-.blackFont {
-  color: black;
+  color: #FF4D4D;
 }
 
 /* Input table structures for model inputs */
@@ -1420,7 +1416,7 @@ table for ChemSpec output */
 
 .wrapped_molecule td {
   background-color: transparent;
-  width: 150px;
+  /*width: 150px;*/
 }
 
 /*popup molecule image*/
@@ -1432,4 +1428,9 @@ table for ChemSpec output */
 /* qtip2 stuff */
 .tooltiptext {
   display: none;
+}
+
+body.wait *, body.wait
+{
+    cursor: progress !important;
 }

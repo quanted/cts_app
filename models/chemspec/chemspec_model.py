@@ -86,8 +86,6 @@ class chemspec(object):
 
 		output_val = json.loads(response.content) # convert json to dict
 
-		
-
 		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
 		data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
@@ -103,16 +101,6 @@ class chemspec(object):
 			self.stereoDict = getStereoInfo(output_val)
 		if 'tautomerization' in data_root:
 			self.tautDict = getTautInfo(output_val)
-
-		# Get microspecies names and other info:
-		
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(json.dumps(response))
-		# fileout.close()
-
-		# for key, value in output_val.items():	
-		# 	logging.info(key, value)
-		# 	setattr(self, key, value)
 
 
 # Builds isoelectricPoint dictionary

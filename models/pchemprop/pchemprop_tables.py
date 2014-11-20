@@ -1,3 +1,7 @@
+<<<<<<< Updated upstream
+=======
+# <<<<<<< HEAD
+>>>>>>> Stashed changes
 from django.template import Context, Template
 import datetime
 from django.template.loader import render_to_string
@@ -61,7 +65,7 @@ tmpl = Template(djtemplate)
 def table_all(pchemprop_obj):
     html_all = '<br>'
     html_all += table_1(pchemprop_obj)
-
+    html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
     return html_all
 
 
@@ -95,4 +99,8 @@ def timestamp(pchemprop_obj="", batch_jid=""):
     html = html + " (EST)</b>"
     html = html + """
     </div>"""
+<<<<<<< Updated upstream
     return html
+=======
+    return html
+>>>>>>> Stashed changes

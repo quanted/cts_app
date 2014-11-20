@@ -12,6 +12,7 @@ import logging
 from django.template.defaultfilters import stringfilter
 from django.core import validators
 from models.forms import validation
+from filters.templatetags import color_table
 
 
 # Define Custom Templates
@@ -80,5 +81,40 @@ class cts_chemCalcs_props(forms.Form):
 	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient'))
 	# dist_coeff = forms.BooleanField(required=False, label=mark_safe('Distribution Coefficient (L/kg)'))
 
+
 class PchempropInp(cts_chemCalcs_props):
 	pass
+
+
+def pchempropAvailable(calculator, prop):
+	"""
+	Checks availability of chemical property 
+	for a given calculator
+
+	Inputs:
+	calculator - (string) e.g., "chemaxon", "sparc", etc.
+	prop - (string) chemical property same as id, e.g., "melting_point", "ion_con", etc.
+
+	Returns: (boolean) whether prop is available for that calculator.
+	"""
+
+	calcDict = {}
+
+	if calculator == "chemaxon":
+		calcDict = dict(zip(color_table.props_list, color_table.chemaxon_props))
+	elif calculator == "epi":
+		calcDict = dict(zip(color_table.props_list, color_table.epi_props))
+	elif calculator == "test":
+		calcDict = dict(zip(color_table.props_list, color_table.test_props))
+	elif calculator == "sparc":
+		calcDict = dict(zip(color_table.props_list, color_table.sparc_props))
+	elif calculator == "measured":
+		calcDict = dict(zip(color_table.props_list, color_table.measured_props))
+
+	available = None
+	if prop in calcDict:
+		if 'unavailable' in calcDict[prop]:
+			available = False
+		else:
+			available = True
+	return available
