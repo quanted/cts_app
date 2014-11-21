@@ -1,7 +1,4 @@
-<<<<<<< Updated upstream
-=======
-# <<<<<<< HEAD
->>>>>>> Stashed changes
+
 from django.template import Context, Template
 import datetime
 from django.template.loader import render_to_string
@@ -12,6 +9,10 @@ import json
 
 def getheaderpvu():
     headings = ["Parameter", "Value"]
+    return headings
+
+def getheaderpchem():
+    headings = ["props", "klop","phys","vg", "weighted"]
     return headings
 
 
@@ -28,11 +29,46 @@ def gethtmlrowsfromcols(data, headings):
 
 
 def getInputData(pchemprop_obj):
-    data = { 
-        "Parameter": ['chemical',],
-        "Value": [pchemprop_obj.chem_struct,]
+    data = {
+        "Parameter": ['SMILES:', 'IUPAC:', 'Formula:', 'Mass:'],
+        "Value": [pchemprop_obj.smiles, pchemprop_obj.name, pchemprop_obj.formula, pchemprop_obj.mass],
+        # "Image": [pchemprop_obj.parentImage]
     }
     return data
+
+def getChemaxonData(pchemprop_obj):
+    data = {
+        "Parameter": ['Ionization Constant:', 'Octanol/Water Partition Coefficient:', 'Octanol/Water Partition Coefficient at pH:'],
+        "Value": [pchemprop_obj.chemaxonResultsDict['pKa'], pchemprop_obj.chemaxonResultsDict['logP'], pchemprop_obj.chemaxonResultsDict['logD']]
+    }
+    return data
+
+
+def getPchempropData(calcDict):
+
+    data = {
+        "Property": calcDict['props'],
+        "Value (KLOP)": calcDict['klop'],
+        "Value (PHYS)": calcDict['phys'],
+        "Value (VG)": calcDict['vg'],
+        "Value (WEIGHTED)": calcDict['weighted']
+    }
+    return data
+
+
+def template():
+    template = """
+    <table class="out_" id="">
+        <tr>
+        <th>Property</th>
+        <th>Value (KLOP)</th>
+        <th>Value (PHYS)</th>
+        <th>Value (VG)</th>
+        <th>Value (WEIGHTED)</th>
+        </tr>
+    </table>
+    """
+    return template
 
 
 def getdjtemplate():
@@ -45,45 +81,128 @@ def getdjtemplate():
         {% endfor %}
         </tr>
     {# data #}
-    {% for row in data %}
     <tr>
-        {% for val in row %}
-        <td>{{ val|default:'' }}</td>
-        {% endfor %}
-    </tr>
+    {% for item in data %}
+    <td> {{item}} </td>
     {% endfor %}
+    </tr>
     </table>
     """
     return dj_template
 
 
+def getStructInfoTemplate():
+    structInfoTemplate ="""
+        <dl class="shiftRight">
+        {% for label, value in data %}
+            <dd>
+            <b>{{label}}</b> {{value|default:"none"}}
+            </dd>
+        {% endfor %}
+        </dl>
+        """
+    return structInfoTemplate
+
+
 pvuheadings = getheaderpvu()
-djtemplate = getdjtemplate()
-tmpl = Template(djtemplate)
+# structInfoTemplate = getStructInfoTemplate()
+structTmpl = Template(getStructInfoTemplate())
+# pchemTemplate = getdjtemplate()
+pchemTmpl = Template(getdjtemplate())
 
 
 def table_all(pchemprop_obj):
     html_all = '<br>'
-    html_all += table_1(pchemprop_obj)
+    html_all += input_struct_table(pchemprop_obj)
+    html_all += output_chemaxon_table(pchemprop_obj)
     html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
     return html_all
 
 
-def table_1(pchemprop_obj):
+def input_struct_table(pchemprop_obj):
+    """
+    structure information table (smiles, iupac, etc.)
+    """
+
     html = """
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
     <div class="out_">
-        <H4 class="out_1 collapsible" id="section2"><span></span>Application and Chemical Information</H4>
+        <H4 class="out_1 collapsible" id="section2"><span></span><b>Molecular Information</b></H4>
             <div class="out_ container_output">
     """
     t1data = getInputData(pchemprop_obj)
     t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
-    html = html + tmpl.render(Context(dict(data=t1rows, headings=pvuheadings)))
+    html = html + structTmpl.render(Context(dict(data=t1rows, headings=pvuheadings)))
     html = html + """
             </div>
     </div>
     """
     return html
+
+
+def output_chemaxon_table(pchemprop_obj):
+    """
+    results of chemaxon properties 
+    """
+    html = """
+    <H3 class="out_1 collapsible" id="section1"><span></span>P-Chem Properties Results</H3>
+    <div class="out_">
+        <H4 class="out_1 collapsible" id="section3"><span></span><b>Chemaxon Results</b></H4>
+            <div class="out_ container_output">
+    """
+
+    # convert chemaxon dict to dict with keys: props, klop, phys, vg, weighted (all lists)
+
+    data = pchemprop_obj.chemaxonResultsDict # get dict of pchemprop table - checked stuff
+
+    propsList = []
+    for key, value in data.items():
+        dataDict = {}
+        if key == 'pKa':
+            dataDict.update({'props': "Ionization Constant"})
+            ionConVal = {}
+            for pKey, pVal in value.items():
+                ionConVal.update({pKey: pVal})
+            dataDict.update({'weighted': ionConVal})
+            dataDict.update({'klop': ionConVal})
+            dataDict.update({'phys': ionConVal})
+            dataDict.update({'vg': ionConVal})
+        if key == 'logP':
+            dataDict.update({'props':"Octanol/Water Partition Coefficient"})
+            logpVals = {
+                "logP (nonionic)": value['logpnonionic'],
+                "logD (pI)": value['logdpi']
+            }
+            dataDict.update({'weighted': logpVals})
+            dataDict.update({'klop': logpVals})
+            dataDict.update({'phys': logpVals})
+            dataDict.update({'vg': logpVals})
+        if key == 'logD':
+            dataDict.update({'props': "Octanol/Water Partition Coefficient at pH"})
+            logdVals = {"logD": value['logD']}
+            dataDict.update({'weighted': logdVals})
+            dataDict.update({'klop': logdVals})
+            dataDict.update({'phys': logdVals})
+            dataDict.update({'vg': logdVals})
+        propsList.append(dataDict)
+
+    # send to list to template
+    # t1data = getInputData(pchemprop_obj)
+    # t1rows = gethtmlrowsfromcols(dataDict, getheaderpchem())
+    html += pchemTmpl.render(Context(dict(data=getPchempropData(dataDict), headings=getheaderpchem())))
+
+    html += """
+            </div>
+    </div>
+    """
+    return html
+
+
+def output_pKa_table(pchemprop_obj):
+    """
+    pKa results table
+    """
+    return None
 
 
 def timestamp(pchemprop_obj="", batch_jid=""):
@@ -99,8 +218,4 @@ def timestamp(pchemprop_obj="", batch_jid=""):
     html = html + " (EST)</b>"
     html = html + """
     </div>"""
-<<<<<<< Updated upstream
     return html
-=======
-    return html
->>>>>>> Stashed changes

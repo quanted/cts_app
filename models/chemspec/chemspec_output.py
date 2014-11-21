@@ -9,9 +9,7 @@ def chemspecOutputPage(request):
     # Chemical Editor tab
     chemStruct = request.POST.get('chem_struct')
     smiles = request.POST.get('smiles')
-
     name = request.POST.get('name')
-
     formula = request.POST.get('formula')
     mass = request.POST.get('mass')
 

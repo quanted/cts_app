@@ -135,30 +135,6 @@ class CTS_Speciation_Pka(forms.Form):
 						required=False
 					)
 
-	"""
-	For validating all fields in this form at once
- 	(some fields are dependent on others)
-	"""
-	# def clean(self):
-		
-	# 	cleaned_data = super(CTS_Speciation_Pka, self).clean()
-
-	# 	# pKa_decimals = cleaned_data.get("pKa_decimals")
-	# 	# pKa_pH_lower = cleaned_data.get("pKa_pH_lower")
-	# 	# pKa_pH_upper = cleaned_data.get("pKa_pH_upper")
-
-	# 	logging.warning("INSIDE CLEAN()")
-
-	# 	for key,value in cleaned_data.items():
-	# 		logging.warning("key: " + str(key) + ", value: " + str(value))
-		# 	if value is None:
-		# 		self.add_error(key, "value must not be blank")
-
-		# if pKa_pH_lower != None and pKa_pH_upper != None:
-		# 	if pKa_pH_lower >= pKa_pH_upper:
-		# 		self.add_error('pKa_pH_lower', "value must be lower than upper bound")
-		# 		self.add_error('pKa_pH_upper', "value must be greater than lower bound")
-
 
 # tautomerization table
 class CTS_Speciation_Tautomer(forms.Form):
@@ -199,18 +175,3 @@ class CTS_Speciation_Stereoisomers(forms.Form):
 
 class ChemspecInp(CTS_Chemical_Structure, CTS_Speciation_Pka, CTS_Speciation_Tautomer, CTS_Speciation_Stereoisomers):
 	pass
-	# def clean(self):
-		
-	# 	# cleaned_data = super(CTS_Speciation_Pka, self).clean()
-	# 	cleaned_data = super(ChemspecInp, self).clean()
-
-	# 	# pKa_decimals = cleaned_data.get("pKa_decimals")
-	# 	# pKa_pH_lower = cleaned_data.get("pKa_pH_lower")
-	# 	# pKa_pH_upper = cleaned_data.get("pKa_pH_upper")
-
-	# 	logging.warning("INSIDE CLEAN()")
-
-	# 	for key,value in cleaned_data.items():
-	# 		logging.warning("key: " + str(key) + ", value: " + str(value))
-
-	# 	logging.warning("END CLEAN()")

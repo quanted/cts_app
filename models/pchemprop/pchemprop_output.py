@@ -4,16 +4,15 @@ import logging
 
 @require_POST
 def pchempropOutputPage(request):
-<<<<<<< Updated upstream
-    import pchemprop_model
-=======
->>>>>>> Stashed changes
-
     # return "test" 
     import pchemprop_model
 
     # Chemical from Chemical Editor
     chemStruct = request.POST.get('chem_struct')
+    smiles = request.POST.get('smiles')
+    name = request.POST.get('name')
+    formula = request.POST.get('formula')
+    mass = request.POST.get('mass')
 
     # Pchem Properties Column Checkboxes
     chemaxon = request.POST.get('chemaxon')
@@ -35,9 +34,10 @@ def pchempropOutputPage(request):
     kowPh = request.POST.get('kow_ph')
     koc = request.POST.get('koc')
 
-    pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, chemaxon, epi, test, sparc,
-                        measured, meltingPoint, boilingPoint, waterSol, vaporPress, molDiss, 
-                        ionCon, henrysLawCon, kowNoPh, kowWph, kowPh, koc)
+    pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
+                        mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
+                        waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
+                        kowPh, koc)
 
     return pchemprop_obj
 

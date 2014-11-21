@@ -8,8 +8,6 @@ import logging
 
 def outputPageView(request, model='none', header=''):
 
-<<<<<<< Updated upstream
-=======
 #     if(model == "pchemprop"):
 # 	    html = render_to_string('01cts_uberheader.html', {'title': header+' Output'})
 # 	    html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'output'})
@@ -163,7 +161,6 @@ def outputPageView(request, model='none', header=''):
 # 	    html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
 # 	    return HttpResponse(html)	
 
->>>>>>> Stashed changes
     outputmodule = importlib.import_module('.'+model+'_output', 'models.'+model)
     tablesmodule = importlib.import_module('.'+model+'_tables', 'models.'+model)
     # from REST import rest_funcs

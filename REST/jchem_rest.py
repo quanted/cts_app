@@ -131,11 +131,6 @@ def getChemSpecData(request):
 	ds = Data_Structures()
 	data = ds.chemSpecStruct(request.POST) # format request to jchem
 	data = json.dumps(data)
-
-	fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-	fileout.write(data)
-	fileout.close()
-
 	url = Urls.jchemBase + Urls.detailUrl
 	results = web_call(url, request, data)
 	return results
@@ -227,7 +222,8 @@ class Data_Structures:
 
 		# don't forget about pKa_decimal
 
-		keys = ["isoelectricPoint", "pKa", "majorMicrospecies", "stereoisomer", "tautomerization"]
+		keys = ["isoelectricPoint", "pKa", "majorMicrospecies", "stereoisomer", 
+				"tautomerization", "logP", "logD"]
 
 		structures = []
 		if 'chem_struct' in dic:
