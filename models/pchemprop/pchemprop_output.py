@@ -16,8 +16,8 @@ def pchempropOutputPage(request):
 
     # Pchem Properties Column Checkboxes
     chemaxon = request.POST.get('chemaxon')
-    epi = request.POST.get('epi')
     test = request.POST.get('test')
+    epi = request.POST.get('epi')
     sparc = request.POST.get('sparc')
     measured = request.POST.get('measured')
 

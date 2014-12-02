@@ -1434,3 +1434,7 @@ body.wait *, body.wait
 {
     cursor: progress !important;
 }
+
+#pchemprop_table_out td {
+  text-align: left;
+}

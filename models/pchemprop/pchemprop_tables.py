@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import logging
 import json
+import pchemprop_parameters
 
 
 def getheaderpvu():
@@ -12,7 +13,7 @@ def getheaderpvu():
     return headings
 
 def getheaderpchem():
-    headings = ["props", "klop","phys","vg", "weighted"]
+    headings = ["props", "klop", "phys", "vg", "weighted"]
     return headings
 
 
@@ -36,56 +37,58 @@ def getInputData(pchemprop_obj):
     }
     return data
 
-def getChemaxonData(pchemprop_obj):
-    data = {
-        "Parameter": ['Ionization Constant:', 'Octanol/Water Partition Coefficient:', 'Octanol/Water Partition Coefficient at pH:'],
-        "Value": [pchemprop_obj.chemaxonResultsDict['pKa'], pchemprop_obj.chemaxonResultsDict['logP'], pchemprop_obj.chemaxonResultsDict['logD']]
-    }
-    return data
-
-
-def getPchempropData(calcDict):
-
-    data = {
-        "Property": calcDict['props'],
-        "Value (KLOP)": calcDict['klop'],
-        "Value (PHYS)": calcDict['phys'],
-        "Value (VG)": calcDict['vg'],
-        "Value (WEIGHTED)": calcDict['weighted']
-    }
-    return data
-
-
-def template():
-    template = """
-    <table class="out_" id="">
-        <tr>
-        <th>Property</th>
-        <th>Value (KLOP)</th>
-        <th>Value (PHYS)</th>
-        <th>Value (VG)</th>
-        <th>Value (WEIGHTED)</th>
-        </tr>
-    </table>
-    """
-    return template
-
 
 def getdjtemplate():
     dj_template ="""
-    <table class="out_">
-    {# headings #}
-        <tr>
-        {% for heading in headings %}
-            <th>{{ heading }}</th>
-        {% endfor %}
-        </tr>
-    {# data #}
+    <table id="pchemprop_table_out" class="input_table tab tab_ChemCalcs">
     <tr>
-    {% for item in data %}
-    <td> {{item}} </td>
-    {% endfor %}
+        <th></th>
+        <th>ChemAxon</th>
+        <th>EPI Suite</th>
+        <th>TEST</th>
+        <th>SPARC</th>
+        <th>Measured</th>
     </tr>
+
+    {% load set_var %}
+    {% set skip = False %}
+
+    {# loops through pchemprop_parameters fields #}
+    {% for field in fields %}
+        {# conditionals for appending kow_wph and kow_ph fields #}
+        {% if field.html_name == "kow_wph" %}
+            <tr><td><b>{{field.label}} at pH</b></td>
+            {% set skip = True %}
+        {% elif field.html_name == "kow_ph" %}
+            {% set skip = False %}
+        {% else %}
+            {% set skip = False %}
+            <tr><td><b>{{field.label}}</b></td>
+        {% endif %}
+
+        {% if skip == False %}
+            {% for item in data.chemaxon %}
+                {% if item.props == field.label %}
+                    <td>
+                    {% for k,v in item.weighted.items %}
+                        {{k}}: {{v}} <br>
+                    {% endfor %}
+                    </td>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for item in data.chemaxon %}
+                {% if item.props == "Octanol/Water Partition Coefficient at pH" %}
+                    <td>
+                    {% for k,v in item.weighted.items %}
+                        {{k}}: {{v}}
+                    {% endfor %}
+                    </td>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </tr>
+    {% endfor %}
     </table>
     """
     return dj_template
@@ -105,16 +108,14 @@ def getStructInfoTemplate():
 
 
 pvuheadings = getheaderpvu()
-# structInfoTemplate = getStructInfoTemplate()
 structTmpl = Template(getStructInfoTemplate())
-# pchemTemplate = getdjtemplate()
 pchemTmpl = Template(getdjtemplate())
 
 
 def table_all(pchemprop_obj):
     html_all = '<br>'
     html_all += input_struct_table(pchemprop_obj)
-    html_all += output_chemaxon_table(pchemprop_obj)
+    html_all += output_pchem_table(pchemprop_obj)
     html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
     return html_all
 
@@ -140,59 +141,63 @@ def input_struct_table(pchemprop_obj):
     return html
 
 
-def output_chemaxon_table(pchemprop_obj):
+def output_pchem_table(pchemprop_obj):
     """
     results of chemaxon properties 
     """
     html = """
     <H3 class="out_1 collapsible" id="section1"><span></span>P-Chem Properties Results</H3>
     <div class="out_">
-        <H4 class="out_1 collapsible" id="section3"><span></span><b>Chemaxon Results</b></H4>
-            <div class="out_ container_output">
     """
 
     # convert chemaxon dict to dict with keys: props, klop, phys, vg, weighted (all lists)
 
-    data = pchemprop_obj.chemaxonResultsDict # get dict of pchemprop table - checked stuff
+    data = pchemprop_obj.resultsDict # get dict of pchemprop table - checked stuff
+    allCalcsDict = {
+        "chemaxon": None,
+        "epi": None,
+        "sparc": None,
+        "test": None
+    }
+    for mainKey, mainVal in data.items():
+        if mainKey == 'chemaxon':
+            chemaxonPropsList = []
+            for key, value in data['chemaxon'].items():
+                dataDict = {}
+                if key == 'pKa':
+                    dataDict.update({'props': "Ionization Constant"})
+                    ionConVal = {}
+                    for pKey, pVal in value.items():
+                        ionConVal.update({pKey: pVal})
+                    dataDict.update({'weighted': ionConVal})
+                    dataDict.update({'klop': ionConVal})
+                    dataDict.update({'phys': ionConVal})
+                    dataDict.update({'vg': ionConVal})
+                if key == 'logP':
+                    dataDict.update({'props':"Octanol/Water Partition Coefficient"})
+                    logpVals = {
+                        "logP (nonionic)": value['logpnonionic'],
+                        "logD (pI)": value['logdpi']
+                    }
+                    dataDict.update({'weighted': logpVals})
+                    dataDict.update({'klop': logpVals})
+                    dataDict.update({'phys': logpVals})
+                    dataDict.update({'vg': logpVals})
+                if key == 'logD':
+                    dataDict.update({'props': "Octanol/Water Partition Coefficient at pH"})
+                    logdVals = {"logD": value['logD']}
+                    dataDict.update({'weighted': logdVals})
+                    dataDict.update({'klop': logdVals})
+                    dataDict.update({'phys': logdVals})
+                    dataDict.update({'vg': logdVals})
+                chemaxonPropsList.append(dataDict)
+            allCalcsDict['chemaxon'] = chemaxonPropsList
 
-    propsList = []
-    for key, value in data.items():
-        dataDict = {}
-        if key == 'pKa':
-            dataDict.update({'props': "Ionization Constant"})
-            ionConVal = {}
-            for pKey, pVal in value.items():
-                ionConVal.update({pKey: pVal})
-            dataDict.update({'weighted': ionConVal})
-            dataDict.update({'klop': ionConVal})
-            dataDict.update({'phys': ionConVal})
-            dataDict.update({'vg': ionConVal})
-        if key == 'logP':
-            dataDict.update({'props':"Octanol/Water Partition Coefficient"})
-            logpVals = {
-                "logP (nonionic)": value['logpnonionic'],
-                "logD (pI)": value['logdpi']
-            }
-            dataDict.update({'weighted': logpVals})
-            dataDict.update({'klop': logpVals})
-            dataDict.update({'phys': logpVals})
-            dataDict.update({'vg': logpVals})
-        if key == 'logD':
-            dataDict.update({'props': "Octanol/Water Partition Coefficient at pH"})
-            logdVals = {"logD": value['logD']}
-            dataDict.update({'weighted': logdVals})
-            dataDict.update({'klop': logdVals})
-            dataDict.update({'phys': logdVals})
-            dataDict.update({'vg': logdVals})
-        propsList.append(dataDict)
+    pchemprops = pchemprop_parameters.cts_chemCalcs_props()
 
-    # send to list to template
-    # t1data = getInputData(pchemprop_obj)
-    # t1rows = gethtmlrowsfromcols(dataDict, getheaderpchem())
-    html += pchemTmpl.render(Context(dict(data=getPchempropData(dataDict), headings=getheaderpchem())))
+    html += pchemTmpl.render(Context(dict(fields=pchemprops, data=allCalcsDict))) 
 
     html += """
-            </div>
     </div>
     """
     return html

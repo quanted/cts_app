@@ -99,6 +99,17 @@ class pchemprop(object):
 		# get results from json:
 		self.chemaxonResultsDict = getChemaxonResults(chemaxonResultsDict)
 
+		self.resultsDict = {
+			"chemaxon": getChemaxonResults(chemaxonResultsDict),
+			"epi": None,
+			"sparc": None,
+			"test": None
+		}
+
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(json.dumps(self.chemaxonResultsDict))
+		# fileout.close()
+
 
 def buildChemaxonRequest(structure, checkedCalcsAndPropsDict):
 	"""
@@ -158,12 +169,13 @@ def getChemaxonResults(chemaxonDict):
 			pkbList.append(val)
 
 		dataDict['pKa'] = {
-			"mostAcidic": pkaList,
-			"mostBasic": pkbList
+			"pKa": pkaList,
+			"pKb": pkbList
 		}
 
 	if 'logP' in chemaxonRoot:
-		dataDict['logP'] = {}
+		logPkeys = ['logpnonionic', 'logdpi', 'structInfo']
+		dataDict['logP'] = {key: None for key in logPkeys}
 		# get logpnonionic, logdpi, and imageUrl
 		if 'logpnonionic' in chemaxonRoot['logP'] and not isinstance(chemaxonRoot['logP']['logpnonionic'], dict):
 			dataDict['logP'].update({
@@ -182,7 +194,7 @@ def getChemaxonResults(chemaxonDict):
 				# Get smiles, iupac, mass, etc. as dict for logP structure
 				# TODO: move getStructInfo() to more generic place. it's used in all workflows
 				structInfo = chemspec_model.getStructInfo(chemaxonRoot['logP']['result']['structureData']['structure'])
-				dataDict['logP'].update(structInfo)
+				dataDict['logP'].update({'structInfo': structInfo})
 
 	if 'logD' in chemaxonRoot:
 		dataDict['logD'] = {}

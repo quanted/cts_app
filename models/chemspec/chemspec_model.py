@@ -259,7 +259,8 @@ def getStructInfo(mrvData):
 	"""
 	Appends structure info to image url 
 	Input: .mrv format structure
-	Output: dict with structure's info (i.e., formula, iupac, mass, smiles)
+	Output: dict with structure's info (i.e., formula, iupac, mass, smiles), 
+	or dict with aforementioned keys but None values
 	"""
 
 	request = HttpRequest()
@@ -272,7 +273,9 @@ def getStructInfo(mrvData):
 	response = jchem_rest.getChemDeats(request)
 	structDict = json.loads(response.content)
 
-	infoDict = {} # dict to be returned
+	infoDictKeys = ['formula', 'iupac', 'mass', 'smiles']
+	infoDict = {key: None for key in infoDictKeys} # init dict with infoDictKeys and None vals
+
 	struct_root = {} # root of data in structInfo
 	if 'data' in structDict:
 		struct_root = structDict['data'][0]
@@ -281,7 +284,4 @@ def getStructInfo(mrvData):
 		infoDict.update({"mass":  struct_root['mass']})
 		infoDict.update({"smiles":  struct_root['smiles']})
 
-		return infoDict
-
-	else:
-		return None
+	return infoDict
