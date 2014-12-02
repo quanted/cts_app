@@ -193,7 +193,7 @@ def output_pchem_table(pchemprop_obj):
                 chemaxonPropsList.append(dataDict)
             allCalcsDict['chemaxon'] = chemaxonPropsList
 
-    pchemprops = pchemprop_parameters.cts_chemCalcs_props()
+    pchemprops = pchemprop_parameters.cts_chemCalcs_props() # get pchemprop fields
 
     html += pchemTmpl.render(Context(dict(fields=pchemprops, data=allCalcsDict))) 
 
@@ -224,3 +224,20 @@ def timestamp(pchemprop_obj="", batch_jid=""):
     html = html + """
     </div>"""
     return html
+
+
+def popup_prop_wrapper():
+    """
+    Builds popup table for calculator property
+
+    Input: dict of property with klop, phys, vg, and weighted values;
+    also structInfo if available (i.e., logP)
+
+    Output: table with image (if available); also 
+    klop, phys, vg, weighted; and name, iupac, 
+    formula, and mass if image available  
+    """
+
+    
+
+

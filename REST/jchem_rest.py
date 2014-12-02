@@ -223,11 +223,11 @@ class Data_Structures:
 		# don't forget about pKa_decimal
 
 		keys = ["isoelectricPoint", "pKa", "majorMicrospecies", "stereoisomer", 
-				"tautomerization", "logP", "logD"]
+				"tautomerization", "logP", "logD", "solubility"]
 
 		structures = []
-		if 'chem_struct' in dic:
-			structures = [{"structure": dic["chem_struct"]}]
+		if 'chemical' in dic:
+			structures = [{"structure": dic["chemical"]}]
 
 		includeList = []
 		paramsDict = {} # dict of dict where latter dict has key of param and vals of param vals

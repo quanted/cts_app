@@ -511,11 +511,11 @@ def table_taut_results(chemspec_obj):
 
 def wrap_molecule(propDict):
     """
-    Wraps molecule image result with a table
+    Wraps molecule image result (source url) with a table
     and populates said table with molecular details.
 
-    Inputs: property dict (e.g., pka, taut)
-    Outputs: data wrapped in table with image and name
+    Inputs: property dict (e.g., pka, taut image urls)
+    Outputs: name, iupac, forumula, mass data wrapped in table with image and name
     """
 
     key = None
