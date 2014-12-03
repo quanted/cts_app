@@ -12,8 +12,6 @@ import datetime
 from django.template.loader import render_to_string
 import logging
 import json
-from PIL import Image
-import urllib2
 from StringIO import StringIO
 from django.utils.safestring import mark_safe
 from models.gentrans import data_walks  
