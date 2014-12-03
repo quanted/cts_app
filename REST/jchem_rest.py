@@ -240,6 +240,8 @@ class Data_Structures:
 		display = {"include": includeList, "parameters": paramsDict}
 		dataDict = {"structures": structures, "display": display}
 
+		logging.warning(dataDict)
+
 		return dataDict
 
 

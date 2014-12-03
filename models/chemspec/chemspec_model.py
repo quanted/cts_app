@@ -43,7 +43,7 @@ class chemspec(object):
 		self.tautomer_pH = tautomer_pH
 		self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
 
-		dataDict = {"chem_struct":self.chem_struct}
+		dataDict = {"chemical":self.chem_struct}
 
 		############# don't forget about pKa_decimal ###############
 
@@ -88,7 +88,9 @@ class chemspec(object):
 
 		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
-		data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
+		data_root = {}
+		if 'data' in output_val and len(output_val['data']) > 0:
+			data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
 
 		# Build response dictionaries
 		if 'pKa' in data_root:
