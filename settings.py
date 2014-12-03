@@ -22,6 +22,7 @@ os.environ.update({
     'UBERTOOL_SECURE_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',
     # 'UBERTOOL_REST_SERVER': 'http://localhost:80',
     'UBERTOOL_REST_SERVER': 'http://54.83.18.251:80',
+    'CTS_JCHEM_SERVER': 'http://134.67.114.2',
     'PROJECT_PATH': PROJECT_ROOT,
 })
 

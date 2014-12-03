@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 from xml.sax.saxutils import escape
 import datetime
 import pytz
-
+import os
 
 headers = {'Content-Type' : 'application/json'}
 
@@ -22,10 +22,11 @@ logging.basicConfig(level=logging.INFO)
 
 class Urls:
 
+	cts_jchem_server = os.environ['CTS_JCHEM_SERVER']
 	# jchemBase = 'http://pnnl.cloudapp.net/webservices' # old ws location 
 	# efsBase = 'http://pnnl.cloudapp.net/efsws' # metabolizer base
-	jchemBase = 'http://134.67.114.2/webservices'
-	efsBase = 'http://134.67.114.2/efsws/rest'
+	jchemBase = cts_jchem_server + '/webservices'
+	efsBase = cts_jchem_server + '/efsws/rest'
 
 	# jchem ws urls:
 	exportUrl = '/rest-v0/util/calculate/molExport'
