@@ -67,21 +67,21 @@ def getdjtemplate():
         {% endif %}
 
         {% if skip == False %}
-            {% for item in data.chemaxon %}
-                {% if item.props == field.label %}
+            {% for prop, values in data.chemaxon.items %}
+                {% if prop == field.label %}
                     <td>
-                    {% for k,v in item.weighted.items %}
-                        {{k}}: {{v}} <br>
+                    {% for k,v in values.items %}
+                        {{k}}: <i>{{v}}</i> <br>
                     {% endfor %}
                     </td>
                 {% endif %}
             {% endfor %}
         {% else %}
-            {% for item in data.chemaxon %}
-                {% if item.props == "Octanol/Water Partition Coefficient at pH" %}
+            {% for prop, values in data.chemaxon.items %}
+                {% if prop == "Octanol/Water Partition Coefficient at pH" %}
                     <td>
-                    {% for k,v in item.weighted.items %}
-                        {{k}}: {{v}}
+                    {% for k,v in values.items %}
+                        {{k}}: <i>{{v}}</i> <br>
                     {% endfor %}
                     </td>
                 {% endif %}
@@ -116,7 +116,7 @@ def table_all(pchemprop_obj):
     html_all = '<br>'
     html_all += input_struct_table(pchemprop_obj)
     html_all += output_pchem_table(pchemprop_obj)
-    html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
+    # html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
     return html_all
 
 
@@ -159,43 +159,44 @@ def output_pchem_table(pchemprop_obj):
         "sparc": None,
         "test": None
     }
-    for mainKey, mainVal in data.items():
-        if mainKey == 'chemaxon':
-            chemaxonPropsList = []
-            for key, value in data['chemaxon'].items():
-                dataDict = {}
-                if key == 'pKa':
-                    dataDict.update({'props': "Ionization Constant"})
-                    ionConVal = {}
-                    for pKey, pVal in value.items():
-                        ionConVal.update({pKey: pVal})
-                    dataDict.update({'weighted': ionConVal})
-                    dataDict.update({'klop': ionConVal})
-                    dataDict.update({'phys': ionConVal})
-                    dataDict.update({'vg': ionConVal})
-                if key == 'logP':
-                    dataDict.update({'props':"Octanol/Water Partition Coefficient"})
-                    logpVals = {
-                        "logP (nonionic)": value['logpnonionic'],
-                        "logD (pI)": value['logdpi']
-                    }
-                    dataDict.update({'weighted': logpVals})
-                    dataDict.update({'klop': logpVals})
-                    dataDict.update({'phys': logpVals})
-                    dataDict.update({'vg': logpVals})
-                if key == 'logD':
-                    dataDict.update({'props': "Octanol/Water Partition Coefficient at pH"})
-                    logdVals = {"logD": value['logD']}
-                    dataDict.update({'weighted': logdVals})
-                    dataDict.update({'klop': logdVals})
-                    dataDict.update({'phys': logdVals})
-                    dataDict.update({'vg': logdVals})
-                chemaxonPropsList.append(dataDict)
-            allCalcsDict['chemaxon'] = chemaxonPropsList
+
+    # for mainKey, mainVal in data.items():
+    #     if mainKey == 'chemaxon':
+    #         chemaxonPropsList = []
+    #         for key, value in data['chemaxon'].items():
+    #             dataDict = {}
+    #             if key == 'pKa':
+    #                 dataDict.update({'props': "Ionization Constant"})
+    #                 ionConVal = {}
+    #                 for pKey, pVal in value.items():
+    #                     ionConVal.update({pKey: pVal})
+    #                 dataDict.update({'weighted': ionConVal})
+    #                 dataDict.update({'klop': ionConVal})
+    #                 dataDict.update({'phys': ionConVal})
+    #                 dataDict.update({'vg': ionConVal})
+    #             if key == 'logP':
+    #                 dataDict.update({'props':"Octanol/Water Partition Coefficient"})
+    #                 logpVals = {
+    #                     "logP (nonionic)": value['logpnonionic'],
+    #                     "logD (pI)": value['logdpi']
+    #                 }
+    #                 dataDict.update({'weighted': logpVals})
+    #                 dataDict.update({'klop': logpVals})
+    #                 dataDict.update({'phys': logpVals})
+    #                 dataDict.update({'vg': logpVals})
+    #             if key == 'logD':
+    #                 dataDict.update({'props': "Octanol/Water Partition Coefficient at pH"})
+    #                 logdVals = {"logD": value['logD']}
+    #                 dataDict.update({'weighted': logdVals})
+    #                 dataDict.update({'klop': logdVals})
+    #                 dataDict.update({'phys': logdVals})
+    #                 dataDict.update({'vg': logdVals})
+    #             chemaxonPropsList.append(dataDict)
+    #         allCalcsDict['chemaxon'] = chemaxonPropsList
 
     pchemprops = pchemprop_parameters.cts_chemCalcs_props() # get pchemprop fields
 
-    html += pchemTmpl.render(Context(dict(fields=pchemprops, data=allCalcsDict))) 
+    html += pchemTmpl.render(Context(dict(fields=pchemprops, data=data))) 
 
     html += """
     </div>
@@ -238,6 +239,6 @@ def popup_prop_wrapper():
     formula, and mass if image available  
     """
 
-    
+
 
 

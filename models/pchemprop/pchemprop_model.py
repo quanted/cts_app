@@ -10,7 +10,9 @@ from REST import jchem_rest
 from django.http import HttpRequest
 import logging
 from models.chemspec import chemspec_model # for getStructInfo(), TODO: move func to more generic place
+import decimal
 
+n = 3 # number of decimal places to round value
 
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 
@@ -85,23 +87,16 @@ class pchemprop(object):
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
 		self.checkedCalcsAndPropsDict = checkedCalcsAndPropsDict
-		logging.warning("Checked Calculators and Properties:")
-		logging.warning(checkedCalcsAndPropsDict)
+		# logging.warning("Checked Calculators and Properties:")
+		# logging.warning(checkedCalcsAndPropsDict)
 
-		chemaxonPostData = buildChemaxonRequest(self.chem_struct, checkedCalcsAndPropsDict)
-		# self.rawData = makeRequest(chemaxonPostData)
-
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(self.rawData)
-		# fileout.close()
-
-		# chemaxonResultsDict = json.loads(self.rawData) # convert to dictionary
+		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict)
 
 		# get results from json:
-		self.chemaxonResultsDict = parseChemaxonResults(chemaxonResultsDict)
+		# self.chemaxonResultsDict = parseChemaxonResults(chemaxonResultsDict)
 
 		self.resultsDict = {
-			"chemaxon": parseChemaxonResults(chemaxonResultsDict),
+			"chemaxon": self.chemaxonResultsDict,
 			"epi": None,
 			"sparc": None,
 			"test": None
@@ -111,7 +106,7 @@ class pchemprop(object):
 		# fileout.write(json.dumps(self.chemaxonResultsDict))
 		# fileout.close()
 
-def buildChemaxonRequest(structure, checkedCalcsAndPropsDict):
+def getChemaxonResults(structure, checkedCalcsAndPropsDict):
 	"""
 	Input: dict of checked/available properties for calculators
 	Returns: dict of chemaxon props in web-service-friendly format
@@ -122,7 +117,6 @@ def buildChemaxonRequest(structure, checkedCalcsAndPropsDict):
 	if chemaxonPropsList:
 
 		propMethodsList = ['KLOP', 'PHYS', 'VG', 'WEIGHTED']
-
 		chemaxonDict = {} # dict of results (values) per method (keys)
 
 		for method in propMethodsList:
@@ -165,14 +159,12 @@ def buildChemaxonRequest(structure, checkedCalcsAndPropsDict):
 			if postDict != None:
 				response = makeRequest(postDict) # get data per method
 				chemaxonDict.update({method: json.loads(response)}) # results per method dictionary
-				# logging.warning("main prop dict")
-				# logging.warning(chemaxonDict)
 
-		return parseChemaxonResults(chemaxonDict)
+		return buildChemaxonResultsDict(chemaxonDict)
 
 
 
-def parseChemaxonResults(chemaxonDict):
+def buildChemaxonResultsDict(chemaxonDict):
 	"""
 	Parses results from chemaxon data call
 
@@ -180,16 +172,6 @@ def parseChemaxonResults(chemaxonDict):
 	"""
 
 	propsList = [] # list of propDicts
-
-	# propDict = {
-	# 	"property": {
-	# 		"KLOP": None,
-	# 		"PHYS": None,
-	# 		"VG": None,
-	# 		"WEIGHTED": None
-	# 	}
-	# }
-
 	propDict = {}
 
 	# loop through results per method
@@ -197,114 +179,96 @@ def parseChemaxonResults(chemaxonDict):
 
 		root = result['data'][0]
 
-		dataDict = {}
-
 		if 'pKa' in root:
 			# get mostAcidic and mostBasic values (both are list)
 			pkaList = []
 			for val in root['pKa']['mostAcidic']:
-				pkaList.append(val)
+				pkaList.append(round(val, n))
 			pkbList = []
 			for val in root['pKa']['mostBasic']:
-				pkbList.append(val)
-
-			dataDict.update({
-				"pKa": pkaList,
-				"pKb": pkbList
-			})
+				pkbList.append(round(val, n))
 
 			if 'Ionization Constant' in propDict:
 				propDict['Ionization Constant'].update({
-					method: dataDict
+					method: {
+						"pKa": pkaList,
+						"pKb": pkbList
+					}
 				})
 			else:
 				propDict.update({
 					"Ionization Constant": {
-						method: dataDict 
+						method: {
+							"pKa": pkaList,
+							"pKb": pkbList
+						} 
 					}
 				})
-			logging.warning("prop dict")
-			logging.warning(propDict)
 
+		dataDict = {}
+		structInfo = {}
 		if 'logP' in root:
 			logPkeys = ['logpnonionic', 'logdpi', 'structInfo']
 			logPname = "Octanol/Water Partition Coefficient"
-			dataDict.update({logPname: {key: None for key in logPkeys}})
 			# get logpnonionic, logdpi, and imageUrl
 			if 'logpnonionic' in root['logP'] and not isinstance(root['logP']['logpnonionic'], dict):
-				dataDict[logPname].update({
-					"logpnonionic": root['logP']['logpnonionic']
+				dataDict.update({
+					"logpnonionic": round(root['logP']['logpnonionic'], n)
+				})
+			else:
+				dataDict.update({
+					"logpnonionic": "none"
 				})
 			if 'logdpi' in root['logP'] and not isinstance(root['logP']['logdpi'], dict):
-				dataDict[logPname].update({
-					"logdpi": root['logP']['logdpi']
+				dataDict.update({
+					"logdpi": round(root['logP']['logdpi'], n)
 				})
-			if 'result' in root['logP']:
-				if 'image' in root['logP']['result']:
-					dataDict[logPname].update({
-						"image": root['logP']['result']['image']['imageUrl']
-					})
-				if 'structureData' in root['logP']['result']:
-					# Get smiles, iupac, mass, etc. as dict for logP structure
-					# TODO: move getStructInfo() to more generic place. it's used in all workflows
-					structInfo = chemspec_model.getStructInfo(root['logP']['result']['structureData']['structure'])
-					dataDict[logPname].update({'structInfo': structInfo})
+			else:
+				dataDict.update({
+					"logdpi": "none"
+				})
+			# if 'result' in root['logP']:
+			# 	if 'structureData' in root['logP']['result']:
+			# 		# Get smiles, iupac, mass, etc. as dict for logP structure
+			# 		# TODO: move getStructInfo() to more generic place. it's used in all workflows
+			# 		structInfo = chemspec_model.getStructInfo(root['logP']['result']['structureData']['structure'])
+			# 		dataDict[logPname].update({'structInfo': structInfo})
+			# 	if 'image' in root['logP']['result']:
+			# 		dataDict.update({
+			# 			"image": root['logP']['result']['image']['imageUrl']
+			# 		})
+
+			if logPname in propDict:
+				propDict[logPname].update({
+					method: dataDict 
+				})
+			else:
+				propDict.update({
+					logPname: {
+						method: dataDict
+					}
+				})
 
 		if 'logD' in root:
 			logDname = "Octanol/Water Partition Coefficient at pH"
-			dataDict[logDname] = {}
 			if 'logD' in root['logD']:
-				dataDict[logDname].update({"logD": root['logD']['logD']})
+				if logDname in propDict:
+					propDict[logDname].update({
+						method: {
+							"logD": round(root['logD']['logD'], n)
+						}
+					})
+				else:
+					propDict.update({
+						logDname: {
+							method: {
+								"logD": round(root['logD']['logD'], n)
+							}
+						}
+					})
 
-
-	fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-	fileout.write(json.dumps(propDict))
-	fileout.close()
-
-	return dataDict
+	return propDict
 	
-	# if 'pKa' in chemaxonRoot:
-	# 	# get mostAcidic and mostBasic values (both list)
-	# 	pkaList = []
-	# 	for val in chemaxonRoot['pKa']['mostAcidic']:
-	# 		pkaList.append(val)
-	# 	pkbList = []
-	# 	for val in chemaxonRoot['pKa']['mostBasic']:
-	# 		pkbList.append(val)
-
-	# 	dataDict['pKa'] = {
-	# 		"pKa": pkaList,
-	# 		"pKb": pkbList
-	# 	}
-
-	# if 'logP' in chemaxonRoot:
-	# 	logPkeys = ['logpnonionic', 'logdpi', 'structInfo']
-	# 	dataDict['logP'] = {key: None for key in logPkeys}
-	# 	# get logpnonionic, logdpi, and imageUrl
-	# 	if 'logpnonionic' in chemaxonRoot['logP'] and not isinstance(chemaxonRoot['logP']['logpnonionic'], dict):
-	# 		dataDict['logP'].update({
-	# 			"logpnonionic": chemaxonRoot['logP']['logpnonionic']
-	# 		})
-	# 	if 'logdpi' in chemaxonRoot['logP'] and not isinstance(chemaxonRoot['logP']['logdpi'], dict):
-	# 		dataDict['logP'].update({
-	# 			"logdpi": chemaxonRoot['logP']['logdpi']
-	# 		})
-	# 	if 'result' in chemaxonRoot['logP']:
-	# 		if 'image' in chemaxonRoot['logP']['result']:
-	# 			dataDict['logP'].update({
-	# 				"image": chemaxonRoot['logP']['result']['image']['imageUrl']
-	# 			})
-	# 		if 'structureData' in chemaxonRoot['logP']['result']:
-	# 			# Get smiles, iupac, mass, etc. as dict for logP structure
-	# 			# TODO: move getStructInfo() to more generic place. it's used in all workflows
-	# 			structInfo = chemspec_model.getStructInfo(chemaxonRoot['logP']['result']['structureData']['structure'])
-	# 			dataDict['logP'].update({'structInfo': structInfo})
-
-	# if 'logD' in chemaxonRoot:
-	# 	dataDict['logD'] = {}
-	# 	if 'logD' in chemaxonRoot['logD']:
-	# 		dataDict['logD'].update({"logD": chemaxonRoot['logD']['logD']})
-
 
 def makeRequest(postData):
 	"""
