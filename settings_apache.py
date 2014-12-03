@@ -27,7 +27,7 @@ os.environ.update({
     'UBERTOOL_REST_SERVER': 'http://172.20.100.15:7777',                           # CGI Internal
     'CTS_JCHEM_SERVER': 'http://172.20.100.12',
     'PROJECT_PATH': PROJECT_ROOT,
-    'SITE_SKIN': 'EPA'                          # Leave empty ('') for default skin, 'EPA' for EPA skin
+    'SITE_SKIN': ''                          # Leave empty ('') for default skin, 'EPA' for EPA skin
 })
 
 # Quick-start development settings - unsuitable for production
