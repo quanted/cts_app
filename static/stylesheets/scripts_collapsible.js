@@ -20,19 +20,16 @@ $(document).ready(function () {
 	});
 
 
-    // Highlights output headings on mouseover event 
-    $('.collapsible').hover(
-        function() {
-            $(this).data('bgcolor', $(this).css('background-color')).css({
-                                                                        'background-color': '#9AB2CB',
-                                                                        'cursor': 'pointer'
-                                                                    });
-        },
-        function() {
-            $(this).css('background-color', $(this).data('bgcolor'));
-        }
-    );
-
-
+    // $('.collapsible').hover(
+    //     function() {
+    //         $(this).data('bgcolor', $(this).css('background-color')).css({
+    //             'background-color': '#9AB2CB',
+    //             'cursor': 'pointer'
+    //         });
+    //     },
+    //     function() {
+    //         $(this).css('background-color', $(this).data('bgcolor'));
+    //     }
+    // );
 
 });
