@@ -144,7 +144,7 @@ def getMajorMicrospecies(output_val):
 
 		# Get image data from result:
 		if 'image' in majorMsRoot['result']:
-			majorMsImage = majorMsRoot['result']['image']['imageUrl']
+			majorMsImage = data_walks.changeImageIP(majorMsRoot['result']['image']['imageUrl'])
 			majorMsDict.update({"image": majorMsImage})
 			# majorMsDict.update({"image": majorMsRoot['result']['image']['imageUrl']})
 		else:
@@ -176,7 +176,7 @@ def getPkaInfo(output_val):
 		pkaDict.update({'mostBasicPka': pkaRoot['mostBasic']})
 		pkaDict.update({'mostAcidicPka': pkaRoot['mostAcidic']})
 
-		parentDict = {'image': pkaRoot['result']['image']['imageUrl']}
+		parentDict = {'image': data_walks.changeImageIP(pkaRoot['result']['image']['imageUrl'])}
 		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
 		# logging.warning(parentDict)
 
@@ -191,7 +191,7 @@ def getPkaInfo(output_val):
 			msImageUrlList = [] # list of microspecies image urls
 			for ms in microspeciesList:
 				msStructDict = {} # list element in msImageUrlList
-				msStructDict.update({"image": ms['image']['imageUrl']})
+				msStructDict.update({"image": data_walks.changeImageIP(ms['image']['imageUrl'])})
 				structInfo = getStructInfo(ms['structureData']['structure'])
 				msStructDict.update(structInfo)
 				msImageUrlList.append(msStructDict)
@@ -231,7 +231,7 @@ def getStereoInfo(output_val):
 
 	if 'result' in stereoValues:
 		if 'image' in stereoValues['result']:
-			stereoDict['image'] = stereoValues['result']['image']['imageUrl']
+			stereoDict['image'] = data_walks.changeImageIP(stereoValues['result']['image']['imageUrl'])
 		structInfo = getStructInfo(stereoValues['result']['structureData']['structure'])
 		stereoDict.update(structInfo)
 
@@ -247,7 +247,7 @@ def getTautInfo(output_val):
 		imageList = [] # list of dicts, where dict is molecule's image, smiles, mass, etc.
 		for taut in tautValues['result']:
 			tautStructDict = {}
-			tautStructDict.update({"image": taut['image']['imageUrl']}) #append to list
+			tautStructDict.update({"image": data_walks.changeImageIP(taut['image']['imageUrl'])}) #append to list
 			structInfo = getStructInfo(taut['structureData']['structure'])
 			tautStructDict.update(structInfo)
 			imageList.append(tautStructDict)

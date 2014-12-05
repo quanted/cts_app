@@ -3,6 +3,7 @@ import json
 from django.http import HttpRequest
 from REST import jchem_rest
 from django.utils.encoding import smart_text
+import os
 
 """
 10-31-14 (np)
@@ -76,7 +77,7 @@ def nodeWrapper(smiles, height, width, key=None):
 	if 'data' in data:
 		root = data['data'][0]['image']
 		if 'imageUrl' in root:
-			imageUrl = root['imageUrl']
+			imageUrl = changeImageIP(root['imageUrl'])
 			imageHeight = root['height']
 			imageWidth = root['width']
 
@@ -125,4 +126,19 @@ def popupBuilder(root, paramKeys, molKey=None):
 
 	dataProps["html"] = html 
 
-	return dataProps 
+	return dataProps
+
+
+def changeImageIP(url):
+	"""
+	Changing IP address from internal CGI to intranet-facing address
+	for image urls 
+
+	I.e., http://172.20.100.12/imageUrl --> http://134.67.114.2/imageUrl 
+	""" 
+	if 'CTS_JCHEM_SERVER_INTRANET' in os.environ:
+		return url.replace(os.environ['CTS_JCHEM_SERVER'], os.environ['CTS_JCHEM_SERVER_INTRANET'])
+	else:
+		return url
+
+

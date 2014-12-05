@@ -10,7 +10,7 @@ import logging
 from django.http import HttpRequest
 import data_walks 
 
-baseUrl = 'http://pnnl.cloudapp.net/efsws/rest/'
+# baseUrl = 'http://pnnl.cloudapp.net/efsws/rest/'
 
 headers = {'Content-Type' : 'application/json'}
 
