@@ -43,7 +43,7 @@ class chemspec(object):
 		self.tautomer_pH = tautomer_pH
 		self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
 
-		dataDict = {"chemical":self.chem_struct}
+		dataDict = {"chemical": self.chem_struct}
 
 		############# don't forget about pKa_decimal ###############
 

@@ -46,21 +46,21 @@ class gentrans(object):
 				self.trans_libs.append(key)
 
 		dataDict = {
-					'structure': self.chem_struct,
-					'generationLimit': self.gen_limit,
-					'populationLimit': self.pop_limit,
-					'likelyLimit': self.likely_limit,
-					'transformationLibraries': self.trans_libs,
-					'excludeCondition': ""
-					# 'generateImages': False
-					}
+			'structure': self.chem_struct,
+			'generationLimit': self.gen_limit,
+			'populationLimit': self.pop_limit,
+			'likelyLimit': self.likely_limit,
+			'transformationLibraries': self.trans_libs,
+			'excludeCondition': ""
+			# 'generateImages': False
+		}
 
 		request = HttpRequest()
 		request.POST = dataDict
 		response = jchem_rest.getTransProducts(request)
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(self.results)
+		# fileout.write(response.content)
 		# fileout.close()
 
 		# reformat data for outputting to tree structure:

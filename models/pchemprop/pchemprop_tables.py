@@ -65,7 +65,6 @@ def getdjtemplate():
             {% set skip = False %}
             <tr><td><b>{{field.label}}</b></td>
         {% endif %}
-
         {% if skip == False %}
             {% for prop, values in data.chemaxon.items %}
                 {% if prop == field.label %}
@@ -159,40 +158,6 @@ def output_pchem_table(pchemprop_obj):
         "sparc": None,
         "test": None
     }
-
-    # for mainKey, mainVal in data.items():
-    #     if mainKey == 'chemaxon':
-    #         chemaxonPropsList = []
-    #         for key, value in data['chemaxon'].items():
-    #             dataDict = {}
-    #             if key == 'pKa':
-    #                 dataDict.update({'props': "Ionization Constant"})
-    #                 ionConVal = {}
-    #                 for pKey, pVal in value.items():
-    #                     ionConVal.update({pKey: pVal})
-    #                 dataDict.update({'weighted': ionConVal})
-    #                 dataDict.update({'klop': ionConVal})
-    #                 dataDict.update({'phys': ionConVal})
-    #                 dataDict.update({'vg': ionConVal})
-    #             if key == 'logP':
-    #                 dataDict.update({'props':"Octanol/Water Partition Coefficient"})
-    #                 logpVals = {
-    #                     "logP (nonionic)": value['logpnonionic'],
-    #                     "logD (pI)": value['logdpi']
-    #                 }
-    #                 dataDict.update({'weighted': logpVals})
-    #                 dataDict.update({'klop': logpVals})
-    #                 dataDict.update({'phys': logpVals})
-    #                 dataDict.update({'vg': logpVals})
-    #             if key == 'logD':
-    #                 dataDict.update({'props': "Octanol/Water Partition Coefficient at pH"})
-    #                 logdVals = {"logD": value['logD']}
-    #                 dataDict.update({'weighted': logdVals})
-    #                 dataDict.update({'klop': logdVals})
-    #                 dataDict.update({'phys': logdVals})
-    #                 dataDict.update({'vg': logdVals})
-    #             chemaxonPropsList.append(dataDict)
-    #         allCalcsDict['chemaxon'] = chemaxonPropsList
 
     pchemprops = pchemprop_parameters.cts_chemCalcs_props() # get pchemprop fields
 

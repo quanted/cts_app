@@ -171,13 +171,14 @@ def buildChemaxonResultsDict(chemaxonDict):
 	Inputs: chemaxon dict
 	"""
 
-	propsList = [] # list of propDicts
 	propDict = {}
 
 	# loop through results per method
 	for method, result in chemaxonDict.items():
 
 		root = result['data'][0]
+
+		logging.warning(root)
 
 		if 'pKa' in root:
 			# get mostAcidic and mostBasic values (both are list)

@@ -35,6 +35,8 @@ SECRET_KEY = secret.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+
 TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
@@ -152,3 +154,10 @@ STATIC_URL = '/static/'
 DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
+
+if DEBUG:
+   import logging
+   logging.basicConfig(
+       level = logging.DEBUG,
+       format = '%(asctime)s %(levelname)s %(message)s',
+   )

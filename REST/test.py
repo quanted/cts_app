@@ -29,9 +29,9 @@ def testPage(request, chem):
 
 	chemDetails = requests.post(url, data=data, headers=headers)
 
-	fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
-	fileout.write(data)
-	fileout.close()
+	# fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
+	# fileout.write(data)
+	# fileout.close()
 
 	# return response
 	response = HttpResponse()

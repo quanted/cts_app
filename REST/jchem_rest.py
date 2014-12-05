@@ -17,7 +17,7 @@ import os
 
 headers = {'Content-Type' : 'application/json'}
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 
 class Urls:
@@ -33,8 +33,8 @@ class Urls:
 	detailUrl = '/rest-v0/util/detail'
 	# standardizerUrl = '/rest-v0/util/convert/standardizer'
 
-	metabolizerUrl = '/rest/metabolizer'
-	# standardizerUrl = '/rest/standardizer'
+	metabolizerUrl = '/metabolizer'
+	# standardizerUrl = '/standardizer'
 	standardizerUrl = '/rest-v0/util/convert/standardizer'
 
 
@@ -167,6 +167,7 @@ def standardizer(request):
     	}
 	}
 	data = json.dumps(data)
+
 	results = web_call(url, request, data)
 	return results
 
@@ -180,16 +181,17 @@ def web_call(url, request, data):
 	callback_response = HttpResponse()
 	message = '\n' + "URL: " + '\n' + url + '\n\n'
 	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
+	logging.warning("Making Call: " + message)
 	try:
-		# logger.info("Making Call: " + message)
+		# logging.warning("Making Call: " + message)
 		response = requests.post(url, data=data, headers=headers, timeout=60)
-		# logger.info("Call successful")
-		message = message + "Response: " + '\n' + response.content + '\n\n'
+		# logger.warning("Call successful")
+		# message = message + "Response: " + '\n' + response.content + '\n\n'
 		callback_response.write(response.content)
 		return callback_response
 	except:
-		logging.info("Error in web call")
-		callback_response.write(message)
+		logging.warning("Error in web call")
+		callback_response.write("Error in web call")
 		return callback_response
 
 
