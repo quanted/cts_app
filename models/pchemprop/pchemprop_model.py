@@ -90,7 +90,7 @@ class pchemprop(object):
 		# logging.warning("Checked Calculators and Properties:")
 		# logging.warning(checkedCalcsAndPropsDict)
 
-		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict)
+		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kowPh)
 
 		# get results from json:
 		# self.chemaxonResultsDict = parseChemaxonResults(chemaxonResultsDict)
@@ -106,13 +106,16 @@ class pchemprop(object):
 		# fileout.write(json.dumps(self.chemaxonResultsDict))
 		# fileout.close()
 
-def getChemaxonResults(structure, checkedCalcsAndPropsDict):
+def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 	"""
 	Input: dict of checked/available properties for calculators
 	Returns: dict of chemaxon props in web-service-friendly format
 	"""
 
 	chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
+
+	logging.warning("chemaxon prop list:")
+	logging.warning(chemaxonPropsList)
 
 	if chemaxonPropsList:
 
@@ -152,7 +155,10 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict):
 				if prop == "kow_wph":
 					postDict.update({
 						"logD": {
-							"method": method
+							"method": method,
+							"pHLower": 0,
+							"pHUpper": 14,
+							"pHStep": 0.1
 						}
 					})
 
@@ -178,7 +184,7 @@ def buildChemaxonResultsDict(chemaxonDict):
 
 		root = result['data'][0]
 
-		logging.warning(root)
+		# logging.warning(root)
 
 		if 'pKa' in root:
 			# get mostAcidic and mostBasic values (both are list)

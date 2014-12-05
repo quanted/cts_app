@@ -343,7 +343,7 @@ ul.nobullet {
 }
 .articles li {
   margin-top: 0.5em;
-  /*font-size*/: 12px;
+  font-size: 12px;
 }
 .articles_input {
   width: 822px;

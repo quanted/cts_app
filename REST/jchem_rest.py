@@ -181,7 +181,7 @@ def web_call(url, request, data):
 	callback_response = HttpResponse()
 	message = '\n' + "URL: " + '\n' + url + '\n\n'
 	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
-	logging.warning("Making Call: " + message)
+	# logging.warning("Making Call: " + message)
 	try:
 		# logging.warning("Making Call: " + message)
 		response = requests.post(url, data=data, headers=headers, timeout=60)
@@ -243,7 +243,7 @@ class Data_Structures:
 		display = {"include": includeList, "parameters": paramsDict}
 		dataDict = {"structures": structures, "display": display}
 
-		logging.warning(dataDict)
+		# logging.warning(dataDict)
 
 		return dataDict
 
