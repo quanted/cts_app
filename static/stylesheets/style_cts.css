@@ -1,8 +1,6 @@
 /* CTS-specific styles for overriding shared style.css */
 body {
-  background: #F4F7ED;
   font-family: 'Open Sans', sans-serif;
-  font-size: 13px;
 }
 
 .articles_input {
