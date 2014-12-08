@@ -15,9 +15,8 @@ import datetime
 import pytz
 import os
 
-headers = {'Content-Type' : 'application/json'}
 
-# logging.basicConfig(level=logging.INFO)
+headers = {'Content-Type' : 'application/json'}
 
 
 class Urls:
@@ -181,7 +180,7 @@ def web_call(url, request, data):
 	callback_response = HttpResponse()
 	message = '\n' + "URL: " + '\n' + url + '\n\n'
 	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
-	# logging.warning("Making Call: " + message)
+	# logging.info("Making Call: " + message)
 	try:
 		# logging.warning("Making Call: " + message)
 		response = requests.post(url, data=data, headers=headers, timeout=60)

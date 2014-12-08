@@ -3,10 +3,12 @@ var marvinSketcherInstance;
 
 //Url mapping for ubertool-cts web services:
 var Urls = {
+
   getChemDeats : "/jchem-cts/ws/getChemDeats/",
   mrvToSmiles : "/jchem-cts/ws/mrvToSmiles/",
   getChemSpecData : "/jchem-cts/ws/getChemSpecData/",
   standarizer : "/jchem-cts/ws/standardizer/"
+
 };
 
 
@@ -39,17 +41,6 @@ $(document).ready(function handleDocumentReady (e) {
 });
 
 
-$(document).ajaxStart(function ()
-{
-    $('body').addClass('wait');
-
-}).ajaxComplete(function () {
-
-    $('body').removeClass('wait');
-
-});
-
-
 //Gets formula, iupac, smiles, mass, and marvin structure 
 //for chemical in Lookup Chemical textarea
 function importMol(dataObj) {
@@ -58,26 +49,45 @@ function importMol(dataObj) {
 
   if (chemical == "") {
     displayErrorInTextbox("Enter a chemical or draw one first");
+  }
+
+  //Returns <xml> string of standardized chemical in <cml> format for MarvinJS:
+  var standardizerResult = callStandardizer(chemical);
+
+  if (containsErrors(standardizerResult)) {
+    displayErrorInTextbox();
     return;
   }
 
-  ajaxCall(standardizerObj(chemical), function(standardizerResult) {
+  smilesObj = callMrvToSmiles(standardizerResult);
 
-      ajaxCall(mrvToSmilesObj(standardizerResult), function(smilesResult) {
+  if (containsErrors(smilesObj)) {
+    displayErrorInTextbox();
+    return;
+  }
 
-          var smiles = smilesResult['structure'];
-          ajaxCall(getChemDeatsObj(smiles), function(chemResults) {
+  smiles = smilesObj['structure'];
 
-              data = chemResults.data[0];
-              populateResultsTbl(data);
-              marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
+  //Create POST data for web call:
+  params = new Object();
+  params.url = Urls.getChemDeats;
+  params.type = "POST";
+  params.contentType = "application/json";
+  params.dataType = "json";
+  params.data = { "chemical" : smiles };
 
-          });
+  results = ajaxCall(params); //Get chemical information
 
-      });
-
-  });
-
+  if (containsErrors(results)) {
+    displayErrorInTextbox();
+    return;
+  }
+  else {
+    data = results.data[0];
+    populateResultsTbl(data);
+    //Load chemical to marvin sketch:
+    marvinSketcherInstance.importStructure("mrv", data.structureData.structure); 
+  }
 }
 
 
@@ -88,27 +98,41 @@ function importMolFromCanvas() {
   marvinSketcherInstance.exportStructure("mrv").then(function(source) {
 
     if (source == '<cml><MDocument></MDocument></cml>') {
-      displayErrorInTextbox("Draw a chemical, then try again");
+      alert("Draw a chemical, then try again");
       return;
     }
 
-    ajaxCall(mrvToSmilesObj(source), function(smilesResult) {
+    var params = new Object();
+    // params.url = "test";
+    params.url = Urls.mrvToSmiles;
+    params.type = "POST";
+    params.contentType = "application/json";
+    params.dataType = "json";
+    params.data = { "chemical" : source };
 
-      var smiles = smilesResult['structure'];
-      ajaxCall(getChemDeatsObj(smiles), function(chemResults) {
+    var results = ajaxCall(params);
 
-          data = chemResults.data[0];
-          populateResultsTbl(data);
-
-      });
-
-    });
+    if (results == 'Fail') {
+      alert("Error getting data from server...");
+      return;
+    }
+    else {
+      // importMol(results["structure"]); //send data object 
+      params = new Object();
+      params.url = Urls.getChemDeats;
+      params.type = "POST";
+      params.contentType = "application/json";
+      params.dataType = "json";
+      params.data = {"chemical": results.structure};
+      results = ajaxCall(params);
+      populateResultsTbl(results.data[0]);
+    }
 
   });
 }
 
 
-function standardizerObj(chemical) {
+function callStandardizer(chemical) {
   //Forms request to call standardizer:
   var params = new Object();
   params.url = Urls.standarizer;
@@ -116,28 +140,37 @@ function standardizerObj(chemical) {
   params.contentType = "plain/text";
   params.dataType = "text";
   params.data = { "chemical" : chemical };
-  return params;
+
+  var results = ajaxCall(params);
+
+  if (containsErrors(results)) {
+    displayErrorInTextbox();
+    return;
+  }
+  else {
+    return results;
+  }
 }
 
 
-function mrvToSmilesObj(chemical) {
+function callMrvToSmiles(chemical) {
+  //Forms request to call mrvToSmiles:
   var params = new Object();
   params.url = Urls.mrvToSmiles;
   params.type = "POST";
   params.contentType = "application/json";
   params.dataType = "json";
   params.data = { "chemical" : chemical };
-  return params;
-}
 
-function getChemDeatsObj(chemical) {
-  var params = new Object();
-  params.url = Urls.getChemDeats;
-  params.type = "POST";
-  params.contentType = "application/json";
-  params.dataType = "json";
-  params.data = { "chemical" : chemical };
-  return params;
+  var results = ajaxCall(params);
+
+  if (containsErrors(results)) {
+    displayErrorInTextbox();
+    return;
+  }
+  else {
+    return results;
+  }
 }
 
 
@@ -179,16 +212,20 @@ function populateResultsTbl(data) {
 
 function displayErrorInTextbox(errorMessage) {
   //Displays error message in Lookup Chemical textbox
+
   if (typeof errorMessage === 'undefined' || errorMessage == "") {
     errorMessage = "Error retrieving chemical information...Check chemical and try again.";
   }
+
   $('#id_chem_struct').addClass("redFont");
   $('#id_chem_struct').val(errorMessage); //Enter SMILES txtbox
   $('#molecule').val(""); //SMILES string txtbox - results table
   $('#IUPAC').val(""); //IUPAC txtbox - results table
   $('#formula').val(""); //Formula txtbox - results table
   $('#weight').val(""); //Mass txtbox - results table
+
   marvinSketcherInstance.clear(); //clear marvin sketch
+
 }
 
 
@@ -197,25 +234,32 @@ function jsonRepack(jsonobj) {
 }
 
 
-function ajaxCall(params, callback) {
+function ajaxCall(params) {
+
+  var results = "";
+
   $.ajax({
+
       url : params.url,
       type : params.type,
       data : params.data,
       dataType : params.dataType,
-      success : function(data) {
-        var data = jsonRepack(data);
-        if (containsErrors(data)) {
-          displayErrorInTextbox();
-          return;
-        }
-        else {
-          callback(jsonRepack(data));
-        }
+      timeout: 1000,
+      async: false,
+
+      success : function(data, textStatus, callBack) {
+        results = jsonRepack(data);
+        // return results;
+        // var data = results.data[0];
       },
       error : function(jqXHR, textStatus, errorThrown) {
-        callback("Fail");
+        results = "Fail ";
+        console.log(" " + JSON.stringify(errorThrown));
+        alert("Error retrieving chemical information. Please try again.");
       },
 
   });
+
+  return results;
+
 }

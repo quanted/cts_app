@@ -1,5 +1,5 @@
 /* CTS-specific styles for overriding shared style.css */
-body {
+body {2,4-dio
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -1458,4 +1458,9 @@ body.wait *, body.wait
 
 #pchemprop_table_out td {
   text-align: left;
+}
+
+.plot {
+  width: 700px;
+  height: 275px;
 }
