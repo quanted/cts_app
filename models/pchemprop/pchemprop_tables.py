@@ -158,6 +158,7 @@ def output_pchem_table(pchemprop_obj):
     """
 
     data = pchemprop_obj.resultsDict # get dict of pchemprop table - checked stuff
+    
     allCalcsDict = {
         "chemaxon": None,
         "epi": None,

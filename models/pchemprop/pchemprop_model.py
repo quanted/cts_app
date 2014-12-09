@@ -87,8 +87,6 @@ class pchemprop(object):
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
 		self.checkedCalcsAndPropsDict = checkedCalcsAndPropsDict
-		# logging.warning("Checked Calculators and Properties:")
-		# logging.warning(checkedCalcsAndPropsDict)
 
 		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 

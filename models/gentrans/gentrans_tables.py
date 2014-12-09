@@ -14,6 +14,10 @@ from django.utils.safestring import mark_safe
 import logging
 import json
 
+from models.pchemprop import pchemprop_tables
+# import importlib
+import gentrans_output
+
 # logger = logging.getLogger("gentransTables")
 
 def getheaderpvu():
@@ -84,6 +88,7 @@ def table_all(gentrans_obj):
     html_all = '<br>'
     html_all += table_struct(gentrans_obj)
     html_all += table_reactPathSim(gentrans_obj)
+    html_all += table_pchemprops()
     html_all += table_metabolites(gentrans_obj)
     html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
 
@@ -132,13 +137,22 @@ def table_reactPathSim(gentrans_obj):
     html = html + tmpl.render(Context(dict(data=tblData)))
     html = html + """
             </div>
-    </div>
     """
     return html
 
 
-def table_pchemprops(gentrans_obj):
-    # Attempt at using pchemprop template for pchemprop table
+def table_pchemprops():
+    # html = """
+    #     <H4 class="out_1 collapsible" id="section4"><span></span><b>P-Chem Properties Results</b></H4>
+    #         <div class="out_ container_output">
+    # """
+    model_obj = gentrans_output.gentransOutputPage.pchemprop_obj 
+    html = pchemprop_tables.output_pchem_table(model_obj)
+    # html += """
+    #         </div>
+    # </div>
+    # """
+    return html
     
 
 
@@ -156,8 +170,15 @@ def table_metabolites(gentrans_obj):
 
     gentrans_obj.results = new_result
 
-    html = '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
+    html = """
+    <H3 class="out_1 collapsible" id="section1"><span></span>Reaction Pathways</H3>
+    <div class="out_">
+    """
+    html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
     html += render_to_string('cts_gentrans_tree.html')
+    html += """
+    </div>
+    """
 
     return html
 
