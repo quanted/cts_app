@@ -57,7 +57,7 @@ def getdjtemplate():
     {% for field in fields %}
         {# conditionals for appending kow_wph and kow_ph fields #}
         {% if field.html_name == "kow_wph" %}
-            <tr><td><b>{{field.label}} at pH</b></td>
+            <tr><td><b>{{field.label}} (at pH {{kow_ph}})</b></td>
             {% set skip = True %}
         {% elif field.html_name == "kow_ph" %}
             {% set skip = False %}
@@ -70,7 +70,11 @@ def getdjtemplate():
                 {% if prop == field.label %}
                     <td>
                     {% for k,v in values.items %}
-                        {{k}}: <i>{{v}}</i> <br>
+                        {{k}}:
+                        {% for key, value in v.items %}
+                            <i>{{value}}</i>
+                        {% endfor %}
+                        <br>
                     {% endfor %}
                     </td>
                 {% endif %}
@@ -80,7 +84,11 @@ def getdjtemplate():
                 {% if prop == "Octanol/Water Partition Coefficient at pH" %}
                     <td>
                     {% for k,v in values.items %}
-                        {{k}}: <i>{{v}}</i> <br>
+                        {{k}}:
+                        {% for key, value in v.items %}
+                            <i>{{value}}</i>
+                        {% endfor %}
+                        <br>
                     {% endfor %}
                     </td>
                 {% endif %}
@@ -115,7 +123,7 @@ def table_all(pchemprop_obj):
     html_all = '<br>'
     html_all += input_struct_table(pchemprop_obj)
     html_all += output_pchem_table(pchemprop_obj)
-    # html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
+    html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
     return html_all
 
 
@@ -149,8 +157,6 @@ def output_pchem_table(pchemprop_obj):
     <div class="out_">
     """
 
-    # convert chemaxon dict to dict with keys: props, klop, phys, vg, weighted (all lists)
-
     data = pchemprop_obj.resultsDict # get dict of pchemprop table - checked stuff
     allCalcsDict = {
         "chemaxon": None,
@@ -159,21 +165,14 @@ def output_pchem_table(pchemprop_obj):
         "test": None
     }
 
+    kow_ph = round(float(pchemprop_obj.kow_ph), 1)
     pchemprops = pchemprop_parameters.cts_chemCalcs_props() # get pchemprop fields
-
-    html += pchemTmpl.render(Context(dict(fields=pchemprops, data=data))) 
+    html += pchemTmpl.render(Context(dict(fields=pchemprops, data=data, kow_ph=kow_ph))) 
 
     html += """
     </div>
     """
     return html
-
-
-def output_pKa_table(pchemprop_obj):
-    """
-    pKa results table
-    """
-    return None
 
 
 def timestamp(pchemprop_obj="", batch_jid=""):
@@ -190,20 +189,5 @@ def timestamp(pchemprop_obj="", batch_jid=""):
     html = html + """
     </div>"""
     return html
-
-
-def popup_prop_wrapper():
-    """
-    Builds popup table for calculator property
-
-    Input: dict of property with klop, phys, vg, and weighted values;
-    also structInfo if available (i.e., logP)
-
-    Output: table with image (if available); also 
-    klop, phys, vg, weighted; and name, iupac, 
-    formula, and mass if image available  
-    """
-
-
 
 

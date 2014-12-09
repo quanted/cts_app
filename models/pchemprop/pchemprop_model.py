@@ -17,7 +17,7 @@ n = 3 # number of decimal places to round value
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 
 					test, sparc, measured, melting_point, boiling_point, water_sol, 
-					vapor_press, mol_diss, ion_con, henrys_law_con, kowNoPh, kowWph, kowPh, koc):
+					vapor_press, mol_diss, ion_con, henrys_law_con, kow_no_ph, kow_wph, kow_ph, koc):
 
 		self.run_type = run_type # defaults to "single", "batch" coming soon...
 		self.jid = jchem_rest.gen_jid() # get time of run
@@ -36,9 +36,9 @@ class pchemprop(object):
 		self.mol_diss = mol_diss
 		self.ion_con = ion_con
 		self.henrys_law_con = henrys_law_con
-		self.kowNoPh = kowNoPh
-		self.kowWph = kowWph
-		self.kowPh = kowPh
+		self.kow_no_ph = kow_no_ph
+		self.kow_wph = kow_wph
+		self.kow_ph = kow_ph
 		self.koc = koc
 
 		# Create dictionary of chemprops with keys --> field names
@@ -50,9 +50,9 @@ class pchemprop(object):
 			"mol_diss": self.mol_diss,
 			"ion_con": self.ion_con,
 			"henrys_law_con": self.henrys_law_con,
-			"kow_no_ph": self.kowNoPh,
-			"kow_wph": self.kowWph,
-			"kow_ph": self.kowPh,
+			"kow_no_ph": self.kow_no_ph,
+			"kow_wph": self.kow_wph,
+			"kow_ph": self.kow_ph,
 			"koc": self.koc
 		}
 
@@ -90,7 +90,7 @@ class pchemprop(object):
 		# logging.warning("Checked Calculators and Properties:")
 		# logging.warning(checkedCalcsAndPropsDict)
 
-		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kowPh)
+		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 
 		# get results from json:
 		# self.chemaxonResultsDict = parseChemaxonResults(chemaxonResultsDict)
@@ -102,9 +102,8 @@ class pchemprop(object):
 			"test": None
 		}
 
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(json.dumps(self.chemaxonResultsDict))
-		# fileout.close()
+		self.rawData = self.chemaxonResultsDict
+
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 	"""
@@ -114,21 +113,18 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 
 	chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
 
-	logging.warning("chemaxon prop list:")
-	logging.warning(chemaxonPropsList)
-
 	if chemaxonPropsList:
 
 		propMethodsList = ['KLOP', 'PHYS', 'VG', 'WEIGHTED']
 		chemaxonDict = {} # dict of results (values) per method (keys)
 
 		for method in propMethodsList:
-			postDict = {}
+			postDict = {"chemical": structure}
 			# loop through chemaxon properties
 			for prop in chemaxonPropsList:
 				if prop == "solubility":
 					postDict.update({
-						"chemical": structure,
+						# "chemical": structure,
 						"solubility": {
 							"pHLower": 0,
 							"pHUpper": 14,
@@ -164,18 +160,23 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 
 			if postDict != None:
 				response = makeRequest(postDict) # get data per method
+				# logging.info("post dict:")
+				# logging.info(json.dumps(postDict))
 				chemaxonDict.update({method: json.loads(response)}) # results per method dictionary
 
-		return buildChemaxonResultsDict(chemaxonDict)
+		return buildChemaxonResultsDict(chemaxonDict, phForLogD)
 
 
-
-def buildChemaxonResultsDict(chemaxonDict):
+def buildChemaxonResultsDict(chemaxonDict, phForLogD):
 	"""
 	Parses results from chemaxon data call
 
 	Inputs: chemaxon dict
 	"""
+
+	# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+	# fileout.write(json.dumps(chemaxonDict))
+	# fileout.close()
 
 	propDict = {}
 
@@ -226,14 +227,16 @@ def buildChemaxonResultsDict(chemaxonDict):
 				dataDict.update({
 					"logpnonionic": "none"
 				})
-			if 'logdpi' in root['logP'] and not isinstance(root['logP']['logdpi'], dict):
-				dataDict.update({
-					"logdpi": round(root['logP']['logdpi'], n)
-				})
-			else:
-				dataDict.update({
-					"logdpi": "none"
-				})
+
+			# if 'logdpi' in root['logP'] and not isinstance(root['logP']['logdpi'], dict):
+			# 	dataDict.update({
+			# 		"logdpi": round(root['logP']['logdpi'], n)
+			# 	})
+			# else:
+			# 	dataDict.update({
+			# 		"logdpi": "none"
+			# 	})
+
 			# if 'result' in root['logP']:
 			# 	if 'structureData' in root['logP']['result']:
 			# 		# Get smiles, iupac, mass, etc. as dict for logP structure
@@ -259,17 +262,27 @@ def buildChemaxonResultsDict(chemaxonDict):
 		if 'logD' in root:
 			logDname = "Octanol/Water Partition Coefficient at pH"
 			if 'logD' in root['logD']:
+
+				phForLogD = float(phForLogD) # convert to float
+				chartDataList = root['logD']['chartData']['values'] # list of {"pH":val, "logD":val}
+
+				for xyPair in chartDataList:
+					# use value at pH requested by user
+					if xyPair['pH'] == round(phForLogD, 1):
+						logDval = xyPair['logD']
+						break
+
 				if logDname in propDict:
 					propDict[logDname].update({
 						method: {
-							"logD": round(root['logD']['logD'], n)
+							"logD": round(logDval, n)
 						}
 					})
 				else:
 					propDict.update({
 						logDname: {
 							method: {
-								"logD": round(root['logD']['logD'], n)
+								"logD": round(logDval, n)
 							}
 						}
 					})

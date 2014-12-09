@@ -39,47 +39,51 @@ def gethtmlrowsfromcols(data, headings):
     rows = [[col[i] for col in columns] for i in range(max_len)]
     return rows
 
+
 def getdjtemplate():
     dj_template ="""
-    <table class="out_">
-    {# headings #}
-        <tr>
-        {% for heading in headings %}
-            <th>{{ heading }}</th>
-        {% endfor %}
-        </tr>
-    {# data #}
-    {% for row in data %}
-    <tr>
-        {% for val in row %}
-        <td>{{ val|default:'' }}</td>
-        {% endfor %}
-    </tr>
+    <dl class="shiftRight">
+    {% for label, value in data.items %}
+        <dd>
+        <b>{{label}}:</b> {{value|default:"none"}}
+        </dd>
     {% endfor %}
-    </table>
+    </dl>
     """
     return dj_template
 
-def getInputData(gentrans_obj):
+
+def getStructInfo(gentrans_obj):
+    data = {
+        'SMILES': gentrans_obj.smiles, 
+        'IUPAC': gentrans_obj.name, 
+        'Formula': gentrans_obj.formula, 
+        'Mass': gentrans_obj.mass
+    }
+    return data
+
+
+def getReactPathSimData(gentrans_obj):
     data = { 
-        "Parameter": ['chemical', 'library', 'generation limit', 'population limit', 'likely limit'],
-        "Value": [gentrans_obj.chem_struct, gentrans_obj.trans_libs, gentrans_obj.gen_limit, gentrans_obj.pop_limit, gentrans_obj.likely_limit]
+        'Libraries': gentrans_obj.trans_libs, 
+        'Generation Limit': gentrans_obj.gen_limit, 
+        'Population Limit': gentrans_obj.pop_limit, 
+        'Likely Limit': gentrans_obj.likely_limit
     }
     return data
 
 
 pvuheadings = getheaderpvu()
 pvrheadings = getheaderpvr()
-# pvrheadingsqaqc = getheaderpvrqaqc()
-# sumheadings = getheadersum()
 djtemplate = getdjtemplate()
 tmpl = Template(djtemplate)
 
 
 def table_all(gentrans_obj):
 
-    # html_all = table_metabolites(gentrans_obj)
     html_all = '<br>'
+    html_all += table_struct(gentrans_obj)
+    html_all += table_reactPathSim(gentrans_obj)
     html_all += table_metabolites(gentrans_obj)
     html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
 
@@ -102,38 +106,40 @@ def timestamp(gentrans_obj="", batch_jid=""):
     return html
 
 
-def table_1(gentrans_obj):
-        html = """
-        <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
-        <div class="out_">
-            <H4 class="out_1 collapsible" id="section2"><span></span>Application and Chemical Information</H4>
-                <div class="out_ container_output">
-        """
-        t1data = getInputData(gentrans_obj)
-        t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
-        html = html + tmpl.render(Context(dict(data=t1rows, headings=pvuheadings)))
-        html = html + """
-                </div>
-        </div>
-        """
-        return html
+def table_struct(gentrans_obj):
+    html = """
+    <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
+    <div class="out_">
+        <H4 class="out_1 collapsible" id="section4"><span></span><b>Molecular Information</b></H4>
+            <div class="out_ container_output">
+    """
+    tblData = getStructInfo(gentrans_obj)
+    # t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
+    html = html + tmpl.render(Context(dict(data=tblData)))
+    html = html + """
+            </div>
+    """
+    return html
 
 
-def table_2(gentrans_obj):
-        html = """
-        <br>
-        <H3 class="out_1 collapsible" id="section3"><span></span>Chemical Speciation Output</H3>
-        <div class="out_1">
-            <H4 class="out_1 collapsible" id="section4"><span></span>pKa Values</H4>
-                <div class="out_ container_output">
-        """
-        t2data = gett2data(gentrans_obj)
-        t2rows = gethtmlrowsfromcols(t2data,pvuheadings)
-        html = html + tmpl.render(Context(dict(data=t2rows, headings=pvuheadings)))
-        html = html + """
-                </div>
-        """
-        return html
+def table_reactPathSim(gentrans_obj):
+    html = """
+        <H4 class="out_1 collapsible" id="section4"><span></span><b>Reaction Pathway Simulator</b></H4>
+            <div class="out_ container_output">
+    """
+    tblData = getReactPathSimData(gentrans_obj)
+    # t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
+    html = html + tmpl.render(Context(dict(data=tblData)))
+    html = html + """
+            </div>
+    </div>
+    """
+    return html
+
+
+def table_pchemprops(gentrans_obj):
+    # Attempt at using pchemprop template for pchemprop table
+    
 
 
 """

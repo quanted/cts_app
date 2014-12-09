@@ -48,7 +48,7 @@ def gethtmlrowsfromcols(data, headings):
 def getdjtemplate():
     dj_template ="""
     <dl class="shiftRight">
-    {% for label, value in data %}
+    {% for label, value in data.items %}
         <dd>
         <b>{{label}}</b> {{value|default:"none"}}
         </dd>
@@ -97,18 +97,17 @@ def getImagesTemplate():
 
 def getMolTblData(chemspec_obj):
     data = {
-        "Parameter": ['SMILES:', 'IUPAC:', 'Formula:', 'Mass:'],
-        "Value": [chemspec_obj.smiles, chemspec_obj.name, chemspec_obj.formula, chemspec_obj.mass],
-        # "Image": [chemspec_obj.parentImage]
+        'SMILES': chemspec_obj.smiles, 
+        'IUPAC': chemspec_obj.name, 
+        'Formula': chemspec_obj.formula, 
+        'Mass': chemspec_obj.mass
     }
     return data
 
 
 def getIsoPtData(chemspec_obj):
     data = {
-        "Parameter": ['Isoelectric Point:'],
-        "Value": [chemspec_obj.isoPtDict['isoPt']]
-        # "Value": ['test']
+        'Isoelectric Point': chemspec_obj.isoPtDict['isoPt']
     }
     return data
 
@@ -116,8 +115,12 @@ def getIsoPtData(chemspec_obj):
 # Ionization Constants (pKa) Parameters Data
 def getPkaData(chemspec_obj):
     data = {
-        "Parameter": ['Number of Decimals:', 'pH Lower Limit:', 'pH Upper Limit:', 'pH Step Size:','Generate Major Microspecies at pH:', 'Isoelectric Point (pl) pH Step Size of Charge Distribution:' ],
-        "Value": [chemspec_obj.pKa_decimals, chemspec_obj.pKa_pH_lower, chemspec_obj.pKa_pH_upper, chemspec_obj.pKa_pH_increment, chemspec_obj.pH_microspecies, chemspec_obj.isoelectricPoint_pH_increment ],
+        'Number of Decimals': chemspec_obj.pKa_decimals, 
+        'pH Lower Limit': chemspec_obj.pKa_pH_lower, 
+        'pH Upper Limit': chemspec_obj.pKa_pH_upper,  
+        'pH Step Size': chemspec_obj.pKa_pH_increment,
+        'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies,
+        'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment
     }
     return data
 
@@ -125,8 +128,8 @@ def getPkaData(chemspec_obj):
 # Dominate Tautomer Distribution Data
 def getTautData(chemspec_obj):
     data = {
-        "Parameter": ['Maximum Number of Structures:', 'at pH:' ],
-        "Value": [chemspec_obj.tautomer_maxNoOfStructures, chemspec_obj.tautomer_pH ]
+        'Maximum Number of Structures': chemspec_obj.tautomer_maxNoOfStructures, 
+        'at pH': chemspec_obj.tautomer_pH
     }
     return data
 
@@ -134,8 +137,7 @@ def getTautData(chemspec_obj):
 # Stereoisomers Data
 def getStereoData(chemspec_obj):
     data = {
-        "Parameter": ['Maximum Number of Structures:'],
-        "Value": [chemspec_obj.stereoisomers_maxNoOfStructures]
+        'Maximum Number of Structures': chemspec_obj.stereoisomers_maxNoOfStructures
     }
     return data
 
@@ -145,19 +147,19 @@ def getPkaValues(chemspec_obj):
     # jsonData = json.dumps(chemspec_obj.result)
     
     data = { 
-        "Parameter": ['Basic pKa Value(s):', 'Acidic pKa Value(s):'],
-        "Value": [chemspec_obj.pkaDict['mostBasicPka'], chemspec_obj.pkaDict['mostAcidicPka']],
+        'Basic pKa Value(s)': chemspec_obj.pkaDict['mostBasicPka'], 
+        'Acidic pKa Value(s)': chemspec_obj.pkaDict['mostAcidicPka']
     }
     return data
 
 
 # Parent and Microspecies Images
-def getSpeciesImages(chemspec_obj):
-    data = {
-        "Parent": [chemspec_obj.pkaDict['parentImage']],
-        "Microspecies": chemspec_obj.pkaDict['msImageUrlList']
-    }
-    return data
+# def getSpeciesImages(chemspec_obj):
+#     data = {
+#         "Parent": [chemspec_obj.pkaDict['parentImage']],
+#         "Microspecies": chemspec_obj.pkaDict['msImageUrlList']
+#     }
+#     return data
 
 
 pvheadings = getheaderpv()
@@ -243,8 +245,8 @@ def table_struct(chemspec_obj):
     """
 
     molTblData = getMolTblData(chemspec_obj)
-    molTblRows = gethtmlrowsfromcols(molTblData, pvheadings)
-    html += tmpl.render(Context(dict(data=molTblRows, headings=pvheadings)))
+    # molTblRows = gethtmlrowsfromcols(molTblData, pvheadings)
+    html += tmpl.render(Context(dict(data=molTblData)))
 
     #try to add structure image:
     # html += mark_safe('<img src="' + chemspec_obj.image + '" alt="Structure Image"></img>')
@@ -264,12 +266,8 @@ def table_pka_input(chemspec_obj):
         <H4 class="out_1 collapsible" id="section3"><span></span><b>Ionization Constants (pKa) Parameters</b></H4>
             <div class="out_ container_output">
         """
-        t1data = getPkaData(chemspec_obj)
-        t1rows = gethtmlrowsfromcols(t1data,pvheadings)
-        # t2data = gett2data(chemspec_obj)
-        # t2rows = gethtmlrowsfromcols(t2data, pvheadings)
-        html += tmpl.render(Context(dict(data=t1rows, headings=pvheadings)))
-        # html += tmpl.render(Context(dict(data=t2rows, headings=pvheadings)))
+        tblData = getPkaData(chemspec_obj)
+        html += tmpl.render(Context(dict(data=tblData)))
         html += """
         </div>
         """
@@ -288,8 +286,8 @@ def table_taut_input(chemspec_obj):
                     <div class="out_ container_output">
         """
         tblData = getTautData(chemspec_obj)
-        tblRows = gethtmlrowsfromcols(tblData, pvheadings)
-        html += tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        # tblRows = gethtmlrowsfromcols(tblData, pvheadings)
+        html += tmpl.render(Context(dict(data=tblData)))
         html += """
         </div>
         """
@@ -308,8 +306,8 @@ def table_stereo_input(chemspec_obj):
                     <div class="out_ container_output">
         """
         tblData = getStereoData(chemspec_obj)
-        tblRows = gethtmlrowsfromcols(tblData, pvheadings)
-        html += tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        # tblRows = gethtmlrowsfromcols(tblData, pvheadings)
+        html += tmpl.render(Context(dict(data=tblData)))
         html += """
         </div></div>
         """
@@ -328,8 +326,7 @@ def table_isoPt_results(chemspec_obj):
         <div class="out_">
         """
         tblData = getIsoPtData(chemspec_obj)
-        tblRows = gethtmlrowsfromcols(tblData, pvheadings)
-        html += tmpl.render(Context(dict(data=tblRows, headings=pvheadings)))
+        html += tmpl.render(Context(dict(data=tblData)))
         html += """
 
         """
@@ -392,9 +389,9 @@ def table_pka_results(chemspec_obj):
             <H4 class="out_1 collapsible" id="section7"><span></span><b>Most Acidic/Basic</b></H4>
                     <div class="out_ container_output">
         """
-        t3data = getPkaValues(chemspec_obj)
-        t3rows = gethtmlrowsfromcols(t3data, pvheadings)
-        html += tmpl.render(Context(dict(data=t3rows, headings=pvheadings)))
+        tblData = getPkaValues(chemspec_obj)
+        # t3rows = gethtmlrowsfromcols(t3data, pvheadings)
+        html += tmpl.render(Context(dict(data=tblData)))
         html += """
         </div>
         """
@@ -519,7 +516,6 @@ def wrap_molecule(propDict):
     key = None
     if 'key' in propDict:
         key = propDict['key']
-        logging.warning("KEY: " + key)
 
     # image = propDict['image']
     image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100, key)) # displayed image
