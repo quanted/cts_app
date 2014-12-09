@@ -39,6 +39,7 @@ $(document).ready(function handleDocumentReady (e) {
 });
 
 
+//"wait" cursor during ajax events
 $(document).ajaxStart(function ()
 {
     $('body').addClass('wait');
@@ -141,29 +142,55 @@ function getChemDeatsObj(chemical) {
 }
 
 
+var error = [];
 function containsErrors(results) {
+
+  // var error = [];
+
   //Check results for a multitude of errors:
   if (typeof results === "undefined") {
-    return true;
+    error.push(true);
   }
   else if (results == "Fail") {
-    return true;
+    error.push(true);
   }
   else if (typeof results === "object") {
-    $.each(results, function(key, value) {
-      if (value.hasOwnProperty("error")) {
-        return true;
-      }
-    });
+    $.each(results, dataWalker); //check n-nested object for errors
   }
   else if (typeof results === "string") {
     if (~results.indexOf("error")) {
-      return true;
+      error.push(true);
     }
   }
   else {
+    error.push(false);
+  }
+
+  if ($.inArray(true, error) != -1) {
+    error.length = 0;
+    return true;
+  }
+  else {
+    error.length = 0;
     return false;
   }
+
+}
+
+
+function dataWalker(key, value) {
+  // check key and value for error
+  // var savePath = path;
+  // path = path ? (path + "." + key) : key;
+  
+  if (value.hasOwnProperty("error")) {
+    error.push(true);
+  }
+
+  if (value !== null && typeof value === "object") {
+    $.each(value, dataWalker); //recurse into progeny
+  }
+
 }
 
 
@@ -205,7 +232,8 @@ function ajaxCall(params, callback) {
       dataType : params.dataType,
       success : function(data) {
         var data = jsonRepack(data);
-        if (containsErrors(data)) {
+        var isError = containsErrors(data);
+        if (isError) {
           displayErrorInTextbox();
           return;
         }
