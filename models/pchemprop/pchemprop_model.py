@@ -88,6 +88,9 @@ class pchemprop(object):
 
 		self.checkedCalcsAndPropsDict = checkedCalcsAndPropsDict
 
+		logging.info("### Checked calcs and properties dict ###")
+		logging.info(self.checkedCalcsAndPropsDict)
+
 		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 
 		# get results from json:

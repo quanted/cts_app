@@ -142,36 +142,33 @@ function getChemDeatsObj(chemical) {
 }
 
 
-var error = [];
+var error = false;
 function containsErrors(results) {
-
-  // var error = [];
 
   //Check results for a multitude of errors:
   if (typeof results === "undefined") {
-    error.push(true);
+    error = true;
   }
   else if (results == "Fail") {
-    error.push(true);
+    error = true;
   }
   else if (typeof results === "object") {
     $.each(results, dataWalker); //check n-nested object for errors
   }
   else if (typeof results === "string") {
     if (~results.indexOf("error")) {
-      error.push(true);
+      error = true;
     }
   }
   else {
-    error.push(false);
+    error = false;
   }
 
-  if ($.inArray(true, error) != -1) {
-    error.length = 0;
+  if (error == true) {
+    error = false;
     return true;
   }
   else {
-    error.length = 0;
     return false;
   }
 
@@ -182,9 +179,31 @@ function dataWalker(key, value) {
   // check key and value for error
   // var savePath = path;
   // path = path ? (path + "." + key) : key;
-  
-  if (value.hasOwnProperty("error")) {
-    error.push(true);
+
+  if (typeof key === "string") {
+    if (~key.indexOf("error")) {
+      error = true;
+      return false;
+    }
+  }
+  else {
+    if (key.hasOwnProperty("error")) {
+      error = true;
+      return false;
+    }
+  }
+
+  if (typeof value === "string") {
+    if (~value.indexOf("error")) {
+      error = true;
+      return false;
+    }
+  }
+  else {
+    if (value.hasOwnProperty("error")) {
+      error = true;
+      return false;
+    }
   }
 
   if (value !== null && typeof value === "object") {
