@@ -12,7 +12,8 @@ import logging
 from models.chemspec import chemspec_model # for getStructInfo(), TODO: move func to more generic place
 import decimal
 
-n = 3 # number of decimal places to round value
+n = 3 # number of decimal places to round values
+propMethodsList = ['KLOP', 'PHYS', 'VG', 'WEIGHTED'] # methods of calculation for pchemprops
 
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 
@@ -73,6 +74,7 @@ class pchemprop(object):
 
 		# dict with keys of checked calculators and values of 
 		# checked properties that are also available for said calculators
+		# format: { key: "calculator name", value: [checked property ids] }
 		checkedCalcsAndPropsDict = {}
 		for calcKey, calcValue in calcluatorsDict.items():
 			if calcValue == 'true' or calcValue == 'on':
@@ -91,34 +93,107 @@ class pchemprop(object):
 		logging.info("### Checked calcs and properties dict ###")
 		logging.info(self.checkedCalcsAndPropsDict)
 
+		# TODO: Make more general. getChemaxonResults() could probably be changed to loop
+		# through all calculators. Also, establish standardized variable names to reduce
+		# amount of code (e.g., conditionals checking prop values)
 		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
-
-		# get results from json:
-		# self.chemaxonResultsDict = parseChemaxonResults(chemaxonResultsDict)
+		# self.testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # kow_wph not available
+		# self.measuredResultsDict = getMeasuredResults(self.chem_struct, checkedCalcsAndPropsDict)
 
 		self.resultsDict = {
 			"chemaxon": self.chemaxonResultsDict,
 			"epi": None,
 			"sparc": None,
-			"test": None
+			"test": None,
+			"measured": None
 		}
 
 		self.rawData = self.chemaxonResultsDict
+
+		"""
+		Sample TEST calls and stuff (add this to the model):
+		"""
+		# For the Measured column:
+		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MP/MEASURED", dataType: "json"}).done(function(val) { $('#id_melting_point_MEASURED').html(val.MEASURED.toPrecision(4)) } )
+		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/BP/MEASURED", dataType: "json"}).done(function(val) { $('#id_boiling_point_MEASURED').html(val.MEASURED.toPrecision(4)) } )
+		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/WS/MEASURED", dataType: "json"}).done(function(val) { $('#id_water_sol_MEASURED').html(val.MEASURED.toPrecision(4)) } )
+		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/VP/MEASURED", dataType: "json"}).done(function(val) { $('#id_vapor_press_MEASURED').html(val.MEASURED.toPrecision(4)) } )
+		# For the TEST column:
+		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MP", dataType: "json"}).done(function(val) { $('#id_melting_point_TEST').html(val.TEST.toPrecision(4)) } )
+  		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/BP", dataType: "json"}).done(function(val) { $('#id_boiling_point_TEST').html(val.TEST.toPrecision(4)) } )
+  		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/WS", dataType: "json"}).done(function(val) { $('#id_water_sol_TEST').html(val.TEST.toPrecision(4)) } )
+  		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/VP", dataType: "json"}).done(function(val) { $('#id_vapor_press_TEST').html(val.TEST.toPrecision(4)) } )
+  		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MLOGP", dataType: "json"}).done(function(val) { $('#id_kow_no_ph_TEST').html(val.MLOGP.toPrecision(4)) } )
+
+
+def getTestResults(structure, checkedCalcsAndPropsDict):
+	"""
+	Gets pchemprop data from TEST ws.
+	Inputs: chemical structure, dict of checked properties by calculator
+	(e.g., { 'test': ['kow_no_ph', 'melting_point'] })
+	Returns: dict of TEST props in template-friendly format (see pchemprop_tables)
+	"""
+
+	url = "/test_cts/api/TEST/" + structure
+	testPropsList = checkedCalcsAndPropsDict.get('test', None)
+
+	if testPropsList:
+		testValues = {}
+		for prop in testPropsList:
+			if prop == "melting_point":
+				testValues.update({prop: requests.get(url + "/MP")})
+			elif prop == "boiling_point":
+				testValues.update({prop: requests.get(url + "/BP")})
+			elif prop == "water_sol":
+				testValues.update({prop: requests.get(url + "/WS")})
+			elif prop == "vapor_press":
+				testValues.update({prop: requests.get(url + "/VP")})
+		return testValues
+	else: return None
+
+
+def getMeasuredResults(structure, checkedCalcsAndPropsDict):
+	"""
+	Gets pchemprop data from measured ws.
+	Inputs: chemical structure, dict of checked properties by calculator
+	(e.g., { 'measured': ['kow_no_ph', 'melting_point'] })
+	Returns: dict of measured props in template-friendly format (see pchemprop_tables)
+	"""
+
+	url = "/test_cts/api/TEST/" + structure
+	measuredPropsList = checkedCalcsAndPropsDict.get('measured', None)
+
+	if measuredPropsList:
+		measuredValues = {}
+		for prop in measuredPropsList:
+			if prop == "melting_point":
+				measuredValues.update({prop: requests.get(url + "/MP/MEASURED")})
+			elif prop == "boiling_point":
+				measuredValues.update({prop: requests.get(url + "/BP/MEASURED")})
+			elif prop == "water_sol":
+				measuredValues.update({prop: requests.get(url + "/WS/MEASURED")})
+			elif prop == "vapor_press":
+				measuredValues.update({prop: requests.get(url + "/VP/MEASURED")})
+			elif prop == "kow_no_ph":
+				measuredResponse = requests.get(url + "/MLOGP/MEASURED")
+		return measuredValues
+	else: return None
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 	"""
 	Input: dict of checked/available properties for calculators
-	Returns: dict of chemaxon props in web-service-friendly format
+	Returns: dict of chemaxon props in template-friendly format
 	"""
 
 	chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
 
 	if chemaxonPropsList:
 
-		propMethodsList = ['KLOP', 'PHYS', 'VG', 'WEIGHTED']
+		# propMethodsList = ['KLOP', 'PHYS', 'VG', 'WEIGHTED']
 		chemaxonDict = {} # dict of results (values) per method (keys)
 
+		# jchem ws only accepts on method at a time
 		for method in propMethodsList:
 			postDict = {"chemical": structure}
 			# loop through chemaxon properties
@@ -160,9 +235,7 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 					})
 
 			if postDict != None:
-				response = makeRequest(postDict) # get data per method
-				# logging.info("post dict:")
-				# logging.info(json.dumps(postDict))
+				response = makeJchemRequest(postDict) # get data per method
 				chemaxonDict.update({method: json.loads(response)}) # results per method dictionary
 
 		return buildChemaxonResultsDict(chemaxonDict, phForLogD)
@@ -170,14 +243,13 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 
 def buildChemaxonResultsDict(chemaxonDict, phForLogD):
 	"""
-	Parses results from chemaxon data call
+	Parses results from chemaxon data call and
+	returns a dictionary in a format recognized 
+	by the template in pchemprop_tables.py
 
-	Inputs: chemaxon dict
+	Inputs: chemaxon dict, pH for logD (if selected)
+	Returns: dictionary of chemaxon values for output page
 	"""
-
-	# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-	# fileout.write(json.dumps(chemaxonDict))
-	# fileout.close()
 
 	propDict = {}
 
@@ -291,7 +363,7 @@ def buildChemaxonResultsDict(chemaxonDict, phForLogD):
 	return propDict
 	
 
-def makeRequest(postData):
+def makeJchemRequest(postData):
 	"""
 	Makes request to jchem-cts ws
 	Input: post data as dict
