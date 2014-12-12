@@ -30,7 +30,7 @@ class chemspec(object):
 		self.smiles = smiles
 		self.name = name
 		self.formula = formula
-		self.mass = mass + 'g'
+		self.mass = mass
 
 		# Chemical Speciation Tab
 		self.pKa_decimals = pKa_decimals
@@ -83,6 +83,10 @@ class chemspec(object):
 		response = jchem_rest.getChemSpecData(request) # gets json string response of chemical data
 
 		self.rawData = response.content
+
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(response.content)
+		# fileout.close()
 
 		output_val = json.loads(response.content) # convert json to dict
 

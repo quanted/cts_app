@@ -3,6 +3,10 @@ body {2,4-dio
   font-family: 'Open Sans', sans-serif;
 }
 
+h4 {
+  font-weight: bold;
+}
+
 .articles_input {
   width: 822px;
   display: inline;
@@ -1460,7 +1464,44 @@ body.wait *, body.wait
   text-align: left;
 }
 
+/*jqplot divs*/
 .plot {
-  width: 700px;
+  width: 650px;
   height: 275px;
+  margin: 0px;
 }
+
+/*isoelectric point plot*/
+#isoelectric-point {
+  margin-left: 30px;
+}
+
+#microspecies-distribution {
+  margin-left: 30px;
+}
+
+.alignLeft {
+  text-align: left;
+}
+
+/* inputs table for chemspec output */
+#chemspecInputs, #chemspecInputs td, #chemspecInputs th {
+  font-size: 11px;
+  border-spacing: 0px;
+  background-color: transparent;
+}
+
+#chemspecInputs {
+  /*border-color: #333333;*/
+  
+}
+
+#chemspecInputs th {
+  font-size: 12px;
+  background-color: #E7EADC;
+  /*border-bottom: 1px solid #333333;*/
+}
+
+/*#chemspecInputs tr:nth-child(even) {
+  background-color: #E7EADC;
+}*/

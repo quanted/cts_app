@@ -110,6 +110,10 @@ class pchemprop(object):
 
 		self.rawData = self.chemaxonResultsDict
 
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(json.dumps(self.rawData))
+		# fileout.close()
+
 		"""
 		Sample TEST calls and stuff (add this to the model):
 		"""
