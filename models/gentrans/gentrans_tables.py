@@ -87,7 +87,7 @@ def table_all(gentrans_obj):
     html_all = '<br>'
     html_all += table_struct(gentrans_obj)
     html_all += table_reactPathSim(gentrans_obj)
-    html_all += table_pchemprops()
+    # html_all += table_pchemprops()
     html_all += table_metabolites(gentrans_obj)
     html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
     return html_all

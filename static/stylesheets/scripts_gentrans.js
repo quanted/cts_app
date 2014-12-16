@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     uberNavTabs(
-        ["Chemical", "ReactionPathSim", "ChemCalcs", "ReactionRateCalc"],
+        ["Chemical", "ReactionPathSim"],
         {   "isSubTabs":true,
         	"Chemical": [".tab_chemicalButtons"] }
     );
