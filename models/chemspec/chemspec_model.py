@@ -213,7 +213,7 @@ def getPkaInfo(output_val):
 				for vals in ms['values']:
 					xy = [] # [ph1, con1]
 					xy.append(vals['pH'])
-					xy.append(vals['concentration'])
+					xy.append(100.0 * vals['concentration']) # convert to %
 					valuesList.append(xy)
 
 				# microDistData.update({msImageUrlList[inc]['iupac'] : valuesList})

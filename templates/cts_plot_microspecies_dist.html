@@ -26,15 +26,26 @@ function plotMicroDist() {
   }
 
   var plot = $.jqplot ('microspecies-distribution', plotData, {
-    title: 'Microspecies Distribution',
+    title: {
+      text: 'Microspecies Distribution (%)',
+      fontSize: '10pt'
+    },
     series: seriesInfo,
     axes: {
       xaxis: {
         label: 'pH',
         min: 0,
         max: 14,
-        tickInterval: 1
+        tickInterval: 1,
+        labelOptions: {
+          fontSize: '8pt'
+        }
       },
+      yaxis: {
+        min: 0,
+        max: 100,
+        tickInterval: 10
+      }
     },
     seriesDefaults: {
       showMarker: false
