@@ -1425,6 +1425,7 @@ table for ChemSpec output */
 .wrapped_molecule {
   background-color: transparent;
   font-size: 11px;
+  margin: 0px;
 }
 
 /*any child <img> of parent with class wrapped_molecule*/
@@ -1448,6 +1449,11 @@ table for ChemSpec output */
 .metabolite {
   background-color: white;
   border: 1px solid #1a1a1a;
+  margin: 4px 4px 4px 4px;
+}
+
+.metabolite img {
+  margin: 4px 4px 4px 4px;
 }
 
 /* qtip2 stuff */
@@ -1479,7 +1485,10 @@ body.wait *, body.wait
 }
 
 #microspecies-distribution {
-  margin-left: 30px;
+  /*margin-left: 30px;*/
+  vertical-align: top;
+  margin: 0px;
+  border: none;
 }
 
 .alignLeft {
@@ -1507,3 +1516,22 @@ body.wait *, body.wait
 /*#chemspecInputs tr:nth-child(even) {
   background-color: #E7EADC;
 }*/
+
+/* Div for parent/ms/plot organizing */
+#msMain {
+  /*max-width: 792px;*/
+  /*margin-left: 0px;*/
+  /*background-color: transparent;*/
+}
+
+#msMain table {
+  max-width: 792px;
+  margin: 0px;
+  /*background-color: transparent;*/
+}
+
+#msMain td {
+  vertical-align: center;
+  /*background-color: transparent;*/
+  /*border: 0px;*/
+}

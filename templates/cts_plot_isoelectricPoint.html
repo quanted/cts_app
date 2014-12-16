@@ -5,14 +5,22 @@ function plotIsoPt() {
 
   var dataArr = JSON.parse($('#isoPtData').text());
 
+  var title = "Isoelectric Point = " + {{ip}} //ip = isoelectric point value
+
   $.jqplot ('isoelectric-point', [dataArr], {
-    title: 'Isoelectric Point',
+    title: {
+      text: title,
+      fontSize: '10pt'
+    },
     axes: {
       xaxis: {
         label: 'pH',
         min: 0,
         max: 14,
-        tickInterval: 1
+        tickInterval: 1,
+        labelOptions: {
+          fontSize: '8pt'
+        }
       }
     },
     seriesDefaults: {

@@ -213,13 +213,15 @@ def getIsoPtResults(chemspec_obj):
         """
         # isoelectric point value:
         tblData = getIsoPtData(chemspec_obj)
-        html += tmpl.render(Context(dict(data=tblData)))
+        ip = tblData['Isoelectric Point']
+        # html += tmpl.render(Context(dict(data=tblData)))
+
         # isoelectric point plot:
         if 'isoPtChartData' in chemspec_obj.isoPtDict:
             html += '<div id="isoPtData" class="hideData">'
             html += mark_safe(json.dumps(chemspec_obj.isoPtDict['isoPtChartData']))
             html += '</div>'
-            html += render_to_string('cts_plot_isoelectricPoint.html')
+            html += render_to_string('cts_plot_isoelectricPoint.html', {"ip": ip})
         html += """
         </div>
         """
@@ -235,9 +237,9 @@ def getMajorMsImages(chemspec_obj):
     if chemspec_obj.majorMsDict:
         html = """
         <H4 class="out_1 collapsible" id="section6"><span></span>Major Microspecies</H4>
-        <div class="out_">
+        <div class="out_ shiftRight">
         """
-        html += wrap_molecule(chemspec_obj.majorMsDict)
+        html += wrap_molecule(chemspec_obj.majorMsDict, 114, 100)
         html += """
         </div>
         """
@@ -255,31 +257,30 @@ def getPkaResults(chemspec_obj):
         <H4 class="out_1 collapsible" id="section6"><span></span>pKa</H4>
         <div class="out_">
         """
-        
+
         # pKa acidic/basic values:
         tblData = getPkaValues(chemspec_obj)
         html += tmpl.render(Context(dict(data=tblData)))
 
         # pKa parent/microspecies images:
         html += """
-        <br>
-        <div class="shiftRight">
-        Parent:
+        <table id="msMain">
+        <tr>
+        <td>
         """
-        html += wrap_molecule(chemspec_obj.pkaDict['parent']) + "<br>"
+        html += wrap_molecule(chemspec_obj.pkaDict['parent'], 250, 250) + "<br>"
         html += """
-        Microspecies:
-        <br>
-        <dl style="display:inline-block">
+        </td>
+        <td>
         """
         if chemspec_obj.pkaDict['msImageUrlList']:
             for item in chemspec_obj.pkaDict['msImageUrlList']:
-                html += '<dd style="float:left;">' + wrap_molecule(item) + '</dd>'
+                html += wrap_molecule(item, 75, 75)
         else: 
-            html += '<dd>No microspecies to plot</dd>'
+            html += 'No microspecies to plot'
         html += """
-        </dl>
-        </div>
+        </td>
+        <td>
         """
 
         # Microspecies Distribution Plot:
@@ -292,6 +293,8 @@ def getPkaResults(chemspec_obj):
             html += '</div>'
             html += render_to_string('cts_plot_microspecies_dist.html')
         html += """
+        </td>
+        </table>
         </div>
         """
         return html
@@ -308,7 +311,7 @@ def table_stereo_results(chemspec_obj):
         <H4 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H4>
         <div class="out_">
         """
-        html += wrap_molecule(chemspec_obj.stereoDict)
+        html += wrap_molecule(chemspec_obj.stereoDict, 114, 100)
         html += """
         </div>
         """
@@ -328,7 +331,7 @@ def table_taut_results(chemspec_obj):
         """
         html += '<dl style="display:inline-block">'
         for item in chemspec_obj.tautDict['tautStructs']:
-            html += '<dd style="float:left;">' + wrap_molecule(item) + '</dd>'
+            html += '<dd style="float:left;">' + wrap_molecule(item, 114, 100) + '</dd>'
         html += "</dl>"
         html += """
         </div><br><br>
@@ -338,7 +341,7 @@ def table_taut_results(chemspec_obj):
         return ""
 
 
-def wrap_molecule(propDict):
+def wrap_molecule(propDict, height, width):
     """
     Wraps molecule image result (source url) with a table
     and populates said table with molecular details.
@@ -352,7 +355,8 @@ def wrap_molecule(propDict):
         key = propDict['key']
 
     # image = propDict['image']
-    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100, key)) # displayed image
+    # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100, key)) # displayed image
+    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], height, width, key)) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
     mass = propDict['mass']
@@ -366,9 +370,17 @@ def wrap_molecule(propDict):
         "smiles": smiles
     }
 
-    html = '<table class="' + defaultfilters.slugify(infoDict['iupac']) +' wrapped_molecule">'
-    # html += '<tr><td align="center">' + infoDict['iupac'] + '</td></tr>'
-    html += '<tr><td align="center">' + infoDict['image'] + '</td></tr></table>' 
+    # html = '<table class="' + defaultfilters.slugify(infoDict['iupac']) +' wrapped_molecule">'
+    # # html += '<tr><td align="center">' + infoDict['iupac'] + '</td></tr>'
+    # html += '<tr><td align="center">' + infoDict['image'] + '</td></tr></table>'
+
+    html = """
+    <div class="wrapped_molecule">
+    """
+    html += infoDict['image']
+    html += """
+    </div>
+    """
     wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key) # popup table image
     html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
 
