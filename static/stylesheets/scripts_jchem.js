@@ -62,22 +62,22 @@ function importMol(dataObj) {
     return;
   }
 
-  ajaxCall(standardizerObj(chemical), function(standardizerResult) {
+  // ajaxCall(standardizerObj(chemical), function(standardizerResult) {
 
-      ajaxCall(mrvToSmilesObj(standardizerResult), function(smilesResult) {
+  // ajaxCall(mrvToSmilesObj(chemical), function(smilesResult) {
 
-          var smiles = smilesResult['structure'];
-          ajaxCall(getChemDeatsObj(smiles), function(chemResults) {
+  // var smiles = smilesResult['structure'];
+  ajaxCall(getChemDeatsObj(chemical), function(chemResults) {
 
-              data = chemResults.data[0];
-              populateResultsTbl(data);
-              marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
-
-          });
-
-      });
+      data = chemResults.data[0];
+      populateResultsTbl(data);
+      marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
 
   });
+
+  // });
+
+  // });
 
 }
 
