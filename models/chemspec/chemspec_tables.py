@@ -14,7 +14,13 @@ import logging
 import json
 from StringIO import StringIO
 from django.utils.safestring import mark_safe
-from models.gentrans import data_walks  
+from models.gentrans import data_walks 
+
+
+lgWidth = 250
+mdWidth = 125 
+smWidth = 75
+scale = 100 
 
 
 def getdjtemplate():
@@ -191,9 +197,9 @@ def table_outputs(chemspec_obj):
     <div class="out_">
     """
     # build output with below defs
+    html += getPkaResults(chemspec_obj)
     html += getIsoPtResults(chemspec_obj)
     html += getMajorMsImages(chemspec_obj)
-    html += getPkaResults(chemspec_obj)
     html += table_stereo_results(chemspec_obj)
     html += table_taut_results(chemspec_obj)
     html += """
@@ -239,7 +245,7 @@ def getMajorMsImages(chemspec_obj):
         <H4 class="out_1 collapsible" id="section6"><span></span>Major Microspecies</H4>
         <div class="out_ shiftRight">
         """
-        html += wrap_molecule(chemspec_obj.majorMsDict, 114, 100)
+        html += wrap_molecule(chemspec_obj.majorMsDict, None, mdWidth, scale)
         html += """
         </div>
         """
@@ -268,14 +274,14 @@ def getPkaResults(chemspec_obj):
         <tr>
         <td>
         """
-        html += wrap_molecule(chemspec_obj.pkaDict['parent'], 250, 250) + "<br>"
+        html += wrap_molecule(chemspec_obj.pkaDict['parent'], None, lgWidth, scale) + "<br>"
         html += """
         </td>
         <td>
         """
         if chemspec_obj.pkaDict['msImageUrlList']:
             for item in chemspec_obj.pkaDict['msImageUrlList']:
-                html += wrap_molecule(item, 75, 75)
+                html += wrap_molecule(item, None, smWidth, scale)
         else: 
             html += 'No microspecies to plot'
         html += """
@@ -311,7 +317,7 @@ def table_stereo_results(chemspec_obj):
         <H4 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H4>
         <div class="out_">
         """
-        html += wrap_molecule(chemspec_obj.stereoDict, 114, 100)
+        html += wrap_molecule(chemspec_obj.stereoDict, None, mdWidth, scale)
         html += """
         </div>
         """
@@ -331,7 +337,7 @@ def table_taut_results(chemspec_obj):
         """
         html += '<dl style="display:inline-block">'
         for item in chemspec_obj.tautDict['tautStructs']:
-            html += '<dd style="float:left;">' + wrap_molecule(item, 114, 100) + '</dd>'
+            html += '<dd style="float:left;">' + wrap_molecule(item, None, mdWidth, scale) + '</dd>'
         html += "</dl>"
         html += """
         </div><br><br>
@@ -341,7 +347,7 @@ def table_taut_results(chemspec_obj):
         return ""
 
 
-def wrap_molecule(propDict, height, width):
+def wrap_molecule(propDict, width, scale):
     """
     Wraps molecule image result (source url) with a table
     and populates said table with molecular details.
@@ -356,7 +362,8 @@ def wrap_molecule(propDict, height, width):
 
     # image = propDict['image']
     # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100, key)) # displayed image
-    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], height, width, key)) # displayed image
+    # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], height, width, key)) # displayed image
+    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
     mass = propDict['mass']
@@ -382,6 +389,9 @@ def wrap_molecule(propDict, height, width):
     </div>
     """
     wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key) # popup table image
-    html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
+    # html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
+    html += '<div class="tooltiptext ' + iupac + '">'
+    html += wrappedDict['html']
+    html += '</div>'
 
     return html

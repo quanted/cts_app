@@ -5,6 +5,11 @@ function plotIsoPt() {
 
   var dataArr = JSON.parse($('#isoPtData').text());
 
+  var horiLine = [];
+  for (var i = 0; i < 14; i+=0.1) {
+    horiLine.push([i, 0]);
+  }
+
   var title = "Isoelectric Point = " + {{ip}} //ip = isoelectric point value
 
   $.jqplot ('isoelectric-point', [dataArr], {
@@ -25,7 +30,16 @@ function plotIsoPt() {
     },
     seriesDefaults: {
       showMarker: false
-    }
+    },
+    // series:[
+    //   {
+    //     lineWidth: 2
+    //   },
+    //   {
+    //     lineWidth: 1,
+    //     color: "#000000"
+    //   }
+    // ]
   });
 }
 </script>

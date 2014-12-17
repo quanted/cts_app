@@ -75,8 +75,10 @@ def smilesToImage(request):
 	given SMILES
 	"""
 	smiles = request.POST.get('smiles')
-	imageWidth = request.POST.get('width')
-	imageHeight = request.POST.get('height')
+	imgScale = request.POST.get('scale')
+	imgWidth = request.POST.get('width')
+	imgHeight = request.POST.get('height')
+
 	request = {
 		"structures": [
 			{"structure": smiles}
@@ -85,12 +87,17 @@ def smilesToImage(request):
 			"include": ["image"],
 			"parameters": {
 				"image": {
-					"width": imageWidth,
-					"height": imageHeight
+					# "width": imageWidth,
+					# "height": imageHeight
+					"scale": imgScale
 				}
 			}
 		}
 	}
+
+	if imgHeight != None:
+		request['display']['parameters']['image'].update({"width":imgWidth, "height":imgHeight})
+
 	data = json.dumps(request) # to json string
 	url = Urls.jchemBase + Urls.detailUrl
 	imgData = web_call(url, request, data) # get response from jchem ws
@@ -138,7 +145,7 @@ def getChemSpecData(request):
 
 def getTransProducts(request):
 	"""
-	Makes request to metabolizer on pnnl server
+	Makes request to metabolizer on cgi server
 	"""
 	url = Urls.efsBase + Urls.metabolizerUrl
 	data = json.dumps(request.POST)

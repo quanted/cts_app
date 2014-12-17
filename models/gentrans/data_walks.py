@@ -4,6 +4,7 @@ from django.http import HttpRequest
 from REST import jchem_rest
 from django.utils.encoding import smart_text
 import os
+from django.template import Context, Template, defaultfilters
 
 """
 10-31-14 (np)
@@ -26,6 +27,9 @@ metID = 0 # unique id for each node
 metabolite_keys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
 
 def traverse(root):
+	"""
+	For gentrans model output
+	"""
 
 	global metID
 	metID += 1
@@ -33,11 +37,11 @@ def traverse(root):
 
 	if metID == 1:
 		parent = root.keys()[0]
-		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100), "data": {}, "children": []})
+		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, 28), "data": {}, "children": []})
 		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys))
 		root = root[parent]
 	else:
-		newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100), "data": {}, "children": []})
+		newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, 28), "data": {}, "children": []})
 		# newDict['data'].update({"degradation": root['degradation']})
 		newDict['data'].update(popupBuilder(root, metabolite_keys))
 
@@ -51,12 +55,12 @@ def traverse(root):
 	return newDict
 
 
-def nodeWrapper(smiles, height, width, key=None):
+def nodeWrapper(smiles, height, width, scale, key=None):
 	"""
 	Wraps image html tag around
 	the molecule's image source
 
-	Inputs: smiles, height, width
+	Inputs: smiles, height, width, scale, key
 
 	Returns: html of wrapped image
 	"""
@@ -64,6 +68,7 @@ def nodeWrapper(smiles, height, width, key=None):
 	# 1. Get image from smiles
 	post = {
 		"smiles": smiles,
+		"scale": scale,
 		"height": height,
 		"width": width
 	}
@@ -73,21 +78,24 @@ def nodeWrapper(smiles, height, width, key=None):
 
 	# 2. Get imageUrl out of results
 	data = json.loads(results.content) # json string --> dict
-	imageUrl, imageHeight, imageWidth = '', '', ''
+	img, imgScale = '', ''
 	if 'data' in data:
 		root = data['data'][0]['image']
-		if 'imageUrl' in root:
-			imageUrl = changeImageIP(root['imageUrl'])
-			imageHeight = root['height']
-			imageWidth = root['width']
+		if 'image' in root:
+			img = changeImageIP(root['image'])
 
 	# 3. Wrap imageUrl with <img>
-	html = '<img class="metabolite" '
-	if key != None:
-		html += 'id="' + key + '" '
-	html += 'alt="' + smiles + '" '
-	html += 'src="' + imageUrl + '"/>'
+	html = imgTmpl().render(Context(dict(smiles=smiles, img=img, height=height, width=width, scale=scale, key=key)))	
 	return html
+
+
+def imgTmpl():
+	imgTmpl = """
+	<img class="metabolite" id="{{key|default:"none"}}" 
+		alt="{{smiles}}" src="data:image/gif;base64,{{img}}"
+		width="{{width}}" height="{{height}}" /> 
+	"""
+	return Template(imgTmpl)
 
 
 def popupBuilder(root, paramKeys, molKey=None):
@@ -109,7 +117,7 @@ def popupBuilder(root, paramKeys, molKey=None):
 
 	html = '<table class="wrapped_molecule">'
 	html += '<tr><td rowspan="' + str(len(paramKeys) + 1) + '">' 
-	html += nodeWrapper(root['smiles'], 192, 150)
+	html += nodeWrapper(root['smiles'], None, 250, 100)
 	html += '</td></tr>'
 	for key, value in root.items():
 		if key in paramKeys:
