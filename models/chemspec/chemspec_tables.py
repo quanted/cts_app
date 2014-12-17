@@ -347,7 +347,7 @@ def table_taut_results(chemspec_obj):
         return ""
 
 
-def wrap_molecule(propDict, width, scale):
+def wrap_molecule(propDict, height, width, scale):
     """
     Wraps molecule image result (source url) with a table
     and populates said table with molecular details.
