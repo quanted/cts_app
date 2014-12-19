@@ -149,6 +149,7 @@ def getMajorMicrospecies(output_val):
 		# Get image data from result:
 		if 'image' in majorMsRoot['result']:
 			majorMsImage = data_walks.changeImageIP(majorMsRoot['result']['image']['imageUrl'])
+
 			majorMsDict.update({"image": majorMsImage})
 			# majorMsDict.update({"image": majorMsRoot['result']['image']['imageUrl']})
 		else:
