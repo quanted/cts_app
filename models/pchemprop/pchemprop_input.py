@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 import logging
 
 
-def pchempropInputPage(request, model='', header='Structural chemspec', formData=None):
+def pchempropInputPage(request, model='', header='P-Chem Properties', formData=None):
     import pchemprop_parameters
     from models.chemspec import chemspec_parameters
 

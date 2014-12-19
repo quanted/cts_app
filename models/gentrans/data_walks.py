@@ -92,7 +92,7 @@ def nodeWrapper(smiles, height, width, scale, key=None):
 def imgTmpl():
 	imgTmpl = """
 	<img class="metabolite" id="{{key|default:"none"}}" 
-		alt="{{smiles}}" src="data:image/gif;base64,{{img}}"
+		alt="{{smiles}}" src="data:image/png;base64,{{img}}"
 		width="{{width}}" height="{{height}}" /> 
 	"""
 	return Template(imgTmpl)

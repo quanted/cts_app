@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 
 
     
-def gentransInputPage(request, model='', header='Chemical Speciation', formData=None):
+def gentransInputPage(request, model='', header='Generate Transformation Pathways', formData=None):
     import gentrans_parameters
     # from models.pchemprop import pchemprop_parameters
     from models.chemspec import chemspec_parameters
