@@ -30,11 +30,12 @@ class Urls:
 	# jchem ws urls:
 	exportUrl = '/rest-v0/util/calculate/molExport'
 	detailUrl = '/rest-v0/util/detail'
+	hydroUrl = '/rest-v0/util/convert/hydrogenizer'
+	standardizerUrl = '/rest-v0/util/convert/standardizer'
 	# standardizerUrl = '/rest-v0/util/convert/standardizer'
 
+	# homegrown ws from jchem java
 	metabolizerUrl = '/metabolizer'
-	# standardizerUrl = '/standardizer'
-	standardizerUrl = '/rest-v0/util/convert/standardizer'
 
 
 def doc(request):
@@ -173,6 +174,31 @@ def standardizer(request):
     	}
 	}
 	data = json.dumps(data)
+
+	results = web_call(url, request, data)
+	return results
+
+
+def hydrogenizer(request):
+	"""
+	Addition or removal of explicit 
+	hydrogens or lone pairs
+	Inputs: chemical, method (e.g., HYDROGENIZE)
+	Returns: molecule in mrv format 
+	"""
+	url = Urls.jchemBase + Urls.hydroUrl
+	structure = request.POST.get('chemical')
+	method = request.POST.get('method')
+	data = {
+		"structure": structure,
+		"parameters": {
+			"method": method
+		}
+	}
+	data = json.dumps(data) # convert to json string
+
+	logging.warning(" ### Request: ")
+	logging.warning(data)
 
 	results = web_call(url, request, data)
 	return results
