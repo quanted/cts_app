@@ -33,7 +33,7 @@ class chemspec(object):
 		self.mass = mass
 
 		# Chemical Speciation Tab
-		self.pKa_decimals = pKa_decimals
+		self.pKa_decimals = int(pKa_decimals)
 		self.pKa_pH_lower = pKa_pH_lower
 		self.pKa_pH_upper = pKa_pH_upper
 		self.pKa_pH_increment = pKa_pH_increment
@@ -44,8 +44,6 @@ class chemspec(object):
 		self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
 
 		dataDict = {"chemical": self.chem_struct}
-
-		############# don't forget about pKa_decimal ###############
 
 		if pkaChkbox == 'on':
 			pkaInputsDict = {
@@ -89,6 +87,7 @@ class chemspec(object):
 		# fileout.close()
 
 		output_val = json.loads(response.content) # convert json to dict
+		# output_val.update({"decimals": self.pKa_decimals}) # add num of dec places for results to dict
 
 		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
@@ -98,47 +97,42 @@ class chemspec(object):
 
 		# Build response dictionaries
 		if 'pKa' in data_root:
-			self.pkaDict = getPkaInfo(output_val)
+			self.pkaDict = getPkaInfo(output_val, self.pKa_decimals)
 		if 'isoelectricPoint' in data_root:
-			self.isoPtDict = getIsoelectricPtInfo(output_val)
+			self.isoPtDict = getIsoelectricPtInfo(output_val, self.pKa_decimals)
 		if 'majorMicrospecies' in data_root:
-			self.majorMsDict = getMajorMicrospecies(output_val)
+			self.majorMsDict = getMajorMicrospecies(output_val, self.pKa_decimals)
 		if 'stereoisomer' in data_root:
-			self.stereoDict = getStereoInfo(output_val)
+			self.stereoDict = getStereoInfo(output_val, self.pKa_decimals)
 		if 'tautomerization' in data_root:
-			self.tautDict = getTautInfo(output_val)
+			self.tautDict = getTautInfo(output_val, self.pKa_decimals)
 
 
 # Builds isoelectricPoint dictionary
-def getIsoelectricPtInfo(output_val):
+def getIsoelectricPtInfo(output_val, dec):
 
 	isoPtKeys = ['isoPt']
-
 	isoPtDict = {}
 	isoPtDict = {key: None for key in isoPtKeys} # initialize dict with None values
-
 	isoPtData = output_val['data'][0]['isoelectricPoint']
 
-	if isoPtData['hasIsoelectricPoint']:
+	if isoPtData['hasIsoelectricPoint'] != False:
 		isoPtDict.update({'isoPt': isoPtData['isoelectricPoint']})
-
-	if 'chartData' in isoPtData:
-		isoPtList = isoPtData['chartData']['values'] # get list of xy values for isoPt
-
-		valsList = []
-
-		for pt in isoPtList:
-			xyPair = []
-			for key,value in pt.items():
-				xyPair.append(value)
-			valsList.append(xyPair)
-
-		isoPtDict.update({'isoPtChartData': valsList})
-
-	return isoPtDict
+		if 'chartData' in isoPtData:
+			isoPtList = isoPtData['chartData']['values'] # get list of xy values for isoPt
+			valsList = []
+			for pt in isoPtList:
+				xyPair = []
+				for key,value in pt.items():
+					xyPair.append(value)
+				valsList.append(xyPair)
+			isoPtDict.update({'isoPtChartData': valsList})
+		return isoPtDict
+	else:
+		return None
 
 
-def getMajorMicrospecies(output_val):
+def getMajorMicrospecies(output_val, dec):
 
 	majorMsRoot = output_val['data'][0]['majorMicrospecies']
 	majorMsDict = {}
@@ -168,7 +162,7 @@ def getMajorMicrospecies(output_val):
 
 
 # Builds pKa dictionary 
-def getPkaInfo(output_val):
+def getPkaInfo(output_val, dec):
 
 	pkaDict = {}
 	pkaKeys = ['mostBasicPka', 'mostAcidicPka', 'parentImage', 'msImageUrlList', 'microDistData']
@@ -178,8 +172,19 @@ def getPkaInfo(output_val):
 
 	# Check if pka data exist
 	if 'result' in pkaRoot:
-		pkaDict.update({'mostBasicPka': pkaRoot['mostBasic']})
-		pkaDict.update({'mostAcidicPka': pkaRoot['mostAcidic']})
+		# pkaDict.update({'mostBasicPka': pkaRoot['mostBasic']})
+		# pkaDict.update({'mostAcidicPka': pkaRoot['mostAcidic']})
+		# pkaDict.update({'mostBasicPka': []})
+		aList = []
+		for item in pkaRoot['mostBasic']:
+			# pkaDict['mostBasicPka'].append(round(item, dec))
+			logging.warning(" ### {}".format(dec))
+			item = round(item, dec)
+		pkaDict.update({'mostBasicPka': aList})
+		pkaDict.update({'mostAcidicPka': []})
+		for item in pkaRoot['mostAcidic']:
+			pkaDict['mostAcidicPka'].append(round(item, dec))
+
 
 		parentDict = {'image': data_walks.changeImageIP(pkaRoot['result']['image']['imageUrl'])}
 		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
@@ -228,7 +233,7 @@ def getPkaInfo(output_val):
 	return pkaDict
 
 
-def getStereoInfo(output_val):
+def getStereoInfo(output_val, dec):
 
 	stereoDict = {'image': [None]} # Initialize dict for stereoisomer image url
 
@@ -243,7 +248,7 @@ def getStereoInfo(output_val):
 	return stereoDict
 
 
-def getTautInfo(output_val):
+def getTautInfo(output_val, dec):
 
 	tautDict = {'tautStructs': [None]}
 	tautValues = output_val['data'][0]['tautomerization']

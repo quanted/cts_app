@@ -315,7 +315,7 @@ def table_stereo_results(chemspec_obj):
     if chemspec_obj.stereoDict:
         html = """
         <H4 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H4>
-        <div class="out_">
+        <div class="out_ shiftRight">
         """
         html += wrap_molecule(chemspec_obj.stereoDict, None, mdWidth, scale)
         html += """
@@ -333,7 +333,7 @@ def table_taut_results(chemspec_obj):
     if chemspec_obj.tautDict:
         html = """
         <H4 class="out_1 collapsible" id="section11"><span></span>Tautomerization</H4>
-        <div class="out_">
+        <div class="out_ shiftRight">
         """
         html += '<dl style="display:inline-block">'
         for item in chemspec_obj.tautDict['tautStructs']:

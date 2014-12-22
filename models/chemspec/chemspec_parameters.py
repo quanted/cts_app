@@ -63,16 +63,18 @@ def form(formData):
 	form_cts_chemical_structure = CTS_Chemical_Structure(formData)
 	html = tmpl_chemstructCTS.render(Context(dict(form=form_cts_chemical_structure, header=mark_safe("Lookup Chemical")))) 
 	form_cts_speciation_pKa = CTS_Speciation_Pka(formData)
-	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_pKa, header=mark_safe("Calculate Ionization Constants (p<i>K</i>a) Parameters"))))
+	html += tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_pKa, header=mark_safe("Calculate Ionization Constants (p<i>K</i>a) Parameters"))))
 	form_cts_speciation_tautomer = CTS_Speciation_Tautomer(formData)
-	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_tautomer, header="Calculate Dominant Tautomer Distribution")))
+	html += tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_tautomer, header="Calculate Dominant Tautomer Distribution")))
 	form_cts_speciation_stereoisomers = CTS_Speciation_Stereoisomers(formData)
-	html = html + tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_stereoisomers, header="Calculate Stereoisomers")))
+	html += tmpl_speciationCTS.render(Context(dict(form=form_cts_speciation_stereoisomers, header="Calculate Stereoisomers")))
 	return html
 
 
-"""Chemical Editor"""
 class CTS_Chemical_Structure(forms.Form):
+	"""
+	Chemical Editor
+	"""
 
 	chem_struct = forms.CharField (
 					widget=forms.Textarea(attrs={'cols':50, 'rows':2}),
@@ -83,17 +85,18 @@ class CTS_Chemical_Structure(forms.Form):
 				)
 
 
-"""Chemical Speciation"""
 
 # pka table
 class CTS_Speciation_Pka(forms.Form):
-
+	"""
+	Chemical Speciation
+	"""
 
 	pKa_decimals = forms.FloatField (
 						label='Number of Decimals', 
 						initial='2', 
-						required=True,
-						validators=[validation.validate_greaterthan0]
+						required=False,
+						validators=[validation.validate_greaterthan0, validation.validate_number]
 					)
 
 	pKa_pH_lower = forms.FloatField (

@@ -160,21 +160,31 @@ def standardizer(request):
 	recognized by Marvin, and the actions to
 	perfrom on the structure (e.g., aromatize, daromatize,
 	clear stereo, tautomerize, add explicit H, remove
-	explicit H, transform, and neutralize). 
-	NOTE: Currently just uses aromatize by default.
+	explicit H, transform, and neutralize). NOTE: Just
+	uses AddExplicitH and Aromatize for now.
 
 	Returns molecule in mrv format
 	"""
+
 	url = Urls.jchemBase + Urls.standardizerUrl
 	structure = request.POST.get('chemical')
+	getConfig = request.POST.get('config')
+	stdTmpl = """
+	<?xml version="1.0" encoding="UTF-8"?>
+	<StandardizerConfiguration>
+		<Actions>
+			<{{stdConfig}} ID="{{stdConfig}}"/>
+		</Actions>
+	</StandardizerConfiguration>
+	"""
+	stdData = Template(stdTmpl).render(Context(dict(stdConfig=getConfig)))
 	data = {
 		"structure": structure,
 		"parameters": {
-        	"standardizerDefinition": '<?xml version="1.0" encoding="UTF-8"?><StandardizerConfiguration><Actions><Aromatize ID="Aromatize"/></Actions></StandardizerConfiguration>'
+        	"standardizerDefinition": stdData
     	}
 	}
 	data = json.dumps(data)
-
 	results = web_call(url, request, data)
 	return results
 
