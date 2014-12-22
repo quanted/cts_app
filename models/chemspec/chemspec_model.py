@@ -117,7 +117,7 @@ def getIsoelectricPtInfo(output_val, dec):
 	isoPtData = output_val['data'][0]['isoelectricPoint']
 
 	if isoPtData['hasIsoelectricPoint'] != False:
-		isoPtDict.update({'isoPt': isoPtData['isoelectricPoint']})
+		isoPtDict.update({'isoPt': round(isoPtData['isoelectricPoint'], dec)})
 		if 'chartData' in isoPtData:
 			isoPtList = isoPtData['chartData']['values'] # get list of xy values for isoPt
 			valsList = []
@@ -174,17 +174,12 @@ def getPkaInfo(output_val, dec):
 	if 'result' in pkaRoot:
 		# pkaDict.update({'mostBasicPka': pkaRoot['mostBasic']})
 		# pkaDict.update({'mostAcidicPka': pkaRoot['mostAcidic']})
-		# pkaDict.update({'mostBasicPka': []})
-		aList = []
+		pkaDict.update({'mostBasicPka': []})
 		for item in pkaRoot['mostBasic']:
-			# pkaDict['mostBasicPka'].append(round(item, dec))
-			logging.warning(" ### {}".format(dec))
-			item = round(item, dec)
-		pkaDict.update({'mostBasicPka': aList})
+			pkaDict['mostBasicPka'].append(round(item, dec))
 		pkaDict.update({'mostAcidicPka': []})
 		for item in pkaRoot['mostAcidic']:
 			pkaDict['mostAcidicPka'].append(round(item, dec))
-
 
 		parentDict = {'image': data_walks.changeImageIP(pkaRoot['result']['image']['imageUrl'])}
 		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))

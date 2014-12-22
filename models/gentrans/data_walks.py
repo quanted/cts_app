@@ -33,7 +33,7 @@ def traverse(root):
 
 	global metID
 	metID += 1
-	newDict ={}
+	newDict = {}
 
 	if metID == 1:
 		parent = root.keys()[0]
@@ -41,18 +41,21 @@ def traverse(root):
 		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys))
 		root = root[parent]
 	else:
-		newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, 28), "data": {}, "children": []})
-		# newDict['data'].update({"degradation": root['degradation']})
-		newDict['data'].update(popupBuilder(root, metabolite_keys))
+		if root['generation'] > 0:
+			newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, 28), "data": {}, "children": []})
+			newDict['data'].update(popupBuilder(root, metabolite_keys))
 
 	for key, value in root.items():
 		if isinstance(value, dict):
 			for key2, value2 in root[key].items():
 				root2 = root[key][key2]
-				if len(root2) > 0: 
+				if len(root2) > 0 and 'children' in newDict: 
 					newDict['children'].append(traverse(root2))
 
+	logging.warning(newDict)
 	return newDict
+	# if newDict != None:
+	# 	return newDict
 
 
 def nodeWrapper(smiles, height, width, scale, key=None):

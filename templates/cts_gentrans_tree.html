@@ -45,6 +45,21 @@ function init(){
     var strJson = $('#hiddenJson').val();
     var json = $.parseJSON($('#hiddenJson').val());
 
+    // json = $.grep(json, function(n) { return(n) });
+
+    newChilds = [];
+    for (var i in json['children']) {
+            var test = json['children'][i];
+            if (!json['children'][i].hasOwnProperty('id')) {
+                delete json['children'][i];
+            }
+            else {
+                newChilds.push(json['children'][i]);
+            }
+    }
+    delete json['children'];
+    json.children = newChilds;
+
     // var json = $.parseJSON('{{metabolites}}')
 
     // smallest everthing-visible size

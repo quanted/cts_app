@@ -1502,15 +1502,26 @@ body.wait *, body.wait
   background-color: transparent;
 }
 
-#chemspecInputs {
-  /*border-color: #333333;*/
+/*#chemspecInputs {
+  border-color: #333333;
   
-}
+}*/
 
-#chemspecInputs th {
+/*#chemspecInputs th {
   font-size: 12px;
   background-color: #E7EADC;
   /*border-bottom: 1px solid #333333;*/
+/*}*/
+
+.chemspecOutputTable, .chemspecOutputTable td, .chemspecOutputTable th {
+  font-size: 11px;
+  border-spacing: 0px;
+  background-color: transparent;
+}
+
+.chemspecOutputTable th {
+  font-size: 12px;
+  background-color: #E7EADC;
 }
 
 /*#chemspecInputs tr:nth-child(even) {

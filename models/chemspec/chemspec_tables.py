@@ -17,6 +17,7 @@ from django.utils.safestring import mark_safe
 from models.gentrans import data_walks 
 
 
+# image sizes:
 lgWidth = 250
 mdWidth = 125 
 smWidth = 75
@@ -177,7 +178,7 @@ def table_inputs(chemspec_obj):
     <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
     <div class="out_">
-    <table id="chemspecInputs">
+    <table class="chemspecOutputTable">
     """
     html += inTmpl.render(Context(dict(data=getMolTblData(chemspec_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getPkaInputs(chemspec_obj), heading="Ionization Parameters")))
@@ -197,6 +198,7 @@ def table_outputs(chemspec_obj):
     <div class="out_">
     """
     # build output with below defs
+    # html += inTmpl.render(Context(dict(data=getPkaResults(chemspec_obj), heading="pKa")))
     html += getPkaResults(chemspec_obj)
     html += getIsoPtResults(chemspec_obj)
     html += getMajorMsImages(chemspec_obj)
