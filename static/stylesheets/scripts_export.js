@@ -81,7 +81,7 @@ imgData_json = JSON.stringify(imgData)
             	// alert(data);
             	// console.log(data)
 			},
-			error: function() { 
+			error: function(error) { 
 		    	$("#popup").show();
             	doneDiv.innerHTML = eror_msg;
 	        }   

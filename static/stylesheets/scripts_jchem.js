@@ -40,14 +40,10 @@ $(document).ready(function handleDocumentReady (e) {
 
 
 //"wait" cursor during ajax events
-$(document).ajaxStart(function ()
-{
+$(document).ajaxStart(function () {
     $('body').addClass('wait');
-
 }).ajaxComplete(function () {
-
     $('body').removeClass('wait');
-
 });
 
 

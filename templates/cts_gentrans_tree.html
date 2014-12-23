@@ -50,18 +50,12 @@ function init(){
     //attempt at fixing "child-parent" problem. maybe not the best.
     newChilds = [];
     for (var i in json['children']) {
-            var test = json['children'][i];
-            if (!json['children'][i].hasOwnProperty('id')) {
-                delete json['children'][i];
-            }
-            else {
-                newChilds.push(json['children'][i]);
-            }
+        if (json['children'][i].hasOwnProperty('id')) {
+            newChilds.push(json['children'][i]);
+        }
     }
-    delete json['children'];
-    json.children = newChilds;
-
-    // var json = $.parseJSON('{{metabolites}}')
+    delete json['children']; //delete children element
+    json.children = newChilds; //replace with array with valid ids
 
     // smallest everthing-visible size
     // var nodeHeight = 192;
@@ -79,7 +73,7 @@ function init(){
         offsetX: 300, //TODO: make more general, i.e., dependent on canvas size
         // offsetY: 400,
 
-        levelsToShow: 2, //changed nothing.
+        levelsToShow: 2, //# of levels at load and when clicking a node
 
         //set duration for the animation
         duration: 500,
