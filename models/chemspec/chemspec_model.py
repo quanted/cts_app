@@ -143,35 +143,7 @@ def getMajorMicrospecies(output_val, dec):
 		# Get image data from result:
 		if 'image' in majorMsRoot['result']:
 			majorMsImage = data_walks.changeImageIP(majorMsRoot['result']['image']['imageUrl'])
-
-
-			### Attempting to use standardizer to add explicit H's...
-			majorMsStruct = majorMsRoot['result']['structureData']['structure']
-			request = HttpRequest()
-			request.POST = {
-				"chemical": majorMsStruct,
-				"config": "AddExplicitH"
-			}
-			response = jchem_rest.standardizer(request) # Returns xml (.mrv) of struct with explicitHs
-			request = HttpRequest()
-			request.POST = {
-				"smiles": response.content, # structure in .mrv format
-				"scale": 50 # image scale
-			}
-			response = jchem_rest.smilesToImage(request)
-			majorMsImage = json.loads(response.content)['data'][0]['image']['image']
-
-			# logging.warning(" ### {} ### ".format(response.content))
-			# majorMsSmiles = json.loads(response.content)['structure']
-			##### End Attempt #######
-			logging.warning(type(majorMsDict))
-
 			majorMsDict.update({"image": majorMsImage})
-
-			fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-			fileout.write(majorMsImage)
-			fileout.close()
-
 			# majorMsDict.update({"image": majorMsRoot['result']['image']['imageUrl']})
 		else:
 			majorMsImage = 'No major microspecies'
