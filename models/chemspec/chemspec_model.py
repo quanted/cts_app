@@ -144,7 +144,34 @@ def getMajorMicrospecies(output_val, dec):
 		if 'image' in majorMsRoot['result']:
 			majorMsImage = data_walks.changeImageIP(majorMsRoot['result']['image']['imageUrl'])
 
+
+			### Attempting to use standardizer to add explicit H's...
+			majorMsStruct = majorMsRoot['result']['structureData']['structure']
+			request = HttpRequest()
+			request.POST = {
+				"chemical": majorMsStruct,
+				"config": "AddExplicitH"
+			}
+			response = jchem_rest.standardizer(request) # Returns xml (.mrv) of struct with explicitHs
+			request = HttpRequest()
+			request.POST = {
+				"smiles": response.content, # structure in .mrv format
+				"scale": 50 # image scale
+			}
+			response = jchem_rest.smilesToImage(request)
+			majorMsImage = json.loads(response.content)['data'][0]['image']['image']
+
+			# logging.warning(" ### {} ### ".format(response.content))
+			# majorMsSmiles = json.loads(response.content)['structure']
+			##### End Attempt #######
+			logging.warning(type(majorMsDict))
+
 			majorMsDict.update({"image": majorMsImage})
+
+			fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+			fileout.write(majorMsImage)
+			fileout.close()
+
 			# majorMsDict.update({"image": majorMsRoot['result']['image']['imageUrl']})
 		else:
 			majorMsImage = 'No major microspecies'
@@ -181,7 +208,7 @@ def getPkaInfo(output_val, dec):
 		for item in pkaRoot['mostAcidic']:
 			pkaDict['mostAcidicPka'].append(round(item, dec))
 
-		parentDict = {'image': data_walks.changeImageIP(pkaRoot['result']['image']['imageUrl'])}
+		parentDict = {'image': data_walks.changeImageIP(pkaRoot['result']['image']['image'])}
 		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
 		# logging.warning(parentDict)
 
@@ -196,7 +223,7 @@ def getPkaInfo(output_val, dec):
 			msImageUrlList = [] # list of microspecies image urls
 			for ms in microspeciesList:
 				msStructDict = {} # list element in msImageUrlList
-				msStructDict.update({"image": data_walks.changeImageIP(ms['image']['imageUrl'])})
+				msStructDict.update({"image": data_walks.changeImageIP(ms['image']['image'])})
 				structInfo = getStructInfo(ms['structureData']['structure'])
 				msStructDict.update(structInfo)
 				msImageUrlList.append(msStructDict)
@@ -276,7 +303,10 @@ def getStructInfo(mrvData):
 	smilesDict = json.loads(response.content)
 
 	request = HttpRequest()
-	request.POST = {"chemical": smilesDict["structure"]}
+	request.POST = {
+		"chemical": smilesDict["structure"],
+		"addH": True
+	}
 	response = jchem_rest.getChemDeats(request)
 	structDict = json.loads(response.content)
 

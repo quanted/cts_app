@@ -10,6 +10,7 @@ import views.misc
 from django.http import HttpResponse
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
+from django.template import Template, Context
 from xml.sax.saxutils import escape
 import datetime
 import pytz
@@ -61,8 +62,11 @@ def getChemDeats(request):
 	"""
 	queryDict = request.POST
 	chem = queryDict.get('chemical') # chemical name
+	addH = False
+	if 'addH' in queryDict:
+		addH = True
 	ds = Data_Structures()
-	data = ds.chemDeatsStruct(chem) # format request to jchem
+	data = ds.chemDeatsStruct(chem, addH) # format request to jchem
 	data = json.dumps(data) # convert dict to json string
 	url = Urls.jchemBase + Urls.detailUrl
 	return web_call(url, request, data)
@@ -137,7 +141,12 @@ def getChemSpecData(request):
 	"""
 
 	ds = Data_Structures()
-	data = ds.chemSpecStruct(request.POST) # format request to jchem
+
+	addH = False
+	if 'addH' in request.POST:
+		addH = True
+
+	data = ds.chemSpecStruct(request.POST, addH) # format request to jchem
 	data = json.dumps(data)
 	url = Urls.jchemBase + Urls.detailUrl
 	results = web_call(url, request, data)
@@ -160,8 +169,9 @@ def standardizer(request):
 	recognized by Marvin, and the actions to
 	perfrom on the structure (e.g., aromatize, daromatize,
 	clear stereo, tautomerize, add explicit H, remove
-	explicit H, transform, and neutralize). NOTE: Just
-	uses AddExplicitH and Aromatize for now.
+	explicit H, transform, and neutralize). 
+
+	NOTE: Just AddExplicitH and Aromatize configs for now.
 
 	Returns molecule in mrv format
 	"""
@@ -178,6 +188,7 @@ def standardizer(request):
 	</StandardizerConfiguration>
 	"""
 	stdData = Template(stdTmpl).render(Context(dict(stdConfig=getConfig)))
+	stdData = stdData.replace('\n', '').replace('\r', '').replace('\t', '')
 	data = {
 		"structure": structure,
 		"parameters": {
@@ -185,6 +196,12 @@ def standardizer(request):
     	}
 	}
 	data = json.dumps(data)
+
+	# logging.warning(" DATA: {}".format(data))
+	fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+	fileout.write(data)
+	fileout.close()
+
 	results = web_call(url, request, data)
 	return results
 
@@ -239,7 +256,7 @@ def web_call(url, request, data):
 
 class Data_Structures:
 
-	def chemDeatsStruct(self, chemical):
+	def chemDeatsStruct(self, chemical, addH=False):
 		# return json data for chemical details
 		chemDeatsDict =  {
 			"structures": [
@@ -260,10 +277,18 @@ class Data_Structures:
 				}
 			}
 		}
+		if addH:
+			chemDeatsDict = addExplicitH(chemDeatsDict)
+			# filterChain = [{
+			# 	"filter": "hydrogenizer",
+			# 	"parameters": {"method": "HYDROGENIZE"}
+			# }] 
+			# chemDeatsDict['display'].update({'filterChain': filterChain})
+
 		return chemDeatsDict
 
 
-	def chemSpecStruct(self, dic):
+	def chemSpecStruct(self, dic, addH=False):
 
 		# don't forget about pKa_decimal
 
@@ -285,9 +310,24 @@ class Data_Structures:
 		display = {"include": includeList, "parameters": paramsDict}
 		dataDict = {"structures": structures, "display": display}
 
-		# logging.warning(dataDict)
+		if addH:
+			dataDict = addExplicitH(dataDict)
 
 		return dataDict
+
+
+def addExplicitH(dataDict):
+	"""
+	Add explicitH option to data dictionary
+	for jchem web call. Assumes 'display' key
+	exists.
+	"""
+	filterChain = [{
+		"filter": "hydrogenizer",
+		"parameters": {"method": "HYDROGENIZE"}
+	}] 
+	dataDict['display'].update({'filterChain': filterChain})
+	return dataDict
 
 
 def gen_jid():
