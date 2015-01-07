@@ -121,7 +121,7 @@ def table_all(chemspec_obj):
     # outputs:
     html_all += table_outputs(chemspec_obj)
     # raw data button and textbox:
-    html_all += render_to_string('cts_display_raw_data.html', {'rawData': chemspec_obj.rawData}) # temporary
+    # html_all += render_to_string('cts_display_raw_data.html', {'rawData': chemspec_obj.rawData}) # temporary
     # qtip popup script for images with class "wrapped_molecule"
     html_all += """
     <script>
@@ -339,7 +339,10 @@ def table_taut_results(chemspec_obj):
         """
         html += '<dl style="display:inline-block">'
         for item in chemspec_obj.tautDict['tautStructs']:
-            html += '<dd style="float:left;">' + wrap_molecule(item, None, mdWidth, scale) + '</dd>'
+            html += '<dd style="float:left;">'
+            html += "Percent Dist: {}%".format(item['dist'])
+            html += wrap_molecule(item, None, mdWidth, scale)
+            html += '</dd>'
         html += "</dl>"
         html += """
         </div><br><br>

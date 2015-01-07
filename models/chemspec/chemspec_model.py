@@ -254,6 +254,11 @@ def getTautInfo(output_val, dec):
 			tautStructDict.update({"image": data_walks.changeImageIP(taut['image']['imageUrl'])}) #append to list
 			structInfo = getStructInfo(taut['structureData']['structure'])
 			tautStructDict.update(structInfo)
+
+			# adding "dist" key for % distribution:
+			tautStructDict.update({"dist": 100 * round(taut['dominantTautomerDistribution'], 4)})
+			logging.info(tautStructDict)
+
 			imageList.append(tautStructDict)
 
 		tautDict.update({'tautStructs': imageList})

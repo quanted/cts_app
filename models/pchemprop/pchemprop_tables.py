@@ -38,6 +38,69 @@ def getInputData(pchemprop_obj):
     return data
 
 
+# def getdjtemplate():
+#     dj_template ="""
+#     <table id="pchemprop_table_out" class="input_table tab tab_ChemCalcs">
+#     <tr>
+#         <th></th>
+#         <th>ChemAxon</th>
+#         <th>EPI Suite</th>
+#         <th>TEST</th>
+#         <th>SPARC</th>
+#         <th>Measured</th>
+#     </tr>
+
+#     {% load set_var %}
+#     {% set skip = False %}
+
+#     {# loops through pchemprop_parameters fields #}
+#     {% for field in fields %}
+#         {# conditionals for appending kow_wph and kow_ph fields #}
+#         {% if field.html_name == "kow_wph" %}
+#             <tr><td><b>{{field.label}} (at pH {{kow_ph}})</b></td>
+#             {% set skip = True %}
+#         {% elif field.html_name == "kow_ph" %}
+#             {% set skip = False %}
+#         {% else %}
+#             {% set skip = False %}
+#             <tr><td><b>{{field.label}}</b></td>
+#         {% endif %}
+#         {% if skip == False %}
+#             {% for prop, values in data.chemaxon.items %}
+#                 {% if prop == field.label %}
+#                     <td>
+#                     {% for k,v in values.items %}
+#                         {{k}}:
+#                         {% for key, value in v.items %}
+#                             <i>{{value}}</i>
+#                         {% endfor %}
+#                         <br>
+#                     {% endfor %}
+#                     </td>
+#                 {% endif %}
+#             {% endfor %}
+#         {% else %}
+#             {% for prop, values in data.chemaxon.items %}
+#                 {% if prop == "Octanol/Water Partition Coefficient at pH" %}
+#                     <td>
+#                     {% for k,v in values.items %}
+#                         {{k}}:
+#                         {% for key, value in v.items %}
+#                             <i>{{value}}</i>
+#                         {% endfor %}
+#                         <br>
+#                     {% endfor %}
+#                     </td>
+#                 {% endif %}
+#             {% endfor %}
+#         {% endif %}
+#         </tr>
+#     {% endfor %}
+#     </table>
+#     """
+#     return dj_template
+
+
 def getdjtemplate():
     dj_template ="""
     <table id="pchemprop_table_out" class="input_table tab tab_ChemCalcs">
@@ -69,13 +132,18 @@ def getdjtemplate():
             {% for prop, values in data.chemaxon.items %}
                 {% if prop == field.label %}
                     <td>
-                    {% for k,v in values.items %}
-                        {{k}}:
-                        {% for key, value in v.items %}
-                            <i>{{value}}</i>
+                        <table>
+                        <tr>
+                        {% for k,v in values.items %}
+                        <td>{{k}}</td>
                         {% endfor %}
-                        <br>
-                    {% endfor %}
+                        </tr>
+                        <tr>
+                        {% for k,v in values.items %}
+                        <td>{{v}}</td>
+                        {% endfor %}
+                        </tr>
+                        </table>
                     </td>
                 {% endif %}
             {% endfor %}

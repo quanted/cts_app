@@ -13,7 +13,7 @@ from models.chemspec import chemspec_model # for getStructInfo(), TODO: move fun
 import decimal
 
 n = 3 # number of decimal places to round values
-propMethodsList = ['KLOP', 'PHYS', 'VG', 'WEIGHTED'] # methods of calculation for pchemprops
+propMethodsList = ['KLOP', 'PHYS', 'VG'] # methods of calculation for pchemprops
 
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 

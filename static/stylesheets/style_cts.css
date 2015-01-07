@@ -1546,3 +1546,9 @@ body.wait *, body.wait
   /*background-color: transparent;*/
   /*border: 0px;*/
 }
+
+/* right-clicked metabolite on gentrans output */
+.selectedMetabolite {
+  /*border: 5px solid #eed;*/
+  border: 2px solid #dee7ef;
+}

@@ -14,14 +14,14 @@ Provides options for chemical entry, as well as the chemical speciationof the pa
 <b>Physicochemical Properties Calculator (PPC):</b>
 Calculates p-chem properties for the parent chemical and predicted transformation products based on the executions of multiple p-chem calculators
 <br><br>
-<b>Earth Systems Model (ESM):</b>
-Provides data mining abilities for environmental descriptors such as pH and temperature
-<br><br>
 <b>Reaction Pathway Simulator (RPS):</b>
 Generates potential transformation products based on user-specified reaction conditions
 <br><br>
 <b>Structure-based Database (SBD):</b>
 Populated with calculated and measured physico-chemical properties of parent and potential transformation products
+<br><br>
+<b>Earth Systems Model (ESM):</b>
+Provides data mining abilities for environmental descriptors such as pH and temperature
 <br><br>
 <b>Reaction Rate Calculator (RRC):</b>
 Calculates transformation products based on the parameritization and execution of QSARs and Algorithms

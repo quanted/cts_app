@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
     
 def gentransInputPage(request, model='', header='Generate Transformation Pathways', formData=None):
     import gentrans_parameters
-    # from models.pchemprop import pchemprop_parameters
+    from models.pchemprop import pchemprop_parameters
     from models.chemspec import chemspec_parameters
 
     html = render_to_string('04uberinput_jquery.html', { 'model': model }) # loads scripts_gentrans.js
@@ -28,8 +28,8 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
 
     html = html + render_to_string('04uberinput_tabbed_nav.html', {
             'nav_dict': {
-                'class_name': ["Chemical", "ReactionPathSim"],
-                'tab_label': ['Chemical Editor', 'Reaction Pathway Simulator'],
+                'class_name': ["Chemical", "ReactionPathSim", "ChemCalcs"],
+                'tab_label': ['Chemical Editor', 'Reaction Pathway Simulator', 'p-Chem Calculator'],
                 }
             })
 
@@ -42,8 +42,8 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
     html = html + str(gentrans_parameters.form(formData))
 
     # p-chem calculator piece:
-    # html = html + render_to_string('cts_pchem.html', {})
-    # html = html + str(pchemprop_parameters.form(formData))
+    html = html + render_to_string('cts_pchem.html', {})
+    html = html + str(pchemprop_parameters.form(formData))
 
     #html = html + str(gentrans_parameters.form())
 #        html = html + render_to_string('jschemeditor.html', {})

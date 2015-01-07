@@ -65,12 +65,12 @@ class gentrans(object):
 		request.POST = dataDict
 		response = jchem_rest.getTransProducts(request)
 
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(response.content)
-		# fileout.close()
-
 		# reformat data for outputting to tree structure:
 		data_walks.metID = 0
 		self.results = data_walks.recursive(response.content)
+
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(self.results)
+		# fileout.close()
 
 		self.rawData = response.content

@@ -25,30 +25,30 @@ def gentransOutputPage(request):
     likelyLimit = request.POST.get('likely_limit')
 
     # Pchem Properties Column Checkboxes (p-chem prop tab fields)
-    # chemaxon = request.POST.get('chemaxon')
-    # test = request.POST.get('test')
-    # epi = request.POST.get('epi')
-    # sparc = request.POST.get('sparc')
-    # measured = request.POST.get('measured')
+    chemaxon = request.POST.get('chemaxon')
+    test = request.POST.get('test')
+    epi = request.POST.get('epi')
+    sparc = request.POST.get('sparc')
+    measured = request.POST.get('measured')
 
     # Pchem Properties Table Checkboxes (p-chem prop tab fields)
-    # meltingPoint = request.POST.get('melting_point')
-    # boilingPoint = request.POST.get('boiling_point')
-    # waterSol = request.POST.get('water_sol')
-    # vaporPress = request.POST.get('vapor_press')
-    # molDiss = request.POST.get('mol_diss')
-    # ionCon = request.POST.get('ion_con')
-    # henrysLawCon = request.POST.get('henrys_law_con')
-    # kowNoPh = request.POST.get('kow_no_ph')
-    # kowWph = request.POST.get('kow_wph')
-    # kowPh = request.POST.get('kow_ph')
-    # koc = request.POST.get('koc')
+    meltingPoint = request.POST.get('melting_point')
+    boilingPoint = request.POST.get('boiling_point')
+    waterSol = request.POST.get('water_sol')
+    vaporPress = request.POST.get('vapor_press')
+    molDiss = request.POST.get('mol_diss')
+    ionCon = request.POST.get('ion_con')
+    henrysLawCon = request.POST.get('henrys_law_con')
+    kowNoPh = request.POST.get('kow_no_ph')
+    kowWph = request.POST.get('kow_wph')
+    kowPh = request.POST.get('kow_ph')
+    koc = request.POST.get('koc')
 
     # get pchemprop results for gentrans
-    # gentransOutputPage.pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
-    #                     mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
-    #                     waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
-    #                     kowPh, koc)
+    gentransOutputPage.pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
+                        mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
+                        waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
+                        kowPh, koc)
 
     # get gentrans results
     gentrans_obj = gentrans_model.gentrans("single", chemStruct, smiles, name, formula, 

@@ -48,7 +48,7 @@ def requestTimeout(request):
     return response
 
 
-def blankLanding(request):
+def blankLanding(request, model=None):
     return render(request, 'blank_landing.html')
 
 
