@@ -197,11 +197,6 @@ def standardizer(request):
 	}
 	data = json.dumps(data)
 
-	# logging.warning(" DATA: {}".format(data))
-	fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-	fileout.write(data)
-	fileout.close()
-
 	results = web_call(url, request, data)
 	return results
 

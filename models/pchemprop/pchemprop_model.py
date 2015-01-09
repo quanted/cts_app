@@ -13,7 +13,7 @@ from models.chemspec import chemspec_model # for getStructInfo(), TODO: move fun
 import decimal
 
 n = 3 # number of decimal places to round values
-propMethodsList = ['KLOP', 'PHYS', 'VG'] # methods of calculation for pchemprops
+
 
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 
@@ -90,9 +90,6 @@ class pchemprop(object):
 
 		self.checkedCalcsAndPropsDict = checkedCalcsAndPropsDict
 
-		logging.info("### Checked calcs and properties dict ###")
-		logging.info(self.checkedCalcsAndPropsDict)
-
 		# TODO: Make more general. getChemaxonResults() could probably be changed to loop
 		# through all calculators. Also, establish standardized variable names to reduce
 		# amount of code (e.g., conditionals checking prop values)
@@ -102,7 +99,7 @@ class pchemprop(object):
 
 		self.resultsDict = {
 			"chemaxon": self.chemaxonResultsDict,
-			"epi": None,
+			"epi-suite": None,
 			"sparc": None,
 			"test": None,
 			"measured": None
@@ -186,63 +183,128 @@ def getMeasuredResults(structure, checkedCalcsAndPropsDict):
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 	"""
+	Building the web call to make based on checked properties
+	for chemaxon.
+
 	Input: dict of checked/available properties for calculators
 	Returns: dict of chemaxon props in template-friendly format
 	"""
 
 	chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
+	propMethodsList = ['KLOP', 'PHYS', 'VG'] # methods of calculation for pchemprops (chemaxon)
 
 	if chemaxonPropsList:
 
 		# propMethodsList = ['KLOP', 'PHYS', 'VG', 'WEIGHTED']
 		chemaxonDict = {} # dict of results (values) per method (keys)
 
-		# jchem ws only accepts on method at a time
-		for method in propMethodsList:
-			postDict = {"chemical": structure}
-			# loop through chemaxon properties
-			for prop in chemaxonPropsList:
-				if prop == "solubility":
-					postDict.update({
-						# "chemical": structure,
-						"solubility": {
-							"pHLower": 0,
-							"pHUpper": 14,
-							"pHStep": 0.1,
-							"unit": "LOGS"
-						}
-					})
-				if prop == "ion_con":
-					# make call to getChemSpecData() for pKa values
-					postDict.update({
-						"chemical": structure,
-						"pKa": { 
-							"pHLower": 0, # note: default values
-							"pHUpper": 14,
-							"pHStep": 0.1
-						}
-					})
-				if prop == "kow_no_ph":
-					postDict.update({
+		for prop in chemaxonPropsList:
+			if prop == "solubility":
+				postDict = {
+					"chemical": structure,
+					"solubility": {
+						"pHLower": 0,
+						"pHUpper": 14,
+						"pHStep": 0.1,
+						"unit": "LOGS"
+					}
+				}
+				data = json.loads(makeJchemCall(postDict))
+				chemaxonDict.update({"Water Solubility": data})
+			if prop == "ion_con":
+				postDict = {
+					"chemical": structure,
+					"pKa": { 
+						"pHLower": 0, # note: default values
+						"pHUpper": 14,
+						"pHStep": 0.1
+					}
+				}
+				data = json.loads(makeJchemCall(postDict))
+				chemaxonDict.update({"Ionization Constant": data})
+			if prop == "kow_no_ph":
+				chemaxonDict.update({"Octanol/Water Partition Coefficient": {}})
+				for method in propMethodsList:
+					postDict = {
+						"chemical": structure,	
 						"logP": {
 							"method": method
 						}
-					})
-				if prop == "kow_wph":
-					postDict.update({
+					}
+					data = json.loads(makeJchemCall(postDict))
+					chemaxonDict["Octanol/Water Partition Coefficient"].update({method: data})
+				
+			if prop == "kow_wph":
+				chemaxonDict.update({"Octanol/Water Partition Coefficient at pH": {}})
+				for method in propMethodsList:
+					postDict = {
+						"chemical": structure,
 						"logD": {
 							"method": method,
 							"pHLower": 0,
 							"pHUpper": 14,
 							"pHStep": 0.1
 						}
-					})
+					}
+					data = json.loads(makeJchemCall(postDict))
+					chemaxonDict["Octanol/Water Partition Coefficient at pH"].update({method: data})
 
-			if postDict != None:
-				response = makeJchemRequest(postDict) # get data per method
-				chemaxonDict.update({method: json.loads(response)}) # results per method dictionary
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(json.dumps(chemaxonDict))
+		# fileout.close()
+		return chemaxonDict
 
-		return buildChemaxonResultsDict(chemaxonDict, phForLogD)
+
+
+		# jchem ws only accepts on method at a time
+		# for method in propMethodsList:
+		# 	postDict = {"chemical": structure}
+		# 	# loop through chemaxon properties
+		# 	for prop in chemaxonPropsList:
+		# 		if prop == "solubility":
+		# 			postDict.update({
+		# 				# "chemical": structure,
+		# 				"solubility": {
+		# 					"pHLower": 0,
+		# 					"pHUpper": 14,
+		# 					"pHStep": 0.1,
+		# 					"unit": "LOGS"
+		# 				}
+		# 			})
+		# 		if prop == "ion_con":
+		# 			# make call to getChemSpecData() for pKa values
+		# 			postDict.update({
+		# 				"chemical": structure,
+		# 				"pKa": { 
+		# 					"pHLower": 0, # note: default values
+		# 					"pHUpper": 14,
+		# 					"pHStep": 0.1
+		# 				}
+		# 			})
+		# 		if prop == "kow_no_ph":
+		# 			postDict.update({
+		# 				"logP": {
+		# 					"method": method
+		# 				}
+		# 			})
+		# 		if prop == "kow_wph":
+		# 			postDict.update({
+		# 				"logD": {
+		# 					"method": method,
+		# 					"pHLower": 0,
+		# 					"pHUpper": 14,
+		# 					"pHStep": 0.1
+		# 				}
+		# 			})
+
+			# if postDict != None:
+			# 	request = HttpRequest()
+			# 	request.POST = postDict
+			# 	response = jchem_rest.getChemSpecData(request)
+			# 	chemaxonDict.update({method: json.loads(response.content)}) # results per method dictionary
+
+
+		# return buildChemaxonResultsDict(chemaxonDict, phForLogD)
 
 
 def buildChemaxonResultsDict(chemaxonDict, phForLogD):
@@ -365,15 +427,10 @@ def buildChemaxonResultsDict(chemaxonDict, phForLogD):
 					})
 
 	return propDict
-	
 
-def makeJchemRequest(postData):
-	"""
-	Makes request to jchem-cts ws
-	Input: post data as dict
-	Returns: response content (json string)
-	"""
+
+def makeJchemCall(postDict):
 	request = HttpRequest()
-	request.POST = postData
+	request.POST = postDict
 	response = jchem_rest.getChemSpecData(request)
 	return response.content
