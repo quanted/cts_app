@@ -93,9 +93,6 @@ def getReactPathSimData(gentrans_obj):
     return data
 
 
-pvuheadings = getheaderpvu()
-pvrheadings = getheaderpvr()
-# djtemplate = getdjtemplate()
 tmpl = Template(getdjtemplate())
 inTmpl = Template(getInputTemplate())
 
@@ -103,7 +100,7 @@ inTmpl = Template(getInputTemplate())
 def table_all(gentrans_obj):
     html_all = table_inputs(gentrans_obj)
     html_all += table_metabolites(gentrans_obj)
-    html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
+    # html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
     return html_all
 
 
@@ -142,47 +139,6 @@ def timestamp(gentrans_obj="", batch_jid=""):
     html = html + """
     </div>"""
     return html
-
-
-def table_struct(gentrans_obj):
-    html = """
-    <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
-    <div class="out_">
-    """
-    tblData = getStructInfo(gentrans_obj)
-    # t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
-    html = html + tmpl.render(Context(dict(data=tblData)))
-    html = html + """
-            </div>
-    """
-    return html
-
-
-def table_reactPathSim(gentrans_obj):
-    html = """
-    """
-    tblData = getReactPathSimData(gentrans_obj)
-    # t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
-    html = html + tmpl.render(Context(dict(data=tblData)))
-    html = html + """
-    </div>
-    """
-    return html
-
-
-def table_pchemprops():
-    # html = """
-    #     <H4 class="out_1 collapsible" id="section4"><span></span><b>P-Chem Properties Results</b></H4>
-    #         <div class="out_ container_output">
-    # """
-    model_obj = gentrans_output.gentransOutputPage.pchemprop_obj 
-    html = pchemprop_tables.output_pchem_table(model_obj)
-    # html += """
-    #         </div>
-    # </div>
-    # """
-    return html
-    
 
 
 """

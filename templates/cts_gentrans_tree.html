@@ -1,12 +1,9 @@
 <!-- ### JIT REFERENCES ### -->
 <!-- CSS Files -->
 <link type="text/css" href="/static/stylesheets/style_gentrans_tree.css" rel="stylesheet" />
-<!-- <link type="text/css" href="/static/stylesheets/Jit/Examples/css/Spacetree.css" rel="stylesheet" /> -->
 <!--[if IE]><script language="javascript" type="text/javascript" src="../../Extras/excanvas.js"></script><![endif]-->
 <!-- JIT Library File -->
 <script language="javascript" type="text/javascript" src="/static/stylesheets/Jit/jit.js"></script>
-<!-- Output File Script -->
-<!-- <script language="javascript" type="text/javascript" src="/static/stylesheets/metaboTree.js"></script> -->
 <!-- ### END JIT REFERENCES ### -->
 
 <script>
@@ -38,6 +35,14 @@ var Log = {
   }
 
 };
+
+// $(document).ready(function() {
+
+//     $('#id_chemaxon_select').click(function() {
+        
+//     });
+
+// });
 
 function init(){
 
@@ -145,11 +150,11 @@ function init(){
         //style properties before plotting it.
         //The data properties prefixed with a dollar
         //sign will override the global node style properties.
-        onBeforePlotNode: function(node){
+        // onBeforePlotNode: function(node){
             //add some color to the nodes in the path between the
             //root node and the selected node.
             // if (node.selected) {
-            var selectedNode = node.id;
+            // var selectedNode = node.id;
             //     // node.data.$color = "#ff7";
             // }
             // else {
@@ -164,7 +169,7 @@ function init(){
             //         node.data.$color = ['#aaa', '#baa', '#caa', '#daa', '#eaa', '#faa'][count];                    
             //     }
             // }
-        },
+        // },
         
         //This method is called right before plotting
         //an edge. It's useful for changing an individual edge
@@ -192,24 +197,17 @@ function init(){
 
         Events: {
             enable: true,
-            // onClick: function(node, eventInfo, e) {
-            //     if (node.id == 1) {
-            //         st.controller.constrained = false;
-            //         st.controller.levelsToShow = 100;
-            //     }
-            // }
-            // Highlight node on right click
-            // May have to create rectangle node around
-            // image node.
-            onRightClick: function(node, eventInfo, e) {
+            onRightClick: function(node, tip, eventInfo, e) {
 
-                // var obj = $("#" + node.id).children().css({
-                //                                 "border": "5px solid #eed",
-                //                                 "padding-top": "0px"});
+                $("#" + node.id).children().toggleClass("selectedMetabolite");
+                //get pchemprops for selected node
+                // $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MP/MEASURED", dataType: "json"}).done(function(val) { $('#id_melting_point_MEASURED').html(val.MEASURED.toPrecision(4)) } )
 
-                var obj = $("#" + node.id).children().toggleClass("selectedMetabolite");
-
-                // document.getElementById(node.id).style.paddingTop = "0";
+                getPchemData(node.data.smiles); //provide smiles for pchemprop web call
+                //NOTE: need a way to keep track of which calculators and properties to get
+                //for web call. Maybe this is where having higher-level cts web calls would
+                //come into play, i.e., have a cts ws that makes the appropriate calls if 
+                //provided the calcs and props to use.
 
             }
         }
@@ -227,16 +225,22 @@ function init(){
 
 }
 
-// var zoomed;
-// function makeZoom(x) {
-//     var ctx = canvas.getCtx();
-//     if (zoomed) {
-//         ctx.restore();
-//     }
-//     ctx.save();
-//     ctx.scale(x, x);
-//     zoomed = x;
-// }
+
+function getPchemData(data, callback) {
+    $.ajax({
+      url : params.url,
+      type : params.type,
+      data : params.data,
+      dataType : params.dataType,
+      success : function(data) {
+        var data = jsonRepack(data);
+        callback(data);
+      },
+      error : function(jqXHR, textStatus, errorThrown) {
+        callback("Fail");
+      },
+    });
+}
 
 
 </script>

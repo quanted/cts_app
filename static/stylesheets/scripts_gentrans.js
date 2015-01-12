@@ -1,3 +1,8 @@
+//+++++++++++++++++++++++++++++++++++++++++
+//Selection logic for the Reaction Pathway
+//Simulator in the gentrans workflow
+//+++++++++++++++++++++++++++++++++++++++++
+
 $(document).ready(function() {
 
     uberNavTabs(

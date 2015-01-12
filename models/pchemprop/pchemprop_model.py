@@ -12,6 +12,7 @@ import logging
 from models.chemspec import chemspec_model # for getStructInfo(), TODO: move func to more generic place
 import decimal
 
+
 n = 3 # number of decimal places to round values
 
 

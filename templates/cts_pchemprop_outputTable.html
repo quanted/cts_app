@@ -10,7 +10,7 @@
     </tr>
 
     <tr>
-    <td>Melting Point (&degC)</td>
+    <td style="padding:4px;">Melting Point (&degC)</td>
     <td>{{data.chemaxon.melting_point|default:""}}</td>
     <td>{{data.epi.melting_point|default:""}}</td>
     <td>{{data.test.melting_point|default:""}}</td>
@@ -19,7 +19,7 @@
     </tr>
 
     <tr>
-    <td>Boiling Point (&degC)</td>
+    <td style="padding:4px;">Boiling Point (&degC)</td>
     <td>{{data.chemaxon.boiling_point|default:""}}</td>
     <td>{{data.epi.boiling_point|default:""}}</td>
     <td>{{data.test.boiling_point|default:""}}</td>
@@ -28,7 +28,7 @@
     </tr>
 
     <tr>
-    <td>Water Solubility (mg/L)</td>
+    <td style="padding:4px;">Water Solubility (mg/L)</td>
     <td>{{data.chemaxon.water_sol|default:""}}</td>
     <td>{{data.epi.water_sol|default:""}}</td>
     <td>{{data.test.water_sol|default:""}}</td>
@@ -37,7 +37,7 @@
     </tr>
 
     <tr>
-    <td>Vapor Pressure (mmHg)</td>
+    <td style="padding:4px;">Vapor Pressure (mmHg)</td>
     <td>{{data.chemaxon.vapor_press|default:""}}</td>
     <td>{{data.epi.vapor_press|default:""}}</td>
     <td>{{data.test.vapor_press|default:""}}</td>
@@ -46,7 +46,7 @@
     </tr>
 
     <tr>
-    <td>Molecular Diffusivity (cm<sup>2</sup>/s)</td>
+    <td style="padding:4px;">Molecular Diffusivity (cm<sup>2</sup>/s)</td>
     <td>{{data.chemaxon.mol_diss|default:""}}</td>
     <td>{{data.epi.mol_diss|default:""}}</td>
     <td>{{data.test.mol_diss|default:""}}</td>
@@ -55,7 +55,7 @@
     </tr>
 
     <tr>
-    <td>Ionization Constant</td>
+    <td style="padding:4px;">Ionization Constant</td>
     <td>
     <div class="pchemCell">pKa: 
     {% for item in data.chemaxon.ion_con.pKa %} 
@@ -75,7 +75,7 @@
     </tr>
 
     <tr>
-    <td>Henry's Law Constant (atm-m<sup>3</sup>/mol)</td>
+    <td style="padding:4px;">Henry's Law Constant (atm-m<sup>3</sup>/mol)</td>
     <td>{{data.chemaxon.henrys_law_con|default:""}}</td>
     <td>{{data.epi.henrys_law_con|default:""}}</td>
     <td>{{data.test.henrys_law_con|default:""}}</td>
@@ -84,7 +84,7 @@
     </tr>
 
     <tr>
-    <td>Octanol/Water Partition Coefficient</td>
+    <td style="padding:4px;">Octanol/Water Partition Coefficient</td>
     <td>
     {% for key, val in data.chemaxon.kow_no_ph.items %}
     	<div class="pchemCellWrap">
@@ -102,7 +102,7 @@
     </tr>
 
     <tr>
-    <td>Octanol/Water Partition Coefficient at pH {{kow_ph}}</td>
+    <td style="padding:4px;">Octanol/Water Partition Coefficient at pH {{kow_ph}}</td>
     <td>
     {% for key, val in data.chemaxon.kow_wph.items %}
     	<div class="pchemCellWrap">
@@ -120,7 +120,7 @@
     </tr>
 
     <tr>
-    <td>Organic Carbon Partition Coefficient</td>
+    <td style="padding:4px;">Organic Carbon Partition Coefficient</td>
     <td>{{data.chemaxon.koc|default:""}}</td>
     <td>{{data.epi.koc|default:""}}</td>
     <td>{{data.test.koc|default:""}}</td>
