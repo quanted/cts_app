@@ -178,7 +178,7 @@ def table_inputs(chemspec_obj):
     <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
     <div class="out_">
-    <table class="chemspecOutputTable">
+    <table class="inputTableForOutput">
     """
     html += inTmpl.render(Context(dict(data=getMolTblData(chemspec_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getPkaInputs(chemspec_obj), heading="Ionization Parameters")))

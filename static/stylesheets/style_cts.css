@@ -1513,13 +1513,13 @@ body.wait *, body.wait
   /*border-bottom: 1px solid #333333;*/
 /*}*/
 
-.chemspecOutputTable, .chemspecOutputTable td, .chemspecOutputTable th {
+.inputTableForOutput, .inputTableForOutput td, .inputTableForOutput th {
   font-size: 11px;
   border-spacing: 0px;
   background-color: transparent;
 }
 
-.chemspecOutputTable th {
+.inputTableForOutput th {
   font-size: 12px;
   background-color: #E7EADC;
 }
@@ -1551,4 +1551,22 @@ body.wait *, body.wait
 .selectedMetabolite {
   /*border: 5px solid #eed;*/
   border: 2px solid #dee7ef;
+}
+
+/* div style for pchemprop output table data cell */
+.pchemCell {
+  border: 1px solid #EEF0E6;
+  padding: 4px;
+}
+
+/* wrapper for pchempropDataCell */
+div.pchemCellWrap {
+  float: left;
+  text-align: center;
+  width:33.3%;
+}
+
+/* main pchemprop output table (cts_pchemprop_outputTable.html) */
+#pchempropOutputTable td {
+  padding: 0px;
 }

@@ -99,7 +99,7 @@ class pchemprop(object):
 
 		self.resultsDict = {
 			"chemaxon": self.chemaxonResultsDict,
-			"epi-suite": None,
+			"epi": None,
 			"sparc": None,
 			"test": None,
 			"measured": None

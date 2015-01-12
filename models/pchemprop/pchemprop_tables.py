@@ -37,9 +37,10 @@ def gethtmlrowsfromcols(data, headings):
 
 def getInputData(pchemprop_obj):
     data = {
-        "Parameter": ['SMILES:', 'IUPAC:', 'Formula:', 'Mass:'],
-        "Value": [pchemprop_obj.smiles, pchemprop_obj.name, pchemprop_obj.formula, pchemprop_obj.mass],
-        # "Image": [pchemprop_obj.parentImage]
+        'SMILES': pchemprop_obj.smiles,
+        'IUPAC': pchemprop_obj.name,
+        'Formula': pchemprop_obj.formula,
+        'Mass': pchemprop_obj.mass
     }
     return data
 
@@ -61,8 +62,10 @@ def getIonConData(pchemprop_obj):
         try:
             root = root['Ionization Constant']['data'][0] # data root (most jchem data has this)
             for pka in root['pKa']['mostAcidic']:
+                pka = round(float(pka), n)
                 ionConResults["Ionization Constant"]['pKa'].append(pka) # append to list at key pKa
             for pkb in root['pKa']['mostBasic']:
+                pkb = round(float(pkb), n)
                 ionConResults["Ionization Constant"]['pKb'].append(pkb) # append to list at key pKb
         except:
             ionConResults["Ionization Constant"]['pKa'].append("Exception getting pKa...")
@@ -135,123 +138,6 @@ def getKowWph(pchemprop_obj):
     else:
         return None
 
-# def getdjtemplate():
-#     dj_template ="""
-#     <table id="pchemprop_table_out" class="input_table tab tab_ChemCalcs">
-#     <tr>
-#         <th></th>
-#         <th>ChemAxon</th>
-#         <th>EPI Suite</th>
-#         <th>TEST</th>
-#         <th>SPARC</th>
-#         <th>Measured</th>
-#     </tr>
-
-#     {% load set_var %}
-#     {% set skip = False %}
-
-#     {# loops through pchemprop_parameters fields #}
-#     {% for field in fields %}
-#         {# conditionals for appending kow_wph and kow_ph fields #}
-#         {% if field.html_name == "kow_wph" %}
-#             <tr><td><b>{{field.label}} (at pH {{kow_ph}})</b></td>
-#             {% set skip = True %}
-#         {% elif field.html_name == "kow_ph" %}
-#             {% set skip = False %}
-#         {% else %}
-#             {% set skip = False %}
-#             <tr><td><b>{{field.label}}</b></td>
-#         {% endif %}
-#         {% if skip == False %}
-#             {% for prop, values in data.chemaxon.items %}
-                # {% if prop == field.label %}
-                #     <td>
-                #     {% for k,v in values.items %}
-                #         {{k}}:
-                #         {% for key, value in v.items %}
-                #             <i>{{value}}</i>
-                #         {% endfor %}
-                #         <br>
-                #     {% endfor %}
-                #     </td>
-                # {% endif %}
-#             {% endfor %}
-#         {% else %}
-#             {% for prop, values in data.chemaxon.items %}
-#                 {% if prop == "Octanol/Water Partition Coefficient at pH" %}
-#                     <td>
-#                     {% for k,v in values.items %}
-#                         {{k}}:
-#                         {% for key, value in v.items %}
-#                             <i>{{value}}</i>
-#                         {% endfor %}
-#                         <br>
-#                     {% endfor %}
-#                     </td>
-#                 {% endif %}
-#             {% endfor %}
-#         {% endif %}
-#         </tr>
-#     {% endfor %}
-#     </table>
-#     """
-#     return dj_template
-
-
-def getTableTemplate():
-    tblTmpl = """
-    <table>
-
-    <tr>
-    <th></th>
-    {% for heading in headings %}
-        <th>{{heading}}</th>
-    {% endfor %}
-    </tr>
-
-    {% load set_var %}
-    {% set skip = False %}
-
-    {# loops through pchemprop_parameters fields #}
-    {% for field in props %}
-        {# conditionals for appending kow_wph and kow_ph fields #}
-        {% if field.html_name == "kow_wph" %}
-            <tr><td><b>{{field.label}} at pH {{kow_ph}}</b></td>
-
-            {% set skip = True %}
-        {% elif field.html_name == "kow_ph" %}
-            {% set skip = False %}
-        {% else %}
-            {% set skip = False %}
-            <tr><td><b>{{field.label}}</b></td>
-            {% for heading in headings %}
-                <td>
-                {% for calculator, values in data.items %}
-                    {% if calculator == heading|slugify %}
-                        {% for key, value in values.items %}
-                            {% if key == field.label %}
-                                {% for k,v in value.items %}
-                                    <div style="float:left; text-align:center;">
-                                    {% if k in methods %}
-                                        <div>{{k}}</div>
-                                        <div>{{v}}</div>
-                                    {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endfor %}
-                </td>
-            {% endfor %}
-        {% endif %}
-        </tr>
-    {% endfor %}
-
-    </table>
-    """
-    return tblTmpl
-
 
 def getStructInfoTemplate():
     structInfoTemplate ="""
@@ -266,10 +152,25 @@ def getStructInfoTemplate():
     return structInfoTemplate
 
 
+def getInputTemplate():
+    input_template = """
+    <table class="inputTableForOutput">
+    <th colspan="2" class="alignLeft">{{heading}}</th>
+    {% for label, value in data.items %}
+        <tr>
+        <td>{{label}}</td> <td>{{value|default:"none"}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    """
+    return input_template
+
+
 pvuheadings = getheaderpvu()
 structTmpl = Template(getStructInfoTemplate())
+inTmpl = Template(getInputTemplate())
 # pchemTmpl = Template(getdjtemplate())
-tblTmpl = Template(getTableTemplate())
+# tblTmpl = Template(getTableTemplate())
 
 
 def table_all(pchemprop_obj):
@@ -288,14 +189,9 @@ def input_struct_table(pchemprop_obj):
     html = """
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
     <div class="out_">
-        <H4 class="out_1 collapsible" id="section2"><span></span><b>Molecular Information</b></H4>
-            <div class="out_ container_output">
     """
-    t1data = getInputData(pchemprop_obj)
-    t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
-    html = html + structTmpl.render(Context(dict(data=t1rows, headings=pvuheadings)))
+    html += inTmpl.render(Context(dict(data=getInputData(pchemprop_obj), heading="Molecular Information")))
     html = html + """
-            </div>
     </div>
     """
     return html
@@ -306,11 +202,10 @@ def output_pchem_table(pchemprop_obj):
     results of chemaxon properties 
     """
     html = """
+    <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>P-Chem Properties Results</H3>
     <div class="out_">
     """
-
-    # data = pchemprop_obj.resultsDict # get dict of pchemprop table - checked stuff
 
     # Ionization Constant:
     ionConData = getIonConData(pchemprop_obj) # format: {"pKa": [floats], "pKb": [floats]}
@@ -319,23 +214,15 @@ def output_pchem_table(pchemprop_obj):
     # Octanal/Water Partition Coefficient at pH:
     kowWph = getKowWph(pchemprop_obj)
 
-    data = {}
-
     # TODO: Make this less ugly, although it does work since there's only one key at 0th level
-    data.update({'chemaxon': {ionConData.keys()[0]: ionConData[ionConData.keys()[0]]}})
-    data['chemaxon'].update({kowNoPh.keys()[0]: kowNoPh[kowNoPh.keys()[0]]})
-    data['chemaxon'].update({kowWph.keys()[0]: kowWph[kowWph.keys()[0]]})
-
-    logging.info("{}".format(data))
+    data = {'chemaxon': {"ion_con": ionConData[ionConData.keys()[0]]}}
+    data['chemaxon'].update({"kow_no_ph": kowNoPh[kowNoPh.keys()[0]]})
+    data['chemaxon'].update({"kow_wph": kowWph[kowWph.keys()[0]]})
  
     kow_ph = round(float(pchemprop_obj.kow_ph), 1)
-    pchemprops = pchemprop_parameters.cts_chemCalcs_props() # get pchemprop fields
-    # html += pchemTmpl.render(Context(dict(fields=pchemprops, data=data, kow_ph=kow_ph, headings=headings))) 
-    
-    # html += '<table>'
-    # html += tblTmpl.render(Context(dict(headings=headings)))
-    html += tblTmpl.render(Context(dict(headings=headings, props=pchemprops, kow_ph=kow_ph, data=data, methods=methodsList)))
 
+    html += render_to_string('cts_pchemprop_outputTable.html', 
+                                { "data": data, "kow_ph": kow_ph })
     html += """
     </div>
     """
