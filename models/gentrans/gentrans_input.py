@@ -38,7 +38,7 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
     html = html + render_to_string('cts.html', {}) # Builds Marvin JS, lookup table, and results table
     
     # reaction pathway simulator segment:
-    html = html + render_to_string('cts_reaction_path_sim.html', {})
+    # html = html + render_to_string('cts_reaction_path_sim.html', {})
     html = html + str(gentrans_parameters.form(formData))
 
     # p-chem calculator piece:

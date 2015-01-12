@@ -57,6 +57,18 @@ def getdjtemplate():
     return dj_template
 
 
+def getInputTemplate():
+    input_template = """
+    <th colspan="2" class="alignLeft">{{heading}}</th>
+    {% for label, value in data.items %}
+        <tr>
+        <td>{{label}}</td> <td>{{value|default:"none"}}</td>
+        </tr>
+    {% endfor %}
+    """
+    return input_template
+
+
 def getStructInfo(gentrans_obj):
     data = {
         'SMILES': gentrans_obj.smiles, 
@@ -68,8 +80,12 @@ def getStructInfo(gentrans_obj):
 
 
 def getReactPathSimData(gentrans_obj):
+    libs = ""
+    for item in gentrans_obj.trans_libs:
+        libs += item + ", "
+    libs = libs[:-2]
     data = { 
-        'Libraries': gentrans_obj.trans_libs, 
+        'Libraries': libs, 
         'Generation Limit': gentrans_obj.gen_limit, 
         'Population Limit': gentrans_obj.pop_limit, 
         'Likely Limit': gentrans_obj.likely_limit
@@ -79,18 +95,37 @@ def getReactPathSimData(gentrans_obj):
 
 pvuheadings = getheaderpvu()
 pvrheadings = getheaderpvr()
-djtemplate = getdjtemplate()
-tmpl = Template(djtemplate)
+# djtemplate = getdjtemplate()
+tmpl = Template(getdjtemplate())
+inTmpl = Template(getInputTemplate())
 
 
 def table_all(gentrans_obj):
-    html_all = '<br>'
-    html_all += table_struct(gentrans_obj)
-    html_all += table_reactPathSim(gentrans_obj)
-    # html_all += table_pchemprops()
+    html_all = table_inputs(gentrans_obj)
     html_all += table_metabolites(gentrans_obj)
     html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
     return html_all
+
+
+def table_inputs(gentrans_obj):
+    """
+    An attempt at making one large table
+    for all user inputs
+    """
+
+    html = """
+    <br>
+    <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
+    <div class="out_">
+    <table class="inputTableForOutput">
+    """
+    html += inTmpl.render(Context(dict(data=getStructInfo(gentrans_obj), heading="Molecular Information")))
+    html += inTmpl.render(Context(dict(data=getReactPathSimData(gentrans_obj), heading="Reaction Pathway Simulator")))
+    html += """
+    </table>
+    </div>
+    """
+    return html
 
 
 def timestamp(gentrans_obj="", batch_jid=""):
@@ -113,8 +148,6 @@ def table_struct(gentrans_obj):
     html = """
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
     <div class="out_">
-        <H4 class="out_1 collapsible" id="section4"><span></span><b>Molecular Information</b></H4>
-            <div class="out_ container_output">
     """
     tblData = getStructInfo(gentrans_obj)
     # t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
@@ -127,14 +160,12 @@ def table_struct(gentrans_obj):
 
 def table_reactPathSim(gentrans_obj):
     html = """
-        <H4 class="out_1 collapsible" id="section4"><span></span><b>Reaction Pathway Simulator</b></H4>
-            <div class="out_ container_output">
     """
     tblData = getReactPathSimData(gentrans_obj)
     # t1rows = gethtmlrowsfromcols(t1data,pvuheadings)
     html = html + tmpl.render(Context(dict(data=tblData)))
     html = html + """
-            </div>
+    </div>
     """
     return html
 
