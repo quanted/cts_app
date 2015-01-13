@@ -203,7 +203,13 @@ function init(){
                 //get pchemprops for selected node
                 // $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MP/MEASURED", dataType: "json"}).done(function(val) { $('#id_melting_point_MEASURED').html(val.MEASURED.toPrecision(4)) } )
 
-                getPchemData(node.data.smiles); //provide smiles for pchemprop web call
+                
+
+                // var params = {
+                //     url: "/"
+                // };
+                // getPchemData(node.data.smiles); //provide smiles for pchemprop web call
+                
                 //NOTE: need a way to keep track of which calculators and properties to get
                 //for web call. Maybe this is where having higher-level cts web calls would
                 //come into play, i.e., have a cts ws that makes the appropriate calls if 
@@ -226,7 +232,7 @@ function init(){
 }
 
 
-function getPchemData(data, callback) {
+function getPchemData(params, callback) {
     $.ajax({
       url : params.url,
       type : params.type,

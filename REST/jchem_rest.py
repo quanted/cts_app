@@ -198,7 +198,7 @@ def standardizer(request):
 	data = json.dumps(data)
 
 	results = web_call(url, request, data)
-	return results
+	return resultsg
 
 
 def hydrogenizer(request):
