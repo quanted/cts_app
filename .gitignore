@@ -23,3 +23,5 @@ Thumbs.db
 *.wsgi
 env/*
 build/*
+static/marvin4js-license.cxl
+

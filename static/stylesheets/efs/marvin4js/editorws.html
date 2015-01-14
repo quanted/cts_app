@@ -13,6 +13,8 @@
 
 		// called when Marvin JS loaded
 		function sketchOnLoad() {
+			marvin.Sketch.license("/static/marvin4js-license.cxl");
+
 			if(marvin.Sketch.isSupported()) {
 				marvin.sketcherInstance = new marvin.Sketch("sketch");
 				marvin.sketcherInstance.setServices(getDefaultServices());
