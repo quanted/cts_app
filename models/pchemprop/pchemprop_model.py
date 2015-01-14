@@ -18,12 +18,13 @@ n = 3 # number of decimal places to round values
 
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 
-					test, sparc, measured, melting_point, boiling_point, water_sol, 
+					test, sparc, melting_point, boiling_point, water_sol, 
 					vapor_press, mol_diss, ion_con, henrys_law_con, kow_no_ph, kow_wph, kow_ph, koc):
 
 		self.run_type = run_type # defaults to "single", "batch" coming soon...
 		self.jid = jchem_rest.gen_jid() # get time of run
 
+		# chemical structure
 		self.chem_struct = chem_struct
 		self.smiles = smiles
 		self.name = name
@@ -63,14 +64,20 @@ class pchemprop(object):
 		self.epi = epi
 		self.test = test
 		self.sparc = sparc
-		self.measured = measured
+
+		# calcluatorsDict = {
+		# 	"chemaxon": self.chemaxon,
+		# 	"epi": self.epi,
+		# 	"test": self.test,
+		# 	"sparc": self.sparc,
+		# 	"measured": self.measured
+		# }
 
 		calcluatorsDict = {
-			"chemaxon": self.chemaxon,
-			"epi": self.epi,
-			"test": self.test,
-			"sparc": self.sparc,
-			"measured": self.measured
+			"chemaxon": chemaxon,
+			"epi": epi,
+			"test": test,
+			"sparc": sparc
 		}
 
 		# dict with keys of checked calculators and values of 
@@ -89,24 +96,23 @@ class pchemprop(object):
 							propList.append(propKey)
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		self.checkedCalcsAndPropsDict = checkedCalcsAndPropsDict
+		# self.checkedCalcsAndPropsDict = checkedCalcsAndPropsDict
 
 		# TODO: Make more general. getChemaxonResults() could probably be changed to loop
 		# through all calculators. Also, establish standardized variable names to reduce
 		# amount of code (e.g., conditionals checking prop values)
-		self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
+		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 		# self.testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # kow_wph not available
 		# self.measuredResultsDict = getMeasuredResults(self.chem_struct, checkedCalcsAndPropsDict)
 
 		self.resultsDict = {
-			"chemaxon": self.chemaxonResultsDict,
+			"chemaxon": chemaxonResultsDict,
 			"epi": None,
 			"sparc": None,
 			"test": None,
-			"measured": None
 		}
 
-		self.rawData = self.chemaxonResultsDict
+		# self.rawData = self.chemaxonResultsDict
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
 		# fileout.write(json.dumps(self.rawData))
@@ -154,32 +160,32 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	else: return None
 
 
-def getMeasuredResults(structure, checkedCalcsAndPropsDict):
-	"""
-	Gets pchemprop data from measured ws.
-	Inputs: chemical structure, dict of checked properties by calculator
-	(e.g., { 'measured': ['kow_no_ph', 'melting_point'] })
-	Returns: dict of measured props in template-friendly format (see pchemprop_tables)
-	"""
+# def getMeasuredResults(structure, checkedCalcsAndPropsDict):
+# 	"""
+# 	Gets pchemprop data from measured ws.
+# 	Inputs: chemical structure, dict of checked properties by calculator
+# 	(e.g., { 'measured': ['kow_no_ph', 'melting_point'] })
+# 	Returns: dict of measured props in template-friendly format (see pchemprop_tables)
+# 	"""
 
-	url = "/test_cts/api/TEST/" + structure
-	measuredPropsList = checkedCalcsAndPropsDict.get('measured', None)
+# 	url = "/test_cts/api/TEST/" + structure
+# 	measuredPropsList = checkedCalcsAndPropsDict.get('measured', None)
 
-	if measuredPropsList:
-		measuredValues = {}
-		for prop in measuredPropsList:
-			if prop == "melting_point":
-				measuredValues.update({prop: requests.get(url + "/MP/MEASURED")})
-			elif prop == "boiling_point":
-				measuredValues.update({prop: requests.get(url + "/BP/MEASURED")})
-			elif prop == "water_sol":
-				measuredValues.update({prop: requests.get(url + "/WS/MEASURED")})
-			elif prop == "vapor_press":
-				measuredValues.update({prop: requests.get(url + "/VP/MEASURED")})
-			elif prop == "kow_no_ph":
-				measuredResponse = requests.get(url + "/MLOGP/MEASURED")
-		return measuredValues
-	else: return None
+# 	if measuredPropsList:
+# 		measuredValues = {}
+# 		for prop in measuredPropsList:
+# 			if prop == "melting_point":
+# 				measuredValues.update({prop: requests.get(url + "/MP/MEASURED")})
+# 			elif prop == "boiling_point":
+# 				measuredValues.update({prop: requests.get(url + "/BP/MEASURED")})
+# 			elif prop == "water_sol":
+# 				measuredValues.update({prop: requests.get(url + "/WS/MEASURED")})
+# 			elif prop == "vapor_press":
+# 				measuredValues.update({prop: requests.get(url + "/VP/MEASURED")})
+# 			elif prop == "kow_no_ph":
+# 				measuredResponse = requests.get(url + "/MLOGP/MEASURED")
+# 		return measuredValues
+# 	else: return None
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):

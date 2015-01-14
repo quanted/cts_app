@@ -198,7 +198,7 @@ def standardizer(request):
 	data = json.dumps(data)
 
 	results = web_call(url, request, data)
-	return resultsg
+	return results
 
 
 def hydrogenizer(request):
@@ -219,11 +219,32 @@ def hydrogenizer(request):
 	}
 	data = json.dumps(data) # convert to json string
 
-	logging.warning(" ### Request: ")
-	logging.warning(data)
-
 	results = web_call(url, request, data)
 	return results
+
+
+def getpchemprops(request):
+	"""
+	Calls pchemprop model to get pchem props 
+	for a given molecule. This ws was
+	originally meant for getting pchem props 
+	for metabolites on the gentrans output page
+	"""
+	from models.pchemprop import pchemprop_output
+
+	pchemprop_obj = pchemprop_output.pchempropOutputPage(request) # run model (pchemprop_[output, model])
+
+	for key, value in pchemprop_obj.__dict__.items():
+		logging.info("{}: {}".format(key, value))
+
+	return HttpResponse(pchemprop_obj.kow_ph)
+
+	# pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
+ #                        mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
+ #                        waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
+ #                        kowPh, koc)
+
+	
 
 
 def web_call(url, request, data):
@@ -235,11 +256,8 @@ def web_call(url, request, data):
 	callback_response = HttpResponse()
 	message = '\n' + "URL: " + '\n' + url + '\n\n'
 	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
-	# logging.info("Making Call: " + message)
 	try:
-		# logging.warning("Making Call: " + message)
 		response = requests.post(url, data=data, headers=headers, timeout=60)
-		# logger.warning("Call successful")
 		# message = message + "Response: " + '\n' + response.content + '\n\n'
 		callback_response.write(response.content)
 		return callback_response

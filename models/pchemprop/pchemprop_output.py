@@ -19,7 +19,7 @@ def pchempropOutputPage(request):
     test = request.POST.get('test')
     epi = request.POST.get('epi')
     sparc = request.POST.get('sparc')
-    measured = request.POST.get('measured')
+    # measured = request.POST.get('measured') # now "average", which is computed
 
     # Pchem Properties Table Checkboxes
     meltingPoint = request.POST.get('melting_point')
@@ -34,10 +34,16 @@ def pchempropOutputPage(request):
     kowPh = request.POST.get('kow_ph')
     koc = request.POST.get('koc')
 
+    # dataDict = {}
+    # for key, value in request.POST.items():
+    #     logging.info("{}: {}".format(key, value))
+
     pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
-                        mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
+                        mass, chemaxon, epi, test, sparc, meltingPoint, boilingPoint, 
                         waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
                         kowPh, koc)
+
+    # pchemprop_obj = pchemprop_model.pchemprop(None)
 
     return pchemprop_obj
 

@@ -29,7 +29,6 @@ def tmpl_ChemCalcsCTS():
 			<td id="id_kow_EPI" class="{{form.kow_wph|color_filter:"epi"}} epi"></td>
 			<td id="id_kow_TEST" class="{{form.kow_wph|color_filter:"test"}} test"></td>
 			<td id="id_kow_SPARC" class="{{form.kow_wph|color_filter:"sparc"}} sparc"></td>
-                        <td id="id_kow_MEASURED" class="{{form.kow_wph|color_filter:"test"}} test"></td>
 		{% else %}
 			<tr>
 			<th class="chemprop">{{ field }} <span>{{ field.label }}</span></th>
@@ -37,7 +36,6 @@ def tmpl_ChemCalcsCTS():
 			<td id="{{ field.id_for_label }}_EPI" class="{{ field | color_filter:"epi" }} epi"></td>
 			<td id="{{ field.id_for_label }}_TEST" class="{{ field | color_filter:"test" }} test"></td>
 			<td id="{{ field.id_for_label }}_SPARC" class="{{ field | color_filter:"sparc" }} sparc"></td>
-                        <td id="{{ field.id_for_label }}_MEASURED" class="{{ field | color_filter:"test" }} test"></td>
 			</tr>
 		{% endif %}
 	{% endfor %}
@@ -109,8 +107,8 @@ def pchempropAvailable(calculator, prop):
 		calcDict = dict(zip(color_table.props_list, color_table.test_props))
 	elif calculator == "sparc":
 		calcDict = dict(zip(color_table.props_list, color_table.sparc_props))
-	elif calculator == "measured":
-		calcDict = dict(zip(color_table.props_list, color_table.measured_props))
+	# elif calculator == "measured":
+	# 	calcDict = dict(zip(color_table.props_list, color_table.measured_props))
 
 	available = None
 	if prop in calcDict:

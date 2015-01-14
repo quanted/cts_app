@@ -3,11 +3,7 @@
    :synopsis: A useful module indeed.
 """
 
-# import numpy
 from django.template import Context, Template
-# from django.utils.safestring import mark_safe
-# import logging
-# import time
 import datetime
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -18,7 +14,6 @@ from models.pchemprop import pchemprop_tables
 # import importlib
 import gentrans_output
 
-# logger = logging.getLogger("gentransTables")
 
 def getheaderpvu():
     headings = ["Parameter", "Value"]
@@ -80,10 +75,13 @@ def getStructInfo(gentrans_obj):
 
 
 def getReactPathSimData(gentrans_obj):
+
+    # Formats list of libraries used for display:
     libs = ""
     for item in gentrans_obj.trans_libs:
         libs += item + ", "
     libs = libs[:-2]
+
     data = { 
         'Libraries': libs, 
         'Generation Limit': gentrans_obj.gen_limit, 
@@ -100,8 +98,30 @@ inTmpl = Template(getInputTemplate())
 def table_all(gentrans_obj):
     html_all = table_inputs(gentrans_obj)
     html_all += table_metabolites(gentrans_obj)
+    html_all += pchemprop_input_fields(gentrans_obj)
     # html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
     return html_all
+
+
+def pchemprop_input_fields(gentrans_obj):
+    """
+    Fills hidden input element with 
+    pchemprop table inputs dictionary to 
+    be accessed on the front end for obtaining
+    pchem props for selected metabolites 
+    """
+
+    pchemprops = json.dumps(gentrans_obj.pchemprop_obj.__dict__)
+
+    pchemprops_safe = ''
+    for char in pchemprops:
+        if char == '"':
+            char = '&quot;'
+        pchemprops_safe = pchemprops_safe + char
+
+    html = '<input type="hidden" id="pchemprops" value="' + pchemprops_safe + '">'
+
+    return html
 
 
 def table_inputs(gentrans_obj):
@@ -141,11 +161,11 @@ def timestamp(gentrans_obj="", batch_jid=""):
     return html
 
 
-"""
-Populate input with hidden value
-of metabolites as a json string
-"""
 def table_metabolites(gentrans_obj):
+    """
+    Populate input with hidden value
+    of metabolites as a json string
+    """
 
     new_result = ''
     for char in gentrans_obj.results:
@@ -166,5 +186,3 @@ def table_metabolites(gentrans_obj):
     """
 
     return html
-
-

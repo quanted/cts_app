@@ -36,18 +36,13 @@ var Log = {
 
 };
 
-// $(document).ready(function() {
 
-//     $('#id_chemaxon_select').click(function() {
-        
-//     });
+var pchempropsObj = $.parseJSON($('#pchemprops').val());
 
-// });
 
 function init(){
 
     //init data
-    var strJson = $('#hiddenJson').val();
     var json = $.parseJSON($('#hiddenJson').val());
 
     // json = $.grep(json, function(n) { return(n) });
@@ -197,13 +192,46 @@ function init(){
 
         Events: {
             enable: true,
-            onRightClick: function(node, tip, eventInfo, e) {
+            onRightClick: function(node, eventInfo, e) {
+
+                var pchempropsObj = $.parseJSON($('#pchemprops').val());
+
+                var params = {"data":{}};
+                for (var key in pchempropsObj) {
+                    if (pchempropsObj.hasOwnProperty(key) && key != "resultsDict") {
+                        params["data"][key] = pchempropsObj[key];
+                    }
+                }
+                params["url"] = "/jchem-cts/ws/getpchemprops/";
+                params["type"] = "POST";
+                params["contentType"] = "application/json";
+                params["dataType"] = "json";
+
+                getPchemData(params, function(pchemResults) {
+
+                  // var results = pchemResults;
+                  
+                  // fill in node's tooltip with col of pchemprops
+                  var nodeHTML = $.parseHTML(node.data.html);
+                  var rows = nodeHTML[0].rows;
+
+                  //path to table cells: nodeHTML[0].rows[].cells[]
+                  for (cell in rows.cells) {
+                    var test = cell;
+                  }
+
+                });
+
+                // getPchemData(params);
 
                 $("#" + node.id).children().toggleClass("selectedMetabolite");
                 //get pchemprops for selected node
                 // $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MP/MEASURED", dataType: "json"}).done(function(val) { $('#id_melting_point_MEASURED').html(val.MEASURED.toPrecision(4)) } )
 
-                
+                // var values = {};
+                // $.each($('#myForm').serializeArray(), function(i, field) {
+                //     values[field.name] = field.value;
+                // });
 
                 // var params = {
                 //     url: "/"
@@ -246,6 +274,11 @@ function getPchemData(params, callback) {
         callback("Fail");
       },
     });
+}
+
+
+function jsonRepack(jsonobj) {
+  return JSON.parse(JSON.stringify(jsonobj));
 }
 
 

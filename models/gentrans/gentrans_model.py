@@ -10,18 +10,16 @@ import logging
 from django.http import HttpRequest
 import data_walks 
 
-# baseUrl = 'http://pnnl.cloudapp.net/efsws/rest/'
-
-headers = {'Content-Type' : 'application/json'}
-
 
 class gentrans(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, 
-		abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, gen_limit, pop_limit, likely_limit):
+		abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, gen_limit, 
+		pop_limit, likely_limit, pchemprop_obj):
 
 		self.jid = jchem_rest.gen_jid() # get time of run
 		self.run_type = run_type # single or batch
 
+		# Chemical Structure 
 		self.chem_struct = chem_struct # chemical structure
 		self.smiles = smiles
 		self.name = name
@@ -36,6 +34,8 @@ class gentrans(object):
 		self.gen_limit = gen_limit # generation limit
 		self.pop_limit = pop_limit # population limit
 		self.likely_limit = likely_limit
+
+		self.pchemprop_obj = pchemprop_obj # pchemprop object with inputs 
 
 		# Known keys for metabolizer on pnnl server (11-5-14)
 		metabolizerList = ["hydrolysis", "abiotic_reduction", "human_biotransformation"]
@@ -68,6 +68,8 @@ class gentrans(object):
 		# reformat data for outputting to tree structure:
 		data_walks.metID = 0
 		self.results = data_walks.recursive(response.content)
+
+		# logging.info("{} ###".format(self.results))
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
 		# fileout.write(self.results)

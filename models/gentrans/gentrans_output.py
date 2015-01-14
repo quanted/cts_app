@@ -6,9 +6,6 @@ def gentransOutputPage(request):
     import gentrans_model
     from models.pchemprop import pchemprop_model
 
-    # logging.info("REQUEST")
-    # logging.info(request)
-
     # Chemical Editor tab fields
     chemStruct = request.POST.get('chem_struct')
     smiles = request.POST.get('smiles')
@@ -29,7 +26,7 @@ def gentransOutputPage(request):
     test = request.POST.get('test')
     epi = request.POST.get('epi')
     sparc = request.POST.get('sparc')
-    measured = request.POST.get('measured')
+    # measured = request.POST.get('measured') # now "average", which is computed
 
     # Pchem Properties Table Checkboxes (p-chem prop tab fields)
     meltingPoint = request.POST.get('melting_point')
@@ -45,14 +42,22 @@ def gentransOutputPage(request):
     koc = request.POST.get('koc')
 
     # get pchemprop results for gentrans
-    gentransOutputPage.pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
-                        mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
+    # gentransOutputPage.pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
+    #                     mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
+    #                     waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
+    #                     kowPh, koc)
+    
+    # NOTE: pchemprop_obj appended to gentrans_obj for computing pchemprops
+    # for parent molecule on page submit event. metabolite pchemprops can be 
+    # obtained on the UI via scripts within cts_gentrans_tree.html 
+    pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
+                        mass, chemaxon, epi, test, sparc, meltingPoint, boilingPoint, 
                         waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
                         kowPh, koc)
 
     # get gentrans results
     gentrans_obj = gentrans_model.gentrans("single", chemStruct, smiles, name, formula, 
                                     mass, abioticHydrolysis, abioticRecuction,
-                                    mammMetabolism, genLimit, popLimit, likelyLimit)
+                                    mammMetabolism, genLimit, popLimit, likelyLimit, pchemprop_obj)
 
     return gentrans_obj

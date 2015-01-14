@@ -52,7 +52,7 @@ def traverse(root):
 				if len(root2) > 0 and 'children' in newDict: 
 					newDict['children'].append(traverse(root2))
 
-	logging.warning(newDict)
+	# logging.warning(newDict)
 	return newDict
 	# if newDict != None:
 	# 	return newDict

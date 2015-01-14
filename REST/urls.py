@@ -14,7 +14,8 @@ urlpatterns = patterns('REST',
     (r'^ws/mrvToSmiles/?$', 'jchem_rest.mrvToSmiles'),
     (r'^ws/getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
     (r'^ws/smilesToImage/?$', 'jchem_rest.smilesToImage'),
-    (r'^ws/standardizer/?$', 'jchem_rest.standardizer')
+    (r'^ws/standardizer/?$', 'jchem_rest.standardizer'),
+    (r'^ws/getpchemprops/?$', 'jchem_rest.getpchemprops'),
 )
 
 # 404 Error view (file not found)
