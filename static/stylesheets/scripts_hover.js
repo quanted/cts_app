@@ -1,3 +1,5 @@
+//Highlights collasible header on output pages during
+//mouseover event
 $(document).ready(function () {
     $('.collapsible').hover(
         function() {

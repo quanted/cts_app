@@ -15,6 +15,12 @@ used: jit (thejit.org)
 """
 
 def recursive(jsonStr):
+	"""
+	Starting point for walking through
+	metabolites dictionary and building json
+	that thejit (visualization javascript
+	library) understands
+	"""
 	jsonDict = json.loads(jsonStr)
 	root = jsonDict['results']
 	reDict = {}
@@ -28,22 +34,24 @@ metabolite_keys = ['smiles', 'accumulation', 'production', 'transmissivity', 'ge
 
 def traverse(root):
 	"""
-	For gentrans model output
+	For gentrans model output - metabolites tree
 	"""
 
 	global metID
 	metID += 1
 	newDict = {}
 
+	tblID = "{}_table".format(metID) # id for node's tooltip table
+
 	if metID == 1:
 		parent = root.keys()[0]
 		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, 28), "data": {}, "children": []})
-		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys))
+		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys, tblID))
 		root = root[parent]
 	else:
 		if root['generation'] > 0:
 			newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, 28), "data": {}, "children": []})
-			newDict['data'].update(popupBuilder(root, metabolite_keys))
+			newDict['data'].update(popupBuilder(root, metabolite_keys, tblID))
 
 	for key, value in root.items():
 		if isinstance(value, dict):
@@ -52,19 +60,14 @@ def traverse(root):
 				if len(root2) > 0 and 'children' in newDict: 
 					newDict['children'].append(traverse(root2))
 
-	# logging.warning(newDict)
 	return newDict
-	# if newDict != None:
-	# 	return newDict
 
 
 def nodeWrapper(smiles, height, width, scale, key=None):
 	"""
 	Wraps image html tag around
 	the molecule's image source
-
 	Inputs: smiles, height, width, scale, key
-
 	Returns: html of wrapped image
 	"""
 
@@ -118,10 +121,16 @@ def popupBuilder(root, paramKeys, molKey=None):
 	# propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
 	dataProps = {key: None for key in paramKeys} # metabolite properties 
 
-	html = '<table class="wrapped_molecule">'
-	html += '<tr><td rowspan="' + str(len(paramKeys) + 1) + '">' 
+	html = '<div class="metabolite_img" style="float:left;">'
 	html += nodeWrapper(root['smiles'], None, 250, 100)
-	html += '</td></tr>'
+	html += '</div>'
+	if molKey:
+		html += '<table class="wrapped_molecule" id="{}">'.format(molKey)
+	else:
+		html += '<table class="wrapped_molecule">'
+	# html += '<tr><td rowspan="' + str(len(paramKeys) + 1) + '">'
+	# html += nodeWrapper(root['smiles'], None, 250, 100)
+	# html += '</td></tr>'
 	for key, value in root.items():
 		if key in paramKeys:
 
@@ -140,10 +149,54 @@ def popupBuilder(root, paramKeys, molKey=None):
 	return dataProps
 
 
+# def popupBuilder(root, paramKeys, molKey=None):
+# 	"""
+# 	Wraps molecule data (e.g., formula, iupac, mass, 
+# 	smiles, image) in table
+
+# 	Inputs 
+# 	root - dictionary of items to wrap in table
+# 	keys - keys to use for building table
+
+# 	Returns dictionary where html key is 
+# 	the wrapped html and the other keys are
+# 	same as the input keys
+# 	"""
+
+# 	# propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
+# 	dataProps = {key: None for key in paramKeys} # metabolite properties 
+
+# 	html = ""
+# 	if molKey:
+# 		html += '<table class="wrapped_molecule" id="{}">'.format(molKey)
+# 	else:
+# 		html += '<table class="wrapped_molecule">'
+# 	html += '<tr><td rowspan="' + str(len(paramKeys) + 1) + '">'
+# 	html += nodeWrapper(root['smiles'], None, 250, 100)
+# 	html += '</td></tr>'
+# 	for key, value in root.items():
+# 		if key in paramKeys:
+
+# 			# Convert other types (e.g., float, int) to string
+# 			if not isinstance(value, unicode):
+# 				value = str(value)
+
+# 			dataProps[key] = value
+
+# 			html += '<tr><td>' + key + '</td>'
+# 			html += '<td>' + value + '</td></tr>'
+# 	html += '</table>'
+
+# 	dataProps["html"] = html 
+
+# 	return dataProps
+
+
 def changeImageIP(url):
 	"""
-	Changing IP address from internal CGI to intranet-facing address
-	for image urls 
+	Changing IP address from internal CGI to 
+	intranet-facing address for image urls 
+	depending on env vars in the settings file
 
 	I.e., http://172.20.100.12/imageUrl --> http://134.67.114.2/imageUrl 
 	""" 

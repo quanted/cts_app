@@ -194,6 +194,7 @@ function init(){
             enable: true,
             onRightClick: function(node, eventInfo, e) {
 
+                // Get pchemprop selected props 
                 var pchempropsObj = $.parseJSON($('#pchemprops').val());
 
                 var params = {"data":{}};
@@ -202,6 +203,7 @@ function init(){
                         params["data"][key] = pchempropsObj[key];
                     }
                 }
+                params["data"]["chem_struct"] = node.data.smiles;
                 params["url"] = "/jchem-cts/ws/getpchemprops/";
                 params["type"] = "POST";
                 params["contentType"] = "application/json";
@@ -209,43 +211,57 @@ function init(){
 
                 getPchemData(params, function(pchemResults) {
 
-                  // var results = pchemResults;
-                  
-                  // fill in node's tooltip with col of pchemprops
-                  var nodeHTML = $.parseHTML(node.data.html);
-                  var rows = nodeHTML[0].rows;
+                    var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
+                    var tableID = '#' + node.id + '_table'; //table id
+                    var table = $(tableID); //table element
+                    var mainDiv = $(tableID).parent(); //popup container div
+                    var newRow = ""; //str var for building rows
+                    var rowWithMethods = ""; //for handling rows with methods
 
-                  //path to table cells: nodeHTML[0].rows[].cells[]
-                  for (cell in rows.cells) {
-                    var test = cell;
-                  }
+                    //Add pchem props to node's popup table:
+                    for (calc in pchemResults) {
+                        for (prop in pchemResults[calc]) {
 
+                            var methods = pchemResults[calc][prop];
+                            var hasMethods = false;
+                            var propName = getProperName(prop);
+
+                            for (key in methods) {
+                                if ($.inArray(key, chemaxonMethods) >= 0) {
+                                    hasMethods = true;
+                                }
+                            }
+
+                            if (hasMethods) {
+                                newRow = '<tr><td>' + propName + '</td><td>'; //start new row for prop
+                                for (method in pchemResults[calc][prop]) {
+                                    var values = getValuesFromData(calc, prop, pchemResults[calc][prop][method]["data"]);
+                                    newRow += values[propName];
+                                }
+                                newRow += '</td></tr>';
+                                $(tableID + ' tr:last').append(newRow); //append new row to table
+                            }
+                            else {
+                                //any property with only one value (i.e., no methods)
+                                //need to get data differently depending on property...
+                                var values = getValuesFromData(calc, prop, pchemResults[calc][prop]["data"]);
+                                newRow = '<tr><td>' + propName + '</td><td>';
+                                for (key in values[propName]) {
+                                    //already know it doesn't contain methodList keys
+                                    var test = key;
+                                    newRow += key + ': ';
+                                    newRow += values[propName][key] + '<br>';
+                                }
+                                newRow += '</td></tr>';
+                                $(tableID + ' tr:last').append(newRow);
+                            }
+                        }
+                    }
+                    node.data.html = mainDiv[0].innerHTML;
+                    $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
                 });
-
-                // getPchemData(params);
-
-                $("#" + node.id).children().toggleClass("selectedMetabolite");
-                //get pchemprops for selected node
-                // $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MP/MEASURED", dataType: "json"}).done(function(val) { $('#id_melting_point_MEASURED').html(val.MEASURED.toPrecision(4)) } )
-
-                // var values = {};
-                // $.each($('#myForm').serializeArray(), function(i, field) {
-                //     values[field.name] = field.value;
-                // });
-
-                // var params = {
-                //     url: "/"
-                // };
-                // getPchemData(node.data.smiles); //provide smiles for pchemprop web call
-                
-                //NOTE: need a way to keep track of which calculators and properties to get
-                //for web call. Maybe this is where having higher-level cts web calls would
-                //come into play, i.e., have a cts ws that makes the appropriate calls if 
-                //provided the calcs and props to use.
-
             }
         }
-
     });
     //load json data
     st.loadJSON(json);
@@ -257,6 +273,43 @@ function init(){
     st.onClick(st.root);
     //end
 
+}
+
+
+function getValuesFromData(calc, prop, data) {
+    //grabs values out of data dict based on
+    //the calculator and property
+
+    var value = {};
+
+    switch(calc) {
+        case "chemaxon":
+            switch(prop) {
+                case "ion_con":
+                    // Gets pka and pkb values
+                    value["Ionization Constant"] = {};
+                    var pka = data[0]["pKa"]["mostAcidic"];
+                    for (val in pka) {
+                        pka[val] = pka[val].toFixed(3); //round pka values
+                    }
+                    var pkb = data[0]["pKa"]["mostBasic"];
+                    for (val in pkb) {
+                        pkb[val] = pkb[val].toFixed(3); //round pka values
+                    }
+                    value["Ionization Constant"]["pka"] = pka;
+                    value["Ionization Constant"]["pkb"] = pkb;
+                    break;
+                case "kow_no_ph":
+                    // Gets logP value
+                    value["logP"] = data[0]["logP"]["logpnonionic"];
+                    break;
+                case "kow_wph":
+                    // Gets logD value
+                    value["logD"] = data[0]["logD"]["logD"].toFixed(3);
+                    break;
+            }
+    }
+    return value;
 }
 
 
@@ -274,6 +327,24 @@ function getPchemData(params, callback) {
         callback("Fail");
       },
     });
+}
+
+
+function getProperName(prop) {
+    //returns "proper" form of property name
+    //e.g., "ion_con" returns "Ionization Constant"
+    switch(prop) {
+        case "ion_con":
+            return "Ionization Constant";
+        case "kow_no_ph":
+            // return "Octanol/Water Partition Coefficient";
+            return "logP";
+        case "kow_wph":
+            // return "Octanol/Water Partition Coefficient with pH";
+            return "logD";
+        default:
+            return null;
+    }
 }
 
 

@@ -35,7 +35,7 @@ class gentrans(object):
 		self.pop_limit = pop_limit # population limit
 		self.likely_limit = likely_limit
 
-		self.pchemprop_obj = pchemprop_obj # pchemprop object with inputs 
+		self.pchemprop_obj = pchemprop_obj # pchemprop object with inputs
 
 		# Known keys for metabolizer on pnnl server (11-5-14)
 		metabolizerList = ["hydrolysis", "abiotic_reduction", "human_biotransformation"]

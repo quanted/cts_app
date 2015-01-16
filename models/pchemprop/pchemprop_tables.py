@@ -57,19 +57,19 @@ def getIonConData(pchemprop_obj):
     """
     root = pchemprop_obj.resultsDict['chemaxon'] # root for getting ion con data
     logging.info(pchemprop_obj.resultsDict)
-    ionConResults = { "Ionization Constant": {"pKa": [], "pKb": [] } } # results dict for ion con
-    if root and 'Ionization Constant' in root:
+    ionConResults = { "ion_con": {"pKa": [], "pKb": [] } } # results dict for ion con
+    if root and 'ion_con' in root:
         try:
-            root = root['Ionization Constant']['data'][0] # data root (most jchem data has this)
+            root = root['ion_con']['data'][0] # data root (most jchem data has this)
             for pka in root['pKa']['mostAcidic']:
                 pka = round(float(pka), n)
-                ionConResults["Ionization Constant"]['pKa'].append(pka) # append to list at key pKa
+                ionConResults["ion_con"]['pKa'].append(pka) # append to list at key pKa
             for pkb in root['pKa']['mostBasic']:
                 pkb = round(float(pkb), n)
-                ionConResults["Ionization Constant"]['pKb'].append(pkb) # append to list at key pKb
+                ionConResults["ion_con"]['pKb'].append(pkb) # append to list at key pKb
         except:
-            ionConResults["Ionization Constant"]['pKa'].append("Exception getting pKa...")
-            ionConResults["Ionization Constant"]['pKb'].append("Exception getting pKb...")
+            ionConResults["ion_con"]['pKa'].append("Exception getting pKa...")
+            ionConResults["ion_con"]['pKb'].append("Exception getting pKb...")
         return ionConResults
     else:
         return None
@@ -86,15 +86,15 @@ def getKowNoPh(pchemprop_obj):
 
     TODO: Make more general for all calculators
     """
-    kowNoPhResults = {'Octanol/Water Partition Coefficient': {key: [] for key in methodsList}} # methodsList up top (KLOP, VG, PHYS)
-    if 'Octanol/Water Partition Coefficient' in pchemprop_obj.resultsDict['chemaxon']:
+    kowNoPhResults = {'kow_no_ph': {key: [] for key in methodsList}} # methodsList up top (KLOP, VG, PHYS)
+    if 'kow_no_ph' in pchemprop_obj.resultsDict['chemaxon']:
         for method in methodsList:
             try:
-                root = pchemprop_obj.resultsDict['chemaxon']['Octanol/Water Partition Coefficient']
+                root = pchemprop_obj.resultsDict['chemaxon']['kow_no_ph']
                 value = round(root[method]['data'][0]['logP']['logpnonionic'], n)
-                kowNoPhResults['Octanol/Water Partition Coefficient'][method].append(value)
+                kowNoPhResults['kow_no_ph'][method].append(value)
             except:
-                kowNoPhResults['Octanol/Water Partition Coefficient'][method].append("Exception getting logP...")
+                kowNoPhResults['kow_no_ph'][method].append("Exception getting logP...")
         return kowNoPhResults
     else:
         return None
@@ -112,11 +112,11 @@ def getKowWph(pchemprop_obj):
     TODO: Make more general for all calculators
     """
     root = pchemprop_obj.resultsDict['chemaxon']
-    kowWphResults = {'Octanol/Water Partition Coefficient at pH': {key: [] for key in methodsList}}
-    if 'Octanol/Water Partition Coefficient at pH' in root:
+    kowWphResults = {'kow_wph': {key: [] for key in methodsList}}
+    if 'kow_wph' in root:
         for method in methodsList:
             try:
-                root = pchemprop_obj.resultsDict['chemaxon']['Octanol/Water Partition Coefficient at pH']
+                root = pchemprop_obj.resultsDict['chemaxon']['kow_wph']
                 # value = root[method]['data'][0]['logD']['logD']
                 root = root[method]['data'][0]['logD']
 
@@ -129,10 +129,10 @@ def getKowWph(pchemprop_obj):
                       value = round(xyPair['logD'], n)
                       break
 
-                kowWphResults['Octanol/Water Partition Coefficient at pH'][method].append(value)
+                kowWphResults['kow_wph'][method].append(value)
 
             except:
-                kowWphResults['Octanol/Water Partition Coefficient at pH'][method].append("Exception getting logD...")
+                kowWphResults['kow_wph'][method].append("Exception getting logD...")
 
         return kowWphResults
     else:
@@ -177,7 +177,7 @@ def table_all(pchemprop_obj):
     html_all = '<br>'
     html_all += input_struct_table(pchemprop_obj)
     html_all += output_pchem_table(pchemprop_obj)
-    html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
+    # html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
     return html_all
 
 

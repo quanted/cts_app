@@ -228,23 +228,17 @@ def getpchemprops(request):
 	Calls pchemprop model to get pchem props 
 	for a given molecule. This ws was
 	originally meant for getting pchem props 
-	for metabolites on the gentrans output page
+	for metabolites on the gentrans output page.
+
+	This is only here for accessing pchemprop_model
+	via frontend jquery stuff
 	"""
 	from models.pchemprop import pchemprop_output
 
 	pchemprop_obj = pchemprop_output.pchempropOutputPage(request) # run model (pchemprop_[output, model])
-
-	for key, value in pchemprop_obj.__dict__.items():
-		logging.info("{}: {}".format(key, value))
-
-	return HttpResponse(pchemprop_obj.kow_ph)
-
-	# pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
- #                        mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
- #                        waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
- #                        kowPh, koc)
-
+	response = json.dumps(pchemprop_obj.resultsDict)
 	
+	return HttpResponse(response, content_type="application/json")
 
 
 def web_call(url, request, data):

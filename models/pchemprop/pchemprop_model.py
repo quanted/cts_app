@@ -199,12 +199,15 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 
 	chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
 	propMethodsList = ['KLOP', 'PHYS', 'VG'] # methods of calculation for pchemprops (chemaxon)
+	phForLogD = float(phForLogD)
 
 	if chemaxonPropsList:
 
 		# propMethodsList = ['KLOP', 'PHYS', 'VG', 'WEIGHTED']
 		chemaxonDict = {} # dict of results (values) per method (keys)
 
+		# TODO: Some segments of the below repeat and could probably be looped..
+		# change that at some point
 		for prop in chemaxonPropsList:
 			if prop == "solubility":
 				postDict = {
@@ -217,7 +220,7 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 					}
 				}
 				data = json.loads(makeJchemCall(postDict))
-				chemaxonDict.update({"Water Solubility": data})
+				chemaxonDict.update({"water_sol": data})
 			if prop == "ion_con":
 				postDict = {
 					"chemical": structure,
@@ -228,9 +231,9 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 					}
 				}
 				data = json.loads(makeJchemCall(postDict))
-				chemaxonDict.update({"Ionization Constant": data})
+				chemaxonDict.update({"ion_con": data})
 			if prop == "kow_no_ph":
-				chemaxonDict.update({"Octanol/Water Partition Coefficient": {}})
+				chemaxonDict.update({prop: {}})
 				for method in propMethodsList:
 					postDict = {
 						"chemical": structure,	
@@ -239,22 +242,22 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 						}
 					}
 					data = json.loads(makeJchemCall(postDict))
-					chemaxonDict["Octanol/Water Partition Coefficient"].update({method: data})
+					chemaxonDict[prop].update({method: data})
 				
 			if prop == "kow_wph":
-				chemaxonDict.update({"Octanol/Water Partition Coefficient at pH": {}})
+				chemaxonDict.update({prop: {}})
 				for method in propMethodsList:
 					postDict = {
 						"chemical": structure,
 						"logD": {
 							"method": method,
-							"pHLower": 0,
-							"pHUpper": 14,
+							"pHLower": phForLogD,
+							"pHUpper": phForLogD,
 							"pHStep": 0.1
 						}
 					}
 					data = json.loads(makeJchemCall(postDict))
-					chemaxonDict["Octanol/Water Partition Coefficient at pH"].update({method: data})
+					chemaxonDict[prop].update({method: data})
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
 		# fileout.write(json.dumps(chemaxonDict))
@@ -314,126 +317,126 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 		# return buildChemaxonResultsDict(chemaxonDict, phForLogD)
 
 
-def buildChemaxonResultsDict(chemaxonDict, phForLogD):
-	"""
-	Parses results from chemaxon data call and
-	returns a dictionary in a format recognized 
-	by the template in pchemprop_tables.py
+# def buildChemaxonResultsDict(chemaxonDict, phForLogD):
+# 	"""
+# 	Parses results from chemaxon data call and
+# 	returns a dictionary in a format recognized 
+# 	by the template in pchemprop_tables.py
 
-	Inputs: chemaxon dict, pH for logD (if selected)
-	Returns: dictionary of chemaxon values for output page
-	"""
+# 	Inputs: chemaxon dict, pH for logD (if selected)
+# 	Returns: dictionary of chemaxon values for output page
+# 	"""
 
-	propDict = {}
+# 	propDict = {}
 
-	# loop through results per method
-	for method, result in chemaxonDict.items():
+# 	# loop through results per method
+# 	for method, result in chemaxonDict.items():
 
-		root = result['data'][0]
+# 		root = result['data'][0]
 
-		# logging.warning(root)
+# 		# logging.warning(root)
 
-		if 'pKa' in root:
-			# get mostAcidic and mostBasic values (both are list)
-			pkaList = []
-			for val in root['pKa']['mostAcidic']:
-				pkaList.append(round(val, n))
-			pkbList = []
-			for val in root['pKa']['mostBasic']:
-				pkbList.append(round(val, n))
+# 		if 'pKa' in root:
+# 			# get mostAcidic and mostBasic values (both are list)
+# 			pkaList = []
+# 			for val in root['pKa']['mostAcidic']:
+# 				pkaList.append(round(val, n))
+# 			pkbList = []
+# 			for val in root['pKa']['mostBasic']:
+# 				pkbList.append(round(val, n))
 
-			if 'Ionization Constant' in propDict:
-				propDict['Ionization Constant'].update({
-					method: {
-						"pKa": pkaList,
-						"pKb": pkbList
-					}
-				})
-			else:
-				propDict.update({
-					"Ionization Constant": {
-						method: {
-							"pKa": pkaList,
-							"pKb": pkbList
-						} 
-					}
-				})
+# 			if 'Ionization Constant' in propDict:
+# 				propDict['Ionization Constant'].update({
+# 					method: {
+# 						"pKa": pkaList,
+# 						"pKb": pkbList
+# 					}
+# 				})
+# 			else:
+# 				propDict.update({
+# 					"Ionization Constant": {
+# 						method: {
+# 							"pKa": pkaList,
+# 							"pKb": pkbList
+# 						} 
+# 					}
+# 				})
 
-		dataDict = {}
-		structInfo = {}
-		if 'logP' in root:
-			logPkeys = ['logpnonionic', 'logdpi', 'structInfo']
-			logPname = "Octanol/Water Partition Coefficient"
-			# get logpnonionic, logdpi, and imageUrl
-			if 'logpnonionic' in root['logP'] and not isinstance(root['logP']['logpnonionic'], dict):
-				dataDict.update({
-					"logpnonionic": round(root['logP']['logpnonionic'], n)
-				})
-			else:
-				dataDict.update({
-					"logpnonionic": "none"
-				})
+# 		dataDict = {}
+# 		structInfo = {}
+# 		if 'logP' in root:
+# 			logPkeys = ['logpnonionic', 'logdpi', 'structInfo']
+# 			logPname = "Octanol/Water Partition Coefficient"
+# 			# get logpnonionic, logdpi, and imageUrl
+# 			if 'logpnonionic' in root['logP'] and not isinstance(root['logP']['logpnonionic'], dict):
+# 				dataDict.update({
+# 					"logpnonionic": round(root['logP']['logpnonionic'], n)
+# 				})
+# 			else:
+# 				dataDict.update({
+# 					"logpnonionic": "none"
+# 				})
 
-			# if 'logdpi' in root['logP'] and not isinstance(root['logP']['logdpi'], dict):
-			# 	dataDict.update({
-			# 		"logdpi": round(root['logP']['logdpi'], n)
-			# 	})
-			# else:
-			# 	dataDict.update({
-			# 		"logdpi": "none"
-			# 	})
+# 			# if 'logdpi' in root['logP'] and not isinstance(root['logP']['logdpi'], dict):
+# 			# 	dataDict.update({
+# 			# 		"logdpi": round(root['logP']['logdpi'], n)
+# 			# 	})
+# 			# else:
+# 			# 	dataDict.update({
+# 			# 		"logdpi": "none"
+# 			# 	})
 
-			# if 'result' in root['logP']:
-			# 	if 'structureData' in root['logP']['result']:
-			# 		# Get smiles, iupac, mass, etc. as dict for logP structure
-			# 		# TODO: move getStructInfo() to more generic place. it's used in all workflows
-			# 		structInfo = chemspec_model.getStructInfo(root['logP']['result']['structureData']['structure'])
-			# 		dataDict[logPname].update({'structInfo': structInfo})
-			# 	if 'image' in root['logP']['result']:
-			# 		dataDict.update({
-			# 			"image": root['logP']['result']['image']['imageUrl']
-			# 		})
+# 			# if 'result' in root['logP']:
+# 			# 	if 'structureData' in root['logP']['result']:
+# 			# 		# Get smiles, iupac, mass, etc. as dict for logP structure
+# 			# 		# TODO: move getStructInfo() to more generic place. it's used in all workflows
+# 			# 		structInfo = chemspec_model.getStructInfo(root['logP']['result']['structureData']['structure'])
+# 			# 		dataDict[logPname].update({'structInfo': structInfo})
+# 			# 	if 'image' in root['logP']['result']:
+# 			# 		dataDict.update({
+# 			# 			"image": root['logP']['result']['image']['imageUrl']
+# 			# 		})
 
-			if logPname in propDict:
-				propDict[logPname].update({
-					method: dataDict 
-				})
-			else:
-				propDict.update({
-					logPname: {
-						method: dataDict
-					}
-				})
+# 			if logPname in propDict:
+# 				propDict[logPname].update({
+# 					method: dataDict 
+# 				})
+# 			else:
+# 				propDict.update({
+# 					logPname: {
+# 						method: dataDict
+# 					}
+# 				})
 
-		if 'logD' in root:
-			logDname = "Octanol/Water Partition Coefficient at pH"
-			if 'logD' in root['logD']:
+# 		if 'logD' in root:
+# 			logDname = "Octanol/Water Partition Coefficient at pH"
+# 			if 'logD' in root['logD']:
 
-				phForLogD = float(phForLogD) # convert to float
-				chartDataList = root['logD']['chartData']['values'] # list of {"pH":val, "logD":val}
+# 				phForLogD = float(phForLogD) # convert to float
+# 				chartDataList = root['logD']['chartData']['values'] # list of {"pH":val, "logD":val}
 
-				for xyPair in chartDataList:
-					# use value at pH requested by user
-					if xyPair['pH'] == round(phForLogD, 1):
-						logDval = xyPair['logD']
-						break
+# 				for xyPair in chartDataList:
+# 					# use value at pH requested by user
+# 					if xyPair['pH'] == round(phForLogD, 1):
+# 						logDval = xyPair['logD']
+# 						break
 
-				if logDname in propDict:
-					propDict[logDname].update({
-						method: {
-							"logD": round(logDval, n)
-						}
-					})
-				else:
-					propDict.update({
-						logDname: {
-							method: {
-								"logD": round(logDval, n)
-							}
-						}
-					})
+# 				if logDname in propDict:
+# 					propDict[logDname].update({
+# 						method: {
+# 							"logD": round(logDval, n)
+# 						}
+# 					})
+# 				else:
+# 					propDict.update({
+# 						logDname: {
+# 							method: {
+# 								"logD": round(logDval, n)
+# 							}
+# 						}
+# 					})
 
-	return propDict
+# 	return propDict
 
 
 def makeJchemCall(postDict):

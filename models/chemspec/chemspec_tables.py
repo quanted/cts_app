@@ -14,14 +14,14 @@ import logging
 import json
 from StringIO import StringIO
 from django.utils.safestring import mark_safe
-from models.gentrans import data_walks 
+from models.gentrans import data_walks
 
 
 # image sizes:
 lgWidth = 250
 mdWidth = 125 
 smWidth = 75
-scale = 100 
+scale = 100 # default is 28 
 
 
 def getdjtemplate():
@@ -127,7 +127,7 @@ def table_all(chemspec_obj):
     <script>
     function tipit() {
         // Using qtip2 for tooltip
-        $('.wrapped_molecule').each(function() {
+        $('.chemspec_molecule').each(function() {
             $(this).qtip({
                 content: {
                     text: $(this).next('.tooltiptext')
@@ -387,7 +387,7 @@ def wrap_molecule(propDict, height, width, scale):
     # html += '<tr><td align="center">' + infoDict['image'] + '</td></tr></table>'
 
     html = """
-    <div class="wrapped_molecule">
+    <div class="chemspec_molecule">
     """
     html += infoDict['image']
     html += """

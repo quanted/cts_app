@@ -1422,14 +1422,19 @@ th {
 
 /* Image of molecule wrapped in 
 table for ChemSpec output */
-.wrapped_molecule {
+.wrapped_molecule, .chemspec_molecule {
   background-color: transparent;
   font-size: 11px;
   margin: 0px;
 }
 
+div.wrapped_molecule {
+  display: inline-block;
+  /*position: absolute;*/
+}
+
 /*any child <img> of parent with class wrapped_molecule*/
-.wrapped_molecule img {
+.wrapped_molecule img, .chemspec_molecule img {
   border: 1px solid #1a1a1a;
   background-color: white;
   margin: 0px;
