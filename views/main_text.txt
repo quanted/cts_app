@@ -9,7 +9,7 @@ The CTS consists of 6 modules, the selection and order of execution of which is 
 </p>
 <p>
 <b>Chemical Editor (CE):</b>
-Provides options for chemical entry, as well as the chemical speciationof the parent chemical
+Provides options for chemical entry, as well as the chemical speciation of the parent chemical
 <br><br>
 <b>Physicochemical Properties Calculator (PPC):</b>
 Calculates p-chem properties for the parent chemical and predicted transformation products based on the executions of multiple p-chem calculators
