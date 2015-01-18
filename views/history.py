@@ -2,7 +2,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 import importlib
 import linksLeft
-from REST import rest_funcs
+# from REST import rest_funcs
 
 
 def historyPage(request, model='none', header='none'):
@@ -12,14 +12,20 @@ def historyPage(request, model='none', header='none'):
     html = render_to_string('01cts_uberheader.html', {'title': header+' History'})
     html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'history'})
     html = html + linksLeft.linksLeft()
-    html = html + render_to_string('04uberalgorithm_start.html', {
-            'model_attributes': header+' User History'})
-    html = html + render_to_string('history_pagination.html', {})   
+    # html = html + render_to_string('04uberalgorithm_start.html', {
+    #         'model_attributes': header+' User History'})
+    # html = html + render_to_string('history_pagination.html', {})   
 
-    hist_obj = rest_funcs.user_hist('admin', model)
-    html = html + table_all(hist_obj)
+    # hist_obj = rest_funcs.user_hist('admin', model)
+    # html = html + table_all(hist_obj)
 
-    html = html + render_to_string('04ubertext_end.html', {})
+    html += """
+    <div class="articles">
+    <p>Coming soon...</p>
+    </div>
+    """
+
+    # html = html + render_to_string('04ubertext_end.html', {})
     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
 
     response = HttpResponse()
