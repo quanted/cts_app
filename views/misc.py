@@ -11,14 +11,15 @@ import logging
 ################################ HTTP Error Pages #####################################
 #######################################################################################
 
-def fileNotFound(request):
+def fileNotFound(request, model=None):
     html = render_to_string('01cts_uberheader.html', {'title': 'Error'})
     html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {'title2':'File not found'})
     html = html + linksLeft.linksLeft()
     html = html + render_to_string('04ubertext_start.html', {
-            'model_attributes': 'File Not Found',
+            'model_attributes': 'This page is still under maintenance',
             'text_paragraph': ""})
-    html = html + """ <img src="/static/images/404error.png" width="300" height="300">"""
+    # html = html + """ <img src="/static/images/404error.png" width="300" height="300">"""
+    html = html + """<img src="/static/images/fist-with-hammer.jpg" style="display:block; margin:auto;">"""
     html = html + render_to_string('04ubertext_end.html', {})
     html = html + render_to_string('05cts_ubertext_links_right.html', {})
     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
