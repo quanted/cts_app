@@ -46,12 +46,12 @@ def traverse(root):
 	if metID == 1:
 		parent = root.keys()[0]
 		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, 28), "data": {}, "children": []})
-		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys, tblID))
+		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys, tblID, "Metabolite Information"))
 		root = root[parent]
 	else:
 		if root['generation'] > 0:
 			newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, 28), "data": {}, "children": []})
-			newDict['data'].update(popupBuilder(root, metabolite_keys, tblID))
+			newDict['data'].update(popupBuilder(root, metabolite_keys, tblID, "Metabolite Information"))
 
 	for key, value in root.items():
 		if isinstance(value, dict):
@@ -104,16 +104,18 @@ def imgTmpl():
 	return Template(imgTmpl)
 
 
-def popupBuilder(root, paramKeys, molKey=None):
+def popupBuilder(root, paramKeys, molKey=None, header=None):
 	"""
 	Wraps molecule data (e.g., formula, iupac, mass, 
 	smiles, image) in table
 
-	Inputs 
+	Inputs:
 	root - dictionary of items to wrap in table
-	keys - keys to use for building table
+	paramKeys - keys to use for building table
+	molKey - (optional) add id to wrap table
+	header - (optional) add header above key/values 
 
-	Returns dictionary where html key is 
+	Returns: dictionary where html key is 
 	the wrapped html and the other keys are
 	same as the input keys
 	"""
@@ -124,19 +126,22 @@ def popupBuilder(root, paramKeys, molKey=None):
 	html = '<div class="metabolite_img" style="float:left;">'
 	html += nodeWrapper(root['smiles'], None, 250, 100)
 	html += '</div>'
+
 	if molKey:
-		html += '<table class="wrapped_molecule" id="{}">'.format(molKey)
+		html += '<table class="inputTableForOutput" id="{}">'.format(molKey)
 	else:
-		html += '<table class="wrapped_molecule">'
-	# html += '<tr><td rowspan="' + str(len(paramKeys) + 1) + '">'
-	# html += nodeWrapper(root['smiles'], None, 250, 100)
-	# html += '</td></tr>'
+		html += '<table class="inputTableForOutput">'
+
+	if header:
+		html += '<tr><th colspan="2">' + header + '</th></tr>'
+
 	for key, value in root.items():
 		if key in paramKeys:
 
 			# Convert other types (e.g., float, int) to string
 			if not isinstance(value, unicode):
-				value = str(value)
+				value = str(round(float(value), 3))
+				# value = str(value)
 
 			dataProps[key] = value
 

@@ -211,12 +211,21 @@ function init(){
 
                 getPchemData(params, function(pchemResults) {
 
+                    // Skip if pchemprops already exist.
+                    // todo: "loading.." status while getting pchemprops
+
                     var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
                     var tableID = '#' + node.id + '_table'; //table id
                     var table = $(tableID); //table element
                     var mainDiv = $(tableID).parent(); //popup container div
                     var newRow = ""; //str var for building rows
                     var rowWithMethods = ""; //for handling rows with methods
+
+                    //Insert header row at beginning of table:
+                    $(tableID).prepend('<tr><th colspan="2">Metabolite Information</th></tr>');
+
+                    //Insert header before pchemprops section of table:
+                    $(tableID).append('<tr><th colspan="2">p-Chem Properties</th></tr>');
 
                     //Add pchem props to node's popup table:
                     for (calc in pchemResults) {
@@ -236,7 +245,10 @@ function init(){
                                 newRow = '<tr><td>' + propName + '</td><td>'; //start new row for prop
                                 for (method in pchemResults[calc][prop]) {
                                     var values = getValuesFromData(calc, prop, pchemResults[calc][prop][method]["data"]);
-                                    newRow += values[propName];
+                                    newRow += '<div class="pchemCellWrap">'
+                                    newRow += '<div class="pchemCell">' + method + '</div>';
+                                    newRow += '<div class="pchemCell">' + values[propName] + '</div>';
+                                    newRow += '</div>';
                                 }
                                 newRow += '</td></tr>';
                                 $(tableID + ' tr:last').append(newRow); //append new row to table
@@ -277,8 +289,10 @@ function init(){
 
 
 function getValuesFromData(calc, prop, data) {
+    //+++++++++++++++++++++++++++++++++++++++
     //grabs values out of data dict based on
     //the calculator and property
+    //+++++++++++++++++++++++++++++++++++++++
 
     var value = {};
 
@@ -301,7 +315,7 @@ function getValuesFromData(calc, prop, data) {
                     break;
                 case "kow_no_ph":
                     // Gets logP value
-                    value["logP"] = data[0]["logP"]["logpnonionic"];
+                    value["logP"] = data[0]["logP"]["logpnonionic"].toFixed(3);
                     break;
                 case "kow_wph":
                     // Gets logD value

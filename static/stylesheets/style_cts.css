@@ -1525,8 +1525,12 @@ body.wait *, body.wait
 }
 
 .inputTableForOutput th {
-  font-size: 12px;
+  /*font-size: 12px;*/
   background-color: #E7EADC;
+}
+
+.inputTableForOutput td {
+  text-align: left;
 }
 
 /*#chemspecInputs tr:nth-child(even) {
@@ -1558,10 +1562,19 @@ body.wait *, body.wait
   border: 2px solid #dee7ef;
 }
 
+/* style for pchemprop output table data cell */
+.pchemCell, .pchemCell td {
+  background-color: white;
+  /*border: 1px solid #EEF0E6;*/
+  padding: 0px;
+  /*padding: 4px;*/
+}
+
 /* div style for pchemprop output table data cell */
-.pchemCell {
+.pchemCell td {
   border: 1px solid #EEF0E6;
-  padding: 4px;
+  text-align: left;
+  /*padding: 0px;*/
 }
 
 /* wrapper for pchempropDataCell */
@@ -1570,6 +1583,8 @@ div.pchemCellWrap {
   text-align: center;
   width:33.3%;
 }
+
+
 
 /* main pchemprop output table (cts_pchemprop_outputTable.html) */
 #pchempropOutputTable td {

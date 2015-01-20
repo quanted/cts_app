@@ -393,7 +393,7 @@ def wrap_molecule(propDict, height, width, scale):
     html += """
     </div>
     """
-    wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key) # popup table image
+    wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key, 'Molecular Information') # popup table image
     # html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
     html += '<div class="tooltiptext ' + iupac + '">'
     html += wrappedDict['html']
