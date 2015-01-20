@@ -223,15 +223,13 @@ function init(){
 
                     var hasPchemProps = false;
                     $(tableID + ' th').each(function() {
-                        // var test = $(this).text().contains('p-chem Properties');
-                        // var test = $(this).text().contains(this, 'p-Chem Properties');
                         if($(this).text().indexOf('p-Chem Properties') >= 0) {
                             hasPchemProps = true;
                         }
                     });
-                    if (hasPchemProps) {
-                        return;
-                    }
+                    if (hasPchemProps) return;
+
+                    if (!table) return;
 
                     //Insert header row at beginning of table:
                     // $(tableID).prepend('<tr><th colspan="2">Metabolite Information</th></tr>');

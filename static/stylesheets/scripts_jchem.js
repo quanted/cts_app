@@ -245,6 +245,7 @@ function ajaxCall(params, callback) {
       type : params.type,
       data : params.data,
       dataType : params.dataType,
+      timeout: 10000,
       success : function(data) {
         var data = jsonRepack(data);
         var isError = containsErrors(data);
