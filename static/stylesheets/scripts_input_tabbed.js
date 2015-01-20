@@ -74,7 +74,7 @@ $( document ).ready(function() {
 
 	$('#clearbutton').click(function(){
 		// $("table[class^='tab']:visible").find(':input').each(function() {
-		$('input').each(function() {
+		$('input, textarea').each(function() {
 			switch(this.type) {
 				case 'text':
 					$(this).val('');
