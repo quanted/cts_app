@@ -32,6 +32,8 @@ class chemspec(object):
 		self.formula = formula
 		self.mass = mass
 
+		logging.info("### {}".format(smiles))
+
 		# Chemical Speciation Tab
 		self.pKa_decimals = int(pKa_decimals)
 		self.pKa_pH_lower = pKa_pH_lower

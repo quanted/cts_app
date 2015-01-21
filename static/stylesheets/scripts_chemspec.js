@@ -63,6 +63,7 @@ $(document).ready(function() {
 function enableTable(chkbox) {
 
     $(chkbox).each(function() {
+        
 
         var isChecked = $(this).is(":checked");
         var chkName = $(this).attr("name");
