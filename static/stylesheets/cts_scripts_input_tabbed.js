@@ -40,7 +40,7 @@ $( document ).ready(function() {
 					valuesRadio.push( $(this).is(':checked'));
 			});
 
-			// Store TextArea values
+			// Store TextArea val
 			var valuesTextArea = [];
 			var selectedTextArea = $(hiddenTabs).find("textarea").each(
 				function(){
@@ -70,6 +70,15 @@ $( document ).ready(function() {
 			for (i=0;i<selectedText.length;i++) {
 				$(selectedText[i]).prop('value', valuesText[i]);
 			}
+
+			enableTable($('input[type="checkbox"]')); //chkbox logic (scripts_chemspec.js)
+
+			// Handles Chemical Editor tab defaults:
+			if ($('li.Chemical').hasClass('tabSel')) {
+				$('#id_chem_struct').val("C1=CC=CC=C1"); //BENZENE!!
+				importMol(); //scripts_jchem.js function
+			}
+
 	});
 
 	$('#clearbutton').click(function(){
@@ -94,6 +103,12 @@ $( document ).ready(function() {
 					break;
 			}
 		});
+
+		// Handles Chemical Editor tab defaults:
+		if ($('li.Chemical').hasClass('tabSel')) {
+			marvinSketcherInstance.clear(); //clear marvinjs sketch
+		}
+
 	});
 
 });
@@ -112,7 +127,8 @@ function uberNavTabs( modelTabs, subTabs ) {
 	// Setup tab defaults
 	var uptab_pool = modelTabs;
 	var curr_ind = 0;
-	$(".back, .submit, #metaDataToggle, #metaDataText, #resetbutton").hide();
+	// $(".back, .submit, #metaDataToggle, #metaDataText, #resetbutton").hide();
+	$(".back, .submit, #metaDataToggle, #metaDataText").hide();
 
 	// Click handler
 	$('.input_nav ul li').click(function() {
@@ -120,24 +136,22 @@ function uberNavTabs( modelTabs, subTabs ) {
 		if ($(this).attr('class')) {
 			var testClass = $(this).attr("class").split(' ')[0];
 
-
 			curr_ind = $.inArray(testClass, modelTabs);
-
 
 			// Remove current tab from array;
 			var liTabArrayMinusCurr = liTabArray.slice(0);
 			liTabArrayMinusCurr.splice(curr_ind,1);
 
-			if (modelTabs[curr_ind] == "Speciation")
-			{
-				$('#resetbutton').show();
-			}
-
+			//Handles default button
+			// if (modelTabs[curr_ind] == "Speciation")
+			// {
+			// 	$('#resetbutton').show();
+			// }
 
 			if (curr_ind == 0) {
 
 				// chemical editor tab doesn't need defaults button:
-				// $('#resetbutton').hide();
+				$('#resetbutton').show();
 				
 				$(liTabArray[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 				$(liTabArrayMinusCurr.join(',')).addClass('tabUnsel').removeClass('tabSel');
@@ -163,13 +177,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 			if ( curr_ind == (modelTabs.length-1) ) {
 
-				//make sure a chemical is entered in chemical editor tab
-				//before submitting
-				// if ($('#id_chem_struct').val() === '') {
-				// 	alert("Enter or draw a chemical before submitting");
-				// 	return false;
-				// }
-
 				$(liTabArray[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 				$(liTabArrayMinusCurr.join(',')).addClass('tabUnsel').removeClass('tabSel');
 				$('.tab:visible, .next, #metaDataToggle, #metaDataText').hide();
@@ -186,24 +193,20 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 		window.scroll(0,0); //scroll to top
 
-		if (modelTabs[curr_ind + 1] == "Speciation")
-		{
-			$('#resetbutton').show();
-		}
-		else
-		{
-			$('#resetbutton').hide();	
-		}
+		//Handles default button
+		// if (modelTabs[curr_ind + 1] == "Speciation")
+		// {
+		// 	$('#resetbutton').show();
+		// }
+		// else
+		// {
+		// 	$('#resetbutton').hide();	
+		// }
+
+		$('#resetbutton').show();
 
 		var tab = $(".tab:visible");
 		if (curr_ind < (modelTabs.length-1)) {
-
-			//make sure a chemical is entered in chemical editor tab
-			//before submitting
-			// if ($('#id_chem_struct').val() === '') {
-			// 	alert("Enter or draw a chemical before submitting");
-			// 	return false;
-			// }
 
 			$(".tab:visible").hide();
 			$("."+ uptab_pool[curr_ind]).addClass('tabUnsel').removeClass('tabSel');
@@ -226,12 +229,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 			$('.submit, #metaDataToggle, #metaDataText').show();
 			$(".next").hide();
 
-			//make sure a chemical is entered in chemical editor tab
-			//before submitting
-			// if ($('#id_chem_struct').val() === '') {
-			// 	alert("Enter or draw a chemical before submitting");
-			// 	return false;
-			// }
 		}
 	});
 
@@ -239,14 +236,14 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 		window.scroll(0, 0); //scroll to top
 
-		if (modelTabs[curr_ind - 1] == "Speciation")
-		{
-			$('#resetbutton').show();
-		}
-		else
-		{
-			$('#resetbutton').hide();	
-		}
+		// if (modelTabs[curr_ind - 1] == "Speciation")
+		// {
+		// 	$('#resetbutton').show();
+		// }
+		// else
+		// {
+		// 	$('#resetbutton').hide();	
+		// }
 
 		if (curr_ind > 0) {
 			$(".tab:visible").hide();

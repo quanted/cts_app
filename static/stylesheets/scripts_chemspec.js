@@ -42,14 +42,14 @@ $(document).ready(function() {
     });
 
 
-    //disable all input fields unless checked
+    //disable all input fields unless checked:
     $('input').not('input[type="checkbox"], input[type="button"]').prop('disabled', true);
 
-    changeTbl($('input[type="checkbox"]'));
+    enableTable($('input[type="checkbox"]'));
 
     $('input[type="checkbox"]').change(function() {
 
-        changeTbl(this);
+        enableTable(this);
 
     });
 
@@ -60,27 +60,31 @@ $(document).ready(function() {
 
 //Enables or disables table depending
 //on its checkbox state
-function changeTbl(chkbox) {
+function enableTable(chkbox) {
 
-    var isChecked = $(chkbox).is(":checked");
-    var chkName = $(chkbox).attr("name");
-    var tblName = $('input[name="' + chkName + '"]').closest('table').attr("name");
+    $(chkbox).each(function() {
 
-    if (isChecked) {
-        $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', false);
-        $('table[name="' + tblName + '"] input[type="text"]').prop('disabled', false);
-    }
-    else {
-        $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', true);
-        $('table[name="' + tblName + '"] input[type="text"]').prop('disabled', true);
-    }
+        var isChecked = $(this).is(":checked");
+        var chkName = $(this).attr("name");
+        var tblName = $('input[name="' + chkName + '"]').closest('table').attr("name");
 
-    //Submit only enabled if a checkbox is selected:
-    if ($('input[type="checkbox"]').is(":checked")) {
-        $('input[type="submit"]').prop('disabled', false);
-    }
-    else {
-        $('input[type="submit"]').prop('disabled', true);
-    }
+        if (isChecked) {
+            $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', false);
+            $('table[name="' + tblName + '"] input[type="text"]').prop('disabled', false);
+        }
+        else {
+            $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', true);
+            $('table[name="' + tblName + '"] input[type="text"]').prop('disabled', true);
+        }
+
+        //Submit only enabled if a checkbox is selected:
+        if ($('input[type="checkbox"]').is(":checked")) {
+            $('input[type="submit"]').prop('disabled', false);
+        }
+        else {
+            $('input[type="submit"]').prop('disabled', true);
+        }
+
+    });
 
 }

@@ -229,7 +229,9 @@ function init(){
                     });
                     if (hasPchemProps) return;
 
-                    if (!table) return;
+                    if (!("length" in table) || table.length <= 0) return;
+
+
 
                     //Insert header row at beginning of table:
                     // $(tableID).prepend('<tr><th colspan="2">Metabolite Information</th></tr>');
