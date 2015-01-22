@@ -36,6 +36,14 @@ $(document).ready(function handleDocumentReady (e) {
   var winleft = (browserWidth / 2) - 220 + "px";
   var wintop = (browserHeight / 2) - 30 + "px";
 
+  //redraw last chemcial if hitting back button from output.
+  //could be done by checking smiles string in lookup chemical
+  //at page load. if it exist, get molecule for marvinjs
+  var chemical = $("#id_chem_struct").val();
+  if (chemical != '') {
+    importMol(chemical); 
+  }
+
 });
 
 

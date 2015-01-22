@@ -320,6 +320,8 @@ class Data_Structures:
 		if addH:
 			dataDict = addExplicitH(dataDict)
 
+		logging.info("### POST Data: {} ###".format(dataDict))
+
 		return dataDict
 
 
