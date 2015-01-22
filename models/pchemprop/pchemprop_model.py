@@ -29,7 +29,7 @@ class pchemprop(object):
 		self.smiles = smiles
 		self.name = name
 		self.formula = formula
-		self.mass = mass
+		self.mass = mass + ' g/mol'
 
 		# chemical properties (values 'on' or None) -- django params
 		self.melting_point = melting_point

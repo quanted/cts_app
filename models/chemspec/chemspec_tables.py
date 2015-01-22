@@ -371,7 +371,7 @@ def wrap_molecule(propDict, height, width, scale):
     image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
-    mass = propDict['mass']
+    mass = "{} g/mol".format(propDict['mass'])
     smiles = propDict['smiles']
 
     infoDict = {

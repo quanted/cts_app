@@ -120,7 +120,7 @@ class CTS_Speciation_Pka(forms.Form):
 					)
 
 	pH_microspecies = forms.FloatField (
-						label='Generate Major Microspeices at pH',
+						label='Generate Major Microspecies at pH',
 						initial='7.0',
 						required=False
 					)

@@ -24,7 +24,7 @@ class gentrans(object):
 		self.smiles = smiles
 		self.name = name
 		self.formula = formula
-		self.mass = mass
+		self.mass = mass + ' g/mol'
 
 		#Reaction Libraries
 		self.abiotic_hydrolysis = abiotic_hydrolysis # values: on or None

@@ -139,7 +139,7 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 		if key in paramKeys:
 
 			# Convert other types (e.g., float, int) to string
-			if not isinstance(value, unicode):
+			if not isinstance(value, unicode) and not (isinstance(value, str)):
 				value = str(round(float(value), 3))
 				# value = str(value)
 
