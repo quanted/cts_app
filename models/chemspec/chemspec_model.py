@@ -82,9 +82,9 @@ class chemspec(object):
 
 		self.rawData = response.content
 
-		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		fileout.write(response.content)
-		fileout.close()
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(response.content)
+		# fileout.close()
 
 		output_val = json.loads(response.content) # convert json to dict
 		# output_val.update({"decimals": self.pKa_decimals}) # add num of dec places for results to dict
