@@ -1564,10 +1564,11 @@ body.wait *, body.wait
 
 /* style for pchemprop output table data cell */
 .pchemCell, .pchemCell td {
-  background-color: white;
-  /*border: 1px solid #EEF0E6;*/
-  padding: 0px;
-  /*padding: 4px;*/
+  /*background-color: white;*/
+  background-color: transparent;
+  border: 1px solid #EEF0E6;
+  /*padding: 0px;*/
+  padding: 4px;
 }
 
 /* div style for pchemprop output table data cell */
