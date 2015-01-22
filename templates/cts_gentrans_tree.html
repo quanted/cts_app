@@ -73,7 +73,7 @@ function init(){
         offsetX: 300, //TODO: make more general, i.e., dependent on canvas size
         // offsetY: 400,
 
-        levelsToShow: 2, //# of levels at load and when clicking a node
+        levelsToShow: 4, //# of levels at load and when clicking a node
 
         //set duration for the animation
         duration: 500,
@@ -230,11 +230,6 @@ function init(){
                     if (hasPchemProps) return;
 
                     if (!("length" in table) || table.length <= 0) return;
-
-
-
-                    //Insert header row at beginning of table:
-                    // $(tableID).prepend('<tr><th colspan="2">Metabolite Information</th></tr>');
 
                     //Insert header before pchemprops section of table:
                     $(tableID).append('<tr><th colspan="2">p-Chem Properties</th></tr>');
