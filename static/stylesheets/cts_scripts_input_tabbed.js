@@ -83,7 +83,12 @@ $( document ).ready(function() {
 
 	$('#clearbutton').click(function(){
 		// $("table[class^='tab']:visible").find(':input').each(function() {
-		$('input, textarea').each(function() {
+
+		//Needs to only clear the selected tab
+		//tab classes: [Chemical, Speciation] and [tabSel, tabUnsel]
+		//divs have classes: tab_Chemical or tab_Speciation 
+
+		$('input:visible, textarea:visible').each(function() {
 			switch(this.type) {
 				case 'text':
 					$(this).val('');
@@ -127,8 +132,8 @@ function uberNavTabs( modelTabs, subTabs ) {
 	// Setup tab defaults
 	var uptab_pool = modelTabs;
 	var curr_ind = 0;
-	// $(".back, .submit, #metaDataToggle, #metaDataText, #resetbutton").hide();
-	$(".back, .submit, #metaDataToggle, #metaDataText").hide();
+	$(".back, .submit, #metaDataToggle, #metaDataText, #resetbutton").hide();
+	// $(".back, .submit, #metaDataToggle, #metaDataText").hide();
 
 	// Click handler
 	$('.input_nav ul li').click(function() {
@@ -151,7 +156,7 @@ function uberNavTabs( modelTabs, subTabs ) {
 			if (curr_ind == 0) {
 
 				// chemical editor tab doesn't need defaults button:
-				$('#resetbutton').show();
+				$('#resetbutton').hide();
 				
 				$(liTabArray[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 				$(liTabArrayMinusCurr.join(',')).addClass('tabUnsel').removeClass('tabSel');
@@ -168,7 +173,7 @@ function uberNavTabs( modelTabs, subTabs ) {
 				$(liTabArray[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 				$(liTabArrayMinusCurr.join(',')).addClass('tabUnsel').removeClass('tabSel');
 				$('.tab:visible, .submit, #metaDataToggle, #metaDataText').hide();
-				$(tab_pool[curr_ind]+", .back, .next").show();
+				$(tab_pool[curr_ind]+", .back, .next, #resetbutton").show();
 				// Check if this tab has subTabs
 				if ( subTabs.isSubTabs && subTabs.hasOwnProperty(testClass) ) {
 					$(subTabs[testClass].toString()).show();
@@ -180,7 +185,7 @@ function uberNavTabs( modelTabs, subTabs ) {
 				$(liTabArray[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 				$(liTabArrayMinusCurr.join(',')).addClass('tabUnsel').removeClass('tabSel');
 				$('.tab:visible, .next, #metaDataToggle, #metaDataText').hide();
-				$(tab_pool[curr_ind]+", .back, .submit").show();
+				$(tab_pool[curr_ind]+", .back, .submit, #resetbutton").show();
 				// Check if this tab has subTabs
 				if ( subTabs.isSubTabs && subTabs.hasOwnProperty(testClass) ) {
 					$(subTabs[testClass].toString()).show();
@@ -193,7 +198,7 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 		window.scroll(0,0); //scroll to top
 
-		//Handles default button
+		//Handles default button:
 		// if (modelTabs[curr_ind + 1] == "Speciation")
 		// {
 		// 	$('#resetbutton').show();
@@ -202,8 +207,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 		// {
 		// 	$('#resetbutton').hide();	
 		// }
-
-		$('#resetbutton').show();
 
 		var tab = $(".tab:visible");
 		if (curr_ind < (modelTabs.length-1)) {
@@ -214,7 +217,7 @@ function uberNavTabs( modelTabs, subTabs ) {
 			$(tab_pool[curr_ind]).show();
 			$("."+ uptab_pool[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 			$(".submit, #metaDataToggle, #metaDataText").hide();
-			$(".back").show();
+			$(".back, #resetbutton").show();
 			// Check if this tab has subTabs
 			if ( subTabs.isSubTabs && curr_ind > 1 ) {
 				var subTabsText = tab_pool[curr_ind].replace(".tab_","");
@@ -252,7 +255,7 @@ function uberNavTabs( modelTabs, subTabs ) {
 			$(tab_pool[curr_ind]).show();
 			$("."+ uptab_pool[curr_ind]).addClass('tabSel').removeClass('tabUnsel');
 			$(".submit, #metaDataToggle, #metaDataText").hide();
-			$(".next").show();
+			$(".next, #resetbutton").show();
 			// Check if this tab has subTabs
 			if ( subTabs.isSubTabs ) {
 				var subTabsText = tab_pool[curr_ind].replace(".tab_","");
@@ -263,7 +266,7 @@ function uberNavTabs( modelTabs, subTabs ) {
 			}
 		}
 		if (curr_ind == 0) {
-			$(".back, #metaDataToggle, #metaDataText").hide();
+			$(".back, #metaDataToggle, #metaDataText, #resetbutton").hide();
 		}
 	});
 }
