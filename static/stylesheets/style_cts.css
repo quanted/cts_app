@@ -1538,11 +1538,11 @@ body.wait *, body.wait
 }*/
 
 /* Div for parent/ms/plot organizing */
-#msMain {
+/*#msMain {*/
   /*max-width: 792px;*/
   /*margin-left: 0px;*/
   /*background-color: transparent;*/
-}
+/*}*/
 
 #msMain table {
   max-width: 792px;
@@ -1588,4 +1588,39 @@ div.pchemCellWrap {
 /* main pchemprop output table (cts_pchemprop_outputTable.html) */
 #pchempropOutputTable td {
   padding: 0px;
+}
+
+/* dropdown menu for node mouseover event */
+.gentransDrop {
+  /*position: absolute;*/
+}
+
+/* suggested metabolite styling for node with dropdown menu */
+div.protoMetabolite {
+  width: 100%;
+  text-align: center;
+    /*width: 50%;
+    margin: 0 auto;*/
+}
+
+.protoMetabolite div {
+  
+  display: inline-block;
+  /*display: inline-block;*/
+}
+
+.protoMetabolite select {
+  width: 100px;
+  margin: 1px;
+  background-color: #dee7ef;
+  /*margin: 1px 1px 1px 1px;*/
+  /*display: inline-block;*/
+}
+
+/* floating div for displaying node information */
+#metaboliteInfo {
+  border: 1px solid black;
+  background-color: white;
+  width: 400px;
+  height: 100px;
 }
