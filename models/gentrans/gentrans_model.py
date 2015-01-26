@@ -14,7 +14,7 @@ import data_walks
 class gentrans(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, 
 		abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, gen_limit, 
-		pop_limit, likely_limit, pchemprop_obj):
+		pop_limit, likely_limit):
 
 		self.jid = jchem_rest.gen_jid() # get time of run
 		self.run_type = run_type # single or batch
@@ -35,7 +35,7 @@ class gentrans(object):
 		self.pop_limit = pop_limit # population limit
 		self.likely_limit = likely_limit
 
-		self.pchemprop_obj = pchemprop_obj # pchemprop object with inputs
+		# self.pchemprop_obj = pchemprop_obj # pchemprop object with inputs
 
 		# Known keys for metabolizer on pnnl server (11-5-14)
 		metabolizerList = ["hydrolysis", "abiotic_reduction", "human_biotransformation"]

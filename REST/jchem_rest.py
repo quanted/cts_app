@@ -231,9 +231,11 @@ def getpchemprops(request):
 	for metabolites on the gentrans output page.
 
 	This is only here for accessing pchemprop_model
-	via frontend jquery stuff
+	via frontend ajax calls
 	"""
 	from models.pchemprop import pchemprop_output
+
+	logging.info(request)
 
 	pchemprop_obj = pchemprop_output.pchempropOutputPage(request) # run model (pchemprop_[output, model])
 	response = json.dumps(pchemprop_obj.resultsDict)

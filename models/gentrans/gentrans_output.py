@@ -50,14 +50,18 @@ def gentransOutputPage(request):
     # NOTE: pchemprop_obj appended to gentrans_obj for computing pchemprops
     # for parent molecule on page submit event. metabolite pchemprops can be 
     # obtained on the UI via scripts within cts_gentrans_tree.html 
-    pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
-                        mass, chemaxon, epi, test, sparc, meltingPoint, boilingPoint, 
-                        waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
-                        kowPh, koc)
+    # pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
+    #                     mass, chemaxon, epi, test, sparc, meltingPoint, boilingPoint, 
+    #                     waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
+    #                     kowPh, koc)
 
     # get gentrans results
+    # gentrans_obj = gentrans_model.gentrans("single", chemStruct, smiles, name, formula, 
+    #                                 mass, abioticHydrolysis, abioticRecuction,
+    #                                 mammMetabolism, genLimit, popLimit, likelyLimit, pchemprop_obj)
+
     gentrans_obj = gentrans_model.gentrans("single", chemStruct, smiles, name, formula, 
                                     mass, abioticHydrolysis, abioticRecuction,
-                                    mammMetabolism, genLimit, popLimit, likelyLimit, pchemprop_obj)
+                                    mammMetabolism, genLimit, popLimit, likelyLimit)
 
     return gentrans_obj

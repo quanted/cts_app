@@ -98,7 +98,8 @@ inTmpl = Template(getInputTemplate())
 def table_all(gentrans_obj):
     html_all = table_inputs(gentrans_obj)
     html_all += table_metabolites(gentrans_obj)
-    html_all += pchemprop_input_fields(gentrans_obj)
+    # html_all += pchemprop_input_fields(gentrans_obj)
+    html_all += table_metabolite_info(gentrans_obj)
     # html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
     return html_all
 
@@ -110,18 +111,17 @@ def pchemprop_input_fields(gentrans_obj):
     be accessed on the front end for obtaining
     pchem props for selected metabolites 
     """
-
-    pchemprops = json.dumps(gentrans_obj.pchemprop_obj.__dict__)
-
-    pchemprops_safe = ''
-    for char in pchemprops:
-        if char == '"':
-            char = '&quot;'
-        pchemprops_safe = pchemprops_safe + char
-
-    html = '<input type="hidden" id="pchemprops" value="' + pchemprops_safe + '">'
-
-    return html
+    if hasattr(gentrans_obj, 'pchemprop_obj'):
+        pchemprops = json.dumps(gentrans_obj.pchemprop_obj.__dict__)
+        pchemprops_safe = ''
+        for char in pchemprops:
+            if char == '"':
+                char = '&quot;'
+            pchemprops_safe = pchemprops_safe + char
+        html = '<input type="hidden" id="pchemprops" value="' + pchemprops_safe + '">'
+        return html
+    else: 
+        return ""
 
 
 def table_inputs(gentrans_obj):
@@ -186,3 +186,52 @@ def table_metabolites(gentrans_obj):
     """
 
     return html
+
+
+def table_metabolite_info(gentrans_obj):
+    """
+    For floating window that displays metabolite's 
+    p-chem and structure data. 
+    """
+    from models.pchemprop import pchemprop_parameters
+
+    html = """
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <script>
+    $(document).ready(function() { 
+        $("#metaboliteInfo").draggable();
+        $("#tabs").tabs();
+
+        $("#pchemprop_table").css('display', 'table');
+
+    });
+    </script>
+    """
+
+    pchemHTML = render_to_string('cts_pchem.html', {})
+    pchemHTML += str(pchemprop_parameters.form(None))
+
+    html += floatTmpl().render(Context(dict(html=pchemHTML)))
+
+    return html
+
+
+def floatTmpl():
+    floatTmpl = """
+    <div id="metaboliteInfo">
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">View data</a></li>
+                <li><a href="#tabs-2">Get data</a></li>
+            </ul>
+            <div id="tabs-1"><p>Right click a metabolite to view its data</p></div>
+            <div id="tabs-2">
+                Select properties to gather data...
+                {% autoescape off %}{{html}}{% endautoescape %}
+                <br>
+                <input type="button" value="Get data" class="input_button" id="nodepchem">
+            </div>
+        </div>
+    </div>
+    """
+    return Template(floatTmpl)

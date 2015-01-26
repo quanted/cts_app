@@ -41,24 +41,129 @@ var Log = {
 
 $( document ).ready(function() { 
 
-    $('.gentransDrop').change(function() {
+    $('#nodepchem').click(function() {
 
-        var value = $(this).val();
+        // Get pchemprop selected props 
+        // var pchempropsObj = $.parseJSON($('#pchemprops').val());
 
-        if ($(this).val() == "something") {
+        var pchempropsObj = {}; //Obj for building checked props and calcs
 
+        //Need dict of selected props and calcs...
+        $('#pchemprop_table tr').each(function(row, rowContent) {
+            $(rowContent.cells).each(function() {
+                var inputs = $(this).children('input'); //get input cell content
+                if (inputs.length > 0) {
+                    for (i = 0; i < inputs.length; i++) {
+                        var item = inputs[i];
+                        if ($(item).prop('checked')) {
+                            pchempropsObj[item.name] = "on";
+                        }
+                        else if ($(item).is('input:text')) {
+                            pchempropsObj[item.name] = item.value;
+                        }
+                        else {
+                            pchempropsObj[item.name] = null;
+                        }
+                    }
+                }
+            });
+        });
+
+        var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac']; //$$$$$$$$$$$$$$$$$$$
+
+        var params = {"data":{}};
+        for (var key in pchempropsObj) {
+            if (pchempropsObj.hasOwnProperty(key) && key != "resultsDict") {
+                params["data"][key] = pchempropsObj[key];
+            }
+        }
+        params["data"]["chem_struct"] = $("#tabs-1 td:contains('smiles')").next().text(); //smiles string
+
+        for (key in acceptedKeys) {
+            // var test = $('#tabs-1 td');
+            key = acceptedKeys[key];
+            var value = $('#tabs-1 td:contains(' + key + ')');
+            params["data"][key] = $(value).next().text();
         }
 
-    });
+        params["url"] = "/jchem-cts/ws/getpchemprops/"; //calls pchemprop model
+        params["type"] = "POST";
+        params["contentType"] = "application/json";
+        params["dataType"] = "json";
 
-    // $('.gentransDrop').focus(function() {
-    //     var test = $(this).val();
-    // });
+        makeAjaxCall(params, function(pchemResults) {
 
-    $('.gentransDrop').focus();
+            // Skip if pchemprops already exist.
+            // todo: "loading.." status while getting pchemprops
 
-    $('.gentransDrop').click(function() {
-        var test = "test";
+            var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
+            // var tableID = '#' + node.id + '_table'; //table id
+            var tableID = '#tabs-1 table'
+            var table = $(tableID); //table element
+            // var mainDiv = $(tableID).parent(); //popup container div
+            var newRow = ""; //str var for building rows
+            var rowWithMethods = ""; //for handling rows with methods
+
+            var hasPchemProps = false;
+            $(tableID + ' th').each(function() {
+                if($(this).text().indexOf('p-Chem Properties') >= 0) {
+                    hasPchemProps = true;
+                }
+            });
+            if (hasPchemProps) return;
+
+            if (!("length" in table) || table.length <= 0) return;
+
+            //Insert header before pchemprops section of table:
+            $(tableID).append('<tr><th colspan="2">p-Chem Properties</th></tr>');
+
+            //Add pchem props to node's popup table:
+            for (calc in pchemResults) {
+                for (prop in pchemResults[calc]) {
+
+                    var methods = pchemResults[calc][prop];
+                    var hasMethods = false;
+                    var propName = getProperName(prop);
+
+                    for (key in methods) {
+                        if ($.inArray(key, chemaxonMethods) >= 0) {
+                            hasMethods = true;
+                        }
+                    }
+
+                    if (hasMethods) {
+                        newRow = '<tr><td>' + propName + '</td><td>'; //start new row for prop
+                        for (method in pchemResults[calc][prop]) {
+                            var values = getValuesFromData(calc, prop, pchemResults[calc][prop][method]["data"]);
+                            newRow += '<div class="pchemCellWrap">'
+                            newRow += '<div class="pchemCell">' + method + '</div>';
+                            newRow += '<div class="pchemCell">' + values[propName] + '</div>';
+                            newRow += '</div>';
+                        }
+                        newRow += '</td></tr>';
+                        // $(tableID + ' tr:last').append(newRow); //append new row to table
+                        $(tableID).append(newRow);
+                    }
+                    else {
+                        //any property with only one value (i.e., no methods)
+                        //need to get data differently depending on property...
+                        var values = getValuesFromData(calc, prop, pchemResults[calc][prop]["data"]);
+                        newRow = '<tr><td>' + propName + '</td><td>';
+                        for (key in values[propName]) {
+                            //already know it doesn't contain methodList keys
+                            var test = key;
+                            newRow += key + ': ';
+                            newRow += values[propName][key] + '<br>';
+                        }
+                        newRow += '</td></tr>';
+                        // $(tableID + ' tr:last').append(newRow);
+                        $(tableID).append(newRow);
+                    }
+                }
+            }
+            // node.data.html = mainDiv[0].innerHTML;
+            // $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
+        });
     });
 
 });
@@ -217,114 +322,32 @@ function init(){
         Events: {
             enable: true,
 
-            onMouseEnter: function(node, eventInfo, e) {
-                
-                //Display dropdown menu on node during
-                //mouse over event
-
-                // var ddmenu = $('#gentransDrop')[0].outerHTML; //dropdown menu html
-                var nodeObj = $('#' + node.id);
-                // $('#' + node.id).prepend($('#gentransDrop'));
-
-            },
-
-            onMouseLeave: function(node, eventInfo, e) {
-
-                // $('#' + node.id).remove($('#gentransDrop'));
-
-            },
-
             onRightClick: function(node, eventInfo, e) {
 
-                //open dropdown menu 
+                //Display node's data in tab-1 div:
+                $('#tabs-1').empty();
+                $('#tabs-1').append(node.data.html);
+                $('#' + node.id + '_table tr:eq(1)').empty(); //remove smiles key
 
+                var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
+                //Append molecular info to table:
+                makeAjaxCall(getChemDeatsObj(node.data.smiles), function(chemResults) {
 
-                // Get pchemprop selected props 
-                // var pchempropsObj = $.parseJSON($('#pchemprops').val());
+                    data = chemResults.data[0];
 
-                // var params = {"data":{}};
-                // for (var key in pchempropsObj) {
-                //     if (pchempropsObj.hasOwnProperty(key) && key != "resultsDict") {
-                //         params["data"][key] = pchempropsObj[key];
-                //     }
-                // }
-                // params["data"]["chem_struct"] = node.data.smiles;
-                // params["url"] = "/jchem-cts/ws/getpchemprops/";
-                // params["type"] = "POST";
-                // params["contentType"] = "application/json";
-                // params["dataType"] = "json";
-
-                // getPchemData(params, function(pchemResults) {
-
-                //     // Skip if pchemprops already exist.
-                //     // todo: "loading.." status while getting pchemprops
-
-                //     var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
-                //     var tableID = '#' + node.id + '_table'; //table id
-                //     var table = $(tableID); //table element
-                //     var mainDiv = $(tableID).parent(); //popup container div
-                //     var newRow = ""; //str var for building rows
-                //     var rowWithMethods = ""; //for handling rows with methods
-
-                //     var hasPchemProps = false;
-                //     $(tableID + ' th').each(function() {
-                //         if($(this).text().indexOf('p-Chem Properties') >= 0) {
-                //             hasPchemProps = true;
-                //         }
-                //     });
-                //     if (hasPchemProps) return;
-
-                //     if (!("length" in table) || table.length <= 0) return;
-
-                //     //Insert header before pchemprops section of table:
-                //     $(tableID).append('<tr><th colspan="2">p-Chem Properties</th></tr>');
-
-                //     //Add pchem props to node's popup table:
-                //     for (calc in pchemResults) {
-                //         for (prop in pchemResults[calc]) {
-
-                //             var methods = pchemResults[calc][prop];
-                //             var hasMethods = false;
-                //             var propName = getProperName(prop);
-
-                //             for (key in methods) {
-                //                 if ($.inArray(key, chemaxonMethods) >= 0) {
-                //                     hasMethods = true;
-                //                 }
-                //             }
-
-                //             if (hasMethods) {
-                //                 newRow = '<tr><td>' + propName + '</td><td>'; //start new row for prop
-                //                 for (method in pchemResults[calc][prop]) {
-                //                     var values = getValuesFromData(calc, prop, pchemResults[calc][prop][method]["data"]);
-                //                     newRow += '<div class="pchemCellWrap">'
-                //                     newRow += '<div class="pchemCell">' + method + '</div>';
-                //                     newRow += '<div class="pchemCell">' + values[propName] + '</div>';
-                //                     newRow += '</div>';
-                //                 }
-                //                 newRow += '</td></tr>';
-                //                 $(tableID + ' tr:last').append(newRow); //append new row to table
-                //             }
-                //             else {
-                //                 //any property with only one value (i.e., no methods)
-                //                 //need to get data differently depending on property...
-                //                 var values = getValuesFromData(calc, prop, pchemResults[calc][prop]["data"]);
-                //                 newRow = '<tr><td>' + propName + '</td><td>';
-                //                 for (key in values[propName]) {
-                //                     //already know it doesn't contain methodList keys
-                //                     var test = key;
-                //                     newRow += key + ': ';
-                //                     newRow += values[propName][key] + '<br>';
-                //                 }
-                //                 newRow += '</td></tr>';
-                //                 $(tableID + ' tr:last').append(newRow);
-                //             }
-                //         }
-                //     }
-                //     node.data.html = mainDiv[0].innerHTML;
-                //     $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
-                // });
+                    //Add molecular info to table:
+                    for (key in data) {
+                        if ($.inArray(key, acceptedKeys) >= 0) {
+                            var newRow = '<tr><td>';
+                            newRow += key + '</td><td>';
+                            newRow += data[key] + '</td></tr>';
+                            // $('#' + node.id + '_table').prepend(newRow);
+                            $('#' + node.id + '_table tr:first').after(newRow);
+                            $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
+                        }
+                    }
+                });
             }
         }
     });
@@ -338,6 +361,17 @@ function init(){
     st.onClick(st.root);
     //end
 
+}
+
+
+function getChemDeatsObj(chemical) {
+  var params = new Object();
+  params.url = "/jchem-cts/ws/getChemDeats/";
+  params.type = "POST";
+  params.contentType = "application/json";
+  params.dataType = "json";
+  params.data = { "chemical" : chemical };
+  return params;
 }
 
 
@@ -378,7 +412,7 @@ function getValuesFromData(calc, prop, data) {
 }
 
 
-function getPchemData(params, callback) {
+function makeAjaxCall(params, callback) {
     $.ajax({
       url : params.url,
       type : params.type,
@@ -428,38 +462,8 @@ function jsonRepack(jsonobj) {
     <div id="log"></div>
 </div>
 
+
 <script type="text/javascript">
 init();
-
-
-$( document ).ready(function() { 
-    // $("#metaboliteInfo").resizable();
-    $("#metaboliteInfo").draggable();
-    $("#tabs").tabs();
-});
-
 </script>
-
-<div id="metaboliteInfo">
-    <!-- <select name="gentransDrop" class="gentransDrop"> -->
-    <!-- <option selected="selected"></option> -->
-    <!-- <option>Get p-chem properties..</option> -->
-    <!-- <option>View p-chem properties..</option> -->
-    <!-- </select> -->
-    <p>testing the draggable widget</p>
-
-    <div id="tabs">
-        <ul>
-            <li><a href="#tabs-1">tab 1</a></li>
-            <li><a href="#tabs-2">tab 2</a></li>
-        </ul>
-        <div id="tabs-1">
-            this is tab 1 content   
-        </div>
-        <div id="tabs-2">
-            this is tab 2 content
-        </div>
-    </div>
-
-</div>
 

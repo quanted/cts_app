@@ -1617,10 +1617,16 @@ div.protoMetabolite {
   /*display: inline-block;*/
 }
 
-/* floating div for displaying node information */
-#metaboliteInfo {
-  border: 1px solid black;
-  background-color: white;
-  width: 400px;
-  height: 100px;
+/*#metaboliteInfo {
+  overflow: hidden;
+}*/
+
+#metaboliteInfo div {
+  overflow-y: auto;
+}
+
+/* button for getting pchem props 
+for nodes on gentrans output */
+#nodepchem {
+  float: right;
 }
