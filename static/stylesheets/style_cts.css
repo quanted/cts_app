@@ -1645,3 +1645,11 @@ for nodes on gentrans output */
 .hide {
   display: none;
 }
+
+/* error messages for popup metabolite navigation div */
+.gentransError {
+  color:red; 
+  text-align:right; 
+  margin-right:0px;
+  display:none;
+}

@@ -209,7 +209,7 @@ def table_metabolite_info(gentrans_obj):
     <script>
     $(document).ready(function() { 
         $("#metaboliteInfo").draggable({
-            zIndex: 100
+            zIndex: 100 
         });
         $("#tabs").tabs();
 
@@ -245,26 +245,14 @@ def floatTmpl():
             retrieving it. <br><br> First, right-click a metabolite to view any data it already has.
             Select the "Get data" tab to gather data for the metabolite</p></div>
             <div id="tabs-2">
-
-                <div class="input_nav">
-                    <ul>
-                        <li class="structure tabSel">Molecular Information</li>
-                        |
-                        <li class="ChemCalcs tabUnsel">p-Chem Properties</li>
-                    </ul>
-                </div>
-
-                <div class="tab tab_structure">
-                    Get molecular properties such as mass, formula, iupac...
-                </div>
-
-                <div class="tab tab_ChemCalcs" style="display:none;">
-                    Select properties to gather data...
-                    {% autoescape off %}{{html}}{% endautoescape %}
-                    <br>
-                    <input type="button" value="Get data" class="input_button" id="btn-pchem-node">
-                </div>
-
+                <br>
+                Select p-chem properties to gather for selected metabolite, then click "Get data" below..
+                <br><br>
+                {% autoescape off %}{{html}}{% endautoescape %}
+                <br>
+                <input type="button" value="Get data" class="input_button" id="btn-pchem-node">
+                <br>
+                <p class="gentransError">Must right-click a metabolite first</p>
             </div>
         </div>
     </div>
