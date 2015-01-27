@@ -41,10 +41,47 @@ var Log = {
 
 $( document ).ready(function() { 
 
-    $('#nodepchem').click(function() {
+    $('#tabs').click(function(event) {
 
-        // Get pchemprop selected props 
-        // var pchempropsObj = $.parseJSON($('#pchemprops').val());
+        //if menu bar is clicked, hide children!
+        var target = $(event.target); //element that fired original click event
+        var test = $(target).hasClass('ui-tabs-nav');
+        if ($(target).hasClass('ui-tabs-nav')) {
+
+            var divs = $(this).children('.ui-tabs-panel'); //get div elements to hide/show
+            var selectedDiv;
+
+            //using li's, get aria-selected=true and get div with id from aria-controls 
+            $('ul.ui-tabs-nav li').each(function() {
+                var selected = $(this).attr('aria-selected');
+                if (selected == "true") {
+                    var divID = $(this).attr('aria-controls'); //get selected tab's div
+                    selectedDiv = $('div#' + divID);
+                }
+            });
+            
+            var bothHid = 1; // 1 - both divs are hidden
+            $(divs).each(function() {
+                if ($(this).is(':visible')) {
+                    bothHid *= 0;
+                }
+                else {
+                    bothHid *= 1;
+                }
+            });
+
+            if (bothHid) {
+                $(selectedDiv).show();                
+            }
+            else {
+                $(divs).hide();
+            }
+
+        }
+    });
+
+    // Get Data button for gathering pchem props for node:
+    $('#btn-pchem-node').click(function() {
 
         var pchempropsObj = {}; //Obj for building checked props and calcs
 
@@ -93,9 +130,6 @@ $( document ).ready(function() {
 
         makeAjaxCall(params, function(pchemResults) {
 
-            // Skip if pchemprops already exist.
-            // todo: "loading.." status while getting pchemprops
-
             var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
             // var tableID = '#' + node.id + '_table'; //table id
             var tableID = '#tabs-1 table'
@@ -104,6 +138,7 @@ $( document ).ready(function() {
             var newRow = ""; //str var for building rows
             var rowWithMethods = ""; //for handling rows with methods
 
+            // Skip if pchemprops already exist:
             var hasPchemProps = false;
             $(tableID + ' th').each(function() {
                 if($(this).text().indexOf('p-Chem Properties') >= 0) {
@@ -141,7 +176,6 @@ $( document ).ready(function() {
                             newRow += '</div>';
                         }
                         newRow += '</td></tr>';
-                        // $(tableID + ' tr:last').append(newRow); //append new row to table
                         $(tableID).append(newRow);
                     }
                     else {
@@ -156,13 +190,10 @@ $( document ).ready(function() {
                             newRow += values[propName][key] + '<br>';
                         }
                         newRow += '</td></tr>';
-                        // $(tableID + ' tr:last').append(newRow);
                         $(tableID).append(newRow);
                     }
                 }
             }
-            // node.data.html = mainDiv[0].innerHTML;
-            // $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
         });
     });
 
@@ -324,6 +355,8 @@ function init(){
 
             onRightClick: function(node, eventInfo, e) {
 
+                $('.node').children().removeClass("selectedMetabolite"); //remove "selectedMetabolite" class from all nodes
+
                 //Display node's data in tab-1 div:
                 $('#tabs-1').empty();
                 $('#tabs-1').append(node.data.html);
@@ -347,6 +380,9 @@ function init(){
                             $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
                         }
                     }
+
+                    $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
+
                 });
             }
         }

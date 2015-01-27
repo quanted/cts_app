@@ -204,6 +204,12 @@ def table_metabolite_info(gentrans_obj):
 
         $("#pchemprop_table").css('display', 'table');
 
+        uberNavTabs(
+            ["structure", "ChemCalcs"],
+            {   "isSubTabs":true,
+                "structure": [".tab_chemicalButtons"] }
+        );
+
     });
     </script>
     """
@@ -226,10 +232,26 @@ def floatTmpl():
             </ul>
             <div id="tabs-1"><p>Right click a metabolite to view its data</p></div>
             <div id="tabs-2">
-                Select properties to gather data...
-                {% autoescape off %}{{html}}{% endautoescape %}
-                <br>
-                <input type="button" value="Get data" class="input_button" id="nodepchem">
+
+                <div class="input_nav">
+                    <ul>
+                        <li class="structure tabSel">Molecular Information</li>
+                        |
+                        <li class="ChemCalcs tabUnsel">p-Chem Properties</li>
+                    </ul>
+                </div>
+
+                <div class="tab tab_structure">
+                    Get molecular properties such as mass, formula, iupac...
+                </div>
+
+                <div class="tab tab_ChemCalcs" style="display:none;">
+                    Select properties to gather data...
+                    {% autoescape off %}{{html}}{% endautoescape %}
+                    <br>
+                    <input type="button" value="Get data" class="input_button" id="nodepchem">
+                </div>
+
             </div>
         </div>
     </div>

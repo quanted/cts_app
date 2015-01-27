@@ -1630,3 +1630,8 @@ for nodes on gentrans output */
 #nodepchem {
   float: right;
 }
+
+/*toggleClass for metaboliteInfo div*/
+.hide {
+  display: none;
+}
