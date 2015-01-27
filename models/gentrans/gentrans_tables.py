@@ -96,10 +96,14 @@ inTmpl = Template(getInputTemplate())
 
 
 def table_all(gentrans_obj):
+
     html_all = table_inputs(gentrans_obj)
+
+    # html_all += table_metabolite_info(gentrans_obj) # included in table_metabolites() now
+
     html_all += table_metabolites(gentrans_obj)
+
     # html_all += pchemprop_input_fields(gentrans_obj)
-    html_all += table_metabolite_info(gentrans_obj)
     # html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
     return html_all
 
@@ -180,7 +184,12 @@ def table_metabolites(gentrans_obj):
     <div class="out_">
     """
     html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
+
+    html += table_metabolite_info(gentrans_obj) # THIS IS NEW !!!!!!!!!!!!!!
+    html += '<br>'
+
     html += render_to_string('cts_gentrans_tree.html')
+
     html += """
     </div>
     """
@@ -230,7 +239,9 @@ def floatTmpl():
                 <li><a href="#tabs-1">View data</a></li>
                 <li><a href="#tabs-2">Get data</a></li>
             </ul>
-            <div id="tabs-1"><p>Right click a metabolite to view its data</p></div>
+            <div id="tabs-1"><p>This window is for displaying metabolite data as well as
+            retrieving it. <br><br> First, right-click a metabolite to view any data it already has.
+            Select the "Get data" tab to gather data for the metabolite</p></div>
             <div id="tabs-2">
 
                 <div class="input_nav">

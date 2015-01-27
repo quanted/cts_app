@@ -1621,9 +1621,11 @@ div.protoMetabolite {
   /*display: inline-block;*/
 }
 
-/*#metaboliteInfo {
-  overflow: hidden;
-}*/
+#metaboliteInfo {
+  /*overflow: hidden;*/
+  width: 750px;
+  position: center;
+}
 
 #metaboliteInfo div {
   overflow-y: auto;

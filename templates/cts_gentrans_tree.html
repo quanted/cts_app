@@ -150,7 +150,7 @@ $( document ).ready(function() {
             if (!("length" in table) || table.length <= 0) return; //abort if table not selected
 
             //Insert header before pchemprops section of table:
-            $(tableID).append('<tr><th colspan="2">p-Chem Properties</th></tr>');
+            $(tableID).append('<tr class="header"><th colspan="2">p-Chem Properties</th></tr>');
 
             //Add pchem props to node's popup table:
             for (calc in pchemResults) {
@@ -387,14 +387,7 @@ function init(){
                     // Collapses/expands content below table header row (th).
                     // Used for popup data table for gentrans output
                     $('#tabs-1 table th').click(function() {
-                        // var test = "click works";
-                        //collapse all rows between that and next row with <th> cells
-                        // var rows = $(this).parent('tr').nextUntil($(this).children('th')).toggle();
-
-                        var rows = $(this).parent().nextUntil('tr.header').toggle(); //select all rows below clicked th
-
-                        // $(this).nextUntil('th').parent('tr').toggle();
-
+                        $(this).parent().nextUntil('tr.header').toggle(); //
                     });
 
                 });
