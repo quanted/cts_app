@@ -1,6 +1,7 @@
-//Highlights collasible header on output pages during
-//mouseover event
 $(document).ready(function () {
+    
+    //Highlights collasible header on output pages during
+    //mouseover event
     $('.collapsible').hover(
         function() {
             $(this).data('bgcolor', $(this).css('background-color')).css({
@@ -12,4 +13,5 @@ $(document).ready(function () {
             $(this).css('background-color', $(this).data('bgcolor'));
         }
     );
+    
 });

@@ -249,7 +249,7 @@ def floatTmpl():
                     Select properties to gather data...
                     {% autoescape off %}{{html}}{% endautoescape %}
                     <br>
-                    <input type="button" value="Get data" class="input_button" id="nodepchem">
+                    <input type="button" value="Get data" class="input_button" id="btn-pchem-node">
                 </div>
 
             </div>

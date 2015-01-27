@@ -145,9 +145,9 @@ $( document ).ready(function() {
                     hasPchemProps = true;
                 }
             });
-            if (hasPchemProps) return;
+            if (hasPchemProps) return; //abort if there are already pchemprops for metabolite
 
-            if (!("length" in table) || table.length <= 0) return;
+            if (!("length" in table) || table.length <= 0) return; //abort if table not selected
 
             //Insert header before pchemprops section of table:
             $(tableID).append('<tr><th colspan="2">p-Chem Properties</th></tr>');
@@ -370,6 +370,7 @@ function init(){
                     data = chemResults.data[0];
 
                     //Add molecular info to table:
+                    $('#' + node.id + '_table').prepend('<tr class="header"><th colspan="2">Molecular Information</th></tr>');
                     for (key in data) {
                         if ($.inArray(key, acceptedKeys) >= 0) {
                             var newRow = '<tr><td>';
@@ -382,6 +383,19 @@ function init(){
                     }
 
                     $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
+
+                    // Collapses/expands content below table header row (th).
+                    // Used for popup data table for gentrans output
+                    $('#tabs-1 table th').click(function() {
+                        // var test = "click works";
+                        //collapse all rows between that and next row with <th> cells
+                        // var rows = $(this).parent('tr').nextUntil($(this).children('th')).toggle();
+
+                        var rows = $(this).parent().nextUntil('tr.header').toggle(); //select all rows below clicked th
+
+                        // $(this).nextUntil('th').parent('tr').toggle();
+
+                    });
 
                 });
             }

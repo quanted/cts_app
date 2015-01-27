@@ -133,7 +133,7 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 		html += '<table class="inputTableForOutput">'
 
 	if header:
-		html += '<tr><th colspan="2">' + header + '</th></tr>'
+		html += '<tr class="header"><th colspan="2">' + header + '</th></tr>'
 
 	for key, value in root.items():
 		if key in paramKeys:

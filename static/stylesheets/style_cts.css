@@ -1524,6 +1524,10 @@ body.wait *, body.wait
   background-color: transparent;
 }
 
+.inputTableForOutput {
+  max-width: 400px;
+}
+
 .inputTableForOutput th {
   /*font-size: 12px;*/
   background-color: #E7EADC;
@@ -1625,9 +1629,13 @@ div.protoMetabolite {
   overflow-y: auto;
 }
 
+#metaboliteInfo table {
+  overflow: scroll;
+}
+
 /* button for getting pchem props 
 for nodes on gentrans output */
-#nodepchem {
+#btn-pchem-node {
   float: right;
 }
 
