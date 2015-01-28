@@ -46,12 +46,12 @@ def traverse(root):
 	if metID == 1:
 		parent = root.keys()[0]
 		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, 28), "data": {}, "children": []})
-		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys, tblID, "Metabolite Information"))
+		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys, "{}".format(metID), "Metabolite Information"))
 		root = root[parent]
 	else:
 		if root['generation'] > 0:
 			newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, 28), "data": {}, "children": []})
-			newDict['data'].update(popupBuilder(root, metabolite_keys, tblID, "Metabolite Information"))
+			newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
 
 	for key, value in root.items():
 		if isinstance(value, dict):
@@ -123,12 +123,12 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 	# propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
 	dataProps = {key: None for key in paramKeys} # metabolite properties 
 
-	html = '<div class="metabolite_img" style="float:left;">'
+	html = '<div id="{}_div" class="nodeWrapDiv"><div class="metabolite_img" style="float:left;">'.format(molKey)
 	html += nodeWrapper(root['smiles'], None, 250, 100)
 	html += '</div>'
 
 	if molKey:
-		html += '<table class="inputTableForOutput" id="{}">'.format(molKey)
+		html += '<table class="inputTableForOutput" id="{}_table">'.format(molKey)
 	else:
 		html += '<table class="inputTableForOutput">'
 
@@ -147,54 +147,11 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 
 			html += '<tr><td>' + key + '</td>'
 			html += '<td>' + value + '</td></tr>'
-	html += '</table>'
+	html += '</table></div>'
 
 	dataProps["html"] = html 
 
 	return dataProps
-
-
-# def popupBuilder(root, paramKeys, molKey=None):
-# 	"""
-# 	Wraps molecule data (e.g., formula, iupac, mass, 
-# 	smiles, image) in table
-
-# 	Inputs 
-# 	root - dictionary of items to wrap in table
-# 	keys - keys to use for building table
-
-# 	Returns dictionary where html key is 
-# 	the wrapped html and the other keys are
-# 	same as the input keys
-# 	"""
-
-# 	# propKeys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
-# 	dataProps = {key: None for key in paramKeys} # metabolite properties 
-
-# 	html = ""
-# 	if molKey:
-# 		html += '<table class="wrapped_molecule" id="{}">'.format(molKey)
-# 	else:
-# 		html += '<table class="wrapped_molecule">'
-# 	html += '<tr><td rowspan="' + str(len(paramKeys) + 1) + '">'
-# 	html += nodeWrapper(root['smiles'], None, 250, 100)
-# 	html += '</td></tr>'
-# 	for key, value in root.items():
-# 		if key in paramKeys:
-
-# 			# Convert other types (e.g., float, int) to string
-# 			if not isinstance(value, unicode):
-# 				value = str(value)
-
-# 			dataProps[key] = value
-
-# 			html += '<tr><td>' + key + '</td>'
-# 			html += '<td>' + value + '</td></tr>'
-# 	html += '</table>'
-
-# 	dataProps["html"] = html 
-
-# 	return dataProps
 
 
 def changeImageIP(url):

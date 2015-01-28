@@ -208,9 +208,9 @@ def table_metabolite_info(gentrans_obj):
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script>
     $(document).ready(function() { 
-        $("#metaboliteInfo").draggable({
-            zIndex: 100 
-        });
+        //$("#metaboliteInfo").draggable({
+        //    zIndex: 100 
+        //});
         $("#tabs").tabs();
 
         $("#pchemprop_table").css('display', 'table');
@@ -220,7 +220,6 @@ def table_metabolite_info(gentrans_obj):
             {   "isSubTabs":true,
                 "structure": [".tab_chemicalButtons"] }
         );
-
     });
     </script>
     """
@@ -243,7 +242,7 @@ def floatTmpl():
             </ul>
             <div id="tabs-1"><p>This window is for displaying metabolite data as well as
             retrieving it. <br><br> First, right-click a metabolite to view any data it already has.
-            Select the "Get data" tab to gather data for the metabolite</p></div>
+            Select the "Get data" tab to get p-chem properties for the metabolite</p></div>
             <div id="tabs-2">
                 <br>
                 Select p-chem properties to gather for selected metabolite, then click "Get data" below..

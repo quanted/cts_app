@@ -57,7 +57,18 @@ $( document ).ready(function() {
         getPchemData();
     });
 
+    // Collapses/expands content below table header row (th).
+    // Used for popup data table for gentrans output
+    $('#tabs-1').on('click', 'table th', function() {
+        $(this).parent().nextUntil('tr.header').toggle();
+    });
+
 });
+
+
+function toggleHeaders() {
+    $(this).parent().nextUntil('tr.header').toggle();
+}
 
 
 function init(){
@@ -241,13 +252,33 @@ function getMolecularInfo(node) {
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
     //Display node's data in tab-1 div:
-    $('#tabs-1').empty();
-    // $('#tabs-1').children().hide();
+    // $('#tabs-1').empty();
+    
+    //testing ground for remembering metabolite's data:
+    var nodeDiv = $('#tabs-1').children(); //existing kids before node.id div 
 
-    // if ($('#' + node.id + '_table').length > 0) {
-    //     $('#tabs-1').children().show();
-    //     return; //you've done this before..
-    // }
+
+    var isP1 = $('#tabs-1').has('p');
+    var isP2 = $(nodeDiv).has('p');
+
+    if ($('#tabs-1').has('p').length > 0) {
+        $('#tabs-1').children('p').remove(); //remove initial paragraph
+    }
+
+    //Need to hide existing node's info, and check
+    //if the clicked node already has info
+    if ($('#tabs-1').has('div.nodeWrapDiv').length > 0) {
+        
+        $('#tabs-1 div.nodeWrapDiv').hide(); //has node info already..hide it
+
+        //check if data already exist for current node:
+        if ($('#tabs-1:has(div#' + node.id + '_div)').length > 0) {
+            $('#tabs-1 div#' + node.id + '_div').show(); //show existing node data
+            $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
+            return;
+        }
+    }
+
 
     $('#tabs-1').append(node.data.html); //add metabolite info to table
     $('#' + node.id + '_table tr:eq(1)').empty(); //remove smiles key
@@ -274,16 +305,6 @@ function getMolecularInfo(node) {
 
         $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
 
-
-        // Collapses/expands content below table header row (th).
-        // Used for popup data table for gentrans output
-        //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        $('#tabs-1 table th').click(function() {
-            $(this).parent().nextUntil('tr.header').toggle();
-        });
-        //++++++++++++ todo: move this somewhere else, geez ++++++++
-
-
     });
 }
 
@@ -293,7 +314,7 @@ function tabDisplayLogic(event) {
     var target = $(event.target); //element that fired original click event
     if ($(target).hasClass('ui-tabs-nav')) {
 
-        var divs = $(this).children('.ui-tabs-panel'); //get div elements to hide/show
+        var divs = $('#tabs').children('.ui-tabs-panel'); //get div elements to hide/show
         var selectedDiv;
 
         //using li's, get aria-selected=true and get div with id from aria-controls 
@@ -544,6 +565,27 @@ function getProperName(prop) {
 function jsonRepack(jsonobj) {
   return JSON.parse(JSON.stringify(jsonobj));
 }
+
+
+//note: could use tooltips to help user navigate gentrans output
+// function tipit() {
+//     // Using qtip2 for tooltip
+//     $('.chemspec_molecule').each(function() {
+//         $(this).qtip({
+//             content: {
+//                 text: $(this).next('.tooltiptext')
+//             },
+//             style: {
+//                 classes: 'qtip-light'
+//             },
+//             position: {
+//                 my: 'bottom center',
+//                 at: 'center right',
+//                 target: 'mouse'
+//             }
+//         });
+//     });
+// }
 
 </script>
 
