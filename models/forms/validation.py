@@ -145,7 +145,8 @@ def validate_number(value):
 	logging.info("Validating number: {} ###".format(value))
 
 	try:
-		if int(value) == value or float(value) == value:
+		if isinstance(value, int) or isinstance(value, float):
+# .		if int(value) == value or float(value) == value:
 			logging.info("After conditional: {}".format())
 			pass
 		else:
