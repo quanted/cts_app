@@ -142,10 +142,22 @@ def validate_number(value):
 	# 	raise ValidationError(u'value must not be blank')
 	# logging.warning('VALUE: ' + str(value))
 
-	if int(value) == value:
-		pass
-	else:
+	logging.info("Validating number: {} ###".format(value))
+
+	try:
+		if int(value) == value or float(value) == value:
+			logging.info("After conditional: {}".format())
+			pass
+		else:
+			raise ValidationError(u'value must be a number')
+	except:
+		logging.info("An exception occured!!")
 		raise ValidationError(u'value must be a number')
+
+	# if int(value) == value:
+	# 	pass
+	# else:
+	# 	raise ValidationError(u'value must be a number')
 
 # def validate_existence(value):
 # 	""" Form Validation rule: value must not be blank

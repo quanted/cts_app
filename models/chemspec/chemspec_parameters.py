@@ -81,12 +81,10 @@ class CTS_Chemical_Structure(forms.Form):
 					initial='',
 					label='Chemical Structure',
 					required=True,
-					# validators=[]
+					# validators=[] # front-end jquery validation for this field
 				)
 
 
-
-# pka table
 class CTS_Speciation_Pka(forms.Form):
 	"""
 	Chemical Speciation
