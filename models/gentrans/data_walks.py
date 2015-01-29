@@ -46,7 +46,7 @@ def traverse(root):
 	if metID == 1:
 		parent = root.keys()[0]
 		newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, 28), "data": {}, "children": []})
-		newDict['data'].update(popupBuilder({"smiles":parent}, metabolite_keys, "{}".format(metID), "Metabolite Information"))
+		newDict['data'].update(popupBuilder({"smiles":parent, "generation":"0"}, metabolite_keys, "{}".format(metID), "Metabolite Information"))
 		root = root[parent]
 	else:
 		if root['generation'] > 0:

@@ -66,6 +66,9 @@ $( document ).ready(function() {
 });
 
 
+var currentNode; //####################################
+
+
 function toggleHeaders() {
     $(this).parent().nextUntil('tr.header').toggle();
 }
@@ -226,6 +229,7 @@ function init(){
 
             onRightClick: function(node, eventInfo, e) {
 
+                currentNode = node; //###################################
                 getMolecularInfo(node);
 
             }
@@ -257,21 +261,16 @@ function getMolecularInfo(node) {
     //testing ground for remembering metabolite's data:
     var nodeDiv = $('#tabs-1').children(); //existing kids before node.id div 
 
-
-    var isP1 = $('#tabs-1').has('p');
-    var isP2 = $(nodeDiv).has('p');
-
     if ($('#tabs-1').has('p').length > 0) {
         $('#tabs-1').children('p').remove(); //remove initial paragraph
     }
 
-    //Need to hide existing node's info, and check
-    //if the clicked node already has info
+    //Deals with hiding/showing metabolite info 
     if ($('#tabs-1').has('div.nodeWrapDiv').length > 0) {
         
         $('#tabs-1 div.nodeWrapDiv').hide(); //has node info already..hide it
 
-        //check if data already exist for current node:
+        //check if data already exist for requested node:
         if ($('#tabs-1:has(div#' + node.id + '_div)').length > 0) {
             $('#tabs-1 div#' + node.id + '_div').show(); //show existing node data
             $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
@@ -281,7 +280,8 @@ function getMolecularInfo(node) {
 
 
     $('#tabs-1').append(node.data.html); //add metabolite info to table
-    $('#' + node.id + '_table tr:eq(1)').empty(); //remove smiles key
+    $('#' + node.id + "_table tr:contains('smiles')").remove(); //remove smiles key/value (assuming first key/value)
+    // $('#' + node.id + '_table tr:eq(1)').empty(); //remove smiles key/value (assuming first key/value)
 
     var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
@@ -398,7 +398,8 @@ function getPchemData() {
             params["data"][key] = pchempropsObj[key];
         }
     }
-    params["data"]["chem_struct"] = $("#tabs-1 td:contains('smiles')").next().text(); //smiles string
+    // params["data"]["chem_struct"] = $("#tabs-1 td:contains('smiles')").next().text(); //smiles string
+    params["data"]["chem_struct"] = $("table#" + currentNode.id + "_table td:contains('smiles')").next().text(); //smiles string
 
     params["url"] = "/jchem-cts/ws/getpchemprops/"; //calls pchemprop model
     params["type"] = "POST";
@@ -409,7 +410,9 @@ function getPchemData() {
 
         var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
         // var tableID = '#' + node.id + '_table'; //table id
-        var tableID = '#tabs-1 table'
+
+        // var tableID = '#tabs-1 table';
+        var tableID = 'table#' + currentNode.id + '_table';
         var table = $(tableID); //table element
         // var mainDiv = $(tableID).parent(); //popup container div
         var newRow = ""; //str var for building rows
