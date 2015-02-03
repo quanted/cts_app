@@ -1,7 +1,4 @@
 """
-This is for laying the groundwork (and testing) 
-for the CTS web service (http://pnnl.cloudapp.net)
-
 2014-08-13 (np)
 """
 

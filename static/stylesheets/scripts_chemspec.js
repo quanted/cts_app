@@ -41,19 +41,14 @@ $(document).ready(function() {
         }
     });
 
-
-    //disable all input fields unless checked:
+    //disable all input fields until checked:
     $('input').not('input[type="checkbox"], input[type="button"]').prop('disabled', true);
 
     enableTable($('input[type="checkbox"]'));
 
     $('input[type="checkbox"]').change(function() {
-
         enableTable(this);
-
     });
-
-
 
 });
 

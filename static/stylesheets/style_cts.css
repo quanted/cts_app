@@ -1653,3 +1653,21 @@ for nodes on gentrans output */
   margin-right:0px;
   display:none;
 }
+
+/* errors on input forms */
+.formError {
+  border: 1px solid #FF4D4D;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  box-shadow: 3px 3px 5px #CCC;
+  -webkit-box-shadow: 3px 3px 5px #CCC;
+  -moz-box-shadow: 3px 3px 5px #CCC;
+
+  color: #FF4D4D;
+}
+
+/* old error message class */
+/*.redFont {
+  color: #FF4D4D;
+}*/

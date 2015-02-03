@@ -17,10 +17,10 @@ def tmpl_chemstructCTS():
 			<tr>
 				<td colspan="2"><span>{{ header }}</span>
 				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here">
-				<br>{{form.field.errors}}</td>
+				</td>
 			</tr>
 		{% for field in form %}
-			<tr><td>{{field}}</td></tr>
+			<tr><td>{{field}}<br>{{field.errors}}</td></tr>
 		{% endfor %}
 		</table>
 		</div>
@@ -80,8 +80,8 @@ class CTS_Chemical_Structure(forms.Form):
 					widget=forms.Textarea(attrs={'cols':50, 'rows':2}),
 					initial='',
 					label='Chemical Structure',
-					required=True,
-					# validators=[] # front-end jquery validation for this field
+					required=True
+					# validators=[] # front-end, pre-submit jquery validation for this field
 				)
 
 
@@ -93,13 +93,17 @@ class CTS_Speciation_Pka(forms.Form):
 	pKa_decimals = forms.FloatField (
 						label='Number of Decimals', 
 						initial='2', 
-						required=False,
-						validators=[validation.validate_greaterthan0, validation.validate_number]
+						min_value=1,
+						max_value=10,
+						required=True,
+						validators=[validation.validate_integer]
 					)
 
 	pKa_pH_lower = forms.FloatField (
 						label='pH Lower Limit',
 						initial='0',
+						min_value=0,
+						max_value=14,
 						required=False,
 						validators=[validation.validate_number]
 					)
@@ -107,25 +111,32 @@ class CTS_Speciation_Pka(forms.Form):
 	pKa_pH_upper = forms.FloatField (
 						label='pH Upper Limit',
 						initial='14',
+						min_value=0,
+						max_value=14,
 						required=False
 					)
 
 	pKa_pH_increment = forms.FloatField (
 						label='pH Step Size',
 						initial='0.2',
-						validators=[validation.validate_greaterthan0, validators.MaxValueValidator(14)],
+						min_value=0.1,
+						max_value=1.0,
 						required=False
 					)
 
 	pH_microspecies = forms.FloatField (
 						label='Generate Major Microspecies at pH',
 						initial='7.0',
+						min_value=0,
+						max_value=14,
 						required=False
 					)
 
 	isoelectricPoint_pH_increment = forms.FloatField (
 						label=mark_safe('Isoelectric Point (pl) <br> pH Step Size for Charge Distribution'),
 						initial='0.5',
+						min_value=0.1,
+						max_value=1.0,
 						required=False
 					)
 
@@ -137,18 +148,37 @@ class CTS_Speciation_Pka(forms.Form):
 					)
 
 
+	def clean(self):
+		"""
+		Function for individually-validated fields;
+		used for field-dependant conditionals 
+		"""
+
+		cleanedData = super(CTS_Speciation_Pka, self).clean()
+
+		phLo = cleanedData.get('pKa_pH_lower')
+		phHi = cleanedData.get('pKa_pH_upper')
+		if phLo >= phHi:
+			self.add_error('pKa_pH_lower', "pH lower must be < pH upper")
+			self.add_error('pKa_pH_upper', "pH upper must be > pH lower")
+
+
 # tautomerization table
 class CTS_Speciation_Tautomer(forms.Form):
 
 	tautomer_maxNoOfStructures = forms.FloatField (
 						label='Maximum Number of Structures', 
 						initial='100',
+						min_value=1,
+						max_value=100,
 						required=False
 					)
 
 	tautomer_pH = forms.FloatField (
 						label='at pH',
 						initial='7.0',
+						min_value=0,
+						max_value=14,
 						required=False
 					)
 
@@ -165,6 +195,8 @@ class CTS_Speciation_Stereoisomers(forms.Form):
 	stereoisomers_maxNoOfStructures = forms.FloatField (
 						label='Maximum Number of Structures',
 						initial='100',
+						min_value=1,
+						max_value=100,
 						required=False
 					)
 

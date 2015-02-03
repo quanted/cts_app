@@ -17,8 +17,6 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
             'model_attributes': header+' Inputs'
     })
 
-    # html = html + '<p><i>Draw a chemical or enter a SMILES, IUPAC, or CAS#</i></p>'
-    
     html = html + render_to_string('04uberinput_tabbed_nav.html', {
             'nav_dict': {
                 'class_name': ['Chemical', 'Speciation'],

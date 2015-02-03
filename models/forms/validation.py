@@ -137,38 +137,9 @@ def validate_number(value):
 	:param value: form input field value
 	:raises: ValidationError
 	"""
-	# if int(value) == value or float(value) == value:
-	# if not value:
-	# 	raise ValidationError(u'value must not be blank')
-	# logging.warning('VALUE: ' + str(value))
-
-	logging.info("Validating number: {} ###".format(value))
-
-	try:
-		if isinstance(value, int) or isinstance(value, float):
-# .		if int(value) == value or float(value) == value:
-			logging.info("After conditional: {}".format())
-			pass
-		else:
-			raise ValidationError(u'value must be a number')
-	except:
-		logging.info("An exception occured!!")
+	if isinstance(value, int):
+		pass
+	elif isinstance(value, float):
+		pass
+	else:
 		raise ValidationError(u'value must be a number')
-
-	# if int(value) == value:
-	# 	pass
-	# else:
-	# 	raise ValidationError(u'value must be a number')
-
-# def validate_existence(value):
-# 	""" Form Validation rule: value must not be blank
-
-# 	:param value: form input field value
-# 	:raises: ValidationError
-# 	"""
-# 	logging.warning("INSIDE VALIDATE EXISTENCE")
-
-# 	if value:
-# 		pass
-# 	else:
-# 		raise ValidationError(u'value must not be blank')

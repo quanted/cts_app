@@ -297,7 +297,6 @@ function getMolecularInfo(node) {
                 var newRow = '<tr><td>';
                 newRow += key + '</td><td>';
                 newRow += data[key] + '</td></tr>';
-                // $('#' + node.id + '_table').prepend(newRow);
                 $('#' + node.id + '_table tr:first').after(newRow);
                 $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
             }

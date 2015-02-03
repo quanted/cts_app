@@ -73,12 +73,6 @@ $( document ).ready(function() {
 
 			enableTable($('input[type="checkbox"]')); //chkbox logic (scripts_chemspec.js)
 
-			// Handles Chemical Editor tab defaults:
-			if ($('li.Chemical').hasClass('tabSel')) {
-				$('#id_chem_struct').val("C1=CC=CC=C1"); //BENZENE!!
-				importMol(); //scripts_jchem.js function
-			}
-
 	});
 
 	$('#clearbutton').click(function(){
@@ -86,7 +80,7 @@ $( document ).ready(function() {
 
 		//Needs to only clear the selected tab
 		//tab classes: [Chemical, Speciation] and [tabSel, tabUnsel]
-		//divs have classes: tab_Chemical or tab_Speciation 
+		//divs have classes: tab_Chemical or tab_Speciation
 
 		$('input:visible, textarea:visible').each(function() {
 			switch(this.type) {
@@ -115,6 +109,20 @@ $( document ).ready(function() {
 		}
 
 	});
+
+
+	//Highlight errors on form 
+	$('.errorlist').each(function() {
+		// $(this).parent().find('textarea').css('border-color', '#FF3333');
+		var parentCell = $(this).parent();
+		var input = $(parentCell).find('textarea, input');
+		// $(input).css('border-color', '#FF4D4D');
+		$(input).addClass('formError');
+	});
+
+	//Remove formError class when focused on textbox:
+
+
 
 });
 
@@ -146,12 +154,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 			// Remove current tab from array;
 			var liTabArrayMinusCurr = liTabArray.slice(0);
 			liTabArrayMinusCurr.splice(curr_ind,1);
-
-			//Handles default button
-			// if (modelTabs[curr_ind] == "Speciation")
-			// {
-			// 	$('#resetbutton').show();
-			// }
 
 			if (curr_ind == 0) {
 
@@ -198,16 +200,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 		window.scroll(0,0); //scroll to top
 
-		//Handles default button:
-		// if (modelTabs[curr_ind + 1] == "Speciation")
-		// {
-		// 	$('#resetbutton').show();
-		// }
-		// else
-		// {
-		// 	$('#resetbutton').hide();	
-		// }
-
 		var tab = $(".tab:visible");
 		if (curr_ind < (modelTabs.length-1)) {
 
@@ -228,25 +220,16 @@ function uberNavTabs( modelTabs, subTabs ) {
 			}
 		}
 		if (curr_ind == (modelTabs.length-1)) {
-
+			
 			$('.submit, #metaDataToggle, #metaDataText').show();
 			$(".next").hide();
-
+			
 		}
 	});
 
 	$('.back').click(function () {
 
 		window.scroll(0, 0); //scroll to top
-
-		// if (modelTabs[curr_ind - 1] == "Speciation")
-		// {
-		// 	$('#resetbutton').show();
-		// }
-		// else
-		// {
-		// 	$('#resetbutton').hide();	
-		// }
 
 		if (curr_ind > 0) {
 			$(".tab:visible").hide();

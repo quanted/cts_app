@@ -25,8 +25,10 @@ def chemspecOutputPage(request):
     pKaPhInc = request.POST.get('pKa_pH_increment')
     phMicroSpec = request.POST.get('pH_microspecies')
     isoElectPtPhInc = request.POST.get('isoelectricPoint_pH_increment')
+
     tautMaxNumStructs = request.POST.get('tautomer_maxNoOfStructures')
     tautMaxNumStructsPh = request.POST.get('tautomer_pH')
+    
     sterMaxNumStructs = request.POST.get('stereoisomers_maxNoOfStructures')
 
     chemspec_obj = chemspec_model.chemspec("single", chemStruct, smiles, name, formula, 

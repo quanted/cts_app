@@ -23,24 +23,22 @@ $(document).ready(function handleDocumentReady (e) {
   $('#setSmilesButton').on('click', importMol); // map button click to function
   $('#getSmilesButton').on('click', importMolFromCanvas);
 
-  //Makes error message font red, then back to normal when focused
-  $('#id_chem_struct')
-    .focusin(function() {
-      if ($(this).hasClass('redFont')) {
-        $(this).removeClass("redFont").val("");
-      }
-  });
-
   var browserWidth = $(window).width();
   var browserHeight = $(window).height();
   var winleft = (browserWidth / 2) - 220 + "px";
   var wintop = (browserHeight / 2) - 30 + "px";
 
-  //redraw last chemcial if hitting back button from output.
-  //could be done by checking smiles string in lookup chemical
-  //at page load. if it exist, get molecule for marvinjs
+  //Removes error styling when focused on textarea or input:
+  $('textarea, input')
+    .focusin(function() {
+      if ($(this).hasClass('formError')) {
+        $(this).removeClass("formError").val("");
+      }
+  });
+
+  //redraw last chemcial if hitting back button from output:
   var chemical = $("#id_chem_struct").val();
-  if (chemical != '') {
+  if (chemical != '' && chemical.indexOf("Error") > -1) {
     importMol(chemical); 
   }
 
@@ -66,11 +64,6 @@ function importMol(dataObj) {
     return;
   }
 
-  // ajaxCall(standardizerObj(chemical), function(standardizerResult) {
-
-  // ajaxCall(mrvToSmilesObj(chemical), function(smilesResult) {
-
-  // var smiles = smilesResult['structure'];
   ajaxCall(getChemDeatsObj(chemical), function(chemResults) {
 
       data = chemResults.data[0];
@@ -78,10 +71,6 @@ function importMol(dataObj) {
       marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
 
   });
-
-  // });
-
-  // });
 
 }
 
@@ -230,9 +219,10 @@ function populateResultsTbl(data) {
 function displayErrorInTextbox(errorMessage) {
   //Displays error message in Lookup Chemical textbox
   if (typeof errorMessage === 'undefined' || errorMessage == "") {
-    errorMessage = "Error retrieving chemical information...Check chemical and try again.";
+    errorMessage = "Error retrieving chemical information...check chemical and try again.";
   }
-  $('#id_chem_struct').addClass("redFont");
+  // $('#id_chem_struct').addClass("redFont");
+  $('#id_chem_struct').addClass("formError");
   $('#id_chem_struct').val(errorMessage); //Enter SMILES txtbox
   $('#molecule').val(""); //SMILES string txtbox - results table
   $('#IUPAC').val(""); //IUPAC txtbox - results table
