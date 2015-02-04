@@ -24,7 +24,7 @@ def tmpl_ChemCalcsCTS():
 			<tr>
 			<th class="chemprop">{{ field }} <span>{{ field.label }}</span>
 		{% elif field.id_for_label == "id_kow_ph" %}
-			<span>{{field.label}}</span> {{field}}</th>
+			<span>{{field.label}}</span> {{field}}<br><div style="float:right;">{{field.errors}}</div></th>
 			<td id="id_kow_ChemAxon" class="{{form.kow_wph|color_filter:"chemaxon"}} chemaxon"></td>
 			<td id="id_kow_EPI" class="{{form.kow_wph|color_filter:"epi"}} epi"></td>
 			<td id="id_kow_TEST" class="{{form.kow_wph|color_filter:"test"}} test"></td>
@@ -71,11 +71,22 @@ class cts_chemCalcs_props(forms.Form):
 	henrys_law_con = forms.BooleanField(required=False, label=mark_safe("Henry's Law Constant (atm-m<sup>3</sup>/mol)"))
 	kow_no_ph = forms.BooleanField(required=False, label=mark_safe("Octanol/Water Partition Coefficient"))
 	kow_wph = forms.BooleanField(required=False, label=mark_safe('Octanol/Water Partition Coefficient'))
-	kow_ph = forms.CharField (
-				required=False, 
-				label=mark_safe('at pH:'), 
-				widget=forms.TextInput(attrs={'size':1}),
-				initial=7.4
+	# kow_ph = forms.CharField (
+	# 			required=True, 
+	# 			label=mark_safe('at pH:'), 
+	# 			widget=forms.TextInput(attrs={'size':1}),
+	# 			initial=7.4,
+	# 			min_value=0,
+	# 			max_value=14
+	# 		)
+	kow_ph = forms.FloatField (
+				required=True, 
+				label='at pH:',
+				widget=forms.NumberInput(attrs={'class':'numberInput'}),
+				# widget=forms.TextInput(attrs={'size':1}),
+				initial=7.4,
+				min_value=0,
+				max_value=14
 			)
 	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient'))
 	# dist_coeff = forms.BooleanField(required=False, label=mark_safe('Distribution Coefficient (L/kg)'))

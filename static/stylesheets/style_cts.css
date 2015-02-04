@@ -1667,6 +1667,11 @@ for nodes on gentrans output */
   color: #FF4D4D;
 }
 
+/* styling for number input fields */
+.numberInput {
+  width: 40px;
+}
+
 /* old error message class */
 /*.redFont {
   color: #FF4D4D;

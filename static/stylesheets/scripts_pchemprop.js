@@ -16,4 +16,13 @@ $(document).ready(function() {
     	// $('#chemEditDraw').hide();
     });
 
+    $()
+
 });
+
+
+//Enables submit button when at least one calculator and
+//property (that's available) is checked. 
+// function submitGateKeeper() {
+
+// }
