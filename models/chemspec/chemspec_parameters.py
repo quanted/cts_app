@@ -101,7 +101,7 @@ class CTS_Speciation_Pka(forms.Form):
 
 	pKa_pH_lower = forms.FloatField (
 						label='pH Lower Limit',
-						initial='0',
+						initial=0,
 						min_value=0,
 						max_value=14,
 						required=False,
@@ -110,7 +110,7 @@ class CTS_Speciation_Pka(forms.Form):
 
 	pKa_pH_upper = forms.FloatField (
 						label='pH Upper Limit',
-						initial='14',
+						initial=14,
 						min_value=0,
 						max_value=14,
 						required=False
@@ -118,7 +118,7 @@ class CTS_Speciation_Pka(forms.Form):
 
 	pKa_pH_increment = forms.FloatField (
 						label='pH Step Size',
-						initial='0.2',
+						initial=0.2,
 						min_value=0.1,
 						max_value=1.0,
 						required=False
@@ -126,7 +126,7 @@ class CTS_Speciation_Pka(forms.Form):
 
 	pH_microspecies = forms.FloatField (
 						label='Generate Major Microspecies at pH',
-						initial='7.0',
+						initial=7.0,
 						min_value=0,
 						max_value=14,
 						required=False
@@ -134,7 +134,7 @@ class CTS_Speciation_Pka(forms.Form):
 
 	isoelectricPoint_pH_increment = forms.FloatField (
 						label=mark_safe('Isoelectric Point (pl) <br> pH Step Size for Charge Distribution'),
-						initial='0.5',
+						initial=0.5,
 						min_value=0.1,
 						max_value=1.0,
 						required=False
@@ -168,7 +168,7 @@ class CTS_Speciation_Tautomer(forms.Form):
 
 	tautomer_maxNoOfStructures = forms.FloatField (
 						label='Maximum Number of Structures', 
-						initial='100',
+						initial=100,
 						min_value=1,
 						max_value=100,
 						required=False
@@ -176,7 +176,7 @@ class CTS_Speciation_Tautomer(forms.Form):
 
 	tautomer_pH = forms.FloatField (
 						label='at pH',
-						initial='7.0',
+						initial=7.0,
 						min_value=0,
 						max_value=14,
 						required=False
@@ -194,7 +194,7 @@ class CTS_Speciation_Stereoisomers(forms.Form):
 
 	stereoisomers_maxNoOfStructures = forms.FloatField (
 						label='Maximum Number of Structures',
-						initial='100',
+						initial=100,
 						min_value=1,
 						max_value=100,
 						required=False
