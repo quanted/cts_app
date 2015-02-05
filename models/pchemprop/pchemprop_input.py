@@ -25,7 +25,8 @@ def pchempropInputPage(request, model='', header='P-Chem Properties', formData=N
             'nav_dict': {
                 'class_name': ['Chemical', 'ChemCalcs'],
                 'tab_label': ['Chemical Editor', 'p-Chem Calculator']
-                }
+                },
+            'nextTabName': 'p-Chem Calculator'
             })
 
     # chemspec inputs

@@ -21,7 +21,8 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
             'nav_dict': {
                 'class_name': ['Chemical', 'Speciation'],
                 'tab_label': ['Chemical Editor', 'Chemical Speciation']
-                }
+                },
+            'nextTabName': 'Chemical Speciation'
             })
     
     # html = html + str(chemspec_parameters.ChemspecInp(formData))

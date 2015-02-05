@@ -30,7 +30,8 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
             'nav_dict': {
                 'class_name': ["Chemical", "ReactionPathSim"],
                 'tab_label': ['Chemical Editor', 'Reaction Pathway Simulator'],
-                }
+                },
+            'nextTabName': 'Reaction Pathway Simulator'
             })
 
     html = html + str(chemspec_parameters.form(formData)) # Loads the Chemical Speciation tables to the page
