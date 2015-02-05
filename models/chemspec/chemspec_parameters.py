@@ -16,7 +16,7 @@ def tmpl_chemstructCTS():
 		<table class="input_table tab tab_Chemical">
 			<tr>
 				<td colspan="2"><span>{{ header }}</span>
-				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and click here">
+				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, IUPAC or CAS# and Click Here">
 				</td>
 			</tr>
 		{% for field in form %}

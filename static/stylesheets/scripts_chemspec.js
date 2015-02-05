@@ -42,13 +42,30 @@ $(document).ready(function() {
     });
 
     //disable all input fields until checked:
-    $('input').not('input[type="checkbox"], input[type="button"]').prop('disabled', true);
+    // $('input').not('input[type="checkbox"], input[type="button"]').prop('readonly', true);
+    $('input').not('input[type="checkbox"], input[type="button"]').prop('readonly', true);
 
     enableTable($('input[type="checkbox"]'));
 
     $('input[type="checkbox"]').change(function() {
         enableTable(this);
     });
+
+    $('table.tab_Speciation').hover(
+        function() {
+            //mouseenter
+            $(this).removeClass('darken');
+            $(this).find('input[type=checkbox]').addClass('brightBorders');
+        },
+        function() {
+            //mouseleave
+            var checked = $(this).find('input[type=checkbox]').is(':checked');
+            if (!checked) {
+                $(this).addClass('darken'); 
+            }
+            $(this).find('input[type=checkbox]').removeClass('brightBorders');
+        }   
+    );
 
 });
 
@@ -58,19 +75,16 @@ $(document).ready(function() {
 function enableTable(chkbox) {
 
     $(chkbox).each(function() {
-        
 
-        var isChecked = $(this).is(":checked");
-        var chkName = $(this).attr("name");
-        var tblName = $('input[name="' + chkName + '"]').closest('table').attr("name");
+        var table = $(this).closest('table');
 
-        if (isChecked) {
-            $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', false);
-            $('table[name="' + tblName + '"] input[type="text"]').prop('disabled', false);
+        if ($(this).is(":checked")) {
+            table.find('input[type=number], input[type=text]').prop('readonly', false);
+            table.removeClass('darken');
         }
         else {
-            $('table[name="' + tblName + '"] input[type="number"]').prop('disabled', true);
-            $('table[name="' + tblName + '"] input[type="text"]').prop('disabled', true);
+            table.find('input[type=number], input[type=text]').prop('readonly', true);
+            table.addClass('darken');
         }
 
         //Submit only enabled if a checkbox is selected:
@@ -84,3 +98,38 @@ function enableTable(chkbox) {
     });
 
 }
+
+// function enableTable(chkbox) {
+
+//     $(chkbox).each(function() {
+        
+
+//         var isChecked = $(this).is(":checked");
+//         var chkName = $(this).attr("name");
+//         var tblName = $('input[name="' + chkName + '"]').closest('table').attr("name");
+
+//         var table = $('input[name="' + chkName + '"]').closest('table');
+
+//         if (isChecked) {
+//             // $('table[name="' + tblName + '"] input[type="number"]').prop('readonly', false);
+//             // $('table[name="' + tblName + '"] input[type="text"]').prop('readonly', false);
+//             $(table).children('input').prop('readonly', false);
+//             $('table[name="' + tblName + '"]').css({'opacity': 1.0});
+//         }
+//         else {
+//             $('table[name="' + tblName + '"] input[type="number"]').prop('readonly', true);
+//             $('table[name="' + tblName + '"] input[type="text"]').prop('readonly', true);
+//             $('table[name="' + tblName + '"]').css({'opacity': 0.5});
+//         }
+
+//         //Submit only enabled if a checkbox is selected:
+//         if ($('input[type="checkbox"]').is(":checked")) {
+//             $('input[type="submit"]').prop('readonly', false);
+//         }
+//         else {
+//             $('input[type="submit"]').prop('readonly', true);
+//         }
+
+//     });
+
+// }

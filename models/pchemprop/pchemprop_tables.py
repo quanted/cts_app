@@ -56,20 +56,19 @@ def getIonConData(pchemprop_obj):
     TODO: Make more general for all calculators 
     """
     root = pchemprop_obj.resultsDict['chemaxon'] # root for getting ion con data
-    logging.info(pchemprop_obj.resultsDict)
-    ionConResults = { "ion_con": {"pKa": [], "pKb": [] } } # results dict for ion con
+    ionConResults = {"pKa": [], "pKb": [] } # results dict for ion con
     if root and 'ion_con' in root:
         try:
             root = root['ion_con']['data'][0] # data root (most jchem data has this)
             for pka in root['pKa']['mostAcidic']:
                 pka = round(float(pka), n)
-                ionConResults["ion_con"]['pKa'].append(pka) # append to list at key pKa
+                ionConResults['pKa'].append(pka)
             for pkb in root['pKa']['mostBasic']:
                 pkb = round(float(pkb), n)
-                ionConResults["ion_con"]['pKb'].append(pkb) # append to list at key pKb
+                ionConResults['pKb'].append(pkb)
         except:
-            ionConResults["ion_con"]['pKa'].append("Exception getting pKa...")
-            ionConResults["ion_con"]['pKb'].append("Exception getting pKb...")
+            ionConResults['pKa'].append("Exception getting pKa...")
+            ionConResults['pKb'].append("Exception getting pKb...")
         return ionConResults
     else:
         return None
@@ -86,15 +85,15 @@ def getKowNoPh(pchemprop_obj):
 
     TODO: Make more general for all calculators
     """
-    kowNoPhResults = {'kow_no_ph': {key: [] for key in methodsList}} # methodsList up top (KLOP, VG, PHYS)
+    kowNoPhResults = {key: [] for key in methodsList} # methodsList up top (KLOP, VG, PHYS)
     if 'kow_no_ph' in pchemprop_obj.resultsDict['chemaxon']:
         for method in methodsList:
             try:
                 root = pchemprop_obj.resultsDict['chemaxon']['kow_no_ph']
                 value = round(root[method]['data'][0]['logP']['logpnonionic'], n)
-                kowNoPhResults['kow_no_ph'][method].append(value)
+                kowNoPhResults[method].append(value)
             except:
-                kowNoPhResults['kow_no_ph'][method].append("Exception getting logP...")
+                kowNoPhResults[method].append("Exception getting logP...")
         return kowNoPhResults
     else:
         return None
@@ -112,7 +111,7 @@ def getKowWph(pchemprop_obj):
     TODO: Make more general for all calculators
     """
     root = pchemprop_obj.resultsDict['chemaxon']
-    kowWphResults = {'kow_wph': {key: [] for key in methodsList}}
+    kowWphResults = {key: [] for key in methodsList}
     if 'kow_wph' in root:
         for method in methodsList:
             try:
@@ -129,10 +128,10 @@ def getKowWph(pchemprop_obj):
                       value = round(xyPair['logD'], n)
                       break
 
-                kowWphResults['kow_wph'][method].append(value)
+                kowWphResults[method].append(value)
 
             except:
-                kowWphResults['kow_wph'][method].append("Exception getting logD...")
+                kowWphResults[method].append("Exception getting logD...")
 
         return kowWphResults
     else:
@@ -169,8 +168,6 @@ def getInputTemplate():
 pvuheadings = getheaderpvu()
 structTmpl = Template(getStructInfoTemplate())
 inTmpl = Template(getInputTemplate())
-# pchemTmpl = Template(getdjtemplate())
-# tblTmpl = Template(getTableTemplate())
 
 
 def table_all(pchemprop_obj):
@@ -206,21 +203,14 @@ def output_pchem_table(pchemprop_obj):
     <H3 class="out_1 collapsible" id="section1"><span></span>P-Chem Properties Results</H3>
     <div class="out_">
     """
-
-    # Ionization Constant:
-    ionConData = getIonConData(pchemprop_obj) # format: {"pKa": [floats], "pKb": [floats]}
-    # Octanol/Water Partition Coefficient:
-    kowNoPh = getKowNoPh(pchemprop_obj) # format: {"KLOP": [float], "VG": [float], "PHYS": [float]}
-    # Octanal/Water Partition Coefficient at pH:
-    kowWph = getKowWph(pchemprop_obj)
-
-    # TODO: Make this less ugly, although it does work since there's only one key at 0th level
-    data = {'chemaxon': {"ion_con": ionConData[ionConData.keys()[0]]}}
-    data['chemaxon'].update({"kow_no_ph": kowNoPh[kowNoPh.keys()[0]]})
-    data['chemaxon'].update({"kow_wph": kowWph[kowWph.keys()[0]]})
- 
+    data = {
+        "chemaxon": {
+            "ion_con": getIonConData(pchemprop_obj),
+            "kow_no_ph": getKowNoPh(pchemprop_obj),
+            "kow_wph": getKowWph(pchemprop_obj)
+        }
+    }
     kow_ph = round(float(pchemprop_obj.kow_ph), 1)
-
     html += render_to_string('cts_pchemprop_outputTable.html', 
                                 { "data": data, "kow_ph": kow_ph })
     html += """

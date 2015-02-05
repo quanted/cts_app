@@ -66,19 +66,11 @@ def outputPage(request, model='none', header=''):
         
         form = inputForm(request.POST) # bind user inputs to form object
 
-        logging.info(" $$$ {} $$$ ".format(form))
-
-        logging.info(" *** form errors: {} ***".format(form.errors))
-
         # Form validation testing
         if form.is_valid():
-            logging.info(" IS VALID ")
             return outputPageView(request, model, header)
 
         else:
-
-            logging.info(" IS NOT VALID ")
-            logging.info(" @ {} @".format(request.POST))
 
             inputmodule = importlib.import_module('.'+model+'_input', 'models.'+model)
 

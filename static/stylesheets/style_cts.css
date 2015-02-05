@@ -1672,6 +1672,15 @@ for nodes on gentrans output */
   width: 40px;
 }
 
+/* opacity of speciation input tables */
+.darken {
+  opacity: 0.7;
+}
+
+.brightBorders {
+  box-shadow: 0px 0px 10px 2px #4289AA;
+}
+
 /* old error message class */
 /*.redFont {
   color: #FF4D4D;
