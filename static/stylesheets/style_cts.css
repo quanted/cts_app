@@ -1665,6 +1665,7 @@ for nodes on gentrans output */
   -moz-box-shadow: 3px 3px 5px #CCC;
 
   color: #FF4D4D;
+  padding: 1px;
 }
 
 /* styling for number input fields */
@@ -1677,6 +1678,7 @@ for nodes on gentrans output */
   opacity: 0.7;
 }
 
+/* highlights checkboxes on chemical speciation tab */
 .brightBorders {
   box-shadow: 0px 0px 10px 2px #4289AA;
 }
