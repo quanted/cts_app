@@ -28,7 +28,7 @@ The Chemical Transformation Simulator (CTS) represents the most robust process s
 </ul>
 <h3>Structure-based Database (SBD):</h3>
 <ul class="bullet">
-  <li>Populated with calculated and measured physico-chemical properties of parent and potential transformation products</li>
+  <li>Populated with calculated and measured physico-chemical properties of a parent chemical and potential transformation products</li>
 </ul>
 <h3>Reaction Rate Calculator:</h3>
 <ul class="bullet">
