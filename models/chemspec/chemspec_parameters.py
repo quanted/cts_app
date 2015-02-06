@@ -159,8 +159,8 @@ class CTS_Speciation_Pka(forms.Form):
 		phLo = cleanedData.get('pKa_pH_lower')
 		phHi = cleanedData.get('pKa_pH_upper')
 
-		logging.info(" *** ph lower type: {} *** ".format(type(phLo)))
-		logging.info(" *** ph upper type: {} *** ".format(type(phHi)))
+		logging.warning(" *** ph lower type: {} *** ".format(type(phLo)))
+		logging.warning(" *** ph upper type: {} *** ".format(type(phHi)))
 
 		print " *** ph lower type: {} *** ".format(type(phLo))
 		print " *** ph upper type: {} *** ".format(type(phHi))
