@@ -158,6 +158,13 @@ class CTS_Speciation_Pka(forms.Form):
 
 		phLo = cleanedData.get('pKa_pH_lower')
 		phHi = cleanedData.get('pKa_pH_upper')
+
+		logging.info(" *** ph lower type: {} *** ".format(type(phLo)))
+		logging.info(" *** ph upper type: {} *** ".format(type(phHi)))
+
+		print " *** ph lower type: {} *** ".format(type(phLo))
+		print " *** ph upper type: {} *** ".format(type(phHi))
+
 		if phLo >= phHi:
 			self.add_error('pKa_pH_lower', "pH lower must be < pH upper")
 			self.add_error('pKa_pH_upper', "pH upper must be > pH lower")

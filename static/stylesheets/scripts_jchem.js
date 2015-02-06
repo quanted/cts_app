@@ -38,7 +38,7 @@ $(document).ready(function handleDocumentReady (e) {
 
   //redraw last chemcial if hitting back button from output:
   var chemical = $("#id_chem_struct").val();
-  if (chemical != '' && chemical.indexOf("Error") > -1) {
+  if (chemical != '') {
     importMol(chemical); 
   }
 

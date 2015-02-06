@@ -65,14 +65,6 @@ class pchemprop(object):
 		self.test = test
 		self.sparc = sparc
 
-		# calcluatorsDict = {
-		# 	"chemaxon": self.chemaxon,
-		# 	"epi": self.epi,
-		# 	"test": self.test,
-		# 	"sparc": self.sparc,
-		# 	"measured": self.measured
-		# }
-
 		calcluatorsDict = {
 			"chemaxon": chemaxon,
 			"epi": epi,
@@ -102,6 +94,8 @@ class pchemprop(object):
 		# through all calculators. Also, establish standardized variable names to reduce
 		# amount of code (e.g., conditionals checking prop values)
 		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
+		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict)
+
 		# self.testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # kow_wph not available
 		# self.measuredResultsDict = getMeasuredResults(self.chem_struct, checkedCalcsAndPropsDict)
 
@@ -109,29 +103,16 @@ class pchemprop(object):
 			"chemaxon": chemaxonResultsDict,
 			"epi": None,
 			"sparc": None,
-			"test": None,
+			"test": testResultsDict,
 		}
+
+		# logging.info(" ### Main Dictionary: {} ###".format(self.resultsDict))
 
 		# self.rawData = self.chemaxonResultsDict
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
 		# fileout.write(json.dumps(self.rawData))
 		# fileout.close()
-
-		"""
-		Sample TEST calls and stuff (add this to the model):
-		"""
-		# For the Measured column:
-		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MP/MEASURED", dataType: "json"}).done(function(val) { $('#id_melting_point_MEASURED').html(val.MEASURED.toPrecision(4)) } )
-		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/BP/MEASURED", dataType: "json"}).done(function(val) { $('#id_boiling_point_MEASURED').html(val.MEASURED.toPrecision(4)) } )
-		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/WS/MEASURED", dataType: "json"}).done(function(val) { $('#id_water_sol_MEASURED').html(val.MEASURED.toPrecision(4)) } )
-		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/VP/MEASURED", dataType: "json"}).done(function(val) { $('#id_vapor_press_MEASURED').html(val.MEASURED.toPrecision(4)) } )
-		# For the TEST column:
-		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MP", dataType: "json"}).done(function(val) { $('#id_melting_point_TEST').html(val.TEST.toPrecision(4)) } )
-  		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/BP", dataType: "json"}).done(function(val) { $('#id_boiling_point_TEST').html(val.TEST.toPrecision(4)) } )
-  		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/WS", dataType: "json"}).done(function(val) { $('#id_water_sol_TEST').html(val.TEST.toPrecision(4)) } )
-  		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/VP", dataType: "json"}).done(function(val) { $('#id_vapor_press_TEST').html(val.TEST.toPrecision(4)) } )
-  		# $.ajax({type: "GET", url: "/test_cts/api/TEST/"+$('#molecule').val()+"/MLOGP", dataType: "json"}).done(function(val) { $('#id_kow_no_ph_TEST').html(val.MLOGP.toPrecision(4)) } )
 
 
 def getTestResults(structure, checkedCalcsAndPropsDict):
@@ -143,14 +124,15 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	"""
 
 	# url = "/test_cts/api/TEST/" + structure
-	url = "http://a.ibdb.net/cts/molecules" #create molecule with id
-	postData = {
-		"id": 0,
-		"smiles": structure
-	}
-	response = makeTestCall(url, postData) #already response.content
+	baseUrl = "http://a.ibdb.net/cts" #create molecule with id
+	molUrl = "/molecules"
+	testUrl = "/test/calc" #/test/calc/{id}/[property]/{method} method - fda, neighbor, and more!
 
-	logging.info("Response after call: {}".format(response))
+	# postData = {
+	# 	"id": 0,
+	# 	"smiles": structure
+	# }
+	# response = makeTestCall(url, postData) #already response.content
 
 	testPropsList = checkedCalcsAndPropsDict.get('test', None)
 
@@ -158,52 +140,22 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 		testValues = {}
 		for prop in testPropsList:
 			if prop == "melting_point":
-				testValues.update({prop: requests.get(url + "/MP")})
+				testValues.update({prop: makeTestCall(baseUrl + testUrl + "/101/meltingPoint/fda")})
 			elif prop == "boiling_point":
-				testValues.update({prop: requests.get(url + "/BP")})
+				testValues.update({prop: makeTestCall(baseUrl + testUrl + "/101/boilingPoint/fda")})
 			elif prop == "water_sol":
-				testValues.update({prop: requests.get(url + "/WS")})
+				testValues.update({prop: makeTestCall(baseUrl + testUrl + "/101/waterSolubility/fda")})
 			elif prop == "vapor_press":
-				testValues.update({prop: requests.get(url + "/VP")})
+				testValues.update({prop: makeTestCall(baseUrl + testUrl + "/101/vaporPressure/fda")})
 		return testValues
 	else: return None
 
 
 headers = {'Content-Type' : 'application/json'}
-def makeTestCall(url, postDict):
-	request = HttpRequest()
-	request.POST = postDict
-	response = requests.post(url, data=postDict, headers=headers, timeout=60)
+def makeTestCall(url):
+	response = requests.get(url, headers=headers, timeout=60)
 	logging.info("--- RESPONSE: {} --- ".format(response.content))
 	return response.content
-
-
-# def getMeasuredResults(structure, checkedCalcsAndPropsDict):
-# 	"""
-# 	Gets pchemprop data from measured ws.
-# 	Inputs: chemical structure, dict of checked properties by calculator
-# 	(e.g., { 'measured': ['kow_no_ph', 'melting_point'] })
-# 	Returns: dict of measured props in template-friendly format (see pchemprop_tables)
-# 	"""
-
-# 	url = "/test_cts/api/TEST/" + structure
-# 	measuredPropsList = checkedCalcsAndPropsDict.get('measured', None)
-
-# 	if measuredPropsList:
-# 		measuredValues = {}
-# 		for prop in measuredPropsList:
-# 			if prop == "melting_point":
-# 				measuredValues.update({prop: requests.get(url + "/MP/MEASURED")})
-# 			elif prop == "boiling_point":
-# 				measuredValues.update({prop: requests.get(url + "/BP/MEASURED")})
-# 			elif prop == "water_sol":
-# 				measuredValues.update({prop: requests.get(url + "/WS/MEASURED")})
-# 			elif prop == "vapor_press":
-# 				measuredValues.update({prop: requests.get(url + "/VP/MEASURED")})
-# 			elif prop == "kow_no_ph":
-# 				measuredResponse = requests.get(url + "/MLOGP/MEASURED")
-# 		return measuredValues
-# 	else: return None
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):

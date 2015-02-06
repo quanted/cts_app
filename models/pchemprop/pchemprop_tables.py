@@ -9,7 +9,7 @@ import pchemprop_parameters
 
 
 # some constants:
-methodsList = ["KLOP", "VG", "PHYS"] # method names used by some chemaxon properties
+methodsListChemaxon = ["KLOP", "VG", "PHYS"] # method names used by some chemaxon properties
 n = 3 # number to round values to
 headings = ["ChemAxon", "EPI Suite", "TEST", "SPARC", "Average"] # calulators 
 
@@ -45,7 +45,7 @@ def getInputData(pchemprop_obj):
     return data
 
 
-def getIonConData(pchemprop_obj):
+def getIonConDataChemaxon(pchemprop_obj):
     """
     Gets ionization constant data from results dict
     
@@ -74,20 +74,20 @@ def getIonConData(pchemprop_obj):
         return None
 
 
-def getKowNoPh(pchemprop_obj):
+def getKowNoPhChemaxon(pchemprop_obj):
     """
     Gets octanol/water partition coefficient (logP)
     from results dict
 
     Input: pchemprop_obj (see pchemprop_model)
-    Returns: dictionary with methodsList keys (KLOP, VG, PHYS)
+    Returns: dictionary with methodsListChemaxon keys (KLOP, VG, PHYS)
     and values of [logpnonionic]
 
     TODO: Make more general for all calculators
     """
-    kowNoPhResults = {key: [] for key in methodsList} # methodsList up top (KLOP, VG, PHYS)
+    kowNoPhResults = {key: [] for key in methodsListChemaxon} # methodsListChemaxon up top (KLOP, VG, PHYS)
     if 'kow_no_ph' in pchemprop_obj.resultsDict['chemaxon']:
-        for method in methodsList:
+        for method in methodsListChemaxon:
             try:
                 root = pchemprop_obj.resultsDict['chemaxon']['kow_no_ph']
                 value = round(root[method]['data'][0]['logP']['logpnonionic'], n)
@@ -99,21 +99,21 @@ def getKowNoPh(pchemprop_obj):
         return None
 
 
-def getKowWph(pchemprop_obj):
+def getKowWphChemaxon(pchemprop_obj):
     """
     Gets octanol/water partition coefficient with pH (logD)
     from results dict
 
     Input: pchemprop_obj (see pchemprop_model)
-    Returns: dictionary with methodsList keys (KLOP, VG, PHYS)
+    Returns: dictionary with methodsListChemaxon keys (KLOP, VG, PHYS)
     and values of [logD]
 
     TODO: Make more general for all calculators
     """
     root = pchemprop_obj.resultsDict['chemaxon']
-    kowWphResults = {key: [] for key in methodsList}
+    kowWphResults = {key: [] for key in methodsListChemaxon}
     if 'kow_wph' in root:
-        for method in methodsList:
+        for method in methodsListChemaxon:
             try:
                 root = pchemprop_obj.resultsDict['chemaxon']['kow_wph']
                 # value = root[method]['data'][0]['logD']['logD']
@@ -200,19 +200,32 @@ def output_pchem_table(pchemprop_obj):
     """
     html = """
     <br>
-    <H3 class="out_1 collapsible" id="section1"><span></span>P-Chem Properties Results</H3>
+    <H3 class="out_1 collapsible" id="section1"><span></span>p-Chem Properties Results</H3>
     <div class="out_">
     """
-    data = {
-        "chemaxon": {
-            "ion_con": getIonConData(pchemprop_obj),
-            "kow_no_ph": getKowNoPh(pchemprop_obj),
-            "kow_wph": getKowWph(pchemprop_obj)
-        }
-    }
+
+    mainDataDict = {} # calc -> prop -> data
+    for calc, calcData in pchemprop_obj.resultsDict.items():
+        data = {} # prop -> data
+        if calcData != None:
+            for prop, propData in calcData.items():
+                data.update({prop: getPropDataFromCalc(calc, prop, propData, pchemprop_obj)})
+            mainDataDict.update({calc: data})
+
+    # data = {
+    #     "chemaxon": {
+    #         "ion_con": getIonConDataChemaxon(pchemprop_obj),
+    #         "kow_no_ph": getKowNoPhChemaxon(pchemprop_obj),
+    #         "kow_wph": getKowWphChemaxon(pchemprop_obj)
+    #     },
+    #     "test": {
+    #         ""
+    #     }
+    # }
+
     kow_ph = round(float(pchemprop_obj.kow_ph), 1)
     html += render_to_string('cts_pchemprop_outputTable.html', 
-                                { "data": data, "kow_ph": kow_ph })
+                                { "data": mainDataDict, "kow_ph": kow_ph })
     html += """
     </div>
     """
@@ -233,5 +246,37 @@ def timestamp(pchemprop_obj="", batch_jid=""):
     html = html + """
     </div>"""
     return html
+
+
+def getPropDataFromCalc(calc, prop, propData, pchemprop_obj):
+
+    logging.info("$$ Calc: {}, Prop: {}".format(calc, prop))
+
+    data = {}
+    if calc == "chemaxon":
+        if prop == "ion_con":
+            data = getIonConDataChemaxon(pchemprop_obj)
+        elif prop == "kow_no_ph":
+            data = getKowNoPhChemaxon(pchemprop_obj)
+        elif prop == "kow_wph":
+            data = getKowWphChemaxon(pchemprop_obj)
+    elif calc == "test":
+        propData = json.loads(propData)
+        if prop == "melting_point":
+            return propData['meltingPointTESTFDA']
+            # data.update({'meltingPointTESTFDA': propData['meltingPointTESTFDA']})
+        elif prop == "boiling_point":
+            return propData['boilingPointTESTFDA']
+            # data.update({'boilingPointTESTFDA': propData['boilingPointTESTFDA']})
+        elif prop == "vapor_press":
+            return propData['vaporPressureTESTFDA']
+            # data.update({'vaporPressureTESTFDA': propData['vaporPressureTESTFDA']})
+        elif prop == "water_sol":
+            return propData['waterSolubilityTESTFDA']
+            # data.update({'waterSolubilityTESTFDA': propData['waterSolubilityTESTFDA']})
+        # elif prop == "kow_no_ph":
+        #     data = propData['']
+
+    return data
 
 
