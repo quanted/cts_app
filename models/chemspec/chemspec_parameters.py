@@ -154,22 +154,29 @@ class CTS_Speciation_Pka(forms.Form):
 		used for field-dependant conditionals 
 		"""
 
-		cleanedData = super(CTS_Speciation_Pka, self).clean()
+		# +++ Django 1.8 Way +++
+		# cleanedData = super(CTS_Speciation_Pka, self).clean()
+		# phLo = float(cleanedData.get('pKa_pH_lower'))
+		# phHi = float(cleanedData.get('pKa_pH_upper'))
+		# if phLo >= phHi:
+		# 	self.add_error('pKa_pH_lower', "pH lower must be < pH upper")
+		# 	self.add_error('pKa_pH_upper', "pH upper must be > pH lower")
 
+		logging.info("INSIDE CLEAN")
+
+		# +++ Django 1.6.7 Way +++
+		cleanedData = super(CTS_Speciation_Pka, self).clean()
 		phLo = float(cleanedData.get('pKa_pH_lower'))
 		phHi = float(cleanedData.get('pKa_pH_upper'))
-
-		logging.warning(" *** ph lower type: {} *** ".format(type(phLo)))
-		logging.warning(" *** ph upper type: {} *** ".format(type(phHi)))
-
-		print " *** ph lower type: {} *** ".format(type(phLo))
-		print " *** ph upper type: {} *** ".format(type(phHi))
-
-
-
 		if phLo >= phHi:
-			self.add_error('pKa_pH_lower', "pH lower must be < pH upper")
-			self.add_error('pKa_pH_upper', "pH upper must be > pH lower")
+			self._errors["pKa_pH_lower"] = self.error_class(["pH lower must be < pH upper"])
+			self._errors["pKa_pH_upper"] = self.error_class(["pH upper must be < pH lower"])
+
+			# these fields are no longer valid. remove them from the cleaned data:
+			del cleanedData["pKa_pH_lower"]
+			del cleanedData["pKa_pH_upper"]
+
+		return cleanedData
 
 
 # tautomerization table
