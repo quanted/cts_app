@@ -14,67 +14,6 @@ $( document ).ready(function() {
 		setTimeout(function() {$('form').submit();}, 500);
 	});
 
-
-	// default button
-	$('#resetbutton').click(
-		function(){
-			// Store Checkbox values
-			var valuesCheckbox = [];
-			var selectedCheckbox = $("input:checkbox").each(
-				function(){
-					// valuesCheckbox.push( $(this).is(':checked'));
-					valuesCheckbox.push( $(this));
-			});
-
-			// Create array of hidden tabs
-			var hiddenTabs = [];
-			var fill_hiddenTabs = $(".tab:hidden").each(
-				function(){
-					hiddenTabs.push(this);
-			});
-
-			// Store radio button values
-			var valuesRadio = [];
-			var selectedRadio = $(hiddenTabs).find("input:radio").each(
-				function(){
-					valuesRadio.push( $(this).is(':checked'));
-			});
-
-			// Store TextArea val
-			var valuesTextArea = [];
-			var selectedTextArea = $(hiddenTabs).find("textarea").each(
-				function(){
-					valuesTextArea.push( $(this).val());
-			});
-
-			// Store Text values
-			var valuesText = [];
-			var selectedText = $(hiddenTabs).find("input:text").each(
-				function(){
-					valuesText.push( $(this).val());
-			});
-
-			// Reset Form (default values)
-			this.form.reset();
-
-			// Re-Fill inputs with previous user input values
-			for (i=0;i<selectedCheckbox.length;i++) {
-				$(selectedCheckbox[i]).prop('checked', valuesCheckbox[i]);
-			}
-			for (i=0;i<selectedRadio.length;i++) {
-				$(selectedRadio[i]).prop('checked', valuesRadio[i]);
-			}
-			for (i=0;i<selectedTextArea.length;i++) {
-				$(selectedTextArea[i]).prop('value', valuesTextArea[i]);
-			}
-			for (i=0;i<selectedText.length;i++) {
-				$(selectedText[i]).prop('value', valuesText[i]);
-			}
-
-			enableTable($('input[type="checkbox"]')); //chkbox logic (scripts_chemspec.js)
-
-	});
-
 	$('#clearbutton').click(function(){
 		// $("table[class^='tab']:visible").find(':input').each(function() {
 
@@ -113,10 +52,12 @@ $( document ).ready(function() {
 
 	//Highlight errors on form 
 	$('.errorlist').each(function() {
-		// $(this).parent().find('textarea').css('border-color', '#FF3333');
 		var parentCell = $(this).parent();
 		var input = $(parentCell).find('textarea, input');
-		// $(input).css('border-color', '#FF4D4D');
+		if (input.length == 0) {
+			//if .errorList element is a sibling of element with error:
+			input = $(parentCell).siblings('textarea, input:not([type=checkbox])');
+		}
 		$(input).addClass('formError');
 	});
 
