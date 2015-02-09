@@ -235,7 +235,7 @@ def getpchemprops(request):
 	"""
 	from models.pchemprop import pchemprop_output
 
-	logging.info(request)
+	logging.info(" $ Request: {} $ ".format(request))
 
 	pchemprop_obj = pchemprop_output.pchempropOutputPage(request) # run model (pchemprop_[output, model])
 	response = json.dumps(pchemprop_obj.resultsDict)
@@ -288,12 +288,6 @@ class Data_Structures:
 		}
 		if addH:
 			chemDeatsDict = addExplicitH(chemDeatsDict)
-			# filterChain = [{
-			# 	"filter": "hydrogenizer",
-			# 	"parameters": {"method": "HYDROGENIZE"}
-			# }] 
-			# chemDeatsDict['display'].update({'filterChain': filterChain})
-
 		return chemDeatsDict
 
 
