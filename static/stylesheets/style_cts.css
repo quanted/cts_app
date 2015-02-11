@@ -1,4 +1,4 @@
-/* CTS-specific styles for overriding shared style.css */
+ CTS-specific styles for overriding shared style.css */
 body {2,4-dio
   font-family: 'Open Sans', sans-serif;
 }
@@ -1567,26 +1567,25 @@ body.wait *, body.wait
 }
 
 /* style for pchemprop output table data cell */
-.pchemCell, .pchemCell td {
-  /*background-color: white;*/
+.pchemCell {
   background-color: transparent;
   border: 1px solid #EEF0E6;
-  /*padding: 0px;*/
   padding: 4px;
+  display: inline-block;
+  /*width: 33%;*/
 }
 
 /* div style for pchemprop output table data cell */
-.pchemCell td {
-  border: 1px solid #EEF0E6;
-  text-align: left;
-  /*padding: 0px;*/
-}
+/*.pchemCell td {*/
+  /*text-align: left;*/
+  /*display: inline-block;*/
+/*}*/
 
 /* wrapper for pchempropDataCell */
 div.pchemCellWrap {
-  float: left;
-  text-align: center;
-  width:33.3%;
+  /*float: left;*/
+  /*text-align: center;*/
+  /*width:33.3%;*/
 }
 
 /* main pchemprop output table (cts_pchemprop_outputTable.html) */
@@ -1686,4 +1685,4 @@ for nodes on gentrans output */
 /* old error message class */
 /*.redFont {
   color: #FF4D4D;
-}*/
+}

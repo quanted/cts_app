@@ -121,40 +121,65 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	Inputs: chemical structure, dict of checked properties by calculator
 	(e.g., { 'test': ['kow_no_ph', 'melting_point'] })
 	Returns: dict of TEST props in template-friendly format (see pchemprop_tables)
+
+	!!! TODO: Move this where it belongs: the test_cts app folder. Ultimately
+	do the same for chemaxon and the other calculators !!!
 	"""
 
-	# url = "/test_cts/api/TEST/" + structure
-	baseUrl = "http://a.ibdb.net/cts" #create molecule with id
-	molUrl = "/molecules"
-	testUrl = "/test/calc" #/test/calc/{id}/[property]/{method} method - fda, neighbor, and more!
+	testMethodsList = ['fda', 'hierarchical', 'group', 'consensus', 'neighbor']
 
-	# postData = {
-	# 	"id": 0,
-	# 	"smiles": structure
-	# }
-	# response = makeTestCall(url, postData) #already response.content
+	baseUrl = "http://134.67.114.6/test"
+	# baseUrl = "http://a.ibdb.net/cts" #create molecule with id
+	molUrl = "/molecules"
+
+	testUrl = baseUrl + "/test/calc" #/test/calc/{id}/[property]/{method} method - fda, neighbor, and more!
+
+	# give molecule an id to use for test calculations
+	postData = {
+		"id": 7,
+		"smiles": str(structure)
+	}	
+	# response = makeTestCall(baseUrl + molUrl, postData) #already response.content
+	response = requests.post(baseUrl + molUrl, data=json.dumps(postData), headers=headers)
+
+	# logging.info(" ### POST Molecule Response: {} ### ".format(response))
 
 	testPropsList = checkedCalcsAndPropsDict.get('test', None)
+
+	testUrl += "/" + str(postData["id"]) # append id to test request
 
 	if testPropsList:
 		testValues = {}
 		for prop in testPropsList:
-			if prop == "melting_point":
-				testValues.update({prop: makeTestCall(baseUrl + testUrl + "/101/meltingPoint/fda")})
-			elif prop == "boiling_point":
-				testValues.update({prop: makeTestCall(baseUrl + testUrl + "/101/boilingPoint/fda")})
-			elif prop == "water_sol":
-				testValues.update({prop: makeTestCall(baseUrl + testUrl + "/101/waterSolubility/fda")})
-			elif prop == "vapor_press":
-				testValues.update({prop: makeTestCall(baseUrl + testUrl + "/101/vaporPressure/fda")})
+			logging.info("inside prop loop")
+			# testValues.update({prop: })
+			for method in testMethodsList:
+				if prop == "melting_point":
+					testValues.update({prop: makeTestCall(testUrl + "/meltingPoint/" + method)})
+				elif prop == "boiling_point":
+					testValues.update({prop: makeTestCall(testUrl + "/boilingPoint/" + method)})
+				elif prop == "water_sol":
+					testValues.update({prop: makeTestCall(testUrl + "/waterSolubility/" + method)})
+				elif prop == "vapor_press":
+					testValues.update({prop: makeTestCall(testUrl + "/vaporPressure/" + method)})
+		
+		logging.info(" ### TEST Data Response: {} ### ".format(testValues))
+
 		return testValues
 	else: return None
 
 
 headers = {'Content-Type' : 'application/json'}
-def makeTestCall(url):
-	response = requests.get(url, headers=headers, timeout=60)
-	logging.info("--- RESPONSE: {} --- ".format(response.content))
+
+def makeTestCall(url, postData=None):
+	
+	if postData:
+		response = requests.post(url, data=postData, headers=headers, timeout=60)
+	else:
+		response = requests.get(url, headers=headers, timeout=60)
+
+	# logging.info("--- RESPONSE: {} --- ".format(response.content))
+
 	return response.content
 
 
@@ -169,7 +194,6 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 
 	chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
 	propMethodsList = ['KLOP', 'PHYS', 'VG'] # methods of calculation for pchemprops (chemaxon)
-	phForLogD = float(phForLogD)
 
 	if chemaxonPropsList:
 

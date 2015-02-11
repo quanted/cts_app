@@ -11,18 +11,48 @@
 
     <tr>
     <td style="padding:4px;">Melting Point (&degC)</td>
+
     <td>{{data.chemaxon.melting_point|default:""}}</td>
     <td>{{data.epi.melting_point|default:""}}</td>
-    <td>{{data.test.melting_point|default:""}}</td>
+
+    <td>
+    {% for key, val in data.test.melting_point.items %}
+        <div class="pchemCellWrap">
+        <div class="pchemCell">{{key}}</div>
+        <div class="pchemCell">{{val}}</div>
+        </div>
+    {% endfor %}
+    </td>
+
     <td>{{data.sparc.melting_point|default:""}}</td>
     <td>{{data.avg.melting_point|default:""}}</td>
     </tr>
+
+
+    <!-- <td style="padding:4px;">Octanol/Water Partition Coefficient</td>
+    <td>
+    {% for key, val in data.chemaxon.kow_no_ph.items %}
+        <div class="pchemCellWrap">
+        <div class="pchemCell">{{key|default:""}}</div>
+        {% for item in val %}
+            <div class="pchemCell">{{item|default:""}}</div>
+        {% endfor %}
+        </div>
+    {% endfor %}
+    </td> -->
 
     <tr>
     <td style="padding:4px;">Boiling Point (&degC)</td>
     <td>{{data.chemaxon.boiling_point|default:""}}</td>
     <td>{{data.epi.boiling_point|default:""}}</td>
-    <td>{{data.test.boiling_point|default:""}}</td>
+    <td>
+    {% for key, val in data.test.boiling_point.items %}
+        <div class="pchemCellWrap">
+        <div class="pchemCell">{{key}}</div>
+        <div class="pchemCell">{{val}}</div>
+        </div>
+    {% endfor %}
+    </td>
     <td>{{data.sparc.boiling_point|default:""}}</td>
     <td>{{data.avg.boiling_point|default:""}}</td>
     </tr>
@@ -31,7 +61,14 @@
     <td style="padding:4px;">Water Solubility (mg/L)</td>
     <td>{{data.chemaxon.water_sol|default:""}}</td>
     <td>{{data.epi.water_sol|default:""}}</td>
-    <td>{{data.test.water_sol|default:""}}</td>
+    <td>
+    {% for key, val in data.test.water_sol.items %}
+        <div class="pchemCellWrap">
+        <div class="pchemCell">{{key}}</div>
+        <div class="pchemCell">{{val}}</div>
+        </div>
+    {% endfor %}
+    </td>
     <td>{{data.sparc.water_sol|default:""}}</td>
     <td>{{data.avg.water_sol|default:""}}</td>
     </tr>
@@ -40,7 +77,13 @@
     <td style="padding:4px;">Vapor Pressure (mmHg)</td>
     <td>{{data.chemaxon.vapor_press|default:""}}</td>
     <td>{{data.epi.vapor_press|default:""}}</td>
-    <td>{{data.test.vapor_press|default:""}}</td>
+    <td>
+    {% for key, val in data.test.vapor_press.items %}
+        <div class="pchemCell">{{key}}</div>
+        <div class="pchemCell">{{val}}</div>
+        <br>
+    {% endfor %}
+    </td>
     <td>{{data.sparc.vapor_press|default:""}}</td>
     <td>{{data.avg.vapor_press|default:""}}</td>
     </tr>
@@ -57,15 +100,21 @@
     <tr>
     <td style="padding:4px;">Ionization Constant</td>
     <td>
-    <div class="pchemCell">pKa: 
-    {% for item in data.chemaxon.ion_con.pKa %} 
-    	{{item|default:""}}{% if not forloop.last %}, {% endif %}
-    {% endfor %}
+    <div class="pchemCell">
+    {%if data.chemaxon.ion_con%}
+        pKa: 
+        {% for item in data.chemaxon.ion_con.pKa %} 
+        	{{item|default:""}}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    {%endif%}
     </div>
-    <div class="pchemCell">pKb: 
-    {% for item in data.chemaxon.ion_con.pKb %} 
-    	{{item|default:""}}{% if not forloop.last %}, {% endif %}
-    {% endfor %}
+    <div class="pchemCell">
+    {%if data.chemaxon.ion_con%}
+        pKb:
+        {% for item in data.chemaxon.ion_con.pKb %} 
+        	{{item|default:""}}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    {%endif%}
     </div>
     </td>
     <td>{{data.epi.ion_con|default:""}}</td>

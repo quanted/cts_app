@@ -10,6 +10,7 @@ import pchemprop_parameters
 
 # some constants:
 methodsListChemaxon = ["KLOP", "VG", "PHYS"] # method names used by some chemaxon properties
+methodsListTEST = ['FDA', 'Hierarchical', 'GroupContribution', 'Consensus', 'NearestNeighbor']
 n = 3 # number to round values to
 headings = ["ChemAxon", "EPI Suite", "TEST", "SPARC", "Average"] # calulators 
 
@@ -204,7 +205,7 @@ def output_pchem_table(pchemprop_obj):
     <div class="out_">
     """
 
-    mainDataDict = {} # calc -> prop -> data
+    mainDataDict = {} # calc -> prop -> (method) -> data
     for calc, calcData in pchemprop_obj.resultsDict.items():
         data = {} # prop -> data
         if calcData != None:
@@ -223,7 +224,12 @@ def output_pchem_table(pchemprop_obj):
     #     }
     # }
 
-    kow_ph = round(float(pchemprop_obj.kow_ph), 1)
+    logging.info(" @@@ Main Data Dict: {} @@@ ".format(mainDataDict))
+
+    kow_ph = 0.0
+    if pchemprop_obj.kow_ph:
+        kow_ph = round(float(pchemprop_obj.kow_ph), 1)
+
     html += render_to_string('cts_pchemprop_outputTable.html', 
                                 { "data": mainDataDict, "kow_ph": kow_ph })
     html += """
@@ -250,33 +256,45 @@ def timestamp(pchemprop_obj="", batch_jid=""):
 
 def getPropDataFromCalc(calc, prop, propData, pchemprop_obj):
 
-    logging.info("$$ Calc: {}, Prop: {}".format(calc, prop))
+    # logging.info("-{}-".format(propData))
 
-    data = {}
     if calc == "chemaxon":
         if prop == "ion_con":
-            data = getIonConDataChemaxon(pchemprop_obj)
+            return getIonConDataChemaxon(pchemprop_obj)
         elif prop == "kow_no_ph":
-            data = getKowNoPhChemaxon(pchemprop_obj)
+            return getKowNoPhChemaxon(pchemprop_obj)
         elif prop == "kow_wph":
-            data = getKowWphChemaxon(pchemprop_obj)
+            return getKowWphChemaxon(pchemprop_obj)
     elif calc == "test":
         propData = json.loads(propData)
-        if prop == "melting_point":
-            return propData['meltingPointTESTFDA']
-            # data.update({'meltingPointTESTFDA': propData['meltingPointTESTFDA']})
-        elif prop == "boiling_point":
-            return propData['boilingPointTESTFDA']
-            # data.update({'boilingPointTESTFDA': propData['boilingPointTESTFDA']})
-        elif prop == "vapor_press":
-            return propData['vaporPressureTESTFDA']
-            # data.update({'vaporPressureTESTFDA': propData['vaporPressureTESTFDA']})
-        elif prop == "water_sol":
-            return propData['waterSolubilityTESTFDA']
-            # data.update({'waterSolubilityTESTFDA': propData['waterSolubilityTESTFDA']})
-        # elif prop == "kow_no_ph":
-        #     data = propData['']
+        testDict = {}
+        for method in methodsListTEST:
+            if prop == "melting_point":
+                 testDict.update({method: propData['meltingPointTEST' + method]})
+                # data.update({'meltingPointTESTFDA': propData['meltingPointTESTFDA']})
+            elif prop == "boiling_point":
+                 testDict.update({method: propData['boilingPointTEST' + method]})
+                # data.update({'boilingPointTESTFDA': propData['boilingPointTESTFDA']})
+            elif prop == "vapor_press":
+                 testDict.update({method: propData['vaporPressureTEST' + method]})
+                # data.update({'vaporPressureTESTFDA': propData['vaporPressureTESTFDA']})
+            elif prop == "water_sol":
+                 testDict.update({method: propData['waterSolubilityTEST' + method]})
+                # data.update({'waterSolubilityTESTFDA': propData['waterSolubilityTESTFDA']})
+            # elif prop == "kow_no_ph":
+            #     data = propData['']
+        return testDict
 
-    return data
 
-
+# kowNoPhResults = {key: [] for key in methodsListChemaxon} # methodsListChemaxon up top (KLOP, VG, PHYS)
+# if 'kow_no_ph' in pchemprop_obj.resultsDict['chemaxon']:
+#     for method in methodsListChemaxon:
+#         try:
+#             root = pchemprop_obj.resultsDict['chemaxon']['kow_no_ph']
+#             value = round(root[method]['data'][0]['logP']['logpnonionic'], n)
+#             kowNoPhResults[method].append(value)
+#         except:
+#             kowNoPhResults[method].append("Exception getting logP...")
+#     return kowNoPhResults
+# else:
+#     return None
