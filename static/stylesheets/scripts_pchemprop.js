@@ -1,3 +1,5 @@
+var pchempropsDefaults = ["chemaxon", "ion_con", "kow_no_ph", "kow_wph"]; //checkbox names
+
 $(document).ready(function() {
 
     uberNavTabs(
@@ -8,21 +10,84 @@ $(document).ready(function() {
 
     $('#chemEditDraw_button').click(function() {
     	$('#chemEditDraw').show();
-    	// $('#chemEditLookup').hide();
     });
 
     $('#chemEditLookup_button').click(function() {
     	$('#chemEditLookup').show();
-    	// $('#chemEditDraw').hide();
     });
 
-    $()
+    var isAllChecked_ChemCalcs = 1;
+
+    var noOfInput_ChemCalcs = []
+    $('#tab_ChemCalcs').find('input').push(noOfInput_ChemCalcs);
+    noOfInput_ChemCalcs = noOfInput_ChemCalcs.length;
+    var noOfInput_ChemCalcs = $(".tab_ChemCalcs input").length -1;
+
+    var isChecked_ChemCalcs = [];
+    $("#id_all").change(function() {
+        switch(isAllChecked_ChemCalcs) {
+            case 1:
+                isAllChecked_ChemCalcs = 0;
+                $(".chemprop input:checkbox").prop( "checked", true );
+                console.log('Set checked');
+                break;
+            case 0:
+                $(".chemprop input:checkbox").prop( "checked", false );
+                isAllChecked_ChemCalcs = 1;
+                console.log('Set unchecked');
+                break;
+            default:
+                console.log('JavaScript Error');
+        }
+    });
+
+    //default button
+    $('#resetbutton').click(function(){
+        //check chemaxon and its avaiable properties
+        for (i in pchempropsDefaults) {
+            var chkbox = $('input[type=checkbox][name=' + pchempropsDefaults[i] + ']');
+            $(chkbox).prop('checked', true);
+        }
+        $('.chemaxon').fadeTo(0, 1); //highlight chemaxon column
+        $('#id_kow_ph').val(7.4);
+    });
+
+    //submit button logic:
+    $('input[type=submit]').prop('disabled', true); //initialize submit as disabled
+
+
+    $('input[type=checkbox]').change(function() {
+        submitLogic(); //tie submitLogic() to any checkbox changes
+    });
 
 });
 
 
-//Enables submit button when at least one calculator and
-//property (that's available) is checked. 
-// function submitGateKeeper() {
+function submitLogic() {
 
-// }
+    //Enable submit only when a calculator is 
+    //checked AND an available property:
+
+    //disable submit if no calculator is checked
+    if ($('input[type=checkbox].col_header').is(':not(:checked)')) {
+        $('input[type=submit]').prop('disabled', true);
+    }
+
+    //loop through calculators' checkboxes
+    $('input[type=checkbox].col_header').each(function() {
+
+        if ($(this).is(':checked')) {
+
+            var calcName = $(this).attr('name');
+            var availableProps = $('td.ChemCalcs_available.' + calcName);
+
+            //enable submit if checked calculator has checked properties
+            if ($(availableProps).parent().find('input[type=checkbox]').is(':checked')) {
+                $('input[type=submit]').prop('disabled', false);
+            }
+
+        }
+
+    });
+
+}

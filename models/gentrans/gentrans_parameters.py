@@ -254,21 +254,30 @@ class cts_reaction_libs(forms.Form):
 
 # Reaction Options (e.g., generation limit, likely limit, etc.)
 class cts_reaction_options(forms.Form):
+
 	gen_limit = forms.ChoiceField (
 					choices=gen_limit_CHOICES,
 					label='Generation Limit:',
 					required=False
 				)
+
 	pop_limit = forms.ChoiceField (
 					choices=pop_limit_CHOICES,
 					label='Population Limit:',
 					required=False
 				)
+
 	likely_limit = forms.FloatField (
 						label='Likely Limit:',
-						initial='0.001',
+						initial=0.001,
+						min_value=0.001,
+						max_value=0.99,
 						required=False,
 					)
+
+	# add clean to force select option range
+	# def clean(self):
+
 
 
 # OECD Guidelines Selection

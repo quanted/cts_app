@@ -54,14 +54,14 @@ tmpl_ChemCalcsCTS = Template(tmpl_ChemCalcsCTS())
 
 # Method(s) called from *_inputs.py
 def form(formData):
-	form_cts_ChemCalcs_props = cts_chemCalcs_props(formData)
+	form_cts_ChemCalcs_props = CTS_ChemCalcs_Props(formData)
 	html = tmpl_ChemCalcsCTS.render(Context(dict(form=form_cts_ChemCalcs_props)))
 	# form_cts_Transform = cts_Transform()
 	# html = html + tmpl_TransformCTS.render(Context(dict(form=form_cts_Transform)))
 
 	return html
 
-class cts_chemCalcs_props(forms.Form):
+class CTS_ChemCalcs_Props(forms.Form):
 	melting_point = forms.BooleanField(required=False, label=mark_safe('Melting Point (&degC)'))
 	boiling_point = forms.BooleanField(required=False, label=mark_safe('Boiling Point (&degC)'))
 	water_sol = forms.BooleanField(required=False, label=mark_safe('Water Solubility (mg/L)'))
@@ -71,28 +71,37 @@ class cts_chemCalcs_props(forms.Form):
 	henrys_law_con = forms.BooleanField(required=False, label=mark_safe("Henry's Law Constant (atm-m<sup>3</sup>/mol)"))
 	kow_no_ph = forms.BooleanField(required=False, label=mark_safe("Octanol/Water Partition Coefficient"))
 	kow_wph = forms.BooleanField(required=False, label=mark_safe('Octanol/Water Partition Coefficient'))
-	# kow_ph = forms.CharField (
-	# 			required=True, 
-	# 			label=mark_safe('at pH:'), 
-	# 			widget=forms.TextInput(attrs={'size':1}),
-	# 			initial=7.4,
-	# 			min_value=0,
-	# 			max_value=14
-	# 		)
 	kow_ph = forms.FloatField (
-				required=True, 
+				required=False, 
 				label='at pH:',
 				widget=forms.NumberInput(attrs={'class':'numberInput'}),
-				# widget=forms.TextInput(attrs={'size':1}),
 				initial=7.4,
 				min_value=0,
 				max_value=14
 			)
 	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient'))
-	# dist_coeff = forms.BooleanField(required=False, label=mark_safe('Distribution Coefficient (L/kg)'))
 
 
-class PchempropInp(cts_chemCalcs_props):
+	def clean(self):
+		"""
+		For validating conditional and dependent fields
+		"""
+
+		# +++ Django 1.6 Way +++
+		cleanedData = super(CTS_ChemCalcs_Props, self).clean()
+
+		kowph = cleanedData.get('kow_ph')
+		kowphChkbox = cleanedData.get('kow_wph') # True/False
+
+		# only require kow_ph if id_kow_wph chkbox is checked
+		if kowphChkbox and not kowph:
+			self._errors['kow_ph'] = self.error_class(["Enter a pH"])
+			del cleanedData['kow_ph']
+
+		return cleanedData
+
+
+class PchempropInp(CTS_ChemCalcs_Props):
 	pass
 
 

@@ -1,3 +1,15 @@
+var chemspecDefaults = {
+    "pKa_decimals": 2,
+    "pKa_pH_lower": 0,
+    "pKa_pH_upper": 14,
+    "pKa_pH_increment": 0.2,
+    "pH_microspecies": 7.0,
+    "isoelectricPoint_pH_increment": 0.5,
+    "tautomer_maxNoOfStructures": 100,
+    "tautomer_pH": 7.0,
+    "stereoisomers_maxNoOfStructures": 100
+};
+
 $(document).ready(function() {
 
     uberNavTabs(
@@ -41,8 +53,20 @@ $(document).ready(function() {
         }
     });
 
+    //default button
+    $('#resetbutton').click(function(){
+        //load default values to fields 
+        for (key in chemspecDefaults) {
+            var test = $('input[name=' + key + ']');
+            $('input[name=' + key + ']').val(chemspecDefaults[key]);
+        }
+        //check first table (calculate ionization constants parameters)
+        var defaultChkbox = $('input[name=pka_chkbox]');
+        $(defaultChkbox).prop('checked', true);
+        enableTable(defaultChkbox);
+    });
+
     //disable all input fields until checked:
-    // $('input').not('input[type="checkbox"], input[type="button"]').prop('readonly', true);
     $('input').not('input[type="checkbox"], input[type="button"]').prop('readonly', true);
 
     enableTable($('input[type="checkbox"]'));
@@ -51,6 +75,7 @@ $(document).ready(function() {
         enableTable(this);
     });
 
+    //mouseover speciation table
     $('table.tab_Speciation').hover(
         function() {
             //mouseenter
@@ -98,38 +123,3 @@ function enableTable(chkbox) {
     });
 
 }
-
-// function enableTable(chkbox) {
-
-//     $(chkbox).each(function() {
-        
-
-//         var isChecked = $(this).is(":checked");
-//         var chkName = $(this).attr("name");
-//         var tblName = $('input[name="' + chkName + '"]').closest('table').attr("name");
-
-//         var table = $('input[name="' + chkName + '"]').closest('table');
-
-//         if (isChecked) {
-//             // $('table[name="' + tblName + '"] input[type="number"]').prop('readonly', false);
-//             // $('table[name="' + tblName + '"] input[type="text"]').prop('readonly', false);
-//             $(table).children('input').prop('readonly', false);
-//             $('table[name="' + tblName + '"]').css({'opacity': 1.0});
-//         }
-//         else {
-//             $('table[name="' + tblName + '"] input[type="number"]').prop('readonly', true);
-//             $('table[name="' + tblName + '"] input[type="text"]').prop('readonly', true);
-//             $('table[name="' + tblName + '"]').css({'opacity': 0.5});
-//         }
-
-//         //Submit only enabled if a checkbox is selected:
-//         if ($('input[type="checkbox"]').is(":checked")) {
-//             $('input[type="submit"]').prop('readonly', false);
-//         }
-//         else {
-//             $('input[type="submit"]').prop('readonly', true);
-//         }
-
-//     });
-
-// }

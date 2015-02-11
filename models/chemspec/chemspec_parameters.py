@@ -162,12 +162,11 @@ class CTS_Speciation_Pka(forms.Form):
 		# 	self.add_error('pKa_pH_lower', "pH lower must be < pH upper")
 		# 	self.add_error('pKa_pH_upper', "pH upper must be > pH lower")
 
-		logging.info("INSIDE CLEAN")
-
-		# +++ Django 1.6.7 Way +++
+		# +++ Django 1.6 Way +++
 		cleanedData = super(CTS_Speciation_Pka, self).clean()
-		phLo = float(cleanedData.get('pKa_pH_lower'))
-		phHi = float(cleanedData.get('pKa_pH_upper'))
+		pkaChkbox = cleanedData.get('')
+		phLo = cleanedData.get('pKa_pH_lower')
+		phHi = cleanedData.get('pKa_pH_upper')
 		if phLo >= phHi:
 			self._errors["pKa_pH_lower"] = self.error_class(["pH lower must be < pH upper"])
 			self._errors["pKa_pH_upper"] = self.error_class(["pH upper must be < pH lower"])
