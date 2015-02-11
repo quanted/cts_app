@@ -1567,25 +1567,25 @@ body.wait *, body.wait
 }
 
 /* style for pchemprop output table data cell */
-.pchemCell {
+.pchemCell, .pchemCell td {
   background-color: transparent;
   border: 1px solid #EEF0E6;
   padding: 4px;
-  display: inline-block;
-  /*width: 33%;*/
+  /*display: inline-block;*/
+  /*width: 33.3%;*/
 }
 
 /* div style for pchemprop output table data cell */
-/*.pchemCell td {*/
-  /*text-align: left;*/
+.pchemCell td {
+  text-align: left;
   /*display: inline-block;*/
-/*}*/
+}
 
 /* wrapper for pchempropDataCell */
 div.pchemCellWrap {
-  /*float: left;*/
-  /*text-align: center;*/
-  /*width:33.3%;*/
+  float: left;
+  text-align: center;
+  width:33.3%;
 }
 
 /* main pchemprop output table (cts_pchemprop_outputTable.html) */

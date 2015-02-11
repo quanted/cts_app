@@ -17,10 +17,13 @@
 
     <td>
     {% for key, val in data.test.melting_point.items %}
-        <div class="pchemCellWrap">
-        <div class="pchemCell">{{key}}</div>
-        <div class="pchemCell">{{val}}</div>
+        <div class="pchemCell">
+        {{key}}: {{val}} <br>
         </div>
+        <!-- <div class="pchemCellWrap"> -->
+        <!-- <div class="pchemCell">{{key}}</div> -->
+        <!-- <div class="pchemCell">{{val}}</div> -->
+        <!-- </div> -->
     {% endfor %}
     </td>
 
@@ -47,10 +50,13 @@
     <td>{{data.epi.boiling_point|default:""}}</td>
     <td>
     {% for key, val in data.test.boiling_point.items %}
-        <div class="pchemCellWrap">
-        <div class="pchemCell">{{key}}</div>
-        <div class="pchemCell">{{val}}</div>
+        <div style="border: 1px solid #EEF0E6;">
+        {{key}}: {{val}} <br>
         </div>
+        <!-- <div class="pchemCellWrap"> -->
+        <!-- <div class="pchemCell">{{key}}</div> -->
+        <!-- <div class="pchemCell">{{val}}</div> -->
+        <!-- </div> -->
     {% endfor %}
     </td>
     <td>{{data.sparc.boiling_point|default:""}}</td>
@@ -63,10 +69,13 @@
     <td>{{data.epi.water_sol|default:""}}</td>
     <td>
     {% for key, val in data.test.water_sol.items %}
-        <div class="pchemCellWrap">
-        <div class="pchemCell">{{key}}</div>
-        <div class="pchemCell">{{val}}</div>
+        <div style="border: 1px solid #EEF0E6;">
+        {{key}}: {{val}} <br>
         </div>
+        <!-- <div class="pchemCellWrap"> -->
+        <!-- <div class="pchemCell">{{key}}</div> -->
+        <!-- <div class="pchemCell">{{val}}</div> -->
+        <!-- </div> -->
     {% endfor %}
     </td>
     <td>{{data.sparc.water_sol|default:""}}</td>
@@ -79,9 +88,13 @@
     <td>{{data.epi.vapor_press|default:""}}</td>
     <td>
     {% for key, val in data.test.vapor_press.items %}
-        <div class="pchemCell">{{key}}</div>
-        <div class="pchemCell">{{val}}</div>
-        <br>
+        <div style="border: 1px solid #EEF0E6;">
+        {{key}}: {{val}} <br>
+        </div>
+        <!-- <div class="pchemCellWrap"> -->
+        <!-- <div class="pchemCell">{{key}}</div> -->
+        <!-- <div class="pchemCell">{{val}}</div> -->
+        <!-- </div> -->
     {% endfor %}
     </td>
     <td>{{data.sparc.vapor_press|default:""}}</td>
