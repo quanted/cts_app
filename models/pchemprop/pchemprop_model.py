@@ -181,9 +181,9 @@ headers = {'Content-Type' : 'application/json'}
 def makeTestCall(url, postData=None):
 	
 	if postData:
-		response = requests.post(url, data=postData, headers=headers, timeout=60)
+		response = requests.post(url, data=postData, headers=headers)
 	else:
-		response = requests.get(url, headers=headers, timeout=60)
+		response = requests.get(url, headers=headers)
 
 	# logging.info("--- RESPONSE: {} --- ".format(response.content))
 
