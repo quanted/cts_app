@@ -128,7 +128,13 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 
 	testMethodsList = ['fda', 'hierarchical', 'group', 'consensus', 'neighbor']
 
-	baseUrl = "http://134.67.114.6/test"
+	url = ""
+	if 'CTS_TEST_SERVER_INTRANET' in os.environ:
+		url = os.environ['CTS_TEST_SERVER_INTRANET']
+	else:
+		url = os.environ['CTS_TEST_SERVER']
+
+	baseUrl = url + "/test"
 	# baseUrl = "http://a.ibdb.net/cts" #create molecule with id
 	molUrl = "/molecules"
 
