@@ -27,8 +27,8 @@ os.environ.update({
     'UBERTOOL_REST_SERVER': 'http://172.20.100.15:7777',        # CGI Internal
     'CTS_JCHEM_SERVER': 'http://172.20.100.12',                 # jchem rest server (internal)
     'CTS_JCHEM_SERVER_INTRANET': 'http://134.67.114.2',         # jchem rest server (intranet)
-    'CTS_TEST_SERVER': 'http://172.20.100.16',                  # test rest rserver (internal)
-    'CTS_TEST_SERVER_INTRNET': 'http://134.67.114.6',            # test rest server (intranet)
+    'CTS_TEST_SERVER_INTRANET': 'http://172.20.100.16',         # test rest rserver (internal)
+    'CTS_TEST_SERVER': 'http://134.67.114.6',                   # test rest server (intranet)
     'PROJECT_PATH': PROJECT_ROOT,
     'SITE_SKIN': ''                          # Leave empty ('') for default skin, 'EPA' for EPA skin
 })

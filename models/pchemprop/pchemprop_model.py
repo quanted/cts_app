@@ -129,11 +129,16 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 
 	testMethodsList = ['fda', 'hierarchical', 'group', 'consensus', 'neighbor']
 
+	logging.info(type(os.environ))
+	logging.info("{}".format(os.environ))
+
 	url = ""
 	if 'CTS_TEST_SERVER_INTRANET' in os.environ:
+		logging.info("Intranet path exists!!!")
 		url = os.environ['CTS_TEST_SERVER_INTRANET']
 	else:
 		url = os.environ['CTS_TEST_SERVER']
+		logging.info("No intranet path!!!")
 
 	baseUrl = url + "/test"
 	# baseUrl = "http://a.ibdb.net/cts" #create molecule with id
@@ -143,13 +148,13 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 
 	# give molecule an id to use for test calculations
 	postData = {
-		"id": 7,
+		"id": 101,
 		"smiles": str(structure)
 	}	
 	# response = makeTestCall(baseUrl + molUrl, postData) #already response.content
 	response = requests.post(baseUrl + molUrl, data=json.dumps(postData), headers=headers)
 
-	# logging.info(" ### POST Molecule Response: {} ### ".format(response))
+	logging.info(" ### POST Molecule Response: {} ### ".format(response))
 
 	testPropsList = checkedCalcsAndPropsDict.get('test', None)
 
