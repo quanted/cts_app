@@ -32,7 +32,7 @@
     </tr>
 
 
-    <!-- <td style="padding:4px;">Octanol/Water Partition Coefficient</td>
+    <!-- <td>Octanol/Water Partition Coefficient</td>
     <td>
     {% for key, val in data.chemaxon.kow_no_ph.items %}
         <div class="pchemCellWrap">
@@ -50,7 +50,7 @@
     <td>{{data.epi.boiling_point|default:""}}</td>
     <td>
     {% for key, val in data.test.boiling_point.items %}
-        <div style="border: 1px solid #EEF0E6;">
+        <div class="pchemCell">
         {{key}}: {{val}} <br>
         </div>
         <!-- <div class="pchemCellWrap"> -->
@@ -69,7 +69,7 @@
     <td>{{data.epi.water_sol|default:""}}</td>
     <td>
     {% for key, val in data.test.water_sol.items %}
-        <div style="border: 1px solid #EEF0E6;">
+        <div class="pchemCell">
         {{key}}: {{val}} <br>
         </div>
         <!-- <div class="pchemCellWrap"> -->
@@ -88,7 +88,7 @@
     <td>{{data.epi.vapor_press|default:""}}</td>
     <td>
     {% for key, val in data.test.vapor_press.items %}
-        <div style="border: 1px solid #EEF0E6;">
+        <div class="pchemCell">
         {{key}}: {{val}} <br>
         </div>
         <!-- <div class="pchemCellWrap"> -->

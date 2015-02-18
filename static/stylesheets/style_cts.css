@@ -1591,6 +1591,7 @@ div.pchemCellWrap {
 /* main pchemprop output table (cts_pchemprop_outputTable.html) */
 #pchempropOutputTable td {
   padding: 0px;
+  font-size: 12px;
 }
 
 /* dropdown menu for node mouseover event */
