@@ -89,16 +89,11 @@ class pchemprop(object):
 							propList.append(propKey)
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		# self.checkedCalcsAndPropsDict = checkedCalcsAndPropsDict
-
 		# TODO: Make more general. getChemaxonResults() could probably be changed to loop
 		# through all calculators. Also, establish standardized variable names to reduce
 		# amount of code (e.g., conditionals checking prop values)
 		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict)
-
-		# self.testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # kow_wph not available
-		# self.measuredResultsDict = getMeasuredResults(self.chem_struct, checkedCalcsAndPropsDict)
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
@@ -116,6 +111,9 @@ class pchemprop(object):
 		# fileout.close()
 
 
+# def 
+
+
 def getTestResults(structure, checkedCalcsAndPropsDict):
 	"""
 	Gets pchemprop data from TEST ws.
@@ -126,59 +124,82 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	!!! TODO: Move this where it belongs: the test_cts app folder. Ultimately
 	do the same for chemaxon and the other calculators !!!
 	"""
+	from REST import webservice_map as wsMap
 
-	testMethodsList = ['fda', 'hierarchical', 'group', 'consensus', 'neighbor']
+	testMethodsList = wsMap.calculator['test']['methods']
 
-	# logging.info(type(os.environ))
-	# logging.info("{}".format(os.environ))
-
-	url = ""
-	if 'CTS_TEST_SERVER_INTRANET' in os.environ:
-		# logging.info("Intranet path exists!!!")
-		url = os.environ['CTS_TEST_SERVER_INTRANET']
-	else:
-		url = os.environ['CTS_TEST_SERVER']
-		# logging.info("No intranet path!!!")
-
-	baseUrl = url + "/test"
-	# baseUrl = "http://a.ibdb.net/cts" #create molecule with id
 	molUrl = "/molecules"
+	# testUrl = baseUrl + "/test/calc" #/test/calc/{id}/[property]/{method} method - fda, neighbor, and more!
+	# epiUrl = baseUrl + "/epi/calc/" #/epi/calc/{id}/[propery] (only one method [yay])
 
-	testUrl = baseUrl + "/test/calc" #/test/calc/{id}/[property]/{method} method - fda, neighbor, and more!
+	testUrl = wsMap.calculator['test']['baseUrl'] # http://serverLocation/test/test/calc
 
-	# give molecule an id to use for test calculations
+	# give molecule an id to use for test calculations (recycling for now)
 	postData = {
 		"id": 101,
 		"smiles": str(structure)
 	}	
-	# response = makeTestCall(baseUrl + molUrl, postData) #already response.content
-	response = requests.post(baseUrl + molUrl, data=json.dumps(postData), headers=headers)
+	response = requests.post(wsMap.baseUrl + molUrl, data=json.dumps(postData), headers=headers)
 
-	logging.info(" ### POST Molecule Response: {} ### ".format(response))
+	# logging.info(" ### POST Molecule Response: {} ### ".format(response))
 
 	testPropsList = checkedCalcsAndPropsDict.get('test', None)
+	epiPropsList = checkedCalcsAndPropsDict.get('epi', None) # default to None
 
-	testUrl += "/" + str(postData["id"]) # append id to test request
+	testUrl += "/" + str(postData['id']) # append id to test request
+	# epiUrl += "/" + str(postData['id'])
 
-	if testPropsList:
-		testValues = {}
-		for prop in testPropsList:
-			logging.info("inside prop loop")
-			# testValues.update({prop: })
-			for method in testMethodsList:
-				if prop == "melting_point":
-					testValues.update({prop: makeTestCall(testUrl + "/meltingPoint/" + method)})
-				elif prop == "boiling_point":
-					testValues.update({prop: makeTestCall(testUrl + "/boilingPoint/" + method)})
-				elif prop == "water_sol":
-					testValues.update({prop: makeTestCall(testUrl + "/waterSolubility/" + method)})
-				elif prop == "vapor_press":
-					testValues.update({prop: makeTestCall(testUrl + "/vaporPressure/" + method)})
+	logging.info("{}".format(checkedCalcsAndPropsDict))
+
+	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
+		# loop through calcs and their selected props
+		if calcPropsList:
+			calcValues = {}
+			for prop in calcPropsList:
+				for method in methodsDict[calc]:
+					# if prop == "melting_point":
+					calcValues.update({prop: getDataForCalc(calc, prop, method)})
+						# testValues.update({prop: makeTestCall(testUrl + "/meltingPoint/" + method)})
+					# elif prop == "boiling_point":
+						# testValues.update({prop: makeTestCall(testUrl + "/boilingPoint/" + method)})
+					# elif prop == "water_sol":
+						# testValues.update({prop: makeTestCall(testUrl + "/waterSolubility/" + method)})
+					# elif prop == "vapor_press":
+						# testValues.update({prop: makeTestCall(testUrl + "/vaporPressure/" + method)})
+
+	# if testPropsList:
+	# 	testValues = {}
+	# 	for prop in testPropsList:
+	# 		for method in testMethodsList:
+	# 			if prop == "melting_point":
+	# 				testValues.update({prop: makeTestCall(testUrl + "/meltingPoint/" + method)})
+	# 			elif prop == "boiling_point":
+	# 				testValues.update({prop: makeTestCall(testUrl + "/boilingPoint/" + method)})
+	# 			elif prop == "water_sol":
+	# 				testValues.update({prop: makeTestCall(testUrl + "/waterSolubility/" + method)})
+	# 			elif prop == "vapor_press":
+	# 				testValues.update({prop: makeTestCall(testUrl + "/vaporPressure/" + method)})
 		
 		logging.info(" ### TEST Data Response: {} ### ".format(testValues))
 
 		return testValues
 	else: return None
+
+
+# def getDataForCalc(calc, prop, method):
+
+# 	if prop == "melting_point":
+# 		if calc == 'test':
+# 			return makeTestCall(testUrl + "/meltingPoint/" + method)
+# 		elif calc == ''
+
+# 	elif prop == "boiling_point":
+
+
+# 	elif prop == "water_sol":
+
+
+# 	elif prop == "vapor_press":
 
 
 headers = {'Content-Type' : 'application/json'}
