@@ -129,16 +129,11 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 
 	testMethodsList = ['fda', 'hierarchical', 'group', 'consensus', 'neighbor']
 
-	# logging.info(type(os.environ))
-	# logging.info("{}".format(os.environ))
-
 	url = ""
 	if 'CTS_TEST_SERVER_INTRANET' in os.environ:
-		# logging.info("Intranet path exists!!!")
 		url = os.environ['CTS_TEST_SERVER_INTRANET']
 	else:
 		url = os.environ['CTS_TEST_SERVER']
-		# logging.info("No intranet path!!!")
 
 	baseUrl = url + "/test"
 	# baseUrl = "http://a.ibdb.net/cts" #create molecule with id
