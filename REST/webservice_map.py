@@ -16,7 +16,7 @@ def determineBaseUrl():
 		return os.environ['CTS_TEST_SERVER']
 
 
-baseUrl = determineBaseUrl();
+baseUrl = determineBaseUrl()
 # baseUrl = "http://a.ibdb.net/cts" # old
 
 # p-chem properties by form field names 
@@ -27,13 +27,43 @@ calculator = {
 
 	'test': {
 		'name': 'test',
-		'methods': ['fda', 'hierarchical', 'group', 'consensus', 'neighbor'],
-		'baseUrl': baseUrl + '/test/test/calc',
+		'methods': ['fda', 'hierarchical', 'group', 'neighbor'],
+		'methodsResultKeys': {
+			'fda': 'TESTFDA', 
+			'hierarchical': 'TESTHierarchical', 
+			'group': 'TESTGroupContribution', 
+			# 'consensus': 'TESTConsensus', 
+			'neighbor': 'TESTNearestNeighbor'},
+		'url': baseUrl + '/test/test/calc',
 		'props': {
 			'melting_point': 'meltingPoint',
 			'boiling_point': 'boilingPoint',
 			'water_sol': 'waterSolubility',
 			'vapor_press': 'vaporPressure'
+		},
+		'values': {
+			'melting_point': {},
+			'boiling_point': {},
+			'water_sol': {},
+			'vapor_press': {}
+		}
+	},
+
+	'epi': {
+		'name': 'epi',
+		'methods': [''], # no methods
+		'url': baseUrl + '/test/epi/calc',
+		'props': {
+			'melting_point': 'meltingPtDegCEstimated',
+			'boiling_point': 'boilingPtDegCEstimated',
+			'water_sol': 'waterSolMgLEstimated',
+			'vapor_press': 'vaporPressMmHgEstimated'
+		},
+		'values': {
+			'melting_point': {},
+			'boiling_point': {},
+			'water_sol': {},
+			'vapor_press': {}
 		}
 	}
 
@@ -47,5 +77,3 @@ Calculator:
   propUrls
   props
 """
-
-# def 

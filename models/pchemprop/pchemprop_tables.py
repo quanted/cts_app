@@ -6,11 +6,13 @@ from django.utils.safestring import mark_safe
 import logging
 import json
 import pchemprop_parameters
+from REST import webservice_map as wsMap
 
 
 # some constants:
 methodsListChemaxon = ["KLOP", "VG", "PHYS"] # method names used by some chemaxon properties
-methodsListTEST = ['FDA', 'Hierarchical', 'GroupContribution', 'Consensus', 'NearestNeighbor']
+# methodsListTEST = ['FDA', 'Hierarchical', 'GroupContribution', 'Consensus', 'NearestNeighbor']
+methodsListTEST = ['fda', 'hierarchical', 'group', 'consensus', 'neighbor']
 n = 3 # number to round values to
 headings = ["ChemAxon", "EPI Suite", "TEST", "SPARC", "Average"] # calulators 
 
@@ -208,10 +210,13 @@ def output_pchem_table(pchemprop_obj):
     mainDataDict = {} # calc -> prop -> (method) -> data
     for calc, calcData in pchemprop_obj.resultsDict.items():
         data = {} # prop -> data
+        # if calcData != None and calc == 'chemaxon':
         if calcData != None:
             for prop, propData in calcData.items():
                 data.update({prop: getPropDataFromCalc(calc, prop, propData, pchemprop_obj)})
             mainDataDict.update({calc: data})
+        # elif calc != 'chemaxon':
+        #     data.update({prop: getPropDataFromCalc(calc, None, calcData, None)})
 
     # data = {
     #     "chemaxon": {
@@ -224,7 +229,7 @@ def output_pchem_table(pchemprop_obj):
     #     }
     # }
 
-    logging.info(" @@@ Main Data Dict: {} @@@ ".format(mainDataDict))
+    # logging.info(" @@@ Main Data Dict: {} @@@ ".format(mainDataDict))
 
     kow_ph = 0.0
     if pchemprop_obj.kow_ph:
@@ -258,6 +263,9 @@ def getPropDataFromCalc(calc, prop, propData, pchemprop_obj):
 
     # logging.info("-{}-".format(propData))
 
+    # TODO: Use webservice_map.py in REST or some other code-reuse way
+    # instead of this "stunt"
+
     if calc == "chemaxon":
         if prop == "ion_con":
             return getIonConDataChemaxon(pchemprop_obj)
@@ -265,25 +273,38 @@ def getPropDataFromCalc(calc, prop, propData, pchemprop_obj):
             return getKowNoPhChemaxon(pchemprop_obj)
         elif prop == "kow_wph":
             return getKowWphChemaxon(pchemprop_obj)
+
     elif calc == "test":
-        propData = json.loads(propData)
+        # propData = json.loads(propData)
+        # logging.info("TEST propData: {}, {}".format(prop, propData))
         testDict = {}
         for method in methodsListTEST:
             if prop == "melting_point":
-                 testDict.update({method: propData['meltingPointTEST' + method]})
+                testDict.update({method: propData[method]})
+                # testDict.update({method: propData['meltingPointTEST' + method]})
                 # data.update({'meltingPointTESTFDA': propData['meltingPointTESTFDA']})
             elif prop == "boiling_point":
-                 testDict.update({method: propData['boilingPointTEST' + method]})
+                testDict.update({method: propData[method]})
+                # testDict.update({method: propData['boilingPointTEST' + method]})
                 # data.update({'boilingPointTESTFDA': propData['boilingPointTESTFDA']})
             elif prop == "vapor_press":
-                 testDict.update({method: propData['vaporPressureTEST' + method]})
+                testDict.update({method: propData[method]})
+                # testDict.update({method: propData['vaporPressureTEST' + method]})
                 # data.update({'vaporPressureTESTFDA': propData['vaporPressureTESTFDA']})
             elif prop == "water_sol":
-                 testDict.update({method: propData['waterSolubilityTEST' + method]})
+                testDict.update({method: propData[method]})
+                # testDict.update({method: propData['waterSolubilityTEST' + method]})
                 # data.update({'waterSolubilityTESTFDA': propData['waterSolubilityTESTFDA']})
             # elif prop == "kow_no_ph":
             #     data = propData['']
+
+        # logging.info("TEST Dict: {}".format(testDict))
+
         return testDict
+
+    elif calc == "epi":
+        # propData = json.loads(propData)
+        return propData[wsMap.calculator['epi']['props'][prop]]
 
 
 # kowNoPhResults = {key: [] for key in methodsListChemaxon} # methodsListChemaxon up top (KLOP, VG, PHYS)

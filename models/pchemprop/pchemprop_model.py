@@ -89,29 +89,27 @@ class pchemprop(object):
 							propList.append(propKey)
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		# TODO: Make more general. getChemaxonResults() could probably be changed to loop
-		# through all calculators. Also, establish standardized variable names to reduce
-		# amount of code (e.g., conditionals checking prop values)
 		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
-		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict)
+		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
+
+
+		# NOTE: testResultsDict is getting test, measured, and epi data. it works but 
+		# should probably be made less confusing
+		# TODO: improve on the chemaxon web service calls
+
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
-			"epi": None,
+			"epi": testResultsDict.get('epi', None),
 			"sparc": None,
-			"test": testResultsDict,
+			"test": testResultsDict.get('test', None)
 		}
 
-		# logging.info(" ### Main Dictionary: {} ###".format(self.resultsDict))
-
-		# self.rawData = self.chemaxonResultsDict
+		logging.info("Results Dictionary: {}".format(self.resultsDict))
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
 		# fileout.write(json.dumps(self.rawData))
 		# fileout.close()
-
-
-# def 
 
 
 def getTestResults(structure, checkedCalcsAndPropsDict):
@@ -126,94 +124,42 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	"""
 	from REST import webservice_map as wsMap
 
-	testMethodsList = wsMap.calculator['test']['methods']
+	molID = 7 # NOTE: recycling id for now. this will change when db is implemented!!
 
-	molUrl = "/molecules"
-	# testUrl = baseUrl + "/test/calc" #/test/calc/{id}/[property]/{method} method - fda, neighbor, and more!
-	# epiUrl = baseUrl + "/epi/calc/" #/epi/calc/{id}/[propery] (only one method [yay])
+	# give molecule an id to use for test calculations
+	postData = { "id": molID, "smiles": str(structure) }
+	response = requests.post(wsMap.baseUrl + "/test/molecules", data=json.dumps(postData), 
+								headers={'Content-Type': 'application/json'})
 
-	testUrl = wsMap.calculator['test']['baseUrl'] # http://serverLocation/test/test/calc
+	calcValues = {}
 
-	# give molecule an id to use for test calculations (recycling for now)
-	postData = {
-		"id": 101,
-		"smiles": str(structure)
-	}	
-	response = requests.post(wsMap.baseUrl + molUrl, data=json.dumps(postData), headers=headers)
-
-	# logging.info(" ### POST Molecule Response: {} ### ".format(response))
-
-	testPropsList = checkedCalcsAndPropsDict.get('test', None)
-	epiPropsList = checkedCalcsAndPropsDict.get('epi', None) # default to None
-
-	testUrl += "/" + str(postData['id']) # append id to test request
-	# epiUrl += "/" + str(postData['id'])
-
-	logging.info("{}".format(checkedCalcsAndPropsDict))
-
+	# checkedCalcsAndPropsDict format ex: {'test': ['ion_con', 'water_sol'], 'epi': []}
 	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
 		# loop through calcs and their selected props
+		calcDict = wsMap.calculator[calc] # get calc dictionary (webservice_map.py)
+		# calcValues[calc] = {}
 		if calcPropsList:
-			calcValues = {}
 			for prop in calcPropsList:
-				for method in methodsDict[calc]:
-					# if prop == "melting_point":
-					calcValues.update({prop: getDataForCalc(calc, prop, method)})
-						# testValues.update({prop: makeTestCall(testUrl + "/meltingPoint/" + method)})
-					# elif prop == "boiling_point":
-						# testValues.update({prop: makeTestCall(testUrl + "/boilingPoint/" + method)})
-					# elif prop == "water_sol":
-						# testValues.update({prop: makeTestCall(testUrl + "/waterSolubility/" + method)})
-					# elif prop == "vapor_press":
-						# testValues.update({prop: makeTestCall(testUrl + "/vaporPressure/" + method)})
+				logging.info("methods: {}".format(calcDict['methods']))
+				# calcValues[calc].update({prop: {}})
+				methodsDict = {}
+				for method in calcDict['methods']:
+					# get prop data from calc and with any methods it uses (if any)
+					url = calcDict['url'] + '/' + str(molID) + '/' + calcDict['props'][prop] + '/' + method
+					molJson = requests.get(url).content # gets value and returns json of mol info
+					logging.info("Result for {}: {}".format(method, molJson))
+					resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
+					# calcValues.update(
+					# 	{ calc: { prop: {
+					# 				method: json.loads(molJson)[resultKey]
+					# 			}
+					# }})
+					calcValues[calc][prop].update({method: json.loads(molJson[resultKey])})
+	logging.info("calcValues: {}".format(calcValues))
+	return calcValues
 
-	# if testPropsList:
-	# 	testValues = {}
-	# 	for prop in testPropsList:
-	# 		for method in testMethodsList:
-	# 			if prop == "melting_point":
-	# 				testValues.update({prop: makeTestCall(testUrl + "/meltingPoint/" + method)})
-	# 			elif prop == "boiling_point":
-	# 				testValues.update({prop: makeTestCall(testUrl + "/boilingPoint/" + method)})
-	# 			elif prop == "water_sol":
-	# 				testValues.update({prop: makeTestCall(testUrl + "/waterSolubility/" + method)})
-	# 			elif prop == "vapor_press":
-	# 				testValues.update({prop: makeTestCall(testUrl + "/vaporPressure/" + method)})
-		
-		logging.info(" ### TEST Data Response: {} ### ".format(testValues))
-
-		return testValues
-	else: return None
-
-
-# def getDataForCalc(calc, prop, method):
-
-# 	if prop == "melting_point":
-# 		if calc == 'test':
-# 			return makeTestCall(testUrl + "/meltingPoint/" + method)
-# 		elif calc == ''
-
-# 	elif prop == "boiling_point":
-
-
-# 	elif prop == "water_sol":
-
-
-# 	elif prop == "vapor_press":
-
-
-headers = {'Content-Type' : 'application/json'}
-
-def makeTestCall(url, postData=None):
-	
-	if postData:
-		response = requests.post(url, data=postData, headers=headers)
-	else:
-		response = requests.get(url, headers=headers)
-
-	# logging.info("--- RESPONSE: {} --- ".format(response.content))
-
-	return response.content
+	# molUrl = wsMap.baseUrl + "/test/molecules/findByID/" + str(molID)
+	# return json.loads(requests.get(molUrl).content) # return Molecule after filling values
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
