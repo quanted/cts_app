@@ -89,27 +89,23 @@ class pchemprop(object):
 							propList.append(propKey)
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		# self.checkedCalcsAndPropsDict = checkedCalcsAndPropsDict
-
-		# TODO: Make more general. getChemaxonResults() could probably be changed to loop
-		# through all calculators. Also, establish standardized variable names to reduce
-		# amount of code (e.g., conditionals checking prop values)
 		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
-		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict)
+		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
 
-		# self.testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # kow_wph not available
-		# self.measuredResultsDict = getMeasuredResults(self.chem_struct, checkedCalcsAndPropsDict)
+
+		# NOTE: testResultsDict is getting test, measured, and epi data. it works but 
+		# should probably be made less confusing
+		# TODO: improve on the chemaxon web service calls
+
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
-			"epi": None,
+			"epi": testResultsDict.get('epi', None),
 			"sparc": None,
-			"test": testResultsDict,
+			"test": testResultsDict.get('test', None)
 		}
 
-		# logging.info(" ### Main Dictionary: {} ###".format(self.resultsDict))
-
-		# self.rawData = self.chemaxonResultsDict
+		logging.info("Results Dictionary: {}".format(self.resultsDict))
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
 		# fileout.write(json.dumps(self.rawData))
@@ -126,73 +122,44 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	!!! TODO: Move this where it belongs: the test_cts app folder. Ultimately
 	do the same for chemaxon and the other calculators !!!
 	"""
+	from REST import webservice_map as wsMap
 
-	testMethodsList = ['fda', 'hierarchical', 'group', 'consensus', 'neighbor']
-
-	# logging.info(type(os.environ))
-	# logging.info("{}".format(os.environ))
-
-	url = ""
-	if 'CTS_TEST_SERVER_INTRANET' in os.environ:
-		# logging.info("Intranet path exists!!!")
-		url = os.environ['CTS_TEST_SERVER_INTRANET']
-	else:
-		url = os.environ['CTS_TEST_SERVER']
-		# logging.info("No intranet path!!!")
-
-	baseUrl = url + "/test"
-	# baseUrl = "http://a.ibdb.net/cts" #create molecule with id
-	molUrl = "/molecules"
-
-	testUrl = baseUrl + "/test/calc" #/test/calc/{id}/[property]/{method} method - fda, neighbor, and more!
+	molID = 7 # NOTE: recycling id for now. this will change when db is implemented!!
 
 	# give molecule an id to use for test calculations
-	postData = {
-		"id": 101,
-		"smiles": str(structure)
-	}	
-	# response = makeTestCall(baseUrl + molUrl, postData) #already response.content
-	response = requests.post(baseUrl + molUrl, data=json.dumps(postData), headers=headers)
+	postData = { "id": molID, "smiles": str(structure) }
+	response = requests.post(wsMap.baseUrl + "/test/molecules", data=json.dumps(postData), 
+								headers={'Content-Type': 'application/json'})
 
-	logging.info(" ### POST Molecule Response: {} ### ".format(response))
+	calcValues = {}
 
-	testPropsList = checkedCalcsAndPropsDict.get('test', None)
+	# checkedCalcsAndPropsDict format ex: {'test': ['ion_con', 'water_sol'], 'epi': []}
+	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
+		# loop through calcs and their selected props
+		calcDict = wsMap.calculator[calc] # get calc dictionary (webservice_map.py)
+		# calcValues[calc] = {}
+		if calcPropsList:
+			for prop in calcPropsList:
+				logging.info("methods: {}".format(calcDict['methods']))
+				# calcValues[calc].update({prop: {}})
+				methodsDict = {}
+				for method in calcDict['methods']:
+					# get prop data from calc and with any methods it uses (if any)
+					url = calcDict['url'] + '/' + str(molID) + '/' + calcDict['props'][prop] + '/' + method
+					molJson = requests.get(url).content # gets value and returns json of mol info
+					logging.info("Result for {}: {}".format(method, molJson))
+					resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
+					# calcValues.update(
+					# 	{ calc: { prop: {
+					# 				method: json.loads(molJson)[resultKey]
+					# 			}
+					# }})
+					calcValues[calc][prop].update({method: json.loads(molJson[resultKey])})
+	logging.info("calcValues: {}".format(calcValues))
+	return calcValues
 
-	testUrl += "/" + str(postData["id"]) # append id to test request
-
-	if testPropsList:
-		testValues = {}
-		for prop in testPropsList:
-			logging.info("inside prop loop")
-			# testValues.update({prop: })
-			for method in testMethodsList:
-				if prop == "melting_point":
-					testValues.update({prop: makeTestCall(testUrl + "/meltingPoint/" + method)})
-				elif prop == "boiling_point":
-					testValues.update({prop: makeTestCall(testUrl + "/boilingPoint/" + method)})
-				elif prop == "water_sol":
-					testValues.update({prop: makeTestCall(testUrl + "/waterSolubility/" + method)})
-				elif prop == "vapor_press":
-					testValues.update({prop: makeTestCall(testUrl + "/vaporPressure/" + method)})
-		
-		logging.info(" ### TEST Data Response: {} ### ".format(testValues))
-
-		return testValues
-	else: return None
-
-
-headers = {'Content-Type' : 'application/json'}
-
-def makeTestCall(url, postData=None):
-	
-	if postData:
-		response = requests.post(url, data=postData, headers=headers)
-	else:
-		response = requests.get(url, headers=headers)
-
-	# logging.info("--- RESPONSE: {} --- ".format(response.content))
-
-	return response.content
+	# molUrl = wsMap.baseUrl + "/test/molecules/findByID/" + str(molID)
+	# return json.loads(requests.get(molUrl).content) # return Molecule after filling values
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
