@@ -39,19 +39,21 @@ calculator = {
 			'melting_point': 'meltingPoint',
 			'boiling_point': 'boilingPoint',
 			'water_sol': 'waterSolubility',
-			'vapor_press': 'vaporPressure'
+			'vapor_press': 'vaporPressure',
 		}
 	},
 
 	'epi': {
 		'name': 'epi',
-		'methods': [''], # no methods
+		'methods': [''], # no methods for epi suite
 		'url': baseUrl + '/test/epi/calc',
 		'props': {
 			'melting_point': 'meltingPtDegCEstimated',
 			'boiling_point': 'boilingPtDegCEstimated',
 			'water_sol': 'waterSolMgLEstimated',
-			'vapor_press': 'vaporPressMmHgEstimated'
+			'vapor_press': 'vaporPressMmHgEstimated',
+			'henrys_law_con': 'henryLcBondAtmM3Mole',
+			'kow_no_ph': 'logKowEstimate'
 		}
 	}
 

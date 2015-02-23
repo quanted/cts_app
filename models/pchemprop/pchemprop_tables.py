@@ -88,8 +88,9 @@ def getKowNoPhChemaxon(pchemprop_obj):
 
     TODO: Make more general for all calculators
     """
+    root = pchemprop_obj.resultsDict['chemaxon']
     kowNoPhResults = {key: [] for key in methodsListChemaxon} # methodsListChemaxon up top (KLOP, VG, PHYS)
-    if 'kow_no_ph' in pchemprop_obj.resultsDict['chemaxon']:
+    if root and 'kow_no_ph' in root:
         for method in methodsListChemaxon:
             try:
                 root = pchemprop_obj.resultsDict['chemaxon']['kow_no_ph']
@@ -115,11 +116,10 @@ def getKowWphChemaxon(pchemprop_obj):
     """
     root = pchemprop_obj.resultsDict['chemaxon']
     kowWphResults = {key: [] for key in methodsListChemaxon}
-    if 'kow_wph' in root:
+    if root and 'kow_wph' in root:
         for method in methodsListChemaxon:
             try:
                 root = pchemprop_obj.resultsDict['chemaxon']['kow_wph']
-                # value = root[method]['data'][0]['logD']['logD']
                 root = root[method]['data'][0]['logD']
 
                 phForLogD = float(pchemprop_obj.kow_ph) # convert to float

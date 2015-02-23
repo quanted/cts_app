@@ -12,6 +12,8 @@ import logging
 from models.chemspec import chemspec_model # for getStructInfo(), TODO: move func to more generic place
 import decimal
 import os
+import eventlet
+eventlet.monkey_patch()
 
 
 n = 3 # number of decimal places to round values
@@ -89,12 +91,10 @@ class pchemprop(object):
 							propList.append(propKey)
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		chemaxonResultsDict, testResultsDict = None, None
+		# chemaxonResultsDict, testResultsDict = None, None
 
-		if chemaxon == 'on':
-			chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
-		elif test == 'on':
-			testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
+		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
+		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
@@ -102,6 +102,13 @@ class pchemprop(object):
 			"sparc": None,
 			"test": testResultsDict.get('test', None)
 		}
+
+		# self.resultsDict = {
+		# 	"chemaxon": chemaxonResultsDict,
+		# 	"epi": None,
+		# 	"sparc": None,
+		# 	"test": None
+		# }
 
 		# logging.info("Results Dictionary: {}".format(self.resultsDict))
 
@@ -121,7 +128,7 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	do the same for chemaxon and the other calculators !!!
 	"""
 	from REST import webservice_map as wsMap
-
+	
 	molID = 7 # NOTE: recycling id for now. this will change when db is implemented!!
 
 	# give molecule an id to use for test calculations
@@ -130,30 +137,35 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 								headers={'Content-Type': 'application/json'})
 
 	calcValues = {}
-
 	# checkedCalcsAndPropsDict format ex: {'test': ['ion_con', 'water_sol'], 'epi': []}
 	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
-		# loop through calcs and their selected props
 		if calcPropsList and calc != 'chemaxon':
-			calcDict = wsMap.calculator[calc] # get calc dictionary (webservice_map.py)
+			calcDict = wsMap.calculator[calc] # get calc data (webservice_map.py)
+			calcValues.update({calc: {}})
 			for prop in calcPropsList:
-				# calcValues[prop] = {calc: {}}
-				calcValues[calc] = {prop: {}}
+				if calcDict['methods'][0] != '': 
+					calcValues[calc].update({prop: {}})
+				else: 
+					calcValues[calc].update({prop: None})
 				for method in calcDict['methods']:
 					url = calcDict['url'] + '/' + str(molID) + '/' + calcDict['props'][prop] + '/' + method
-					molData = json.loads(requests.get(url).content) # gets value and returns json of mol info
-					resultKey = ""
-					if 'code' not in molData: 
-						resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
-						# calcValues[prop][calc].update({method: molData[resultKey]})
-						calcValues[calc][prop].update({method: molData[resultKey]})
+					try:
+						molData = json.loads(requests.get(url, timeout=10).content) # gets value and returns json of mol info
+					except requests.exceptions.Timeout:
+						logging.warning("TIMEOUT EXCPETION for {}->{}->{}".format(calc, prop, method))
+						molData = {'code': 'timed out'}
+					if 'code' not in molData:
+						if method != '':
+							resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
+							calcValues[calc][prop].update({method: molData[resultKey]})
+						else:
+							calcValues[calc][prop] = molData[calcDict['props'][prop]]
 					else:
-						# calcValues[prop][calc].update({method: None})
-						calcValues[calc][prop].update({method: None})
+						if method != '':
+							calcValues[calc][prop].update({method: "error"})
+						else:
+							calcValues[calc][prop] = "error"
 
-	# molData = requests.get(wsMap.baseUrl + '/test/molecules/findByID/' + str(molID)).content
-	# logging.info("Molecule Data: {}".format(molData))
-	logging.info("calcValues: {}".format(calcValues))
 	return calcValues
 
 
