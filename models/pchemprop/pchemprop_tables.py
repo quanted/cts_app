@@ -207,29 +207,27 @@ def output_pchem_table(pchemprop_obj):
     <div class="out_">
     """
 
-    mainDataDict = {} # calc -> prop -> (method) -> data
-    for calc, calcData in pchemprop_obj.resultsDict.items():
-        data = {} # prop -> data
-        # if calcData != None and calc == 'chemaxon':
-        if calcData != None:
-            for prop, propData in calcData.items():
-                data.update({prop: getPropDataFromCalc(calc, prop, propData, pchemprop_obj)})
-            mainDataDict.update({calc: data})
+    mainDataDict = {
+        "chemaxon": {
+            "ion_con": getIonConDataChemaxon(pchemprop_obj),
+            "kow_no_ph": getKowNoPhChemaxon(pchemprop_obj),
+            "kow_wph": getKowWphChemaxon(pchemprop_obj)
+        },
+        'test': pchemprop_obj.resultsDict['test'],
+        'epi': pchemprop_obj.resultsDict['epi']
+    }
+
+    # for calc, calcData in pchemprop_obj.resultsDict.items():
+    #     data = {} # prop -> data
+    #     if calcData != None and calc != 'chemaxon':
+    #         for prop, propData in calcData.items():
+    #             data.update({prop: getPropDataFromCalc(calc, prop, propData, pchemprop_obj)})
+    #         mainDataDict.update({calc: data}) 
         # elif calc != 'chemaxon':
         #     data.update({prop: getPropDataFromCalc(calc, None, calcData, None)})
 
-    # data = {
-    #     "chemaxon": {
-    #         "ion_con": getIonConDataChemaxon(pchemprop_obj),
-    #         "kow_no_ph": getKowNoPhChemaxon(pchemprop_obj),
-    #         "kow_wph": getKowWphChemaxon(pchemprop_obj)
-    #     },
-    #     "test": {
-    #         ""
-    #     }
-    # }
 
-    # logging.info(" @@@ Main Data Dict: {} @@@ ".format(mainDataDict))
+    logging.info(" @@@ Main Data Dict: {} @@@ ".format(mainDataDict))
 
     kow_ph = 0.0
     if pchemprop_obj.kow_ph:

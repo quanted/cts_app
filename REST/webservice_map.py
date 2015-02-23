@@ -27,12 +27,12 @@ calculator = {
 
 	'test': {
 		'name': 'test',
-		'methods': ['fda', 'hierarchical', 'group', 'neighbor'],
+		'methods': ['fda', 'hierarchical', 'group', 'consensus', 'neighbor'],
 		'methodsResultKeys': {
 			'fda': 'TESTFDA', 
 			'hierarchical': 'TESTHierarchical', 
 			'group': 'TESTGroupContribution', 
-			# 'consensus': 'TESTConsensus', 
+			'consensus': 'TESTConsensus', 
 			'neighbor': 'TESTNearestNeighbor'},
 		'url': baseUrl + '/test/test/calc',
 		'props': {
@@ -40,12 +40,6 @@ calculator = {
 			'boiling_point': 'boilingPoint',
 			'water_sol': 'waterSolubility',
 			'vapor_press': 'vaporPressure'
-		},
-		'values': {
-			'melting_point': {},
-			'boiling_point': {},
-			'water_sol': {},
-			'vapor_press': {}
 		}
 	},
 
@@ -58,22 +52,7 @@ calculator = {
 			'boiling_point': 'boilingPtDegCEstimated',
 			'water_sol': 'waterSolMgLEstimated',
 			'vapor_press': 'vaporPressMmHgEstimated'
-		},
-		'values': {
-			'melting_point': {},
-			'boiling_point': {},
-			'water_sol': {},
-			'vapor_press': {}
 		}
 	}
 
 }
-
-"""
-Calculator:
-  name 
-  methods
-  baseUrl
-  propUrls
-  props
-"""

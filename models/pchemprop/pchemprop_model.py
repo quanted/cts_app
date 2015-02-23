@@ -89,14 +89,12 @@ class pchemprop(object):
 							propList.append(propKey)
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
-		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
+		chemaxonResultsDict, testResultsDict = None, None
 
-
-		# NOTE: testResultsDict is getting test, measured, and epi data. it works but 
-		# should probably be made less confusing
-		# TODO: improve on the chemaxon web service calls
-
+		if chemaxon == 'on':
+			chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
+		elif test == 'on':
+			testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
@@ -105,7 +103,7 @@ class pchemprop(object):
 			"test": testResultsDict.get('test', None)
 		}
 
-		logging.info("Results Dictionary: {}".format(self.resultsDict))
+		# logging.info("Results Dictionary: {}".format(self.resultsDict))
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
 		# fileout.write(json.dumps(self.rawData))
@@ -136,30 +134,27 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	# checkedCalcsAndPropsDict format ex: {'test': ['ion_con', 'water_sol'], 'epi': []}
 	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
 		# loop through calcs and their selected props
-		calcDict = wsMap.calculator[calc] # get calc dictionary (webservice_map.py)
-		# calcValues[calc] = {}
-		if calcPropsList:
+		if calcPropsList and calc != 'chemaxon':
+			calcDict = wsMap.calculator[calc] # get calc dictionary (webservice_map.py)
 			for prop in calcPropsList:
-				logging.info("methods: {}".format(calcDict['methods']))
-				# calcValues[calc].update({prop: {}})
-				methodsDict = {}
+				# calcValues[prop] = {calc: {}}
+				calcValues[calc] = {prop: {}}
 				for method in calcDict['methods']:
-					# get prop data from calc and with any methods it uses (if any)
 					url = calcDict['url'] + '/' + str(molID) + '/' + calcDict['props'][prop] + '/' + method
-					molJson = requests.get(url).content # gets value and returns json of mol info
-					logging.info("Result for {}: {}".format(method, molJson))
-					resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
-					# calcValues.update(
-					# 	{ calc: { prop: {
-					# 				method: json.loads(molJson)[resultKey]
-					# 			}
-					# }})
-					calcValues[calc][prop].update({method: json.loads(molJson[resultKey])})
+					molData = json.loads(requests.get(url).content) # gets value and returns json of mol info
+					resultKey = ""
+					if 'code' not in molData: 
+						resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
+						# calcValues[prop][calc].update({method: molData[resultKey]})
+						calcValues[calc][prop].update({method: molData[resultKey]})
+					else:
+						# calcValues[prop][calc].update({method: None})
+						calcValues[calc][prop].update({method: None})
+
+	# molData = requests.get(wsMap.baseUrl + '/test/molecules/findByID/' + str(molID)).content
+	# logging.info("Molecule Data: {}".format(molData))
 	logging.info("calcValues: {}".format(calcValues))
 	return calcValues
-
-	# molUrl = wsMap.baseUrl + "/test/molecules/findByID/" + str(molID)
-	# return json.loads(requests.get(molUrl).content) # return Molecule after filling values
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
