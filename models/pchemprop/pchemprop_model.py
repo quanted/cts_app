@@ -13,6 +13,8 @@ from models.chemspec import chemspec_model # for getStructInfo(), TODO: move fun
 import decimal
 import os
 
+import pchemprop_tables # this new
+
 n = 3 # number of decimal places to round values
 
 
