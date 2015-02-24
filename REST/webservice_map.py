@@ -67,6 +67,23 @@ calculator = {
 			'henryLcBondAtmM3Mole': 'henrys_law_con',
 			'logKowEstimate': 'kow_no_ph'
 		}
-	}
+	},
+
+	# 'measured': {
+	# 	'name': 'measured',
+	# 	'methods': [''],
+	# 	'url': baseUrl + '/test/measured',
+	# 	'props': {
+	# 		'melting_point': 'meltingPoint',
+	# 		'boiling_point': 'boilingPoint',
+	# 		'water_sol': 'waterSolubility',
+	# 		'vapor_press': 'vaporPressure',
+			
+	# 		'meltingPoint': 'melting_point',
+	# 		'boilingPoint': 'boiling_point',
+	# 		'waterSolubility': 'water_sol',
+	# 		'vaporPressure':'vapor_press'
+	# 	}
+	# }
 
 }
