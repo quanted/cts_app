@@ -207,6 +207,7 @@ def output_pchem_table(pchemprop_obj):
     <div class="out_">
     """
 
+    #######################################################
     mainDataDict = {
         "chemaxon": {
             "ion_con": getIonConDataChemaxon(pchemprop_obj),
@@ -216,7 +217,9 @@ def output_pchem_table(pchemprop_obj):
         'test': pchemprop_obj.resultsDict['test'],
         'epi': pchemprop_obj.resultsDict['epi']
     }
+    #######################################################
 
+    # old stuff
     # for calc, calcData in pchemprop_obj.resultsDict.items():
     #     data = {} # prop -> data
     #     if calcData != None and calc != 'chemaxon':
@@ -225,9 +228,11 @@ def output_pchem_table(pchemprop_obj):
     #         mainDataDict.update({calc: data}) 
         # elif calc != 'chemaxon':
         #     data.update({prop: getPropDataFromCalc(calc, None, calcData, None)})
+    # end old stuff
 
 
-    logging.info(" @@@ Main Data Dict: {} @@@ ".format(mainDataDict))
+    # logging.info(" @@@ Main Data Dict: {} @@@ ".format(mainDataDict))
+
 
     kow_ph = 0.0
     if pchemprop_obj.kow_ph:
@@ -305,15 +310,16 @@ def getPropDataFromCalc(calc, prop, propData, pchemprop_obj):
         return propData[wsMap.calculator['epi']['props'][prop]]
 
 
-# kowNoPhResults = {key: [] for key in methodsListChemaxon} # methodsListChemaxon up top (KLOP, VG, PHYS)
-# if 'kow_no_ph' in pchemprop_obj.resultsDict['chemaxon']:
-#     for method in methodsListChemaxon:
-#         try:
-#             root = pchemprop_obj.resultsDict['chemaxon']['kow_no_ph']
-#             value = round(root[method]['data'][0]['logP']['logpnonionic'], n)
-#             kowNoPhResults[method].append(value)
-#         except:
-#             kowNoPhResults[method].append("Exception getting logP...")
-#     return kowNoPhResults
-# else:
-#     return None
+def fillInTestProps(respDict):
+    """
+    Attempting to dynamically fill
+    pchemprop output table as responses
+    come back to the pchemprop_model
+
+    respDict keys: calc, prop, method 
+    """
+    logging.info("inside fillInTestProps...")
+    render_to_string('cts_pchemprop_outputTable.html', {'response': respDict})
+
+
+

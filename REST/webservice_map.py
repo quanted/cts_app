@@ -40,6 +40,11 @@ calculator = {
 			'boiling_point': 'boilingPoint',
 			'water_sol': 'waterSolubility',
 			'vapor_press': 'vaporPressure',
+			
+			'meltingPoint': 'melting_point',
+			'boilingPoint': 'boiling_point',
+			'waterSolubility': 'water_sol',
+			'vaporPressure':'vapor_press'
 		}
 	},
 
