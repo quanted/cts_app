@@ -157,12 +157,12 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 					url = calcDict['url'] + '/' + str(molID) + '/' + calcDict['props'][prop] + '/' + method
 					try:
 
-						futuresList.append(session.get(url, timeout=15, data={'stuff': 'stuff'}))
+						futuresList.append(session.get(url, timeout=20))
 						# futuresList.append(session.get(url, timeout=10, background_callback=bgcb))
 
 					except requests.exceptions.Timeout:
 						logging.warning("TIMEOUT EXCPETION for {}->{}->{}".format(calc, prop, method))
-						molData = {'code': 'timed out'}
+						# molData = {'code': 'timed out'}
 
 	# wait for the futures!!
 	for future in futuresList:
@@ -175,6 +175,9 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 		prop = wsMap.calculator[calc]['props'][urlList[-2]]
 
 		logging.info("Calc: {}, Prop: {}, Method: {}".format(calc, prop, method))
+		logging.info("Reponse: {}".format(response))
+
+		calcDict = wsMap.calculator[calc]
 
 		if 'code' not in response:
 			if method != '':
