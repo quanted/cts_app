@@ -157,7 +157,7 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 					url = calcDict['url'] + '/' + str(molID) + '/' + calcDict['props'][prop] + '/' + method
 					try:
 
-						futuresList.append(session.get(url, timeout=20))
+						futuresList.append(session.get(url, timeout=30))
 						# futuresList.append(session.get(url, timeout=10, background_callback=bgcb))
 
 					except requests.exceptions.Timeout:
