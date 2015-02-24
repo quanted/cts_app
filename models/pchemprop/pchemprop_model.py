@@ -12,9 +12,6 @@ import logging
 from models.chemspec import chemspec_model # for getStructInfo(), TODO: move func to more generic place
 import decimal
 import os
-import eventlet
-eventlet.monkey_patch()
-
 
 import pchemprop_tables # this new
 
