@@ -92,10 +92,12 @@ class pchemprop(object):
 
 		# chemaxonResultsDict, testResultsDict = None, None
 
+		logging.info("CheckedCalcsAndProps: {}".format(checkedCalcsAndPropsDict))
+
 		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
 
-		logging.info("Test Results: {}".format(testResultsDict))
+		logging.info("Chemaxon Results: {}".format(chemaxonResultsDict))
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
@@ -265,7 +267,7 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 		# TODO: Some segments of the below repeat and could probably be looped..
 		# change that at some point
 		for prop in chemaxonPropsList:
-			if prop == "solubility":
+			if prop == "water_sol":
 				postDict = {
 					"chemical": structure,
 					"solubility": {

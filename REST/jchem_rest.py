@@ -33,10 +33,8 @@ class Urls:
 	detailUrl = '/rest-v0/util/detail'
 	hydroUrl = '/rest-v0/util/convert/hydrogenizer'
 	standardizerUrl = '/rest-v0/util/convert/standardizer'
-	# standardizerUrl = '/rest-v0/util/convert/standardizer'
 
-	# homegrown ws from jchem java
-	metabolizerUrl = '/metabolizer'
+	metabolizerUrl = '/metabolizer' # homegrown ws
 
 
 def doc(request):
@@ -148,6 +146,7 @@ def getChemSpecData(request):
 
 	data = ds.chemSpecStruct(request.POST, addH) # format request to jchem
 	data = json.dumps(data)
+	logging.info("###chemspecdata: {}".format(data))
 	url = Urls.jchemBase + Urls.detailUrl
 	results = web_call(url, request, data)
 	return results

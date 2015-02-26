@@ -141,6 +141,23 @@ def getKowWphChemaxon(pchemprop_obj):
         return None
 
 
+def getWaterSolChemaxon(pchemprop_obj):
+    """
+    Gets water solubility for chemaxon
+    """
+    root = pchemprop_obj.resultsDict['chemaxon']
+    waterSol = {}
+    if root and 'water_sol' in root:
+        try:
+            root = pchemprop_obj.resultsDict['chemaxon']['water_sol']
+            value = round(root['data'][0]['solubility']['intrinsicSolubility'], n)
+            return value
+        except:
+            return "Exception getting water solubility..."
+    else:
+        return None
+
+
 def getStructInfoTemplate():
     structInfoTemplate ="""
         <dl class="shiftRight">
@@ -212,7 +229,8 @@ def output_pchem_table(pchemprop_obj):
         "chemaxon": {
             "ion_con": getIonConDataChemaxon(pchemprop_obj),
             "kow_no_ph": getKowNoPhChemaxon(pchemprop_obj),
-            "kow_wph": getKowWphChemaxon(pchemprop_obj)
+            "kow_wph": getKowWphChemaxon(pchemprop_obj),
+            "water_sol": getWaterSolChemaxon(pchemprop_obj)
         },
         'test': pchemprop_obj.resultsDict['test'],
         'epi': pchemprop_obj.resultsDict['epi']
@@ -262,64 +280,66 @@ def timestamp(pchemprop_obj="", batch_jid=""):
     return html
 
 
-def getPropDataFromCalc(calc, prop, propData, pchemprop_obj):
+# def getPropDataFromCalc(calc, prop, propData, pchemprop_obj):
 
-    # logging.info("-{}-".format(propData))
+#     # logging.info("-{}-".format(propData))
 
-    # TODO: Use webservice_map.py in REST or some other code-reuse way
-    # instead of this "stunt"
+#     # TODO: Use webservice_map.py in REST or some other code-reuse way
+#     # instead of this "stunt"
 
-    if calc == "chemaxon":
-        if prop == "ion_con":
-            return getIonConDataChemaxon(pchemprop_obj)
-        elif prop == "kow_no_ph":
-            return getKowNoPhChemaxon(pchemprop_obj)
-        elif prop == "kow_wph":
-            return getKowWphChemaxon(pchemprop_obj)
+#     if calc == "chemaxon":
+#         if prop == "ion_con":
+#             return getIonConDataChemaxon(pchemprop_obj)
+#         elif prop == "kow_no_ph":
+#             return getKowNoPhChemaxon(pchemprop_obj)
+#         elif prop == "kow_wph":
+#             return getKowWphChemaxon(pchemprop_obj)
+#         elif prop == "water_sol":
+#             return getWaterSolChemaxon(pchemprop_obj)
 
-    elif calc == "test":
-        # propData = json.loads(propData)
-        # logging.info("TEST propData: {}, {}".format(prop, propData))
-        testDict = {}
-        for method in methodsListTEST:
-            if prop == "melting_point":
-                testDict.update({method: propData[method]})
-                # testDict.update({method: propData['meltingPointTEST' + method]})
-                # data.update({'meltingPointTESTFDA': propData['meltingPointTESTFDA']})
-            elif prop == "boiling_point":
-                testDict.update({method: propData[method]})
-                # testDict.update({method: propData['boilingPointTEST' + method]})
-                # data.update({'boilingPointTESTFDA': propData['boilingPointTESTFDA']})
-            elif prop == "vapor_press":
-                testDict.update({method: propData[method]})
-                # testDict.update({method: propData['vaporPressureTEST' + method]})
-                # data.update({'vaporPressureTESTFDA': propData['vaporPressureTESTFDA']})
-            elif prop == "water_sol":
-                testDict.update({method: propData[method]})
-                # testDict.update({method: propData['waterSolubilityTEST' + method]})
-                # data.update({'waterSolubilityTESTFDA': propData['waterSolubilityTESTFDA']})
-            # elif prop == "kow_no_ph":
-            #     data = propData['']
+#     elif calc == "test":
+#         # propData = json.loads(propData)
+#         # logging.info("TEST propData: {}, {}".format(prop, propData))
+#         testDict = {}
+#         for method in methodsListTEST:
+#             if prop == "melting_point":
+#                 testDict.update({method: propData[method]})
+#                 # testDict.update({method: propData['meltingPointTEST' + method]})
+#                 # data.update({'meltingPointTESTFDA': propData['meltingPointTESTFDA']})
+#             elif prop == "boiling_point":
+#                 testDict.update({method: propData[method]})
+#                 # testDict.update({method: propData['boilingPointTEST' + method]})
+#                 # data.update({'boilingPointTESTFDA': propData['boilingPointTESTFDA']})
+#             elif prop == "vapor_press":
+#                 testDict.update({method: propData[method]})
+#                 # testDict.update({method: propData['vaporPressureTEST' + method]})
+#                 # data.update({'vaporPressureTESTFDA': propData['vaporPressureTESTFDA']})
+#             elif prop == "water_sol":
+#                 testDict.update({method: propData[method]})
+#                 # testDict.update({method: propData['waterSolubilityTEST' + method]})
+#                 # data.update({'waterSolubilityTESTFDA': propData['waterSolubilityTESTFDA']})
+#             # elif prop == "kow_no_ph":
+#             #     data = propData['']
 
-        # logging.info("TEST Dict: {}".format(testDict))
+#         # logging.info("TEST Dict: {}".format(testDict))
 
-        return testDict
+#         return testDict
 
-    elif calc == "epi":
-        # propData = json.loads(propData)
-        return propData[wsMap.calculator['epi']['props'][prop]]
+#     elif calc == "epi":
+#         # propData = json.loads(propData)
+#         return propData[wsMap.calculator['epi']['props'][prop]]
 
 
-def fillInTestProps(respDict):
-    """
-    Attempting to dynamically fill
-    pchemprop output table as responses
-    come back to the pchemprop_model
+# def fillInTestProps(respDict):
+#     """
+#     Attempting to dynamically fill
+#     pchemprop output table as responses
+#     come back to the pchemprop_model
 
-    respDict keys: calc, prop, method 
-    """
-    logging.info("inside fillInTestProps...")
-    render_to_string('cts_pchemprop_outputTable.html', {'response': respDict})
+#     respDict keys: calc, prop, method 
+#     """
+#     logging.info("inside fillInTestProps...")
+#     render_to_string('cts_pchemprop_outputTable.html', {'response': respDict})
 
 
 
