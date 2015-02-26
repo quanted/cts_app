@@ -57,13 +57,13 @@ $(document).ready(function() {
 
 
     $('input[type=checkbox]').change(function() {
-        submitLogic(); //tie submitLogic() to any checkbox changes
+        submitButtonLogic(); //tie submitLogic() to any checkbox changes
     });
 
 });
 
 
-function submitLogic() {
+function submitButtonLogic() {
 
     //Enable submit only when a calculator is 
     //checked AND an available property:

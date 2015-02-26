@@ -7,7 +7,8 @@
 	<th>EPI Suite</th>
 	<th>TEST</th>
 	<th>SPARC</th>
-    <th>Average</th>
+    <th>Measured</th>
+    <!-- <th>Average</th> -->
     </tr>
 
     <tr>
@@ -22,7 +23,8 @@
     {% endfor %}
     </td>
     <td></td>
-    <td>{{data.avg.melting_point|default:""}}</td>
+    <td style="padding:4px;">{{data.measured.melting_point|default:""}}</td>
+    <!-- <td>{{data.avg.melting_point|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -37,7 +39,8 @@
     {% endfor %}
     </td>
     <td>{{data.sparc.boiling_point|default:""}}</td>
-    <td>{{data.avg.boiling_point|default:""}}</td>
+    <td style="padding:4px;">{{data.measured.boiling_point|default:""}}</td>
+    <!-- <td>{{data.avg.boiling_point|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -52,7 +55,8 @@
     {% endfor %}
     </td>
     <td>{{data.sparc.water_sol|default:""}}</td>
-    <td>{{data.avg.water_sol|default:""}}</td>
+    <td style="padding:4px;">{{data.measured.water_sol|default:""}}</td>
+    <!-- <td>{{data.avg.water_sol|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -67,7 +71,8 @@
     {% endfor %}
     </td>
     <td>{{data.sparc.vapor_press|default:""}}</td>
-    <td>{{data.avg.vapor_press|default:""}}</td>
+    <td style="padding:4px;">{{data.measured.vapor_press|default:""}}</td>
+    <!-- <td>{{data.avg.vapor_press|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -76,7 +81,8 @@
     <td><!--epi--></td>
     <td><!--test--></td>
     <td><!--sparc--></td>
-    <td>{{data.avg.mol_diss|default:""}}</td>
+    <td style="padding:4px;">{{data.measured.mol_diss|default:""}}</td>
+    <!-- <td>{{data.avg.mol_diss|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -102,7 +108,8 @@
     <td><!--epi--></td>
     <td><!--test--></td>
     <td>{{data.sparc.ion_con|default:""}}</td>
-    <td>{{data.avg.ion_con|default:""}}</td>
+    <td><!-- measured --></td>
+    <!-- <td>{{data.avg.ion_con|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -111,7 +118,8 @@
     <td style="padding:4px;">{{data.epi.henrys_law_con|default:""}}</td>
     <td>{{data.test.henrys_law_con|default:""}}</td>
     <td><!--sparc--></td>
-    <td>{{data.avg.henrys_law_con|default:""}}</td>
+    <td>{{data.measured.henrys_law_con|default:""}}</td>
+    <!-- <td>{{data.avg.henrys_law_con|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -129,7 +137,8 @@
     <td style="padding:4px;">{{data.epi.kow_no_ph|default:""}}</td>
     <td><!--test--></td>
     <td>{{data.sparc.kow_no_ph|default:""}}</td>
-    <td>{{data.avg.kow_no_ph|default:""}}</td>
+    <td><!-- measured --></td>
+    <!-- <td>{{data.avg.kow_no_ph|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -147,7 +156,8 @@
     <td><!--epi--></td>
     <td><!--test--></td>
     <td>{{data.sparc.kow_wph|default:""}}</td>
-    <td>{{data.avg.kow_wph|default:""}}</td>
+    <td><!-- measured --></td>
+    <!-- <td>{{data.avg.kow_wph|default:""}}</td> -->
     </tr>
 
     <tr>
@@ -156,7 +166,8 @@
     <td>{{data.epi.koc|default:""}}</td>
     <td><!--test--></td>
     <td><!--sparc--></td>
-    <td>{{data.avg.koc|default:""}}</td>
+    <td><!-- measured --></td>
+    <!-- <td>{{data.avg.koc|default:""}}</td> -->
     </tr>
 
 </table>

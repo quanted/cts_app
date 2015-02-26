@@ -14,13 +14,15 @@ import decimal
 import os
 
 import pchemprop_tables # this new
+from REST import webservice_map as wsMap
+from requests_futures.sessions import FuturesSession
 
 n = 3 # number of decimal places to round values
 
 
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 
-					test, sparc, melting_point, boiling_point, water_sol, 
+					test, sparc, measured, melting_point, boiling_point, water_sol, 
 					vapor_press, mol_diss, ion_con, henrys_law_con, kow_no_ph, kow_wph, kow_ph, koc):
 
 		self.run_type = run_type # defaults to "single", "batch" coming soon...
@@ -61,17 +63,12 @@ class pchemprop(object):
 			"koc": self.koc
 		}
 
-		# calcluators' checkboxes (values 'true' or None) -- static html from cts_pchem.html
-		self.chemaxon = chemaxon
-		self.epi = epi
-		self.test = test
-		self.sparc = sparc
-
 		calcluatorsDict = {
 			"chemaxon": chemaxon,
 			"epi": epi,
 			"test": test,
-			"sparc": sparc
+			"sparc": sparc,
+			"measured": measured
 		}
 
 		# dict with keys of checked calculators and values of 
@@ -90,28 +87,20 @@ class pchemprop(object):
 							propList.append(propKey)
 				checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		# chemaxonResultsDict, testResultsDict = None, None
-
-		logging.info("CheckedCalcsAndProps: {}".format(checkedCalcsAndPropsDict))
+		# logging.info("CheckedCalcsAndProps: {}".format(checkedCalcsAndPropsDict))
 
 		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
 
-		logging.info("Chemaxon Results: {}".format(chemaxonResultsDict))
+		logging.info("TEST Results: {}".format(testResultsDict))
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
 			"epi": testResultsDict.get('epi', None),
 			"sparc": None,
-			"test": testResultsDict.get('test', None)
+			"test": testResultsDict.get('test', None),
+			"measured": testResultsDict.get('measured', None)
 		}
-
-		# self.resultsDict = {
-		# 	"chemaxon": chemaxonResultsDict,
-		# 	"epi": None,
-		# 	"sparc": None,
-		# 	"test": None
-		# }
 
 		# logging.info("Results Dictionary: {}".format(self.resultsDict))
 
@@ -129,9 +118,6 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	!!! TODO: Move this where it belongs: the test_cts app folder. Ultimately
 	do the same for chemaxon and the other calculators !!!
 	"""
-	from REST import webservice_map as wsMap
-	from requests_futures.sessions import FuturesSession
-
 	
 	molID = 7 # NOTE: recycling id for now. this will change when db is implemented!!
 
@@ -155,96 +141,63 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 				else: 
 					calcValues[calc].update({prop: None})
 				for method in calcDict['methods']:
-					url = calcDict['url'] + '/' + str(molID) + '/' + calcDict['props'][prop] + '/' + method
+					if calc == 'measured': 
+						url = calcDict['url'] + str(molID) + '/test/' + calcDict['props'][prop] + '/' + method
+					else:
+						url = calcDict['url'] + str(molID) + '/' + calcDict['props'][prop] + '/' + method
 					try:
-
-						futuresList.append(session.get(url, timeout=30))
+						response = session.get(url, timeout=20)
+						logging.info("request url: {}".format(url))
+						futuresList.append(response)
+						# futuresList.append(session.get(url, timeout=30))
 						# futuresList.append(session.get(url, timeout=10, background_callback=bgcb))
-
-					except requests.exceptions.Timeout:
+					# except requests.exceptions.Timeout:
+					except:
 						logging.warning("TIMEOUT EXCPETION for {}->{}->{}".format(calc, prop, method))
 						# molData = {'code': 'timed out'}
+						futuresList.append(None)
 
-	# wait for the futures!!
-	for future in futuresList:
-
-		response = future.result().json()
-
-		urlList = future.result().request.url.split("/") # list of url components b/w '/'
-		method = urlList[-1]
-		calc = urlList[-5]
-		prop = wsMap.calculator[calc]['props'][urlList[-2]]
-
-		logging.info("Calc: {}, Prop: {}, Method: {}".format(calc, prop, method))
-		# logging.info("Reponse: {}".format(response))
-
-		calcDict = wsMap.calculator[calc]
-
-		if 'code' not in response:
-			if method != '':
-				resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
-				calcValues[calc][prop].update({method: response[resultKey]})
-			else:
-				calcValues[calc][prop] = response[calcDict['props'][prop]]
-		else:
-			if method != '':
-				calcValues[calc][prop].update({method: "error"})
-			else:
-				calcValues[calc][prop] = "error"
+	calcValues = waitForFutures(futuresList, calcValues) 
 
 	return calcValues
 
 
-# def getTestResults(structure, checkedCalcsAndPropsDict):
-# 	"""
-# 	Gets pchemprop data from TEST ws.
-# 	Inputs: chemical structure, dict of checked properties by calculator
-# 	(e.g., { 'test': ['kow_no_ph', 'melting_point'] })
-# 	Returns: dict of TEST props in template-friendly format (see pchemprop_tables)
-
-# 	!!! TODO: Move this where it belongs: the test_cts app folder. Ultimately
-# 	do the same for chemaxon and the other calculators !!!
-# 	"""
-# 	from REST import webservice_map as wsMap
+def waitForFutures(futuresList, calcValues):
 	
-# 	molID = 7 # NOTE: recycling id for now. this will change when db is implemented!!
+	try:
+		# wait for the futures!!
+		for future in futuresList:
 
-# 	# give molecule an id to use for test calculations
-# 	postData = { "id": molID, "smiles": str(structure) }
-# 	response = requests.post(wsMap.baseUrl + "/test/molecules", data=json.dumps(postData), 
-# 								headers={'Content-Type': 'application/json'})
+			logging.info("future request: {}".format(future.result().request.url))
 
-# 	calcValues = {}
-# 	# checkedCalcsAndPropsDict format ex: {'test': ['ion_con', 'water_sol'], 'epi': []}
-# 	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
-# 		if calcPropsList and calc != 'chemaxon':
-# 			calcDict = wsMap.calculator[calc] # get calc data (webservice_map.py)
-# 			calcValues.update({calc: {}})
-# 			for prop in calcPropsList:
-# 				if calcDict['methods'][0] != '': 
-# 					calcValues[calc].update({prop: {}})
-# 				else: 
-# 					calcValues[calc].update({prop: None})
-# 				for method in calcDict['methods']:
-# 					url = calcDict['url'] + '/' + str(molID) + '/' + calcDict['props'][prop] + '/' + method
-# 					try:
-# 						molData = json.loads(requests.get(url, timeout=10).content) # gets value and returns json of mol info
-# 					except requests.exceptions.Timeout:
-# 						logging.warning("TIMEOUT EXCPETION for {}->{}->{}".format(calc, prop, method))
-# 						molData = {'code': 'timed out'}
-# 					if 'code' not in molData:
-# 						if method != '':
-# 							resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
-# 							calcValues[calc][prop].update({method: molData[resultKey]})
-# 						else:
-# 							calcValues[calc][prop] = molData[calcDict['props'][prop]]
-# 					else:
-# 						if method != '':
-# 							calcValues[calc][prop].update({method: "error"})
-# 						else:
-# 							calcValues[calc][prop] = "error"
+			response = future.result().json()
 
-# 	return calcValues
+			urlList = future.result().request.url.split("/") # list of url components b/w '/'
+			method = urlList[-1]
+			calc = urlList[-5]
+			prop = wsMap.calculator[calc]['props'][urlList[-2]]
+
+			calcDict = wsMap.calculator[calc]
+
+			if 'code' not in response:
+				if method != '':
+					resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
+					calcValues[calc][prop].update({method: response[resultKey]})
+				else:
+					if 'resultKeys' in calcDict:
+						calcValues[calc][prop] = response[calcDict['resultKeys'][prop]]
+					else:
+						calcValues[calc][prop] = response[calcDict['props'][prop]]
+			else:
+				if method != '':
+					calcValues[calc][prop].update({method: "error"})
+				else:
+					calcValues[calc][prop] = "error"
+
+	except requests.exceptions.Timeout:
+			logging.warning("~ EXCPETION within waitForFutures ~")
+
+	return calcValues
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):

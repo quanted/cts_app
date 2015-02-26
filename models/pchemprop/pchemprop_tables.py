@@ -233,7 +233,8 @@ def output_pchem_table(pchemprop_obj):
             "water_sol": getWaterSolChemaxon(pchemprop_obj)
         },
         'test': pchemprop_obj.resultsDict['test'],
-        'epi': pchemprop_obj.resultsDict['epi']
+        'epi': pchemprop_obj.resultsDict['epi'],
+        'measured': pchemprop_obj.resultsDict['measured']
     }
     #######################################################
 

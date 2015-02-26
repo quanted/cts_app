@@ -15,54 +15,10 @@ $(document).ready(function() {
 });
 
 function pchempropTableLogic() {
-
-    //Highlight column of selected datasource:
-    $('#id_chemaxon_select').change(function() {
-      
-        if ($('#id_chemaxon_select').is(":checked"))
-        {
-            $('.chemaxon').fadeTo(0, 1);
-        }
-        else
-        {
-            $('.chemaxon').fadeTo(0, 0.75);  
-        }
-
-    });
-    $('#id_epi_select').change(function() {
-      
-        if ($('#id_epi_select').is(":checked"))
-        {
-            $('.epi').fadeTo(0, 1);
-        }
-        else
-        {
-            $('.epi').fadeTo(0, 0.75);  
-        }
-
-    });
-    $('#id_test_select').change(function() {
-      
-        if ($('#id_test_select').is(":checked"))
-        {
-            $('.test').fadeTo(0, 1);
-        }
-        else
-        {
-            $('.test').fadeTo(0, 0.75);  
-        }
-
-    });
-    $('#id_sparc_select').change(function() {
-      
-        if ($('#id_sparc_select').is(":checked"))
-        {
-            $('.sparc').fadeTo(0, 1);
-        }
-        else
-        {
-            $('.sparc').fadeTo(0, 0.75);  
-        }
-
+    //Highlight column of selected calculator:
+    $('input.col_header').change(function() {
+        var colClass = $(this).attr('name');
+        if ($(this).is(':checked')) { $('td.' + colClass).fadeTo(0, 1); }
+        else { $('td.' + colClass).fadeTo(0, 0.75); }
     });
 }

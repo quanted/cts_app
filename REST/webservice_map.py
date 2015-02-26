@@ -34,7 +34,7 @@ calculator = {
 			'group': 'TESTGroupContribution', 
 			# 'consensus': 'TESTConsensus', 
 			'neighbor': 'TESTNearestNeighbor'},
-		'url': baseUrl + '/test/test/calc',
+		'url': baseUrl + '/test/test/calc/',
 		'props': {
 			'melting_point': 'meltingPoint',
 			'boiling_point': 'boilingPoint',
@@ -51,7 +51,7 @@ calculator = {
 	'epi': {
 		'name': 'epi',
 		'methods': [''], # no methods for epi suite
-		'url': baseUrl + '/test/epi/calc',
+		'url': baseUrl + '/test/epi/calc/',
 		'props': {
 			'melting_point': 'meltingPtDegCEstimated',
 			'boiling_point': 'boilingPtDegCEstimated',
@@ -69,21 +69,27 @@ calculator = {
 		}
 	},
 
-	# 'measured': {
-	# 	'name': 'measured',
-	# 	'methods': [''],
-	# 	'url': baseUrl + '/test/measured',
-	# 	'props': {
-	# 		'melting_point': 'meltingPoint',
-	# 		'boiling_point': 'boilingPoint',
-	# 		'water_sol': 'waterSolubility',
-	# 		'vapor_press': 'vaporPressure',
+	'measured': {
+		'name': 'measured',
+		'methods': [''],
+		'url': baseUrl + '/test/measured/',
+		'props': {
+			'melting_point': 'meltingPoint',
+			'boiling_point': 'boilingPoint',
+			'water_sol': 'waterSolubility',
+			'vapor_press': 'vaporPressure',
 			
-	# 		'meltingPoint': 'melting_point',
-	# 		'boilingPoint': 'boiling_point',
-	# 		'waterSolubility': 'water_sol',
-	# 		'vaporPressure':'vapor_press'
-	# 	}
-	# }
+			'meltingPoint': 'melting_point',
+			'boilingPoint': 'boiling_point',
+			'waterSolubility': 'water_sol',
+			'vaporPressure':'vapor_press'
+		},
+		'resultKeys': {
+			'melting_point': 'measuredMeltingPoint',
+			'boiling_point': 'measuredBoilingPoint',
+			'water_sol': 'measuredWaterSolubility',
+			'vapor_press': 'measuredVaporPressure'
+		}
+	}
 
 }

@@ -146,7 +146,6 @@ def getChemSpecData(request):
 
 	data = ds.chemSpecStruct(request.POST, addH) # format request to jchem
 	data = json.dumps(data)
-	logging.info("###chemspecdata: {}".format(data))
 	url = Urls.jchemBase + Urls.detailUrl
 	results = web_call(url, request, data)
 	return results
