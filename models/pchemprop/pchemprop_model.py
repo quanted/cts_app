@@ -8,6 +8,7 @@ import requests
 import pchemprop_parameters # Chemical Calculator and Transformation Pathway parameters
 from REST import jchem_rest
 from django.http import HttpRequest
+from django.http import HttpResponse
 import logging
 from models.chemspec import chemspec_model # for getStructInfo(), TODO: move func to more generic place
 import decimal
@@ -16,6 +17,10 @@ import os
 import pchemprop_tables # this new
 from REST import webservice_map as wsMap
 from requests_futures.sessions import FuturesSession
+
+from REST.jchem_rest import sse_test
+from django.views.decorators.http import require_GET
+
 
 n = 3 # number of decimal places to round values
 
@@ -94,6 +99,8 @@ class pchemprop(object):
 
 		logging.info("TEST Results: {}".format(testResultsDict))
 
+		sse_test("here's a message!!")
+
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
 			"epi": testResultsDict.get('epi', None),
@@ -107,6 +114,12 @@ class pchemprop(object):
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
 		# fileout.write(json.dumps(self.rawData))
 		# fileout.close()
+
+
+def bgcb(sess, resp):
+	logging.info("> Response from server 6 recieved by localhost...")
+	sse_test(resp.json())
+
 
 def getTestResults(structure, checkedCalcsAndPropsDict):
 	"""
@@ -146,9 +159,11 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 					else:
 						url = calcDict['url'] + str(molID) + '/' + calcDict['props'][prop] + '/' + method
 					try:
-						response = session.get(url, timeout=20)
+						# session.get(url, timeout=20)
+						# sse_test.sse_test()
+						session.get(url, timeout=20, background_callback=bgcb)
 						logging.info("request url: {}".format(url))
-						futuresList.append(response)
+						# futuresList.append(response)
 						# futuresList.append(session.get(url, timeout=30))
 						# futuresList.append(session.get(url, timeout=10, background_callback=bgcb))
 					# except requests.exceptions.Timeout:
@@ -157,7 +172,7 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 						# molData = {'code': 'timed out'}
 						futuresList.append(None)
 
-	calcValues = waitForFutures(futuresList, calcValues) 
+	# calcValues = waitForFutures(futuresList, calcValues) 
 
 	return calcValues
 

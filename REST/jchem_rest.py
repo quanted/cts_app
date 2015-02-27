@@ -15,6 +15,8 @@ from xml.sax.saxutils import escape
 import datetime
 import pytz
 import os
+import time
+from django.views.decorators.http import require_GET
 
 
 headers = {'Content-Type' : 'application/json'}
@@ -336,3 +338,30 @@ def gen_jid():
     localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
     jid = localDatetime.strftime('%Y%m%d%H%M%S%f')
     return jid
+
+
+def sse_test(request):
+
+	logging.info("Recieved request: {}".format(type(request)))
+
+	response = HttpResponse(content_type="text/event-stream")
+
+	try:
+		logging.info("$$$ {} $$$".format(request.json()))
+		response.write("data: {}\n\n".format(request))
+		response.flush()
+		return response
+
+	except:
+		response.write("data: an exception occurred\n\n")
+		response.flush()
+		return response
+
+	# return response
+
+
+def poll_test(request):
+	"""
+	Need to post data temporarily somewhere
+	for client to poll
+	"""

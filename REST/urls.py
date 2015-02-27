@@ -16,6 +16,9 @@ urlpatterns = patterns('REST',
     (r'^ws/smilesToImage/?$', 'jchem_rest.smilesToImage'),
     (r'^ws/standardizer/?$', 'jchem_rest.standardizer'),
     (r'^ws/getpchemprops/?$', 'jchem_rest.getpchemprops'),
+
+    (r'^ws/test-sse/?$', 'jchem_rest.sse_test'), # testing sse in django
+    (r'^ws/test-poll/?$', 'jchem_rest.poll_test') # testing ajax polling
 )
 
 # 404 Error view (file not found)
