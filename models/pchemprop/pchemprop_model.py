@@ -25,7 +25,9 @@ import dbtesting as dbtest
 
 
 n = 3 # number of decimal places to round values
-# con = None
+requestCounter = 0 # yeah figure out a better way to do this...
+totalRequest = 0 # total number of request. again, better way please
+
 
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 
@@ -99,6 +101,10 @@ class pchemprop(object):
 
 		#####################################
 		initializeDB() # create table in db
+		global requestCounter
+		requestCounter = 0 # initialize request counter
+		global totalRequest
+		totalRequest = 0
 		#####################################
 
 		logging.info("after db init")
@@ -127,25 +133,33 @@ class pchemprop(object):
 
 def initializeDB():
 	con = sqlite3.connect('test.db') # create db in RAM (test case)
-	
 	cur = con.cursor()
 	logging.info("Opened database successfully!")
-	cur.execute("CREATE TABLE if not exists props (prop TEXT PRIMARY KEY, calc TEXT, method TEXT, val REAL)") 
+	cur.execute("CREATE TABLE if not exists props (prop TEXT, calc TEXT, method TEXT, val REAL, running BOOLEAN)") 
 	con.commit()
 	logging.info("Table created!")
 	# db.close()
 
 
+def closeDB():
+	con = sqlite3.connect('test.db')
+	cur = con.cursor()
+	cur.execute("INSERT INTO props VALUES (?,?,?,?)", ('done', 'done', 'done', 'done'))
+	con.commit()
+	con.close()
+
+
 def bgcb(sess, resp):
+
+	global requestCounter
+	global totalRequest
+
+	requestCounter += 1 # response from session request received
+
 	logging.info("> Response from server6 recieved by localhost...")
-
-	# sse_test(resp.json()) # sse testing
-
-	# logging.info("{}".format(resp.json()))
-	logging.info("{}".format(resp.url))
+	logging.info("requestCounter: {}, totalRequest: {}".format(requestCounter, totalRequest))
 
 	urlList = resp.url.split("/") # list of url components
-	# urlList = resp.result().request.url.split("/") # list of url components b/w '/'
 	method = urlList[-1]
 	calc = urlList[-5]
 	prop = wsMap.calculator[calc]['props'][urlList[-2]]
@@ -154,7 +168,7 @@ def bgcb(sess, resp):
 
 	val = ''
 
-	logging.info("finished url split...")
+	# logging.info("finished url split...")
 
 	if 'code' not in response:
 		if method != '':
@@ -168,21 +182,20 @@ def bgcb(sess, resp):
 	else:
 		val = "error"
 
-	# dbtest.insertValueIntoDB((prop, calc, method, val))
-
-	logging.info("initiating db storage...")
-	logging.info("data to store: {}, {}, {}, {}".format(prop, calc, method, val))
-	# logging.info("data types: {}".format(type(prop)))
-
 	con = sqlite3.connect('test.db')
 	cur = con.cursor()
 
-	# logging.info("before insert")
-	cur.execute("INSERT INTO props VALUES (?,?,?,?)", (prop, calc, method, val))
-	logging.info("data inserted!!!")
+	logging.info("Attempting to insert: {}, {}, {}, {}".format(prop, calc, method, val))
+
+	if requestCounter >= totalRequest:
+		logging.info("Requests pool complete...")
+		cur.execute("INSERT INTO props VALUES (?,?,?,?,?)", (prop, calc, method, val, False))
+		logging.info("final data inserted!!!")
+	else:
+		cur.execute("INSERT INTO props VALUES (?,?,?,?,?)", (prop, calc, method, val, True))
+		logging.info("data inserted!!!")
 
 	con.commit()
-	# db.close()
 
 
 def getTestResults(structure, checkedCalcsAndPropsDict):
@@ -205,6 +218,8 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 
 	session = FuturesSession()
 	futuresList = []
+	global totalRequest
+	totalRequest = 0
 
 	calcValues = {}
 	# checkedCalcsAndPropsDict format ex: {'test': ['ion_con', 'water_sol'], 'epi': []}
@@ -213,7 +228,7 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 			calcDict = wsMap.calculator[calc] # get calc data (webservice_map.py)
 			calcValues.update({calc: {}})
 			for prop in calcPropsList:
-				if calcDict['methods'][0] != '': 
+				if calcDict['methods'][0] != '':
 					calcValues[calc].update({prop: {}})
 				else: 
 					calcValues[calc].update({prop: None})
@@ -222,6 +237,9 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 						url = calcDict['url'] + str(molID) + '/test/' + calcDict['props'][prop] + '/' + method
 					else:
 						url = calcDict['url'] + str(molID) + '/' + calcDict['props'][prop] + '/' + method
+					
+					totalRequest += 1
+
 					try:
 						session.get(url, timeout=20, background_callback=bgcb)
 						logging.info("request url: {}".format(url))
@@ -234,42 +252,42 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 	return calcValues
 
 
-def waitForFutures(futuresList, calcValues):
+# def waitForFutures(futuresList, calcValues):
 	
-	try:
-		# wait for the futures!!
-		for future in futuresList:
+# 	try:
+# 		# wait for the futures!!
+# 		for future in futuresList:
 
-			logging.info("future request: {}".format(future.result().request.url))
+# 			logging.info("future request: {}".format(future.result().request.url))
 
-			response = future.result().json()
+# 			response = future.result().json()
 
-			urlList = future.result().request.url.split("/") # list of url components b/w '/'
-			method = urlList[-1]
-			calc = urlList[-5]
-			prop = wsMap.calculator[calc]['props'][urlList[-2]]
+# 			urlList = future.result().request.url.split("/") # list of url components b/w '/'
+# 			method = urlList[-1]
+# 			calc = urlList[-5]
+# 			prop = wsMap.calculator[calc]['props'][urlList[-2]]
 
-			calcDict = wsMap.calculator[calc]
+# 			calcDict = wsMap.calculator[calc]
 
-			if 'code' not in response:
-				if method != '':
-					resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
-					calcValues[calc][prop].update({method: response[resultKey]})
-				else:
-					if 'resultKeys' in calcDict:
-						calcValues[calc][prop] = response[calcDict['resultKeys'][prop]]
-					else:
-						calcValues[calc][prop] = response[calcDict['props'][prop]]
-			else:
-				if method != '':
-					calcValues[calc][prop].update({method: "error"})
-				else:
-					calcValues[calc][prop] = "error"
+# 			if 'code' not in response:
+# 				if method != '':
+# 					resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
+# 					calcValues[calc][prop].update({method: response[resultKey]})
+# 				else:
+# 					if 'resultKeys' in calcDict:
+# 						calcValues[calc][prop] = response[calcDict['resultKeys'][prop]]
+# 					else:
+# 						calcValues[calc][prop] = response[calcDict['props'][prop]]
+# 			else:
+# 				if method != '':
+# 					calcValues[calc][prop].update({method: "error"})
+# 				else:
+# 					calcValues[calc][prop] = "error"
 
-	except requests.exceptions.Timeout:
-			logging.warning("~ EXCPETION within waitForFutures ~")
+# 	except requests.exceptions.Timeout:
+# 			logging.warning("~ EXCPETION within waitForFutures ~")
 
-	return calcValues
+# 	return calcValues
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):

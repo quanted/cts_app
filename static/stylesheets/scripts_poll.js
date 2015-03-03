@@ -1,26 +1,72 @@
 //testing polling events
 
-(function poll() {
+var timer = null;
 
-   setTimeout(function() {
+var updateTimer = function() {
 
-       $.ajax({ url: "/jchem-cts/ws/data", success: function(data) {
-            // sales.setValue(data.value);
-            console.log(data.value);
-       }, dataType: "json", complete: poll });
+  $.ajax({ 
+    url: "/jchem-cts/ws/data",
+    dataType: "json",
+    success: function(data) {
 
-    }, 20000);
+      display_data(data);
 
-})();
+    }
+  });
+
+  timer = setTimeout(updateTimer, 10000);
+
+};
+
+// (function poll() {
+
+//   setTimeout(function() {
+
+//     $.ajax({ 
+//       url: "/jchem-cts/ws/data",
+//       dataType: "json",
+//       success: function(data) {
+
+//         if (data.running) {
+//           display_data(data);
+//         }
+//         else {
+//           clearTimeout($(this));
+//           return;
+//         }
+
+//       },
+//       complete: poll });
+
+//   }, 10000);
+
+// })();
 
 
 function display_data(data) {
     // show the data acquired by load_data()
-    $('#poll-test').html(data.value);
+
+    //data is an array of Objects [0: {}, 1:{}, etc.]
+    for (i in data) {
+
+      var dataRow = data[i];
+
+      if (dataRow.hasOwnProperty('running')) {
+        //TODO: Change this, it's rewriting the same data
+        $('.' + dataRow.calc + '.' + dataRow.prop).html(dataRow.val);
+      }
+
+      if (dataRow.running == false) {
+        console.log("ending timeout (hopefully)");
+        clearTimeout(timer);
+      }
+
+    }
 }
 
 
 $(document).ready(function() {
-    // load the initial data (assuming it will be immediately available)
-    // load_data();
+
+    updateTimer(); //initiate the timer
+
 });

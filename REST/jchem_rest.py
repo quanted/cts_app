@@ -366,17 +366,40 @@ def poll_test_data(request):
 	Testing long polling - data
 	"""
 
-	logging.info("poll request received...")
-
-	# currentData = dbtest.selectValuesFromDB()
-
-	con = lite.connect(':memory:')
+	con = lite.connect('test.db')
 	cur = con.cursor()
 
 	cur.execute("SELECT * FROM props")
 	logging.info("Selection complete!")
 
 	data = cur.fetchall()
-	logging.info("Returning data: {}".format(data))
+	logging.info("DB data: {}".format(data))
 
-	return HttpResponse()
+	dataDict = {}
+
+	if data:
+		logging.info("data exists..")
+		dataList = []
+		for row in data:
+			logging.info("row: {}".format(row))
+			dataDict = {
+				'prop': row[0],
+				'calc': row[1],
+				'method': row[2],
+				'val': row[3],
+				'running': row[4]
+			}
+			dataList.append(dataDict)
+
+		logging.info("Returning data: {}".format(dataList))
+
+		if dataDict['running'] != True:
+			logging.info("deleting table...")
+			cur.execute("drop table props")
+			# cur.execute("DELETE FROM props")
+			logging.info("table deleted!")
+
+		return HttpResponse(json.dumps(dataList))
+
+	else:
+		return HttpResponse("{}")

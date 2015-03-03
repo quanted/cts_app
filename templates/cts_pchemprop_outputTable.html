@@ -17,84 +17,72 @@
     <!-- <th>Average</th> -->
     </tr>
 
+
+    <!-- MELTING POINT -->
     <tr>
     <td style="padding:4px;">Melting Point (&degC)</td>
-    <td><!--chemaxon--></td>
-    <td style="padding:4px;">{{data.epi.melting_point|default:""}}</td>
-    <td>
-    {% for key, val in data.test.melting_point.items %}
-        <div class="pchemCell">
-        {{key}}: {{val}} <br>
-        </div>
-    {% endfor %}
-    </td>
-    <td></td>
-    <td style="padding:4px;">{{data.measured.melting_point|default:""}}</td>
+    <td class="melting_point chemaxon"></td>
+    <td class="melting_point epi"></td>
+    <td class="melting_point test"></td>
+    <td class="melting_point sparc"></td>
+    <td class="melting_point measured"></td>
     <!-- <td>{{data.avg.melting_point|default:""}}</td> -->
     </tr>
 
+
+    <!-- BOILING POINT -->
     <tr>
     <td style="padding:4px;">Boiling Point (&degC)</td>
-    <td><!--chemaxon--></td>
-    <td style="padding:4px;">{{data.epi.boiling_point|default:""}}</td>
-    <td>
-    {% for key, val in data.test.boiling_point.items %}
-        <div class="pchemCell">
-        {{key}}: {{val}} <br>
-        </div>
-    {% endfor %}
-    </td>
-    <td>{{data.sparc.boiling_point|default:""}}</td>
-    <td style="padding:4px;">{{data.measured.boiling_point|default:""}}</td>
+    <td class="boiling_point chemaxon"></td>
+    <td class="boiling_point epi"></td>
+    <td class="boiling_point test"></td>
+    <td class="boiling_point sparc"></td>
+    <td class="boiling_point measured" style="padding:4px;"></td>
     <!-- <td>{{data.avg.boiling_point|default:""}}</td> -->
     </tr>
 
+
+    <!-- WATER SOLUBILITY -->
     <tr>
     <td style="padding:4px;">Water Solubility (mg/L)</td>
-    <td style="padding:4px;">{{data.chemaxon.water_sol|default:""}}</td>
-    <td style="padding:4px;">{{data.epi.water_sol|default:""}}</td>
-    <td>
-    {% for key, val in data.test.water_sol.items %}
-        <div class="pchemCell">
-        {{key}}: {{val}} <br>
-        </div>
-    {% endfor %}
-    </td>
-    <td>{{data.sparc.water_sol|default:""}}</td>
-    <td style="padding:4px;">{{data.measured.water_sol|default:""}}</td>
+    <td class="water_sol chemaxon" style="padding:4px;">{{data.chemaxon.water_sol|default:""}}</td>
+    <td class="water_sol epi" style="padding:4px;"></td>
+    <td class="water_sol test"></td>
+    <td class="water_sol sparc"></td>
+    <td class="water_sol measured" style="padding:4px;"></td>
     <!-- <td>{{data.avg.water_sol|default:""}}</td> -->
     </tr>
 
+
+    <!-- VAPOR PRESSURE -->
     <tr>
     <td style="padding:4px;">Vapor Pressure (mmHg)</td>
     <td><!--chemaxon--></td>
-    <td style="padding:4px;">{{data.epi.vapor_press|default:""}}</td>
-    <td>
-    {% for key, val in data.test.vapor_press.items %}
-        <div class="pchemCell">
-        {{key}}: {{val}} <br>
-        </div>
-    {% endfor %}
-    </td>
-    <td>{{data.sparc.vapor_press|default:""}}</td>
-    <td style="padding:4px;">{{data.measured.vapor_press|default:""}}</td>
+    <td class="vapor_press epi" style="padding:4px;"></td>
+    <td class="vapor_press test"></td>
+    <td class="vapor_press sparc"></td>
+    <td class="vapor_press measured" style="padding:4px;"></td>
     <!-- <td>{{data.avg.vapor_press|default:""}}</td> -->
     </tr>
 
+
+    <!-- MOLECULAR DIFFUSIVITY -->
     <tr>
     <td style="padding:4px;">Molecular Diffusivity (cm<sup>2</sup>/s)</td>
     <td><!--chemaxon--></td>
-    <td><!--epi--></td>
+    <td class="mol_diss epi"><!--epi--></td>
     <td><!--test--></td>
     <td><!--sparc--></td>
-    <td style="padding:4px;">{{data.measured.mol_diss|default:""}}</td>
+    <td class="mol_diss measured" style="padding:4px;"></td>
     <!-- <td>{{data.avg.mol_diss|default:""}}</td> -->
     </tr>
 
+
+    <!-- IONIZATION CONSTANT -->
     <tr>
     <td style="padding:4px;">Ionization Constant</td>
-    <td>
-    <div class="pchemCell">
+    <td class="ion_con test">
+    <div class="ion_con pchemCell">
     {%if data.chemaxon.ion_con%}
         pKa: 
         {% for item in data.chemaxon.ion_con.pKa %} 
@@ -111,26 +99,30 @@
     {%endif%}
     </div>
     </td>
-    <td><!--epi--></td>
+    <td class="ion_con epi"><!--epi--></td>
     <td><!--test--></td>
-    <td>{{data.sparc.ion_con|default:""}}</td>
+    <td></td>
     <td><!-- measured --></td>
     <!-- <td>{{data.avg.ion_con|default:""}}</td> -->
     </tr>
 
+
+    <!-- HENRY'S LAW CONSTANT -->
     <tr>
     <td style="padding:4px;">Henry's Law Constant (atm-m<sup>3</sup>/mol)</td>
     <td><!--chemaxon--></td>
-    <td style="padding:4px;">{{data.epi.henrys_law_con|default:""}}</td>
-    <td>{{data.test.henrys_law_con|default:""}}</td>
+    <td class="henrys_law_con epi" style="padding:4px;"></td>
+    <td class="henrys_law_con test"></td>
     <td><!--sparc--></td>
-    <td>{{data.measured.henrys_law_con|default:""}}</td>
+    <td class="henrys_law_con measured"></td>
     <!-- <td>{{data.avg.henrys_law_con|default:""}}</td> -->
     </tr>
 
+
+    <!-- OCTANOL/WATER PARTITION COEFFICIENT -->
     <tr>
     <td style="padding:4px;">Octanol/Water Partition Coefficient</td>
-    <td>
+    <td class="kow_no_ph chemaxon">
     {% for key, val in data.chemaxon.kow_no_ph.items %}
     	<div class="pchemCellWrap">
     	<div class="pchemCell">{{key|default:""}}</div>
@@ -140,16 +132,18 @@
     	</div>
     {% endfor %}
     </td>
-    <td style="padding:4px;">{{data.epi.kow_no_ph|default:""}}</td>
+    <td class="kow_no_ph epi" style="padding:4px;"></td>
     <td><!--test--></td>
-    <td>{{data.sparc.kow_no_ph|default:""}}</td>
+    <td></td>
     <td><!-- measured --></td>
     <!-- <td>{{data.avg.kow_no_ph|default:""}}</td> -->
     </tr>
 
+
+    <!-- OCTANOL/WATER PARTITION COEFFICIENT AT PH -->
     <tr>
     <td style="padding:4px;">Octanol/Water Partition Coefficient at pH {{kow_ph}}</td>
-    <td>
+    <td class="kow_ph chemaxon">
     {% for key, val in data.chemaxon.kow_wph.items %}
     	<div class="pchemCellWrap">
     	<div class="pchemCell">{{key|default:""}}</div>
@@ -159,17 +153,19 @@
     	</div>
     {% endfor %}
     </td>
-    <td><!--epi--></td>
+    <td class="kow_ph epi"><!--epi--></td>
     <td><!--test--></td>
-    <td>{{data.sparc.kow_wph|default:""}}</td>
+    <td></td>
     <td><!-- measured --></td>
     <!-- <td>{{data.avg.kow_wph|default:""}}</td> -->
     </tr>
 
+
+    <!-- ORGANIC CARBON PARTITION COEFFICIENT -->
     <tr>
     <td style="padding:4px;">Organic Carbon Partition Coefficient</td>
     <td><!--chemaxon--></td>
-    <td>{{data.epi.koc|default:""}}</td>
+    <td class="koc epi"></td>
     <td><!--test--></td>
     <td><!--sparc--></td>
     <td><!-- measured --></td>
