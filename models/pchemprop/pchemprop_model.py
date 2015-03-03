@@ -20,10 +20,12 @@ from requests_futures.sessions import FuturesSession
 
 from REST.jchem_rest import sse_test
 from django.views.decorators.http import require_GET
+import sqlite3
+import dbtesting as dbtest
 
 
 n = 3 # number of decimal places to round values
-
+# con = None
 
 class pchemprop(object):
 	def __init__(self, run_type, chem_struct, smiles, name, formula, mass, chemaxon, epi, 
@@ -94,12 +96,19 @@ class pchemprop(object):
 
 		# logging.info("CheckedCalcsAndProps: {}".format(checkedCalcsAndPropsDict))
 
+
+		#####################################
+		initializeDB() # create table in db
+		#####################################
+
+		logging.info("after db init")
+
 		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
 
 		logging.info("TEST Results: {}".format(testResultsDict))
 
-		sse_test("here's a message!!")
+		# sse_test("here's a message!!")
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
@@ -116,9 +125,64 @@ class pchemprop(object):
 		# fileout.close()
 
 
+def initializeDB():
+	con = sqlite3.connect('test.db') # create db in RAM (test case)
+	
+	cur = con.cursor()
+	logging.info("Opened database successfully!")
+	cur.execute("CREATE TABLE if not exists props (prop TEXT PRIMARY KEY, calc TEXT, method TEXT, val REAL)") 
+	con.commit()
+	logging.info("Table created!")
+	# db.close()
+
+
 def bgcb(sess, resp):
-	logging.info("> Response from server 6 recieved by localhost...")
-	sse_test(resp.json())
+	logging.info("> Response from server6 recieved by localhost...")
+
+	# sse_test(resp.json()) # sse testing
+
+	# logging.info("{}".format(resp.json()))
+	logging.info("{}".format(resp.url))
+
+	urlList = resp.url.split("/") # list of url components
+	# urlList = resp.result().request.url.split("/") # list of url components b/w '/'
+	method = urlList[-1]
+	calc = urlList[-5]
+	prop = wsMap.calculator[calc]['props'][urlList[-2]]
+	calcDict = wsMap.calculator[calc]
+	response = resp.json()
+
+	val = ''
+
+	logging.info("finished url split...")
+
+	if 'code' not in response:
+		if method != '':
+			resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
+			val = response[resultKey]
+		else:
+			if 'resultKeys' in calcDict:
+				val = response[calcDict['resultKeys'][prop]]
+			else:
+				val = response[calcDict['props'][prop]]
+	else:
+		val = "error"
+
+	# dbtest.insertValueIntoDB((prop, calc, method, val))
+
+	logging.info("initiating db storage...")
+	logging.info("data to store: {}, {}, {}, {}".format(prop, calc, method, val))
+	# logging.info("data types: {}".format(type(prop)))
+
+	con = sqlite3.connect('test.db')
+	cur = con.cursor()
+
+	# logging.info("before insert")
+	cur.execute("INSERT INTO props VALUES (?,?,?,?)", (prop, calc, method, val))
+	logging.info("data inserted!!!")
+
+	con.commit()
+	# db.close()
 
 
 def getTestResults(structure, checkedCalcsAndPropsDict):
@@ -159,17 +223,10 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 					else:
 						url = calcDict['url'] + str(molID) + '/' + calcDict['props'][prop] + '/' + method
 					try:
-						# session.get(url, timeout=20)
-						# sse_test.sse_test()
 						session.get(url, timeout=20, background_callback=bgcb)
 						logging.info("request url: {}".format(url))
-						# futuresList.append(response)
-						# futuresList.append(session.get(url, timeout=30))
-						# futuresList.append(session.get(url, timeout=10, background_callback=bgcb))
-					# except requests.exceptions.Timeout:
 					except:
 						logging.warning("TIMEOUT EXCPETION for {}->{}->{}".format(calc, prop, method))
-						# molData = {'code': 'timed out'}
 						futuresList.append(None)
 
 	# calcValues = waitForFutures(futuresList, calcValues) 

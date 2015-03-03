@@ -18,6 +18,9 @@ import os
 import time
 from django.views.decorators.http import require_GET
 
+import sqlite3 as lite
+from models.pchemprop import dbtesting as dbtest
+
 
 headers = {'Content-Type' : 'application/json'}
 
@@ -357,11 +360,23 @@ def sse_test(request):
 		response.flush()
 		return response
 
-	# return response
 
+def poll_test_data(request):
+	"""
+	Testing long polling - data
+	"""
 
-def poll_test(request):
-	"""
-	Need to post data temporarily somewhere
-	for client to poll
-	"""
+	logging.info("poll request received...")
+
+	# currentData = dbtest.selectValuesFromDB()
+
+	con = lite.connect(':memory:')
+	cur = con.cursor()
+
+	cur.execute("SELECT * FROM props")
+	logging.info("Selection complete!")
+
+	data = cur.fetchall()
+	logging.info("Returning data: {}".format(data))
+
+	return HttpResponse()
