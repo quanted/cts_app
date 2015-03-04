@@ -141,14 +141,6 @@ def initializeDB():
 	# db.close()
 
 
-def closeDB():
-	con = sqlite3.connect('test.db')
-	cur = con.cursor()
-	cur.execute("INSERT INTO props VALUES (?,?,?,?)", ('done', 'done', 'done', 'done'))
-	con.commit()
-	con.close()
-
-
 def bgcb(sess, resp):
 
 	global requestCounter
