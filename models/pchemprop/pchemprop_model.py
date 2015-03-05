@@ -21,7 +21,6 @@ from requests_futures.sessions import FuturesSession
 from REST.jchem_rest import sse_test
 from django.views.decorators.http import require_GET
 import sqlite3
-import dbtesting as dbtest
 
 
 n = 3 # number of decimal places to round values
@@ -113,8 +112,6 @@ class pchemprop(object):
 		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
 
 		logging.info("TEST Results: {}".format(testResultsDict))
-
-		# sse_test("here's a message!!")
 
 		self.resultsDict = {
 			"chemaxon": chemaxonResultsDict,
@@ -237,49 +234,9 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 						logging.info("request url: {}".format(url))
 					except:
 						logging.warning("TIMEOUT EXCPETION for {}->{}->{}".format(calc, prop, method))
-						futuresList.append(None)
-
-	# calcValues = waitForFutures(futuresList, calcValues) 
+						futuresList.append(None) 
 
 	return calcValues
-
-
-# def waitForFutures(futuresList, calcValues):
-	
-# 	try:
-# 		# wait for the futures!!
-# 		for future in futuresList:
-
-# 			logging.info("future request: {}".format(future.result().request.url))
-
-# 			response = future.result().json()
-
-# 			urlList = future.result().request.url.split("/") # list of url components b/w '/'
-# 			method = urlList[-1]
-# 			calc = urlList[-5]
-# 			prop = wsMap.calculator[calc]['props'][urlList[-2]]
-
-# 			calcDict = wsMap.calculator[calc]
-
-# 			if 'code' not in response:
-# 				if method != '':
-# 					resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
-# 					calcValues[calc][prop].update({method: response[resultKey]})
-# 				else:
-# 					if 'resultKeys' in calcDict:
-# 						calcValues[calc][prop] = response[calcDict['resultKeys'][prop]]
-# 					else:
-# 						calcValues[calc][prop] = response[calcDict['props'][prop]]
-# 			else:
-# 				if method != '':
-# 					calcValues[calc][prop].update({method: "error"})
-# 				else:
-# 					calcValues[calc][prop] = "error"
-
-# 	except requests.exceptions.Timeout:
-# 			logging.warning("~ EXCPETION within waitForFutures ~")
-
-# 	return calcValues
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):

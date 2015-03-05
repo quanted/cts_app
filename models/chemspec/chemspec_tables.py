@@ -244,9 +244,9 @@ def getMajorMsImages(chemspec_obj):
     """
     if chemspec_obj.majorMsDict:
         html = """
-        <H4 class="out_1 collapsible" id="section6"><span></span>Major Microspecies</H4>
+        <H4 class="out_1 collapsible" id="section6"><span></span>Major Microspecies at pH: {}</H4>
         <div class="out_ shiftRight">
-        """
+        """.format(chemspec_obj.pH_microspecies)
         html += wrap_molecule(chemspec_obj.majorMsDict, None, mdWidth, scale)
         html += """
         </div>

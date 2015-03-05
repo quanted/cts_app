@@ -57,7 +57,7 @@ $(document).ajaxStart(function () {
 //for chemical in Lookup Chemical textarea
 function importMol(dataObj) {
 
-  var chemical = $('#id_chem_struct').val();
+  var chemical = $('#id_chem_struct').val().trim();
 
   if (chemical == "") {
     displayErrorInTextbox("Enter a chemical or draw one first");
