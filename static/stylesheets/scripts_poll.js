@@ -14,33 +14,9 @@ var updateTimer = function() {
     }
   });
 
-  timer = setTimeout(updateTimer, 10000);
+  timer = setTimeout(updateTimer, 5000); // poll every 5s
 
 };
-
-// (function poll() {
-
-//   setTimeout(function() {
-
-//     $.ajax({ 
-//       url: "/jchem-cts/ws/data",
-//       dataType: "json",
-//       success: function(data) {
-
-//         if (data.running) {
-//           display_data(data);
-//         }
-//         else {
-//           clearTimeout($(this));
-//           return;
-//         }
-
-//       },
-//       complete: poll });
-
-//   }, 10000);
-
-// })();
 
 
 function display_data(data) {
@@ -66,7 +42,5 @@ function display_data(data) {
 
 
 $(document).ready(function() {
-
     updateTimer(); //initiate the timer
-
 });

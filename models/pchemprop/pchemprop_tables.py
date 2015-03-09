@@ -150,7 +150,7 @@ def getWaterSolChemaxon(pchemprop_obj):
     if root and 'water_sol' in root:
         try:
             root = pchemprop_obj.resultsDict['chemaxon']['water_sol']
-            value = round(root['data'][0]['solubility']['intrinsicSolubility'], n)
+            value = round(1000.0 * root['data'][0]['solubility']['intrinsicSolubility'], n) # converted to mg/L
             return value
         except:
             return "Exception getting water solubility..."

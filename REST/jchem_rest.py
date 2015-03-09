@@ -19,7 +19,9 @@ import time
 from django.views.decorators.http import require_GET
 
 import sqlite3 as lite
-from models.pchemprop import dbtesting as dbtest
+# from models.pchemprop import dbtesting as dbtest
+from django.core.cache import cache
+from REST import webservice_map as wsMap
 
 
 headers = {'Content-Type' : 'application/json'}
@@ -366,40 +368,62 @@ def poll_test_data(request):
 	Testing long polling - data
 	"""
 
-	con = lite.connect('test.db')
-	cur = con.cursor()
+	# con = lite.connect('test.db')
+	# cur = con.cursor()
 
-	cur.execute("SELECT * FROM props")
-	logging.info("Selection complete!")
+	sendDict = {}
 
-	data = cur.fetchall()
-	logging.info("DB data: {}".format(data))
+	for calc, calcDict in wsMap.calculator.items():
 
-	dataDict = {}
+		logging.info("calc: {}".format(calc))
 
-	if data:
-		logging.info("data exists..")
-		dataList = []
-		for row in data:
-			logging.info("row: {}".format(row))
-			dataDict = {
-				'prop': row[0],
-				'calc': row[1],
-				'method': row[2],
-				'val': row[3],
-				'running': row[4]
-			}
-			dataList.append(dataDict)
+		for prop in calcDict['props'].keys():
 
-		logging.info("Returning data: {}".format(dataList))
+			keyName = calc + '-' + prop
 
-		if dataDict['running'] != True:
-			logging.info("deleting table...")
-			cur.execute("drop table props")
-			# cur.execute("DELETE FROM props")
-			logging.info("table deleted!")
+			logging.info("prop: {}".format(prop))
+			logging.info("Cached: {}".format(cache.get(keyName)))
 
-		return HttpResponse(json.dumps(dataList))
+			if cache.get(keyName):
+				sendDict.update({keyName: cache.get(keyName)})
 
-	else:
-		return HttpResponse("{}")
+
+	logging.info("$$$$$$$ Cache value accessed from jchem_rest: {}".format(cache.get('epi-melting_point')))
+
+	return HttpResponse(json.dumps(sendDict))
+	
+	# cur.execute("SELECT * FROM props")
+	# logging.info("Selection complete!")
+
+	# data = cur.fetchall()
+	# logging.info("DB data: {}".format(data))
+
+	# dataDict = {}
+
+	# if data:
+	# 	logging.info("data exists..")
+	# 	dataList = []
+	# 	for row in data:
+	# 		logging.info("row: {}".format(row))
+	# 		dataDict = {
+	# 			'prop': row[0],
+	# 			'calc': row[1],
+	# 			'method': row[2],
+	# 			'val': row[3],
+	# 			'running': row[4]
+	# 		}
+	# 		dataList.append(dataDict)
+
+	# 	logging.info("Returning data: {}".format(dataList))
+
+	# 	if dataDict['running'] != True:
+	# 		logging.info("deleting table...")
+	# 		cur.execute("drop table props")
+	# 		# cur.execute("DELETE FROM props")
+	# 		logging.info("table deleted!")
+
+	# 	# return HttpResponse(json.dumps(dataList))
+	# 	return HttpResponse(json.dumps(sendDict))
+
+	# else:
+	# 	return HttpResponse("{}")

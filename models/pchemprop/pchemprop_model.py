@@ -21,6 +21,8 @@ from requests_futures.sessions import FuturesSession
 from REST.jchem_rest import sse_test
 from django.views.decorators.http import require_GET
 import sqlite3
+from django.core.cache import cache
+from django.template.defaultfilters import slugify
 
 
 n = 3 # number of decimal places to round values
@@ -157,8 +159,6 @@ def bgcb(sess, resp):
 
 	val = ''
 
-	# logging.info("finished url split...")
-
 	if 'code' not in response:
 		if method != '':
 			resultKey = calcDict['props'][prop] + calcDict['methodsResultKeys'][method]
@@ -171,10 +171,23 @@ def bgcb(sess, resp):
 	else:
 		val = "error"
 
+	# trying to use django caching instead of sqlite:
+	valKey = ''
+	if method != '':
+		valKey = calc + '-' + prop + '-' + method
+	else:
+		valKey = calc + '-' + prop
+
+	logging.info("THE KEY: {}".format(valKey))
+
+	cache.set(valKey, val)
+
 	con = sqlite3.connect('test.db')
 	cur = con.cursor()
 
-	logging.info("Attempting to insert: {}, {}, {}, {}".format(prop, calc, method, val))
+	logging.info("Cached Value: {}".format(cache.get(valKey)))
+
+	# logging.info("Attempting to insert: {}, {}, {}, {}".format(prop, calc, method, val))
 
 	if requestCounter >= totalRequest:
 		logging.info("Requests pool complete...")
@@ -266,7 +279,8 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 						"pHLower": 0,
 						"pHUpper": 14,
 						"pHStep": 0.1,
-						"unit": "LOGS"
+						# "unit": "LOGS"
+						"unit": "MGPERML"
 					}
 				}
 				data = json.loads(makeJchemCall(postDict))
