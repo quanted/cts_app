@@ -21,7 +21,7 @@ from django.views.decorators.http import require_GET
 import sqlite3 as lite
 # from models.pchemprop import dbtesting as dbtest
 from django.core.cache import cache
-from REST import webservice_map as wsMap
+from REST import calculator_map as calcMap
 
 
 headers = {'Content-Type' : 'application/json'}
@@ -343,52 +343,52 @@ def gen_jid():
     return jid
 
 
-def sse_test(request):
+# def sse_test(request):
 
-	logging.info("Recieved request: {}".format(type(request)))
+# 	logging.info("Recieved request: {}".format(type(request)))
 
-	response = HttpResponse(content_type="text/event-stream")
+# 	response = HttpResponse(content_type="text/event-stream")
 
-	try:
-		logging.info("$$$ {} $$$".format(request.json()))
-		response.write("data: {}\n\n".format(request))
-		response.flush()
-		return response
+# 	try:
+# 		logging.info("$$$ {} $$$".format(request.json()))
+# 		response.write("data: {}\n\n".format(request))
+# 		response.flush()
+# 		return response
 
-	except:
-		response.write("data: an exception occurred\n\n")
-		response.flush()
-		return response
-
-
-def poll_test_data(request):
-	"""
-	Testing long polling - data
-	"""
-
-	# con = lite.connect('test.db')
-	# cur = con.cursor()
-
-	sendDict = {}
-
-	for calc, calcDict in wsMap.calculator.items():
-
-		logging.info("calc: {}".format(calc))
-
-		for prop in calcDict['props'].keys():
-
-			keyName = calc + '-' + prop
-
-			logging.info("prop: {}".format(prop))
-			logging.info("Cached: {}".format(cache.get(keyName)))
-
-			if cache.get(keyName):
-				sendDict.update({keyName: cache.get(keyName)})
+# 	except:
+# 		response.write("data: an exception occurred\n\n")
+# 		response.flush()
+# 		return response
 
 
-	logging.info("$$$$$$$ Cache value accessed from jchem_rest: {}".format(cache.get('epi-melting_point')))
+# def poll_test_data(request):
+# 	"""
+# 	Testing long polling - data
+# 	"""
 
-	return HttpResponse(json.dumps(sendDict))
+# 	# con = lite.connect('test.db')
+# 	# cur = con.cursor()
+
+# 	sendDict = {}
+
+# 	for calc, calcDict in calcMap.calculator.items():
+
+# 		logging.info("calc: {}".format(calc))
+
+# 		for prop in calcDict['props'].keys():
+
+# 			keyName = calc + '-' + prop
+
+# 			logging.info("prop: {}".format(prop))
+# 			logging.info("Cached: {}".format(cache.get(keyName)))
+
+# 			if cache.get(keyName):
+# 				sendDict.update({keyName: cache.get(keyName)})
+
+
+# 	logging.info("$$$$$$$ Cache value accessed from jchem_rest: {}".format(cache.get('epi-melting_point')))
+
+# 	return HttpResponse(json.dumps(sendDict))
 
 	# cur.execute("SELECT * FROM props")
 	# logging.info("Selection complete!")

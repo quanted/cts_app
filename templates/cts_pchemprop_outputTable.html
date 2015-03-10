@@ -1,5 +1,42 @@
-<script type="text/javascript" src="/static/stylesheets/scripts_poll.js"></script>
+<!-- <script type="text/javascript" src="/static/stylesheets/scripts_poll.js"></script> -->
 <!-- <script type="text/javascript" src="/static/stylesheets/scripts_sse.js"></script> -->
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    //Loop through checkedCalcsAndPropsDict to make ajax calls:
+    console.log({{newWayDict}});
+
+    var checkedCalcsAndProps = {{newWayDict}};
+    for (var calc in checkedCalcsAndProps) {
+        if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+
+            console.log(calc);
+            console.log(checkedCalcsAndProps[calc]);
+
+            for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+
+                //could also be methods in here
+                console.log(checkedCalcsAndProps[calc][i]);
+
+            }
+
+            // $.ajax({ 
+            //     // url: "/test_cts/api/test/molecules/findByID/7", //the proxy way
+            //     url: "/"
+            //     dataType: "json",
+            //     success: function(data) {
+            //         //map to pchemprop table
+
+            //     }
+            // });
+
+        }
+    }
+
+});
+</script>
+
 
 <!-- pchemprop output table -->
 <table id="pchempropOutputTable">

@@ -19,7 +19,7 @@ urlpatterns = patterns('REST',
 
     # (r'^ws/test-sse/?$', 'jchem_rest.sse_test'), # testing sse in django
     # (r'^ws/test-poll/?$', 'jchem_rest.poll_test') # testing ajax polling
-    (r'^ws/data/?$', 'jchem_rest.poll_test_data')
+    # (r'^ws/data/?$', 'jchem_rest.poll_test_data')
 )
 
 # 404 Error view (file not found)

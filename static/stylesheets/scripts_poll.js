@@ -5,11 +5,14 @@ var timer = null;
 var updateTimer = function() {
 
   $.ajax({ 
-    url: "/jchem-cts/ws/data",
+    // url: "/jchem-cts/ws/data",
+    url: "/test_cts/api/test/molecules/findByID/7", //the proxy way
+    // url: "http://134.67.114.6/test/molecules/findByID/7", //poll molecule 7 (change url to more general, or from server)
     dataType: "json",
     success: function(data) {
 
-      display_data(data);
+      $('div._out').html(data);
+      // display_data(data);
 
     }
   });

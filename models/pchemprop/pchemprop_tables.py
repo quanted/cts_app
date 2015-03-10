@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 import logging
 import json
 import pchemprop_parameters
-from REST import webservice_map as wsMap
+from REST import calculator_map as calcMap
 
 
 # some constants:
@@ -238,27 +238,14 @@ def output_pchem_table(pchemprop_obj):
     }
     #######################################################
 
-    # old stuff
-    # for calc, calcData in pchemprop_obj.resultsDict.items():
-    #     data = {} # prop -> data
-    #     if calcData != None and calc != 'chemaxon':
-    #         for prop, propData in calcData.items():
-    #             data.update({prop: getPropDataFromCalc(calc, prop, propData, pchemprop_obj)})
-    #         mainDataDict.update({calc: data}) 
-        # elif calc != 'chemaxon':
-        #     data.update({prop: getPropDataFromCalc(calc, None, calcData, None)})
-    # end old stuff
-
-
-    # logging.info(" @@@ Main Data Dict: {} @@@ ".format(mainDataDict))
-
-
     kow_ph = 0.0
     if pchemprop_obj.kow_ph:
         kow_ph = round(float(pchemprop_obj.kow_ph), 1)
 
     html += render_to_string('cts_pchemprop_outputTable.html', 
-                                { "data": mainDataDict, "kow_ph": kow_ph })
+                                { "data": mainDataDict, 
+                                "kow_ph": kow_ph, 
+                                "newWayDict": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict) })
     html += """
     </div>
     """
@@ -285,7 +272,7 @@ def timestamp(pchemprop_obj="", batch_jid=""):
 
 #     # logging.info("-{}-".format(propData))
 
-#     # TODO: Use webservice_map.py in REST or some other code-reuse way
+#     # TODO: Use calculator_map.py in REST or some other code-reuse way
 #     # instead of this "stunt"
 
 #     if calc == "chemaxon":
@@ -328,7 +315,7 @@ def timestamp(pchemprop_obj="", batch_jid=""):
 
 #     elif calc == "epi":
 #         # propData = json.loads(propData)
-#         return propData[wsMap.calculator['epi']['props'][prop]]
+#         return propData[calcMap.calculator['epi']['props'][prop]]
 
 
 # def fillInTestProps(respDict):
