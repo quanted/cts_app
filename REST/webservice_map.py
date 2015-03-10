@@ -1,127 +1,123 @@
-"""
-Herein lies the map to the various calculators' queries.
-It's organized by pchemprop field ID (e.g., melting_point, ion_con).
-"""
 
-# def determineBaseUrl():
-# 	"""
-# 	Change base url depending on if cts is
-# 	running on local or cgi 
-# 	"""
-# 	import os
+###########################################################
+# Herein lies the map to the various calculators' queries #
+###########################################################
 
-# 	if 'CTS_TEST_SERVER_INTRANET' in os.environ:
-# 		return os.environ['CTS_TEST_SERVER_INTRANET']
-# 	else:
-# 		return os.environ['CTS_TEST_SERVER']
-
-
-# baseUrl = determineBaseUrl()
-# baseUrl = "http://a.ibdb.net/cts" # old
-
-baseUrl = "http://someURL.com/"
-
-# p-chem properties by form field names 
-props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 
-		'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph']
-
-# from webservice_map import Calculator 
+# TODO: Add chemaxon after these are integrated in
+import logging
 
 class Calculator:
-
-	def __init__(self, calcName):
+	"""
+	Skeleton class for calculators
+	"""
+	def __init__(self, calcName, propMap, urlStruct):
 		self.name = calcName
-		self.props
-		self.urls
+		self.propMap = propMap # expecting list
+		self.urlStruct = urlStruct
 
-	# def urls(self, calcName, molID, propKey, method=None):
-	# 	if calcName == "test":
-	# 		return baseUrl + '/test/test/calc/{}/{}/{}'.format(molID, propKey, method)
-	# 	elif calcName == "epi":
-	# 		return baseUrl + '/test/epi/calc/{}/{}'.format(molID, propKey)
-	# 	elif calcName == "measured":
-	# 		return baseUrl + '/test/measured/{}/test/{}'.format(molID, propKey)
+	def getUrl(self, molID, propKey, method=None):
+		if propKey in self.propMap:
+			calcProp = self.propMap[propKey]['urlKey']
+			if self.name == 'test':
+				if method: return self.urlStruct.format(molID, calcProp, method)
+				else: return "Error: TEST must have a method in the argument"
+			else: 
+				return self.urlStruct.format(molID, calcProp)
+		else: 
+			return "Error: key not found"
 
-	# def methods(self, calcName):
-	# 	if calcName == "test":
-	# 		return ['fda', 'hierarchical', 'group', 'neighbor']
-	# 	elif calcName == "epi":
-	# 		return None
-	# 	elif calcName == "measured":
-	# 		return None
-
-	# def propz(calcName):
-	# 	if calcName == "test":
-	# 		return ['melting_point', 'boiling_point', 'water_sol', 'vapor_press']
-	# 	elif calcName == "epi":
-	# 		return ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'henrys_law_con', 'kow_no_ph']
-	# 	elif calcName == "measured":
-	# 		return ['melting_point', 'boiling_point', 'water_sol', 'vapor_press']
-
-# class ChemAxonCalculator(Calculator):
-# 	def __init__(self)
+	def getResultKey(self, propKey):
+		if propKey in self.propMap:
+			return self.propMap[propKey]['resultKey']
+		else:
+			return "Error: key not found"
 
 
-# # calculator = {
+class TestCalc(Calculator):
+	"""
+	TEST Calculator
+	"""
+	def __init__(self):
+		urlStruct = "/test/test/calc/{}/{}/{}" # molID, propKey, method
+		self.methods = ['hierarchical'] # accounting for one method atm
+		propMap = {
+			'melting_point': {
+				'urlKey': 'meltingPoint',
+				'resultKey': 'meltingPointTESTHierarchical',
+			},
+			'boiling_point': {
+				'urlKey': 'boilingPoint',
+				'resultKey': 'boilingPointTESTHierarchical'
+			},
+			'water_sol': {
+				'urlKey': 'waterSolubility',
+				'resultKey': 'waterSolubilityTESTHierarchical'
+			},
+			'vapor_press': {
+				'urlKey': 'vaporPressure',
+				'resultKey': 'vaporPressureTESTHierarchical'
+			}
+		}
+		Calculator.__init__(self, "test", propMap, urlStruct)
 
-# 	'test': {
-# 		'name': 'test',
-# 		'methods': ['fda', 'hierarchical', 'group', 'neighbor'],
-# 		# 'methodsResultKeys': {
-# 		# 	'fda': 'TESTFDA', 
-# 		# 	'hierarchical': 'TESTHierarchical', 
-# 		# 	'group': 'TESTGroupContribution', 
-# 		# 	# 'consensus': 'TESTConsensus', 
-# 		# 	'neighbor': 'TESTNearestNeighbor'},
-# 		'url': baseUrl + '/test/test/calc/',
-# 		'props': ['melting_point', 'boiling_point', 'water_sol', 'vapor_press'],
-# 		'propUrls': {
-# 			'melting_point': baseUrl + '/test/test/calc/'
-# 		}
-# 	},
 
-# 	'epi': {
-# 		'name': 'epi',
-# 		'methods': None, # no methods for epi suite
-# 		'url': baseUrl + '/test/epi/calc/',
-# 		'props': {
-# 			'melting_point': 'meltingPtDegCEstimated',
-# 			'boiling_point': 'boilingPtDegCEstimated',
-# 			'water_sol': 'waterSolMgLEstimated',
-# 			'vapor_press': 'vaporPressMmHgEstimated',
-# 			'henrys_law_con': 'henryLcBondAtmM3Mole',
-# 			'kow_no_ph': 'logKowEstimate',
+class EpiCalc(Calculator):
+	"""
+	EPI Suite Calculator
+	"""
+	def __init__(self):
+		urlStruct = "/test/epi/calc/{}/{}" # molID, propKey
+		propMap = {
+			'melting_point': {
+				'urlKey': 'meltingPtDegCEstimated',
+				'resultKey': 'meltingPtDegCEstimated'
+			},
+			'boiling_point': {
+				'urlKey': 'boilingPtDegCEstimated',
+				'resultKey': 'boilingPtDegCEstimated'
+			},
+			'water_sol': {
+				'urlKey': 'waterSolMgLEstimated',
+				'resultKey': 'waterSolMgLEstimated'
+			},
+			'vapor_press': {
+				'urlKey': 'vaporPressMmHgEstimated',
+				'resultKey': 'vaporPressMmHgEstimated'
+			},
+			'henrys_law_con': {
+				'urlKey': 'henryLcBondAtmM3Mole',
+				'resultKey': 'henryLcBondAtmM3Mole'
+			},
+			'kow_no_ph': {
+				'urlKey': 'logKowEstimate',
+				'resultKey': 'logKowEstimate'
+			},
+		}
+		Calculator.__init__(self, "epi", propMap, urlStruct)
 
-# 			'meltingPtDegCEstimated': 'melting_point',
-# 			'boilingPtDegCEstimated': 'boiling_point',
-# 			'waterSolMgLEstimated': 'water_sol',
-# 			'vaporPressMmHgEstimated': 'vapor_press',
-# 			'henryLcBondAtmM3Mole': 'henrys_law_con',
-# 			'logKowEstimate': 'kow_no_ph'
-# 		}
-# 	},
 
-# 	'measured': {
-# 		'name': 'measured',
-# 		'methods': [''],
-# 		'url': baseUrl + '/test/measured/',
-# 		'props': {
-# 			'melting_point': 'meltingPoint',
-# 			'boiling_point': 'boilingPoint',
-# 			'water_sol': 'waterSolubility',
-# 			'vapor_press': 'vaporPressure',
-			
-# 			'meltingPoint': 'melting_point',
-# 			'boilingPoint': 'boiling_point',
-# 			'waterSolubility': 'water_sol',
-# 			'vaporPressure':'vapor_press'
-# 		},
-# 		'resultKeys': {
-# 			'melting_point': 'measuredMeltingPoint',
-# 			'boiling_point': 'measuredBoilingPoint',
-# 			'water_sol': 'measuredWaterSolubility',
-# 			'vapor_press': 'measuredVaporPressure'
-# 		}
-# 	}
-
-# }
+class MeasuredCalc(Calculator):
+	"""
+	Measured Data (technically not calculator)
+	"""
+	def __init__(self):
+		urlStruct = "/test/measured/calc/{}/test/{}" # molID, propKey
+		propMap = {
+			'melting_point': {
+				'urlKey': 'meltingPoint',
+				'resultKey': 'measuredMeltingPoint',
+			},
+			'boiling_point': {
+				'urlKey': 'boilingPoint',
+				'resultKey': 'measuredBoilingPoint'
+			},
+			'water_sol': {
+				'urlKey': 'waterSolubility',
+				'resultKey': 'measuredWaterSolubility'
+			},
+			'vapor_press': {
+				'urlKey': 'vaporPressure',
+				'resultKey': 'measuredVaporPressure'
+			}
+		}
+		Calculator.__init__(self, "measured", propMap, urlStruct)

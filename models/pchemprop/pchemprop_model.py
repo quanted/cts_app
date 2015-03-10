@@ -101,14 +101,14 @@ class pchemprop(object):
 
 
 		#####################################
-		initializeDB() # create table in db
+		# initializeDB() # create table in db
 		global requestCounter
 		requestCounter = 0 # initialize request counter
 		global totalRequest
 		totalRequest = 0
 		#####################################
 
-		logging.info("after db init")
+		# logging.info("after db init")
 
 		chemaxonResultsDict = getChemaxonResults(self.chem_struct, checkedCalcsAndPropsDict, self.kow_ph)
 		testResultsDict = getTestResults(self.chem_struct, checkedCalcsAndPropsDict) # gets test, measured, and epi data
@@ -130,14 +130,14 @@ class pchemprop(object):
 		# fileout.close()
 
 
-def initializeDB():
-	con = sqlite3.connect('test.db') # create db in RAM (test case)
-	cur = con.cursor()
-	logging.info("Opened database successfully!")
-	cur.execute("CREATE TABLE if not exists props (prop TEXT, calc TEXT, method TEXT, val REAL, running BOOLEAN)") 
-	con.commit()
-	logging.info("Table created!")
-	# db.close()
+# def initializeDB():
+# 	con = sqlite3.connect('test.db') # create db in RAM (test case)
+# 	cur = con.cursor()
+# 	logging.info("Opened database successfully!")
+# 	cur.execute("CREATE TABLE if not exists props (prop TEXT, calc TEXT, method TEXT, val REAL, running BOOLEAN)") 
+# 	con.commit()
+# 	logging.info("Table created!")
+# 	# db.close()
 
 
 def bgcb(sess, resp):

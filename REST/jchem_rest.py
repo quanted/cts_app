@@ -30,8 +30,6 @@ headers = {'Content-Type' : 'application/json'}
 class Urls:
 
 	cts_jchem_server = os.environ['CTS_JCHEM_SERVER']
-	# jchemBase = 'http://pnnl.cloudapp.net/webservices' # old ws location 
-	# efsBase = 'http://pnnl.cloudapp.net/efsws' # metabolizer base (old server)
 	jchemBase = cts_jchem_server + '/webservices'
 	efsBase = cts_jchem_server + '/efsws/rest'
 
@@ -391,7 +389,7 @@ def poll_test_data(request):
 	logging.info("$$$$$$$ Cache value accessed from jchem_rest: {}".format(cache.get('epi-melting_point')))
 
 	return HttpResponse(json.dumps(sendDict))
-	
+
 	# cur.execute("SELECT * FROM props")
 	# logging.info("Selection complete!")
 

@@ -139,9 +139,9 @@ def getMajorMicrospecies(output_val, dec):
 
 		# Get image data from result:
 		if 'image' in majorMsRoot['result']:
-			majorMsImage = data_walks.changeImageIP(majorMsRoot['result']['image']['imageUrl'])
+			majorMsImage = majorMsRoot['result']['image']['image']
 			majorMsDict.update({"image": majorMsImage})
-			# majorMsDict.update({"image": majorMsRoot['result']['image']['imageUrl']})
+			# majorMsDict.update({"image": majorMsRoot['result']['image']['image']})
 		else:
 			majorMsImage = 'No major microspecies'
 
@@ -177,12 +177,12 @@ def getPkaInfo(output_val, dec):
 		for item in pkaRoot['mostAcidic']:
 			pkaDict['mostAcidicPka'].append(round(item, dec))
 
-		parentDict = {'image': data_walks.changeImageIP(pkaRoot['result']['image']['image'])}
+		parentDict = {'image': pkaRoot['result']['image']['image']}
 		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
 		# logging.warning(parentDict)
 
 		pkaDict.update({'parent': parentDict})
-		# pkaDict.update({'parent': pkaRoot['result']['image']['imageUrl']})
+		# pkaDict.update({'parent': pkaRoot['result']['image']['image']})
 
 		# Check if 'microspecies' key exist in dict
 		if 'microspecies' in pkaRoot:
@@ -192,7 +192,7 @@ def getPkaInfo(output_val, dec):
 			msImageUrlList = [] # list of microspecies image urls
 			for ms in microspeciesList:
 				msStructDict = {} # list element in msImageUrlList
-				msStructDict.update({"image": data_walks.changeImageIP(ms['image']['image'])})
+				msStructDict.update({"image": ms['image']['image']})
 				structInfo = getStructInfo(ms['structureData']['structure'])
 				msStructDict.update(structInfo)
 				msImageUrlList.append(msStructDict)
@@ -232,7 +232,7 @@ def getStereoInfo(output_val, dec):
 
 	if 'result' in stereoValues:
 		if 'image' in stereoValues['result']:
-			stereoDict['image'] = data_walks.changeImageIP(stereoValues['result']['image']['imageUrl'])
+			stereoDict['image'] = stereoValues['result']['image']['image']
 		structInfo = getStructInfo(stereoValues['result']['structureData']['structure'])
 		stereoDict.update(structInfo)
 
@@ -248,7 +248,7 @@ def getTautInfo(output_val, dec):
 		imageList = [] # list of dicts, where dict is molecule's image, smiles, mass, etc.
 		for taut in tautValues['result']:
 			tautStructDict = {}
-			tautStructDict.update({"image": data_walks.changeImageIP(taut['image']['imageUrl'])}) #append to list
+			tautStructDict.update({"image": taut['image']['image']}) #append to list
 			structInfo = getStructInfo(taut['structureData']['structure'])
 			tautStructDict.update(structInfo)
 
