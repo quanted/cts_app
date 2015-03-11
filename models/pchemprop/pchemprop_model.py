@@ -177,11 +177,13 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 				try:
 					for method in Calc.methods:
 						url = baseUrl + Calc.getUrl(str(molID), prop, method)
-						session.get(url, timeout=20, background_callback=dataReturn)
+						session.get(url, timeout=30)
+						# session.get(url, timeout=20, background_callback=dataReturn)
 						totalRequest += 1
 				except AttributeError:
 					url = baseUrl + Calc.getUrl(str(molID), prop)
-					session.get(url, timeout=20, background_callback=dataReturn)
+					session.get(url, timeout=30)
+					# session.get(url, timeout=20, background_callback=dataReturn)
 					totalRequest += 1
 				except requests.exceptions.Timeout:
 					logging.warning("Timeout Exception! Call: {}->{}".format(calc, prop))

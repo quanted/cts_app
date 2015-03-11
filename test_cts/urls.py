@@ -9,6 +9,7 @@ from test_cts import views
 
 urlpatterns = patterns('',
     url(r'^api/(?P<path>.*)$', views.simple_proxy),
+    url(r'^data/$', views.less_simple_proxy),
     url(r'^(?P<model>.*?)/table/?$', views.index, name='index'),
     url(r'^calc-kow/$', views.calc_kow)
 )

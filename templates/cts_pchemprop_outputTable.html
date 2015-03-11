@@ -16,25 +16,44 @@ $(document).ready(function() {
 
             for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
 
-                //could also be methods in here
-                console.log(checkedCalcsAndProps[calc][i]);
+                //could also be methods in here=
+                var prop = checkedCalcsAndProps[calc][i];
+                console.log(prop);
 
+                var calcPropData = {"calc": calc, "prop": prop};
+
+                makeTheCall(calcPropData, function(response) {
+
+                    //map response to pchemprop output table:
+                    console.log(response);
+
+                    // $('.' + calc + '.' + prop).html(response); //put value in table
+                    $('.' + response['calc'] + '.' + response['prop']).html(response['data']);
+
+                });
             }
-
-            // $.ajax({ 
-            //     // url: "/test_cts/api/test/molecules/findByID/7", //the proxy way
-            //     url: "/"
-            //     dataType: "json",
-            //     success: function(data) {
-            //         //map to pchemprop table
-
-            //     }
-            // });
-
         }
     }
 
 });
+
+
+function makeTheCall(calcPropData, callback) {
+    $.ajax({ 
+        url: "/test_cts/data/",
+        type: "POST",
+        dataType: "json",
+        data: calcPropData,
+        success: function(data) {
+            callback(data); //return data to caller
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert("An Error occured. Check console for more information.");
+            console.log(errorThrown);
+        }
+    });
+}
+
 </script>
 
 
