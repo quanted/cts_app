@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
 from django.template import Template, Context
+from django.shortcuts import render
 from xml.sax.saxutils import escape
 import datetime
 import pytz
@@ -41,11 +42,11 @@ def doc(request):
 	"""
 	API Documentation Page
 	"""
-	text_file2 = open('REST/doc_text.txt','r')
-	xx = text_file2.read()
-	response = HttpResponse()
-	response.write(xx)
-	return response
+	# text_file2 = open('REST/doc_text.txt','r')
+	# xx = text_file2.read()
+	# response = HttpResponse()
+	# response.write(xx)
+	return render(request, 'jchem_docs.html')
 
 
 def getChemDeats(request):

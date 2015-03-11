@@ -4,12 +4,14 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 # The previous urlpatterns is using views as a prefix breaking the use of django apps 
-# urlpatterns = patterns('',
-#     url(r'^test_cts/', include('test_cts.urls'))  # Pavan added this to include the test suite django app
-# )
+urlpatterns = patterns('',
+    url(r'^test_cts/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
+    # url(r'^jchem-cts/', include('REST.urls'))
+    # url(r'^test_cts/', include('test_cts.urls'))
+)
 
 # All view functions here must be in '/views/views.py'
-urlpatterns = patterns('views',
+urlpatterns += patterns('views',
     # url(r'^docs/', include('docs.urls')),
     (r'^$', 'landing.ctsLandingPage'),  # Landing page
     (r'^cts/?$', 'landing.ctsLandingPage'),
@@ -35,10 +37,7 @@ urlpatterns = patterns('views',
     (r'^cts/(?P<model>.*?)/html/?$', 'generateReport.htmlReceiver'),
     (r'^cts/docs/?$', 'misc.docsRedirect'),
     (r'^cts/(?P<model>.*?)/?$', 'description.descriptionPage'),
-    
     (r'^jchem-cts/', include('REST.urls')),
-    (r'^test_cts/', include('test_cts.urls'))
-    # (r'^services/', include('REST.urls')),
 )
 
 # 404 Error view (file not found)
