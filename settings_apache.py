@@ -84,7 +84,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'mod_wsgi.server',
     'filters',
-    # 'test_cts'
+    'test_cts'
     #'docs'
 )
 
