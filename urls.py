@@ -36,8 +36,8 @@ urlpatterns += patterns('views',
     (r'^cts/docs/?$', 'misc.docsRedirect'),
     (r'^cts/(?P<model>.*?)/?$', 'description.descriptionPage'),
     
-    (r'^jchem-cts/', include('REST.urls')),
-    (r'^test_cts/', include('test_cts.urls')
+    (r'^jchem-cts/', include('REST.urls'),
+    (r'^test_cts/', include('test_cts.urls'))
     # (r'^services/', include('REST.urls')),
 )
 
