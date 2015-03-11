@@ -18,11 +18,6 @@ import os
 import time
 from django.views.decorators.http import require_GET
 
-import sqlite3 as lite
-# from models.pchemprop import dbtesting as dbtest
-from django.core.cache import cache
-from REST import calculator_map as calcMap
-
 
 headers = {'Content-Type' : 'application/json'}
 
