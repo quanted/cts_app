@@ -68,6 +68,9 @@ def less_simple_proxy(request):
   except requests.HTTPError as e:
     return HttpResponse(TEST_URL+e.msg, status=e.code, content_type='text/plain')
 
+  except ValueError:
+    return HttpResponse("Must send POST data to get response")
+
   else: 
     return HttpResponse(postData, content_type=async_request.headers['content-type'])
 
