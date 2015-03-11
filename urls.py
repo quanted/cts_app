@@ -38,6 +38,7 @@ urlpatterns += patterns('views',
     (r'^cts/docs/?$', 'misc.docsRedirect'),
     (r'^cts/(?P<model>.*?)/?$', 'description.descriptionPage'),
     (r'^jchem-cts/', include('REST.urls')),
+    (r'^test-cts/', include('test_cts.urls'))
 )
 
 # 404 Error view (file not found)
