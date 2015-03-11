@@ -4,9 +4,9 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 # The previous urlpatterns is using views as a prefix breaking the use of django apps 
-urlpatterns = patterns('',
-    url(r'^test_cts/', include('test_cts.urls'))  # Pavan added this to include the test suite django app
-)
+# urlpatterns = patterns('',
+#     url(r'^test_cts/', include('test_cts.urls'))  # Pavan added this to include the test suite django app
+# )
 
 # All view functions here must be in '/views/views.py'
 urlpatterns += patterns('views',
@@ -37,6 +37,7 @@ urlpatterns += patterns('views',
     (r'^cts/(?P<model>.*?)/?$', 'description.descriptionPage'),
     
     (r'^jchem-cts/', include('REST.urls')),
+    (r'^test_cts/', include('test_cts.urls')
     # (r'^services/', include('REST.urls')),
 )
 
