@@ -13,11 +13,10 @@ import logging
 from models.chemspec import chemspec_model # for getStructInfo(), TODO: move func to more generic place
 import decimal
 import os
+import time
 
 from REST import calculator_map as calcMap
 from requests_futures.sessions import FuturesSession
-
-from django.core.cache import cache
 
 
 n = 3 # number of decimal places to round values
@@ -177,18 +176,21 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 				try:
 					for method in Calc.methods:
 						url = baseUrl + Calc.getUrl(str(molID), prop, method)
-						session.get(url, timeout=30)
+						# session.get(url, timeout=30)
 						# session.get(url, timeout=20, background_callback=dataReturn)
 						totalRequest += 1
 				except AttributeError:
 					url = baseUrl + Calc.getUrl(str(molID), prop)
-					session.get(url, timeout=30)
+					# session.get(url, timeout=30)
 					# session.get(url, timeout=20, background_callback=dataReturn)
 					totalRequest += 1
 				except requests.exceptions.Timeout:
 					logging.warning("Timeout Exception! Call: {}->{}".format(calc, prop))
 				except Exception as e:
 					logging.warning("General Exception: {}".format(e))
+				else:
+					time.sleep(0.5) # maybe this will help TEST out some
+					session.get(url, timeout=30)
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
