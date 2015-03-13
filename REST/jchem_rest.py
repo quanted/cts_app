@@ -42,10 +42,6 @@ def doc(request):
 	"""
 	API Documentation Page
 	"""
-	# text_file2 = open('REST/doc_text.txt','r')
-	# xx = text_file2.read()
-	# response = HttpResponse()
-	# response.write(xx)
 	return render(request, 'jchem_docs.html')
 
 

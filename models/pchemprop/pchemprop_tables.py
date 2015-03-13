@@ -48,7 +48,7 @@ def getInputData(pchemprop_obj):
     return data
 
 
-def getIonConDataChemaxon(pchemprop_obj):
+def getIonConDataChemaxon(chemaxonResultsDict):
     """
     Gets ionization constant data from results dict
     
@@ -58,7 +58,7 @@ def getIonConDataChemaxon(pchemprop_obj):
     
     TODO: Make more general for all calculators 
     """
-    root = pchemprop_obj.resultsDict['chemaxon'] # root for getting ion con data
+    root = chemaxonResultsDict # root for getting ion con data
     ionConResults = {"pKa": [], "pKb": [] } # results dict for ion con
     if root and 'ion_con' in root:
         try:
@@ -77,7 +77,7 @@ def getIonConDataChemaxon(pchemprop_obj):
         return None
 
 
-def getKowNoPhChemaxon(pchemprop_obj):
+def getKowNoPhChemaxon(chemaxonResultsDict):
     """
     Gets octanol/water partition coefficient (logP)
     from results dict
@@ -88,12 +88,12 @@ def getKowNoPhChemaxon(pchemprop_obj):
 
     TODO: Make more general for all calculators
     """
-    root = pchemprop_obj.resultsDict['chemaxon']
+    root = chemaxonResultsDict
     kowNoPhResults = {key: [] for key in methodsListChemaxon} # methodsListChemaxon up top (KLOP, VG, PHYS)
     if root and 'kow_no_ph' in root:
         for method in methodsListChemaxon:
             try:
-                root = pchemprop_obj.resultsDict['chemaxon']['kow_no_ph']
+                root = chemaxonResultsDict['kow_no_ph']
                 value = round(root[method]['data'][0]['logP']['logpnonionic'], n)
                 kowNoPhResults[method].append(value)
             except:
@@ -103,7 +103,7 @@ def getKowNoPhChemaxon(pchemprop_obj):
         return None
 
 
-def getKowWphChemaxon(pchemprop_obj):
+def getKowWphChemaxon(chemaxonResultsDict, kow_ph):
     """
     Gets octanol/water partition coefficient with pH (logD)
     from results dict
@@ -114,15 +114,15 @@ def getKowWphChemaxon(pchemprop_obj):
 
     TODO: Make more general for all calculators
     """
-    root = pchemprop_obj.resultsDict['chemaxon']
+    root = chemaxonResultsDict
     kowWphResults = {key: [] for key in methodsListChemaxon}
     if root and 'kow_wph' in root:
         for method in methodsListChemaxon:
             try:
-                root = pchemprop_obj.resultsDict['chemaxon']['kow_wph']
+                root = chemaxonResultsDict['kow_wph']
                 root = root[method]['data'][0]['logD']
 
-                phForLogD = float(pchemprop_obj.kow_ph) # convert to float
+                phForLogD = float(kow_ph) # convert to float
                 chartDataList = root['chartData']['values'] # list of {"pH":val, "logD":val}
 
                 for xyPair in chartDataList:
@@ -133,7 +133,7 @@ def getKowWphChemaxon(pchemprop_obj):
 
                 kowWphResults[method].append(value)
 
-            except:
+            except KeyError:
                 kowWphResults[method].append("Exception getting logD...")
 
         return kowWphResults
@@ -141,15 +141,15 @@ def getKowWphChemaxon(pchemprop_obj):
         return None
 
 
-def getWaterSolChemaxon(pchemprop_obj):
+def getWaterSolChemaxon(chemaxonResultsDict):
     """
     Gets water solubility for chemaxon
     """
-    root = pchemprop_obj.resultsDict['chemaxon']
+    root = chemaxonResultsDict
     waterSol = {}
     if root and 'water_sol' in root:
         try:
-            root = pchemprop_obj.resultsDict['chemaxon']['water_sol']
+            root = chemaxonResultsDict['water_sol']
             value = round(1000.0 * root['data'][0]['solubility']['intrinsicSolubility'], n) # converted to mg/L
             return value
         except:
@@ -224,28 +224,26 @@ def output_pchem_table(pchemprop_obj):
     <div class="out_">
     """
 
-    #######################################################
-    mainDataDict = {
-        "chemaxon": {
-            "ion_con": getIonConDataChemaxon(pchemprop_obj),
-            "kow_no_ph": getKowNoPhChemaxon(pchemprop_obj),
-            "kow_wph": getKowWphChemaxon(pchemprop_obj),
-            "water_sol": getWaterSolChemaxon(pchemprop_obj)
-        },
-        'test': pchemprop_obj.resultsDict['test'],
-        'epi': pchemprop_obj.resultsDict['epi'],
-        'measured': pchemprop_obj.resultsDict['measured']
-    }
-    #######################################################
+    chemaxonDataDict = {}
+    try:
+        chemaxonResults = pchemprop_obj.chemaxonResultsDict
+        chemaxonDataDict = {
+            "ion_con": getIonConDataChemaxon(chemaxonResults),
+            "kow_no_ph": getKowNoPhChemaxon(chemaxonResults),
+            "kow_wph": getKowWphChemaxon(chemaxonResults, pchemprop_obj.kow_ph),
+            "water_sol": getWaterSolChemaxon(chemaxonResults)
+        }
+    except AttributeError:
+        pass
 
     kow_ph = 0.0
     if pchemprop_obj.kow_ph:
         kow_ph = round(float(pchemprop_obj.kow_ph), 1)
 
     html += render_to_string('cts_pchemprop_outputTable.html', 
-                                { "data": mainDataDict, 
-                                "kow_ph": kow_ph, 
-                                "newWayDict": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict) })
+                                {   "chemaxonData": chemaxonDataDict, 
+                                    "kow_ph": kow_ph, 
+                                    "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict) })
     html += """
     </div>
     """
@@ -266,68 +264,3 @@ def timestamp(pchemprop_obj="", batch_jid=""):
     html = html + """
     </div>"""
     return html
-
-
-# def getPropDataFromCalc(calc, prop, propData, pchemprop_obj):
-
-#     # logging.info("-{}-".format(propData))
-
-#     # TODO: Use calculator_map.py in REST or some other code-reuse way
-#     # instead of this "stunt"
-
-#     if calc == "chemaxon":
-#         if prop == "ion_con":
-#             return getIonConDataChemaxon(pchemprop_obj)
-#         elif prop == "kow_no_ph":
-#             return getKowNoPhChemaxon(pchemprop_obj)
-#         elif prop == "kow_wph":
-#             return getKowWphChemaxon(pchemprop_obj)
-#         elif prop == "water_sol":
-#             return getWaterSolChemaxon(pchemprop_obj)
-
-#     elif calc == "test":
-#         # propData = json.loads(propData)
-#         # logging.info("TEST propData: {}, {}".format(prop, propData))
-#         testDict = {}
-#         for method in methodsListTEST:
-#             if prop == "melting_point":
-#                 testDict.update({method: propData[method]})
-#                 # testDict.update({method: propData['meltingPointTEST' + method]})
-#                 # data.update({'meltingPointTESTFDA': propData['meltingPointTESTFDA']})
-#             elif prop == "boiling_point":
-#                 testDict.update({method: propData[method]})
-#                 # testDict.update({method: propData['boilingPointTEST' + method]})
-#                 # data.update({'boilingPointTESTFDA': propData['boilingPointTESTFDA']})
-#             elif prop == "vapor_press":
-#                 testDict.update({method: propData[method]})
-#                 # testDict.update({method: propData['vaporPressureTEST' + method]})
-#                 # data.update({'vaporPressureTESTFDA': propData['vaporPressureTESTFDA']})
-#             elif prop == "water_sol":
-#                 testDict.update({method: propData[method]})
-#                 # testDict.update({method: propData['waterSolubilityTEST' + method]})
-#                 # data.update({'waterSolubilityTESTFDA': propData['waterSolubilityTESTFDA']})
-#             # elif prop == "kow_no_ph":
-#             #     data = propData['']
-
-#         # logging.info("TEST Dict: {}".format(testDict))
-
-#         return testDict
-
-#     elif calc == "epi":
-#         # propData = json.loads(propData)
-#         return propData[calcMap.calculator['epi']['props'][prop]]
-
-
-# def fillInTestProps(respDict):
-#     """
-#     Attempting to dynamically fill
-#     pchemprop output table as responses
-#     come back to the pchemprop_model
-
-#     respDict keys: calc, prop, method 
-#     """
-#     logging.info("inside fillInTestProps...")
-#     render_to_string('cts_pchemprop_outputTable.html', {'response': respDict})
-
-
-

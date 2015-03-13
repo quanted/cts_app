@@ -1,10 +1,9 @@
-<!-- <script type="text/javascript" src="/static/stylesheets/scripts_poll.js"></script> -->
-<!-- <script type="text/javascript" src="/static/stylesheets/scripts_sse.js"></script> -->
 
 <script type="text/javascript">
 $(document).ready(function() {
 
-    var checkedCalcsAndProps = {{newWayDict}};
+    var checkedCalcsAndProps = {{checkedCalcsAndProps}};
+
     for (var calc in checkedCalcsAndProps) {
         if (checkedCalcsAndProps.hasOwnProperty(calc) && calc != "chemaxon") {
 
@@ -18,26 +17,25 @@ $(document).ready(function() {
                 var tblCell = $('.' + calc + '.' + prop);
                 $(tblCell).html('<img src="/static/images/loader.gif" height="20" width="20" />');
 
-                makeTheCall(calcPropData, function(response) {
-                    //map response to pchemprop output table:
-                    console.log(response);
-                    $('.' + response['calc'] + '.' + response['prop']).html(response['data']);
-                });
+                makeTheCall(calcPropData);
+                // makeTheCall(calcPropData, responseHandler);
             }
         }
     }
-
 });
 
 
-function makeTheCall(calcPropData, callback) {
+function makeTheCall(calcPropData) {
     $.ajax({ 
         url: "/test-cts/data/",
         type: "POST",
         dataType: "json",
         data: calcPropData,
+        // tryCount: 0,
+        // retryLimit: 3,
         success: function(data) {
-            callback(data); //return data to caller
+            responseHandler(data);
+            // callback(data); //return data to caller
         },
         error: function(jqXHR, textStatus, errorThrown) {
             alert("An Error occured. Check console for more information.");
@@ -46,11 +44,29 @@ function makeTheCall(calcPropData, callback) {
     });
 }
 
+
+function responseHandler(response) {
+    //map response to pchemprop output table:
+                
+    //check data for -9999.0 values, retry if so
+    //only retry so many times
+
+    if (response.hasOwnProperty('error')) {
+        $('.' + response['calc'] + '.' + response['prop']).html(response['error']);
+        return;
+    }
+
+    // TODO: Finish retries feature once server 6 is back up and runing
+    // if (response['data'] == -9999) {
+    //     var calcPropData = {"calc": response['calc'], "prop": response['prop']}
+    //     makeTheCall()
+    // }
+
+    $('.' + response['calc'] + '.' + response['prop']).html(response['data']);
+}
+
 </script>
 
-<!-- <div type="hidden" id="loading"> -->
-    <!-- <img src="/static/images/loader.gif" /> -->
-<!-- </div> -->
 
 <!-- pchemprop output table -->
 <table id="pchempropOutputTable">
@@ -93,7 +109,7 @@ function makeTheCall(calcPropData, callback) {
     <!-- WATER SOLUBILITY -->
     <tr>
     <td style="padding:4px;">Water Solubility (mg/L)</td>
-    <td class="water_sol chemaxon" style="padding:4px;">{{data.chemaxon.water_sol|default:""}}</td>
+    <td class="water_sol chemaxon" style="padding:4px;">{{chemaxonData.water_sol|default:""}}</td>
     <td class="water_sol epi" style="padding:4px;"></td>
     <td class="water_sol test"></td>
     <td class="water_sol sparc"></td>
@@ -131,17 +147,17 @@ function makeTheCall(calcPropData, callback) {
     <td style="padding:4px;">Ionization Constant</td>
     <td class="ion_con test">
     <div class="ion_con pchemCell">
-    {%if data.chemaxon.ion_con%}
+    {%if chemaxonData.ion_con%}
         pKa: 
-        {% for item in data.chemaxon.ion_con.pKa %} 
+        {% for item in chemaxonData.ion_con.pKa %} 
         	{{item|default:""}}{% if not forloop.last %}, {% endif %}
         {% endfor %}
     {%endif%}
     </div>
     <div class="pchemCell">
-    {%if data.chemaxon.ion_con%}
+    {%if chemaxonData.ion_con%}
         pKb:
-        {% for item in data.chemaxon.ion_con.pKb %} 
+        {% for item in chemaxonData.ion_con.pKb %} 
         	{{item|default:""}}{% if not forloop.last %}, {% endif %}
         {% endfor %}
     {%endif%}
@@ -171,7 +187,7 @@ function makeTheCall(calcPropData, callback) {
     <tr>
     <td style="padding:4px;">Octanol/Water Partition Coefficient</td>
     <td class="kow_no_ph chemaxon">
-    {% for key, val in data.chemaxon.kow_no_ph.items %}
+    {% for key, val in chemaxonData.kow_no_ph.items %}
     	<div class="pchemCellWrap">
     	<div class="pchemCell">{{key|default:""}}</div>
     	{% for item in val %}
@@ -192,7 +208,7 @@ function makeTheCall(calcPropData, callback) {
     <tr>
     <td style="padding:4px;">Octanol/Water Partition Coefficient at pH {{kow_ph}}</td>
     <td class="kow_ph chemaxon">
-    {% for key, val in data.chemaxon.kow_wph.items %}
+    {% for key, val in chemaxonData.kow_wph.items %}
     	<div class="pchemCellWrap">
     	<div class="pchemCell">{{key|default:""}}</div>
     	{% for item in val %}

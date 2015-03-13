@@ -91,39 +91,21 @@ class pchemprop(object):
 							propList.append(propKey)
 				self.checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		# logging.info("CheckedCalcsAndProps: {}".format(self.checkedCalcsAndPropsDict))
-
-
-		#####################################
-		# initializeDB() # create table in db
+		############questionable...##########
 		global requestCounter
 		requestCounter = 0 # initialize request counter
 		global totalRequest
 		totalRequest = 0
 		#####################################
 
-		# logging.info("after db init")
-
-		chemaxonResultsDict = getChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict, self.kow_ph)
-		testResultsDict = getTestResults(self.chem_struct, self.checkedCalcsAndPropsDict) # gets test, measured, and epi data
-
-		logging.info("TEST Results: {}".format(testResultsDict))
-
-		self.resultsDict = {
-			"chemaxon": chemaxonResultsDict,
-			"epi": None,
-			# "epi": testResultsDict.get('epi', None),
-			"sparc": None,
-			"test": None,
-			# "test": testResultsDict.get('test', None),
-			"measured": None
-			# "measured": testResultsDict.get('measured', None)
-		}
-
-		# logging.info("Results Dictionary: {}".format(self.resultsDict))
+		if 'chemaxon' in self.checkedCalcsAndPropsDict:
+			self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict, self.kow_ph)
+		
+		# if any(name in self.checkedCalcsAndPropsDict for name in ['test', 'epi', 'measured']):
+		# 	makeTestRequests(self.chem_struct, self.checkedCalcsAndPropsDict) # gets test, measured, and epi data
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(json.dumps(self.rawData))
+		# fileout.write(json.dumps(self.chemaxonResultsDict))
 		# fileout.close()
 
 
@@ -136,11 +118,11 @@ def dataReturn(sess, resp):
 
 	requestCounter += 1 # response from session request received
 
-	logging.info("> Response from server6 recieved by localhost...")
+	# logging.info("> Response from server6 recieved by localhost...")
 	logging.info("> Received {} requests out of {} total".format(requestCounter, totalRequest))
 
 
-def getTestResults(structure, checkedCalcsAndPropsDict):
+def makeTestRequests(structure, checkedCalcsAndPropsDict):
 	"""
 	Gets pchemprop data from TEST ws.
 	Inputs: chemical structure, dict of checked properties by calculator
@@ -176,21 +158,19 @@ def getTestResults(structure, checkedCalcsAndPropsDict):
 				try:
 					for method in Calc.methods:
 						url = baseUrl + Calc.getUrl(str(molID), prop, method)
-						# session.get(url, timeout=30)
 						# session.get(url, timeout=20, background_callback=dataReturn)
 						totalRequest += 1
 				except AttributeError:
-					url = baseUrl + Calc.getUrl(str(molID), prop)
-					# session.get(url, timeout=30)
-					# session.get(url, timeout=20, background_callback=dataReturn)
+					url = baseUrl + Calc.getUrl(str(molID), prop) # url for calcs with no methods
 					totalRequest += 1
 				except requests.exceptions.Timeout:
 					logging.warning("Timeout Exception! Call: {}->{}".format(calc, prop))
 				except Exception as e:
 					logging.warning("General Exception: {}".format(e))
 				else:
-					time.sleep(0.5) # maybe this will help TEST out some
-					session.get(url, timeout=30)
+					# time.sleep(0.5) # maybe this will help TEST out some
+					session.get(url, timeout=30, background_callback=dataReturn)
+					# session.get(url, timeout=30)
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):

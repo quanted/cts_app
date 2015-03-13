@@ -51,28 +51,43 @@ def less_simple_proxy(request):
   """
 
   TEST_URL = os.environ["CTS_TEST_SERVER"]
+  postData = {}
 
   try:
     # get data from request
     calc = request.POST.get("calc")
     prop = request.POST.get("prop")
 
-    # determine call url based on calc and prop:
+    postData = {"calc": calc, "prop": prop} 
+
     url = getUrlForCalcAndProp(calc, prop)
+    # logging.info("URL: {}".format(url))
+
     async_request = requests.get(TEST_URL + url) # call TEST web services
     async_data = json.loads(async_request.content)
 
     returnedData = pickDataFromJson(calc, prop, async_data) # pick out data from molecule object
-    postData = json.dumps({"calc": calc, "prop": prop, "data": returnedData})
+
+    postData.update({"data": returnedData}) # append data key/value to postData
+    return HttpResponse(json.dumps(postData), content_type=async_request.headers['content-type'])
 
   except requests.HTTPError as e:
+    logging.warning("HTTP Error occured")
     return HttpResponse(TEST_URL+e.msg, status=e.code, content_type='text/plain')
 
   except ValueError:
-    return HttpResponse("Must send POST data to get response")
+    logging.warning("POST data is incorrect")
+    postData.update({"error": "value error"})
+    return HttpResponse(json.dumps(postData), content_type='application/json')
 
-  else: 
-    return HttpResponse(postData, content_type=async_request.headers['content-type'])
+  except requests.exceptions.ConnectionError:
+    logging.warning("Connection error occured")
+    postData.update({"error": "connection error"})
+    return HttpResponse(json.dumps(postData), content_type='application/json')
+
+  # else:
+  #   logging.info("inside the else")
+  #   return HttpResponse(postData, content_type=async_request.headers['content-type'])
 
 
 def getUrlForCalcAndProp(calc, prop):
@@ -91,6 +106,7 @@ def getUrlForCalcAndProp(calc, prop):
 
 def pickDataFromJson(calc, prop, jsonData):
   Calc = getCalcObject(calc)
+  logging.info("Calc object: {}".format(Calc.name))
   try:
     key = Calc.propMap[prop]['resultKey']
     return jsonData[key]
