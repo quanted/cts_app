@@ -227,7 +227,7 @@ def table_metabolite_info(gentrans_obj):
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))
 
-    html += floatTmpl().render(Context(dict(html=pchemHTML)))
+    html += floatTmpl().render(Context(dict(pchemHtml=pchemHTML)))
 
     return html
 
@@ -237,8 +237,8 @@ def floatTmpl():
     <div id="metaboliteInfo">
         <div id="tabs">
             <ul>
-                <li><a href="#tabs-1">View data</a></li>
-                <li><a href="#tabs-2">Get data</a></li>
+                <li><a href="#tabs-1">Metabolite Info</a></li>
+                <li><a href="#tabs-2">p-Chem Data</a></li>
             </ul>
             <div id="tabs-1"><p>This window is for displaying metabolite data as well as
             retrieving it. <br><br> First, right-click a metabolite to view any data it already has.
@@ -247,7 +247,7 @@ def floatTmpl():
                 <br>
                 Select p-chem properties to gather for selected metabolite, then click "Get data" below..
                 <br><br>
-                {% autoescape off %}{{html}}{% endautoescape %}
+                {% autoescape off %}{{pchemHtml}}{% endautoescape %}
                 <br>
                 <input type="button" value="Get data" class="input_button" id="btn-pchem-node">
                 <br>

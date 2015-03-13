@@ -54,7 +54,8 @@ $( document ).ready(function() {
 
     // Get Data button for gathering pchem props for node:
     $('#btn-pchem-node').click(function() {
-        getPchemData();
+        newGetPchemData();
+        // getPchemData();
     });
 
     // Collapses/expands content below table header row (th).
@@ -66,7 +67,7 @@ $( document ).ready(function() {
 });
 
 
-var currentNode; //####################################
+var currentNode; //#####keeps up with selected node######
 
 
 function toggleHeaders() {
@@ -118,8 +119,8 @@ function init(){
         //enable panning
         Navigation: {
           enable: true,
-          panning: true,
-          zooming: 50
+          panning: true
+          // zooming: 50
         },
         //set node and edge styles
         //set overridable=true for styling individual
@@ -255,17 +256,11 @@ function getMolecularInfo(node) {
 
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
-    //Display node's data in tab-1 div:
-    // $('#tabs-1').empty();
-    
-    //testing ground for remembering metabolite's data:
-    var nodeDiv = $('#tabs-1').children(); //existing kids before node.id div 
-
     if ($('#tabs-1').has('p').length > 0) {
         $('#tabs-1').children('p').remove(); //remove initial paragraph
     }
 
-    //Deals with hiding/showing metabolite info 
+    //Deals with hiding/showing metabolite info
     if ($('#tabs-1').has('div.nodeWrapDiv').length > 0) {
         
         $('#tabs-1 div.nodeWrapDiv').hide(); //has node info already..hide it
@@ -277,7 +272,6 @@ function getMolecularInfo(node) {
             return;
         }
     }
-
 
     $('#tabs-1').append(node.data.html); //add metabolite info to table
     $('#' + node.id + "_table tr:contains('smiles')").remove(); //remove smiles key/value (assuming first key/value)
@@ -346,7 +340,85 @@ function tabDisplayLogic(event) {
 }
 
 
+function newGetPchemData() {
+    /* 
+    This function does what getPchemData() does, but
+    the idea for this new function is to get the data and
+    populate it in the pchemprop table and not draw another
+    segment for the metabolite table in the "metabolite info" tab
+    */
+
+    //Call pchemprop_model at "Get data" button click? Is this possible?
+
+    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; //$$$$$$$$$$$$$$$$$$$
+    var params = {"data":{}}; //POST data for pchemprops_model call
+
+    //Gets smiles, mass, iupac, and formula from metabolite
+    for (i in acceptedKeys) {
+        key = acceptedKeys[i];
+        var value = $('#tabs-1 td:contains(' + key + ')');
+        params["data"][key] = $(value).next().text();
+    }
+
+    //Return if no metabolite selected, i.e., null smiles, mass, etc. values
+    //"Must select (right-click) a metabolite first to get pchemprops"
+    if (params["data"]["smiles"] == "") {
+        //display error message near button
+        $('.gentransError').show();
+        return;
+    }
+    else {
+        $('.gentransError').hide();
+    }
+
+    var allCheckBoxes = $('#pchemprop_table input:checkbox');
+
+    $(allCheckBoxes).each(function() {
+        params["data"][this.name] = this.checked;
+    });
+
+    // params["data"]["chem_struct"] = $("#tabs-1 td:contains('smiles')").next().text(); //smiles string
+    // params["data"]["chem_struct"] = $("table#" + currentNode.id + "_table td:contains('smiles')").next().text(); //smiles string
+
+    params["data"]["chem_struct"] = currentNode.data['smiles'];
+
+    params["url"] = "/jchem-cts/ws/getpchemprops/"; //calls pchemprop model
+    params["type"] = "POST";
+    // params["contentType"] = "application/json";
+    params["dataType"] = "json";
+
+    makeAjaxCall(params, function(pchemResults) {
+
+        var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
+        // var tableID = '#' + node.id + '_table'; //table id
+
+        // var tableID = '#tabs-1 table';
+        var tableID = 'table#' + currentNode.id + '_table';
+        var table = $(tableID); //table element
+        // var mainDiv = $(tableID).parent(); //popup container div
+        var newRow = ""; //str var for building rows
+        var rowWithMethods = ""; //for handling rows with methods
+
+        // Skip if pchemprops already exist:
+        // var hasPchemProps = false;
+        // $(tableID + ' th').each(function() {
+        //     if($(this).text().indexOf('p-Chem Properties') >= 0) {
+        //         hasPchemProps = true;
+        //     }
+        // });
+        // if (hasPchemProps) return; //abort if there are already pchemprops for metabolite
+
+        // if (!("length" in table) || table.length <= 0) return; //abort if table not selected
+
+    });
+ 
+}
+
+
 function getPchemData() {
+
+    var allCheckBoxes = $('#pchemprop_table input:checkbox');
+
 
     var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; //$$$$$$$$$$$$$$$$$$$
     var params = {"data":{}}; //POST data for pchemprops_model call

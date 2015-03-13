@@ -17,7 +17,6 @@ import datetime
 import pytz
 import os
 import time
-from django.views.decorators.http import require_GET
 
 
 headers = {'Content-Type' : 'application/json'}
@@ -230,9 +229,13 @@ def getpchemprops(request):
 	"""
 	from models.pchemprop import pchemprop_output
 
-	logging.info(" $ Request: {} $ ".format(request))
+	logging.info(" $ Request: {} $ ".format(request.POST))
+	logging.info("{}".format(request.POST.get('chem_struct')))
 
 	pchemprop_obj = pchemprop_output.pchempropOutputPage(request) # run model (pchemprop_[output, model])
+
+	logging.info("pchemprop results: {}".format(pchemprop_obj.resultsDict))
+
 	response = json.dumps(pchemprop_obj.resultsDict)
 	
 	return HttpResponse(response, content_type="application/json")

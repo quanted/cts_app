@@ -240,10 +240,23 @@ def output_pchem_table(pchemprop_obj):
     if pchemprop_obj.kow_ph:
         kow_ph = round(float(pchemprop_obj.kow_ph), 1)
 
-    html += render_to_string('cts_pchemprop_outputTable.html', 
-                                {   "chemaxonData": chemaxonDataDict, 
-                                    "kow_ph": kow_ph, 
-                                    "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict) })
+    # html += render_to_string('cts_pchemprop_outputTable.html', 
+    #                             {   "chemaxonData": chemaxonDataDict, 
+    #                                 "kow_ph": kow_ph, 
+    #                                 "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict) })
+
+    pchemHTML = render_to_string('cts_pchem.html', {})
+    pchemHTML += str(pchemprop_parameters.form(None))
+
+    logging.info(pchemHTML)
+
+    html += pchemHTML
+
+    # html += render_to_string('cts_pchemprop_outputTable.html', 
+    #                             {   "chemaxonData": chemaxonDataDict, 
+    #                                 "kow_ph": kow_ph, 
+    #                                 "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict) })
+
     html += """
     </div>
     """

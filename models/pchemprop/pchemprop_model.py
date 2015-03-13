@@ -112,13 +112,13 @@ class pchemprop(object):
 def dataReturn(sess, resp):
 	"""
 	Callback function for async requests
+	This is currently doing nothing, but could be
+	used for the batch stuff later
 	"""
 	global requestCounter
 	global totalRequest
 
 	requestCounter += 1 # response from session request received
-
-	# logging.info("> Response from server6 recieved by localhost...")
 	logging.info("> Received {} requests out of {} total".format(requestCounter, totalRequest))
 
 

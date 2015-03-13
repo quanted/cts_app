@@ -44,6 +44,7 @@ $(document).ready(function() {
 
     //Disable checkboxes (only enable for "Reaction Pathway" selection)
     $('#cts_reaction_libs input[type="checkbox"]').prop('disabled', true);
+    $('input.submit').prop('disabled', true); //initialize submit button to be disabled
 
     $("input[name='reaction_paths']").change(function() {
         if ($(this).val() == "0") {
@@ -312,6 +313,16 @@ $(document).ready(function() {
             $('#id_anaerobic_biodegrad').prop({'checked': false, 'disabled':true});
             $('#id_mamm_metabolism').prop({'checked': false, 'disabled':true});
 
+        }
+    });
+
+    // Enable submit only if a reaction library is selected
+    $('#cts_reaction_libs input:checkbox').change(function() {
+        if ($('#cts_reaction_libs input:checkbox:checked').length > 0) {
+            $('input.submit').prop('disabled', false);
+        }
+        else {
+            $('input.submit').prop('disabled', true);
         }
     });
 

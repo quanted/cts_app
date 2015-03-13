@@ -82,7 +82,8 @@ function uberNavTabs( modelTabs, subTabs ) {
 	var uptab_pool = modelTabs;
 	var curr_ind = 0;
 	$(".back, .submit, #metaDataToggle, #metaDataText, #resetbutton").hide();
-	// $(".back, .submit, #metaDataToggle, #metaDataText").hide();
+	
+	// $('.tabUnsel').hide();
 
 	// Click handler
 	$('.input_nav ul li').click(function() {

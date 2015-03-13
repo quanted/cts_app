@@ -25,19 +25,19 @@ def tmpl_ChemCalcsCTS():
 			<th class="chemprop">{{ field }} <span>{{ field.label }}</span>
 		{% elif field.id_for_label == "id_kow_ph" %}
 			<span>{{field.label}}</span> {{field}}<br><div style="float:right;">{{field.errors}}</div></th>
-			<td id="id_kow_ChemAxon" class="{{form.kow_wph|color_filter:"chemaxon"}} chemaxon"></td>
-			<td id="id_kow_EPI" class="{{form.kow_wph|color_filter:"epi"}} epi"></td>
-			<td id="id_kow_TEST" class="{{form.kow_wph|color_filter:"test"}} test"></td>
-			<td id="id_kow_SPARC" class="{{form.kow_wph|color_filter:"sparc"}} sparc"></td>
-			<td id="id_kow_Measured" class="{{form.kow_wph|color_filter:"test"}} measured"></td>
+			<td id="id_kow_ChemAxon" class="{{form.kow_wph|color_filter:"chemaxon"}} chemaxon {{field.name}}"></td>
+			<td id="id_kow_EPI" class="{{form.kow_wph|color_filter:"epi"}} epi {{field.name}}"></td>
+			<td id="id_kow_TEST" class="{{form.kow_wph|color_filter:"test"}} test {{field.name}}"></td>
+			<td id="id_kow_SPARC" class="{{form.kow_wph|color_filter:"sparc"}} sparc {{field.name}}"></td>
+			<td id="id_kow_Measured" class="{{form.kow_wph|color_filter:"test"}} measured {{field.name}}"></td>
 		{% else %}
 			<tr>
 			<th class="chemprop">{{ field }} <span>{{ field.label }}</span></th>
-			<td id="{{ field.id_for_label }}_ChemAxon" class="{{ field | color_filter:"chemaxon" }} chemaxon"></td>
-			<td id="{{ field.id_for_label }}_EPI" class="{{ field | color_filter:"epi" }} epi"></td>
-			<td id="{{ field.id_for_label }}_TEST" class="{{ field | color_filter:"test" }} test"></td>
-			<td id="{{ field.id_for_label }}_SPARC" class="{{ field | color_filter:"sparc" }} sparc"></td>
-			<td id="{{ field.id_for_label }}_Measured" class="{{ field | color_filter:"test" }} measured"></td>
+			<td id="{{ field.id_for_label }}_ChemAxon" class="{{ field | color_filter:"chemaxon" }} chemaxon {{field.name}}"></td>
+			<td id="{{ field.id_for_label }}_EPI" class="{{ field | color_filter:"epi" }} epi {{field.name}}"></td>
+			<td id="{{ field.id_for_label }}_TEST" class="{{ field | color_filter:"test" }} test {{field.name}}"></td>
+			<td id="{{ field.id_for_label }}_SPARC" class="{{ field | color_filter:"sparc" }} sparc {{field.name}}"></td>
+			<td id="{{ field.id_for_label }}_Measured" class="{{ field | color_filter:"test" }} measured {{field.name}}"></td>
 			</tr>
 		{% endif %}
 	{% endfor %}

@@ -16,30 +16,7 @@ $(document).ready(function() {
     	$('#chemEditLookup').show();
     });
 
-    var isAllChecked_ChemCalcs = 1;
-
-    var noOfInput_ChemCalcs = []
-    $('#tab_ChemCalcs').find('input').push(noOfInput_ChemCalcs);
-    noOfInput_ChemCalcs = noOfInput_ChemCalcs.length;
-    var noOfInput_ChemCalcs = $(".tab_ChemCalcs input").length -1;
-
-    var isChecked_ChemCalcs = [];
-    $("#id_all").change(function() {
-        switch(isAllChecked_ChemCalcs) {
-            case 1:
-                isAllChecked_ChemCalcs = 0;
-                $(".chemprop input:checkbox").prop( "checked", true );
-                console.log('Set checked');
-                break;
-            case 0:
-                $(".chemprop input:checkbox").prop( "checked", false );
-                isAllChecked_ChemCalcs = 1;
-                console.log('Set unchecked');
-                break;
-            default:
-                console.log('JavaScript Error');
-        }
-    });
+    // var isAllChecked_ChemCalcs = 1;
 
     //default button
     $('#resetbutton').click(function(){
@@ -68,26 +45,37 @@ function submitButtonLogic() {
     //Enable submit only when a calculator is 
     //checked AND an available property:
 
-    //disable submit if no calculator is checked
-    if ($('input[type=checkbox].col_header').is(':not(:checked)')) {
-        $('input[type=submit]').prop('disabled', true);
-    }
+    var calcCheckboxes = $('input[type=checkbox].col_header');
 
     //loop through calculators' checkboxes
-    $('input[type=checkbox].col_header').each(function() {
-
-        if ($(this).is(':checked')) {
-
-            var calcName = $(this).attr('name');
-            var availableProps = $('td.ChemCalcs_available.' + calcName);
-
+    calcCheckboxes.each(function() {
+        if (this.checked) {
+            var availableProps = $('td.ChemCalcs_available.' + this.name);
             //enable submit if checked calculator has checked properties
             if ($(availableProps).parent().find('input[type=checkbox]').is(':checked')) {
                 $('input[type=submit]').prop('disabled', false);
             }
-
+            else {
+                $('input[type=submit]').prop('disabled', true);
+            }
         }
-
     });
+
+    var selectAllChecked = $('#id_all').is(':checked');
+    var aCalcChecked = $(calcCheckboxes).is(':checked');
+    var aPropChecked = $('th.chemprop input:checkbox').is(':checked');
+
+    //if all is selected and any calculator, enable submit:
+    if (selectAllChecked && aCalcChecked) {
+        $('input[type=submit]').prop('disabled', false);
+    }
+
+
+    //MAYBE JUST GO BACK TO HAVING THE SELECT_ALL LOGIC IN THIS FILE...THIS IS
+    //BECOMING AN ORDEAL GETTING IT TO WORK THIS WAY
+    
+    // if (!aPropChecked || !selectAllChecked) {
+    //     $('input[type=submit]').prop('disabled', true);
+    // }
 
 }
