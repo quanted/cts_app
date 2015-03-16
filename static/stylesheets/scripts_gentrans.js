@@ -1,6 +1,8 @@
 //+++++++++++++++++++++++++++++++++++++++++
 //Selection logic for the Reaction Pathway
 //Simulator in the gentrans workflow
+//
+//TODO: refactor this atrocity
 //+++++++++++++++++++++++++++++++++++++++++
 
 $(document).ready(function() {

@@ -101,6 +101,7 @@ def table_all(gentrans_obj):
 
     # html_all += table_metabolite_info(gentrans_obj) # included in table_metabolites() now
 
+    html_all += insertPchempropScript()
     html_all += table_metabolites(gentrans_obj)
 
     # html_all += pchemprop_input_fields(gentrans_obj)
@@ -185,7 +186,7 @@ def table_metabolites(gentrans_obj):
     """
     html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
 
-    html += table_metabolite_info(gentrans_obj) # THIS IS NEW !!!!!!!!!!!!!!
+    html += table_metabolite_info(gentrans_obj)
     html += '<br>'
 
     html += render_to_string('cts_gentrans_tree.html')
@@ -215,11 +216,6 @@ def table_metabolite_info(gentrans_obj):
 
         $("#pchemprop_table").css('display', 'table');
 
-        uberNavTabs(
-            ["structure", "ChemCalcs"],
-            {   "isSubTabs":true,
-                "structure": [".tab_chemicalButtons"] }
-        );
     });
     </script>
     """
@@ -227,13 +223,17 @@ def table_metabolite_info(gentrans_obj):
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))
 
-    html += floatTmpl().render(Context(dict(pchemHtml=pchemHTML)))
+    html += metaboliteInfoTmpl().render(Context(dict(pchemHtml=pchemHTML)))
 
     return html
 
 
-def floatTmpl():
-    floatTmpl = """
+def insertPchempropScript():
+    return  '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
+
+
+def metaboliteInfoTmpl():
+    metaboliteInfoTmpl = """
     <div id="metaboliteInfo">
         <div id="tabs">
             <ul>
@@ -249,11 +249,11 @@ def floatTmpl():
                 <br><br>
                 {% autoescape off %}{{pchemHtml}}{% endautoescape %}
                 <br>
-                <input type="button" value="Get data" class="input_button" id="btn-pchem-node">
+                <input type="button" value="Get data" class="submit input_button" id="btn-pchem-node">
                 <br>
                 <p class="gentransError">Must right-click a metabolite first</p>
             </div>
         </div>
     </div>
     """
-    return Template(floatTmpl)
+    return Template(metaboliteInfoTmpl)
