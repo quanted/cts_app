@@ -35,7 +35,6 @@ function makeTheCall(calcPropData) {
         // retryLimit: 3,
         success: function(data) {
             responseHandler(data);
-            // callback(data); //return data to caller
         },
         error: function(jqXHR, textStatus, errorThrown) {
             alert("An Error occured. Check console for more information.");

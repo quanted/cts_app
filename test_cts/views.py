@@ -7,9 +7,9 @@ import os
 import requests
 import json
 
-from REST.calculator_map import TestCalc
-from REST.calculator_map import EpiCalc
-from REST.calculator_map import MeasuredCalc
+# from REST.calculator_map import TestCalc
+# from REST.calculator_map import EpiCalc
+# from REST.calculator_map import MeasuredCalc
 
 
 # simple_proxy is a method that reaches out to a predefined (in the settings.py file for the project) API server, in this case, hosting TEST endpoints
@@ -54,19 +54,25 @@ def less_simple_proxy(request):
   postData = {}
 
   try:
-    # get data from request
-    calc = request.POST.get("calc")
-    prop = request.POST.get("prop")
+    # calc = request.POST.get("calc")
+    # prop = request.POST.get("prop")
+    calc = request.data.get("calc")
+    prop = request.data.get("prop")
 
-    postData = {"calc": calc, "prop": prop} 
+    ### NOTE: this assumes a django httprequest
+    ### requests httprequest might be: calc = request.data.get("calc")
+
+    postData = {"calc": calc, "prop": prop}
 
     url = getUrlForCalcAndProp(calc, prop)
     # logging.info("URL: {}".format(url))
 
-    async_request = requests.get(TEST_URL + url) # call TEST web services
-    async_data = json.loads(async_request.content)
+    # async_request = requests.get(TEST_URL + url) # call TEST web services
+    # async_data = json.loads(async_request.content)
 
-    returnedData = pickDataFromJson(calc, prop, async_data) # pick out data from molecule object
+    # returnedData = pickDataFromJson(calc, prop, async_data) # pick out data from molecule object
+
+    # returnedCalcData = # call calc object with calc and prop values 
 
     postData.update({"data": returnedData}) # append data key/value to postData
     return HttpResponse(json.dumps(postData), content_type=async_request.headers['content-type'])

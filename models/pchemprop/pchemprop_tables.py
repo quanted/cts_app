@@ -222,6 +222,8 @@ def output_pchem_table(pchemprop_obj):
     <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>p-Chem Properties Results</H3>
     <div class="out_">
+
+    <script type="text/javascript" src="/static/stylesheets/scripts_pchemprop_removeInputs.js"></script>
     """
 
     chemaxonDataDict = {}
@@ -247,8 +249,6 @@ def output_pchem_table(pchemprop_obj):
 
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))
-
-    logging.info(pchemHTML)
 
     html += pchemHTML
 

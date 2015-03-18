@@ -6,7 +6,7 @@ Access to jchem web services
 import requests
 import json
 import logging
-import views.misc
+# import views.misc
 from django.http import HttpResponse
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
@@ -229,16 +229,23 @@ def getpchemprops(request):
 	"""
 	from models.pchemprop import pchemprop_output
 
-	logging.info(" $ Request: {} $ ".format(request.POST))
-	logging.info("{}".format(request.POST.get('chem_struct')))
+	# logging.info(" $ Request: {} $ ".format(request.POST))
+	# logging.info("{}".format(request.POST.get('chem_struct')))
 
 	pchemprop_obj = pchemprop_output.pchempropOutputPage(request) # run model (pchemprop_[output, model])
 
-	logging.info("pchemprop results: {}".format(pchemprop_obj.resultsDict))
+	# logging.info("pchemprop chemaxon results: {}".format(pchemprop_obj.chemaxonResults))
+	logging.info("pchemprop obj: {}".format(dir(pchemprop_obj)))
 
-	response = json.dumps(pchemprop_obj.resultsDict)
+	logging.info("pchemprop object testing: {}".format(pchemprop_obj.smiles))
+	logging.info("pchemprop object testing (checkedDict): {}".format(pchemprop_obj.checkedCalcsAndPropsDict))
+
+
+	data = json.dumps(pchemprop_obj.checkedCalcAndPropsDict)
+
+	# response = json.dumps(pchemprop_obj.resultsDict)
 	
-	return HttpResponse(response, content_type="application/json")
+	return HttpResponse(data, content_type="application/json")
 
 
 def web_call(url, request, data):

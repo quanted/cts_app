@@ -1637,7 +1637,7 @@ div.protoMetabolite {
 
 /* button for getting pchem props 
 for nodes on gentrans output */
-#btn-pchem-node {
+#btn-pchem-getdata {
   float: right;
 }
 

@@ -39,7 +39,7 @@ var Log = {
 };
 
 
-$( document ).ready(function() { 
+$(document).ready(function() { 
 
     //"wait" cursor during ajax events
     $(document).ajaxStart(function () {
@@ -53,7 +53,7 @@ $( document ).ready(function() {
     });
 
     // Get Data button for gathering pchem props for node:
-    $('#btn-pchem-node').click(function() {
+    $('#btn-pchem-getdata').click(function() {
         newGetPchemData();
         // getPchemData();
     });
@@ -174,32 +174,6 @@ function init(){
             style.textAlign= 'center';
             style.paddingTop = '3px';
         },
-        
-        //This method is called right before plotting
-        //a node. It's useful for changing an individual node
-        //style properties before plotting it.
-        //The data properties prefixed with a dollar
-        //sign will override the global node style properties.
-        // onBeforePlotNode: function(node){
-            //add some color to the nodes in the path between the
-            //root node and the selected node.
-            // if (node.selected) {
-            // var selectedNode = node.id;
-            //     // node.data.$color = "#ff7";
-            // }
-            // else {
-            //     delete node.data.$color;
-            //     //if the node belongs to the last plotted level
-            //     if(!node.anySubnode("exist")) {
-            //         //count children number
-            //         var count = 0;
-            //         node.eachSubnode(function(n) { count++; });
-            //         //assign a node color based on
-            //         //how many children it has
-            //         node.data.$color = ['#aaa', '#baa', '#caa', '#daa', '#eaa', '#faa'][count];                    
-            //     }
-            // }
-        // },
         
         //This method is called right before plotting
         //an edge. It's useful for changing an individual edge
@@ -412,144 +386,6 @@ function newGetPchemData() {
 
     });
  
-}
-
-
-function getPchemData() {
-
-    var allCheckBoxes = $('#pchemprop_table input:checkbox');
-
-
-    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; //$$$$$$$$$$$$$$$$$$$
-    var params = {"data":{}}; //POST data for pchemprops_model call
-
-    //Gets smiles, mass, iupac, and formula from metabolite
-    for (i in acceptedKeys) {
-        key = acceptedKeys[i];
-        var value = $('#tabs-1 td:contains(' + key + ')');
-        params["data"][key] = $(value).next().text();
-    }
-
-    //Return if no metabolite selected, i.e., null smiles, mass, etc. values:
-    if (params["data"]["smiles"] == "") {
-        //display error message near button
-        $('.gentransError').show();
-        return;
-    }
-    else {
-        $('.gentransError').hide();
-    }
-
-    var pchempropsObj = {}; //Obj for building checked props and calcs
-
-    //Builds dict of selected props and calcs...
-    $('#pchemprop_table tr').each(function(row, rowContent) {
-        $(rowContent.cells).each(function() {
-            var inputs = $(this).children('input'); //get input cell content
-            if (inputs.length > 0) {
-                for (i = 0; i < inputs.length; i++) {
-                    var item = inputs[i];
-                    if ($(item).prop('checked')) {
-                        pchempropsObj[item.name] = "on";
-                    }
-                    else if ($(item).is('input:text')) {
-                        pchempropsObj[item.name] = item.value;
-                    }
-                    else {
-                        pchempropsObj[item.name] = null;
-                    }
-                }
-            }
-        });
-    });
-    
-    //Adds checked props and calcs to POST data for request:
-    for (var key in pchempropsObj) {
-        if (pchempropsObj.hasOwnProperty(key) && key != "resultsDict") {
-            params["data"][key] = pchempropsObj[key];
-        }
-    }
-    // params["data"]["chem_struct"] = $("#tabs-1 td:contains('smiles')").next().text(); //smiles string
-    params["data"]["chem_struct"] = $("table#" + currentNode.id + "_table td:contains('smiles')").next().text(); //smiles string
-
-    params["url"] = "/jchem-cts/ws/getpchemprops/"; //calls pchemprop model
-    params["type"] = "POST";
-    params["contentType"] = "application/json";
-    params["dataType"] = "json";
-
-    makeAjaxCall(params, function(pchemResults) {
-
-        var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
-        // var tableID = '#' + node.id + '_table'; //table id
-
-        // var tableID = '#tabs-1 table';
-        var tableID = 'table#' + currentNode.id + '_table';
-        var table = $(tableID); //table element
-        // var mainDiv = $(tableID).parent(); //popup container div
-        var newRow = ""; //str var for building rows
-        var rowWithMethods = ""; //for handling rows with methods
-
-        // Skip if pchemprops already exist:
-        var hasPchemProps = false;
-        $(tableID + ' th').each(function() {
-            if($(this).text().indexOf('p-Chem Properties') >= 0) {
-                hasPchemProps = true;
-            }
-        });
-        if (hasPchemProps) return; //abort if there are already pchemprops for metabolite
-
-        if (!("length" in table) || table.length <= 0) return; //abort if table not selected
-
-        //Insert header before pchemprops section of table:
-        $(tableID).append('<tr class="header"><th colspan="2">p-Chem Properties</th></tr>');
-
-        //Add pchem props to node's popup table:
-        for (calc in pchemResults) {
-            for (prop in pchemResults[calc]) {
-
-                var methods = pchemResults[calc][prop];
-                var hasMethods = false;
-                var propName = getProperName(prop);
-
-                for (key in methods) {
-                    if ($.inArray(key, chemaxonMethods) >= 0) {
-                        hasMethods = true;
-                    }
-                }
-
-                if (hasMethods) {
-                    newRow = '<tr><td>' + propName + '</td><td>'; //start new row for prop
-                    for (method in pchemResults[calc][prop]) {
-                        var values = getValuesFromData(calc, prop, pchemResults[calc][prop][method]["data"]);
-                        newRow += '<div class="pchemCellWrap">'
-                        newRow += '<div class="pchemCell">' + method + '</div>';
-                        newRow += '<div class="pchemCell">' + values[propName] + '</div>';
-                        newRow += '</div>';
-                    }
-                    newRow += '</td></tr>';
-                    $(tableID).append(newRow);
-                }
-                else {
-                    //any property with only one value (i.e., no methods)
-                    //need to get data differently depending on property...
-                    var values = getValuesFromData(calc, prop, pchemResults[calc][prop]["data"]);
-                    newRow = '<tr><td>' + propName + '</td><td>';
-                    for (key in values[propName]) {
-                        //already know it doesn't contain methodList keys
-                        var test = key;
-                        newRow += key + ': ';
-                        newRow += values[propName][key] + '<br>';
-                    }
-                    newRow += '</td></tr>';
-                    $(tableID).append(newRow);
-                }
-            }
-        }
-
-        $('#tabs').children('div').toggle(); //go back to view tab
-        $('#tabs').tabs("option", "active", 0); //select view tab for consistency 
-
-    });
 }
 
 

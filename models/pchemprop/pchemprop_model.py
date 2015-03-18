@@ -100,7 +100,7 @@ class pchemprop(object):
 
 		if 'chemaxon' in self.checkedCalcsAndPropsDict:
 			self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict, self.kow_ph)
-		
+
 		# if any(name in self.checkedCalcsAndPropsDict for name in ['test', 'epi', 'measured']):
 		# 	makeTestRequests(self.chem_struct, self.checkedCalcsAndPropsDict) # gets test, measured, and epi data
 

@@ -43,8 +43,8 @@ def tmpl_ChemCalcsCTS():
 	{% endfor %}
 		<tr>
 			<th></th>
-			<td class="ChemCalcs_available">Available</td>
-			<td class="ChemCalcs_unavailable">Unavailable</td>
+			<td class="ChemCalcs_available colorKey">Available</td>
+			<td class="ChemCalcs_unavailable colorKey">Unavailable</td>
 		</tr>
 	</table>
 	"""

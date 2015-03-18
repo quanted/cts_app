@@ -209,9 +209,7 @@ def table_metabolite_info(gentrans_obj):
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script>
     $(document).ready(function() { 
-        //$("#metaboliteInfo").draggable({
-        //    zIndex: 100 
-        //});
+
         $("#tabs").tabs();
 
         $("#pchemprop_table").css('display', 'table');
@@ -249,7 +247,7 @@ def metaboliteInfoTmpl():
                 <br><br>
                 {% autoescape off %}{{pchemHtml}}{% endautoescape %}
                 <br>
-                <input type="button" value="Get data" class="submit input_button" id="btn-pchem-node">
+                <input type="button" value="Get data" class="submit input_button" id="btn-pchem-getdata">
                 <br>
                 <p class="gentransError">Must right-click a metabolite first</p>
             </div>

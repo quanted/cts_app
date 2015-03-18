@@ -1,0 +1,13 @@
+$(document).ready(function() {
+	/*
+	Remove checkboxes, color coding, and bottom keys 
+	from table for use as an output. This is basically for
+	recycling the pchemprop table code for displaying the
+	output data
+	*/
+	$('#pchemprop_table').show(); // it's hidden by default; TODO: figure out why!!!
+	$('#pchemprop_table input:checkbox').remove(); // gets those checkboxes out of there!
+	$('#pchemprop_table td').removeClass('ChemCalcs_unavailable ChemCalcs_available');
+	$('#pchemprop_table td.colorKey').parent('tr').remove();
+	$('#id_kow_ph').prop('disabled', true); //disable float input for kow pH
+});
