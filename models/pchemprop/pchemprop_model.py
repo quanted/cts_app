@@ -247,7 +247,5 @@ def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 
 
 def makeJchemCall(postDict):
-	request = HttpRequest()
-	request.POST = postDict
-	response = jchem_rest.getChemSpecData(request)
+	response = jchem_rest.getChemSpecData(requests.Request(data=postDict))
 	return response.content

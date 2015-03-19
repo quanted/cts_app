@@ -9,14 +9,15 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('REST',
     # url(r'^docs/', include('docs.urls')),
     # (r'^$', 'jchem_rest.doc'),  # Landing page
+    (r'^ws/traffic-cop/?$', 'jchem_traffic_cop.directTraffic'),
     (r'^docs/?$', 'jchem_rest.doc'),
-    (r'^ws/getChemDeats/?$', 'jchem_rest.getChemDeats'),
+    (r'^ws/getChemDetails/?$', 'jchem_rest.getChemDetails'),
     (r'^ws/mrvToSmiles/?$', 'jchem_rest.mrvToSmiles'),
     (r'^ws/getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
     (r'^ws/smilesToImage/?$', 'jchem_rest.smilesToImage'),
     (r'^ws/standardizer/?$', 'jchem_rest.standardizer'),
     (r'^ws/getpchemprops/?$', 'jchem_rest.getpchemprops'),
-
+    # (r'^ws/traffic-cop/?$', 'jchem_rest.trafficCop'),
     # (r'^ws/test-sse/?$', 'jchem_rest.sse_test'), # testing sse in django
     # (r'^ws/test-poll/?$', 'jchem_rest.poll_test') # testing ajax polling
     # (r'^ws/data/?$', 'jchem_rest.poll_test_data')

@@ -9,7 +9,7 @@ import chemspec_parameters # Chemical Speciation parameters
 # from REST import rest_funcs
 from REST import jchem_rest
 import logging
-from django.http import HttpRequest 
+# from django.http import HttpRequest
 import chemspec_tables
 from models.gentrans import data_walks
 
@@ -73,18 +73,12 @@ class chemspec(object):
 			}
 			dataDict.update({"stereoisomer": stereoInputsDict})
 
-		request = HttpRequest()
-		request.POST = dataDict
+		request = requests.Request(data=dataDict)
 		response = jchem_rest.getChemSpecData(request) # gets json string response of chemical data
 
 		self.rawData = response.content
 
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(response.content)
-		# fileout.close()
-
 		output_val = json.loads(response.content) # convert json to dict
-		# output_val.update({"decimals": self.pKa_decimals}) # add num of dec places for results to dict
 
 		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
@@ -113,7 +107,7 @@ def getIsoelectricPtInfo(output_val, dec):
 	isoPtDict = {key: None for key in isoPtKeys} # initialize dict with None values
 	isoPtData = output_val['data'][0]['isoelectricPoint']
 
-	if isoPtData['hasIsoelectricPoint'] != False:
+	if 'hasIsoelectricPoint' in isoPtData and isoPtData['hasIsoelectricPoint'] != False:
 		isoPtDict.update({'isoPt': round(isoPtData['isoelectricPoint'], dec)})
 		if 'chartData' in isoPtData:
 			isoPtList = isoPtData['chartData']['values'] # get list of xy values for isoPt
@@ -267,21 +261,17 @@ def getStructInfo(mrvData):
 	"""
 	Appends structure info to image url 
 	Input: .mrv format structure
-	Output: dict with structure's info (i.e., formula, iupac, mass, smiles), 
+	Output: dict with structure's info (i.e., formula, iupac, mass, smiles),
 	or dict with aforementioned keys but None values
 	"""
 
-	request = HttpRequest()
-	request.POST = {"chemical": mrvData}
+	request = requests.Request(data={"chemical": mrvData})
 	response = jchem_rest.mrvToSmiles(request)
 	smilesDict = json.loads(response.content)
 
-	request = HttpRequest()
-	request.POST = {
-		"chemical": smilesDict["structure"],
-		"addH": True
-	}
-	response = jchem_rest.getChemDeats(request)
+	request = requests.Request(data={"chemical": smilesDict["structure"], "addH": True})
+
+	response = jchem_rest.getChemDetails(request)
 	structDict = json.loads(response.content)
 
 	infoDictKeys = ['formula', 'iupac', 'mass', 'smiles']

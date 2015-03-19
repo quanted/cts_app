@@ -4,7 +4,7 @@ var marvinSketcherInstance;
 //Url mapping for ubertool-cts web services:
 var Urls = {
 
-  getChemDeats : "/jchem-cts/ws/getChemDeats/",
+  getChemDetails : "/jchem-cts/ws/getChemDetails/",
   mrvToSmiles : "/jchem-cts/ws/mrvToSmiles/",
   getChemSpecData : "/jchem-cts/ws/getChemSpecData/",
   standarizer : "/jchem-cts/ws/standardizer/"
@@ -70,7 +70,7 @@ function importMol(dataObj) {
 
   //Create POST data for web call:
   params = new Object();
-  params.url = Urls.getChemDeats;
+  params.url = Urls.getChemDetails;
   params.type = "POST";
   params.contentType = "application/json";
   params.dataType = "json";
@@ -119,7 +119,7 @@ function importMolFromCanvas() {
     else {
       // importMol(results["structure"]); //send data object 
       params = new Object();
-      params.url = Urls.getChemDeats;
+      params.url = Urls.getChemDetails;
       params.type = "POST";
       params.contentType = "application/json";
       params.dataType = "json";

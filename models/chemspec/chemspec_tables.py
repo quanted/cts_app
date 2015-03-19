@@ -276,7 +276,8 @@ def getPkaResults(chemspec_obj):
         <tr>
         <td>
         """
-        html += wrap_molecule(chemspec_obj.pkaDict['parent'], None, lgWidth, scale) + "<br>"
+        if 'parent' in chemspec_obj.pkaDict:
+            html += wrap_molecule(chemspec_obj.pkaDict['parent'], None, lgWidth, scale) + "<br>"
         html += """
         </td>
         <td>
@@ -340,8 +341,11 @@ def table_taut_results(chemspec_obj):
         html += '<dl style="display:inline-block">'
         for item in chemspec_obj.tautDict['tautStructs']:
             html += '<dd style="float:left;">'
-            html += "Percent Dist: {}%".format(item['dist'])
-            html += wrap_molecule(item, None, mdWidth, scale)
+            if item and 'dist' in item:
+                html += "Percent Dist: {}%".format(item['dist'])
+                html += wrap_molecule(item, None, mdWidth, scale)
+            else:
+                html += "No tautomers"
             html += '</dd>'
         html += "</dl>"
         html += """

@@ -254,7 +254,7 @@ function getMolecularInfo(node) {
     var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
     //Append molecular info to table:
-    makeAjaxCall(getChemDeatsObj(node.data.smiles), function(chemResults) {
+    makeAjaxCall(getChemDetailsObj(node.data.smiles), function(chemResults) {
 
         data = chemResults.data[0];
 
@@ -389,9 +389,9 @@ function newGetPchemData() {
 }
 
 
-function getChemDeatsObj(chemical) {
+function getChemDetailsObj(chemical) {
   var params = new Object();
-  params.url = "/jchem-cts/ws/getChemDeats/";
+  params.url = "/jchem-cts/ws/getChemDetails/";
   params.type = "POST";
   params.contentType = "application/json";
   params.dataType = "json";

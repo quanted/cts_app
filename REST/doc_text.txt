@@ -13,7 +13,7 @@
 
 <hr>
 
-<h3> getChemDeats </h3>
+<h3> getChemDetails </h3>
 <p> Returns iupac, formula, smiles, and mass of provided molecule </p>
 <p> url: /jchem-cts/ws/detailsBySmiles/ </p>
 <u>post data</u>

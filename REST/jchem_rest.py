@@ -6,13 +6,8 @@ Access to jchem web services
 import requests
 import json
 import logging
-# import views.misc
-from django.http import HttpResponse
-from django.http import HttpRequest
-from django.utils.safestring import mark_safe
 from django.template import Template, Context
 from django.shortcuts import render
-from xml.sax.saxutils import escape
 import datetime
 import pytz
 import os
@@ -26,7 +21,6 @@ class Urls:
 
 	cts_jchem_server = os.environ['CTS_JCHEM_SERVER']
 	jchemBase = cts_jchem_server + '/webservices'
-	efsBase = cts_jchem_server + '/efsws/rest'
 
 	# jchem ws urls:
 	exportUrl = '/rest-v0/util/calculate/molExport'
@@ -34,7 +28,9 @@ class Urls:
 	hydroUrl = '/rest-v0/util/convert/hydrogenizer'
 	standardizerUrl = '/rest-v0/util/convert/standardizer'
 
-	metabolizerUrl = '/metabolizer' # homegrown ws
+	# homegrown metabolizer ws:
+	efsBase = cts_jchem_server + '/efsws/rest'
+	metabolizerUrl = efsBase + '/metabolizer'
 
 
 def doc(request):
@@ -44,9 +40,9 @@ def doc(request):
 	return render(request, 'jchem_docs.html')
 
 
-def getChemDeats(request):
+def getChemDetails(request):
 	"""
-	getChemDeats
+	getChemDetails
 
 	Inputs:
 	chem - chemical name (format: iupac, smiles, or formula)
@@ -54,10 +50,17 @@ def getChemDeats(request):
 	The iupac, formula, mass, and smiles string of the chemical
 	along with the mrv of the chemical (to display in marvinjs)
 	"""
-	queryDict = request.POST
-	chem = queryDict.get('chemical') # chemical name
+	# queryDict = request.POST
+	# chem = queryDict.get('chemical') # chemical name
+
+	# now expecting requests Request type, not django Request
+	logging.info("(jchem) Request Data: {}".format(request.data))
+	logging.info(type(request.data))
+
+	chem = request.data.get('chemical')
+
 	addH = False
-	if 'addH' in queryDict:
+	if 'addH' in request.data:
 		addH = True
 	ds = Data_Structures()
 	data = ds.chemDeatsStruct(chem, addH) # format request to jchem
@@ -110,8 +113,8 @@ def mrvToSmiles(request):
 	Inputs: chemical as mrv 
 	Returns: SMILES string of chemical
 	"""
-	queryDict = request.POST
-	chemStruct = queryDict.get('chemical') # chemical in <cml> format (marvin sketch)
+	# queryDict = request.POST
+	chemStruct = request.data.get('chemical') # chemical in <cml> format (marvin sketch)
 	request = {
 		"structure" : chemStruct,
 		"inputFormat" : "mrv",
@@ -137,10 +140,10 @@ def getChemSpecData(request):
 	ds = Data_Structures()
 
 	addH = False
-	if 'addH' in request.POST:
+	if 'addH' in request.data:
 		addH = True
 
-	data = ds.chemSpecStruct(request.POST, addH) # format request to jchem
+	data = ds.chemSpecStruct(request.data, addH) # format request to jchem
 	data = json.dumps(data)
 	url = Urls.jchemBase + Urls.detailUrl
 	results = web_call(url, request, data)
@@ -151,7 +154,7 @@ def getTransProducts(request):
 	"""
 	Makes request to metabolizer on cgi server
 	"""
-	url = Urls.efsBase + Urls.metabolizerUrl
+	url = Urls.metabolizerUrl
 	data = json.dumps(request.POST)
 	results = web_call(url, request, data)
 	return results
@@ -254,18 +257,20 @@ def web_call(url, request, data):
 	and POST data. Returns an http response.
 	"""
 
-	callback_response = HttpResponse()
+	# callback_response = HttpResponse()
+	# callback_response = requests.Response()
 	message = '\n' + "URL: " + '\n' + url + '\n\n'
 	message = message + "POST Data: " + '\n' + str(data) + '\n\n'
 	try:
 		response = requests.post(url, data=data, headers=headers, timeout=60)
 		# message = message + "Response: " + '\n' + response.content + '\n\n'
-		callback_response.write(response.content)
-		return callback_response
+		# logging.info("$$$ response: {}".format(dir(response)))
+		# callback_response.data = response.content
+		return response
 	except:
-		logging.warning("Error in web call")
-		callback_response.write("Error in web call")
-		return callback_response
+		# logging.warning("Error in web call")
+		# callback_response.data = "Error in web call"
+		raise 
 
 
 class Data_Structures:
