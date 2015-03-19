@@ -101,9 +101,9 @@ function getParamsObj(service, chemical) {
   var params = new Object();
   params.url = jchemGatewayUrl;
   params.type = "POST";
-  params.contentType = "application/json";
+  // params.contentType = "application/json";
   params.dataType = "json";
-  params.data = {"service": service, "chemical": chemical}
+  params.data = {"service": service, "chemical": chemical};
   return params;
 }
 

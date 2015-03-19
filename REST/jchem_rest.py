@@ -289,7 +289,7 @@ class Data_Structures:
 					"formula": "chemicalTerms(formula)",
 					"iupac": "chemicalTerms(name)",
 					"mass": "chemicalTerms(mass)",
-					"smiles": "chemicalTerms(molString('smiles'))"
+					"smiles": "chemicalTerms(molString('smiles'))",
 				},
 				"parameters": {
 					"structureData": "mrv"

@@ -22,11 +22,13 @@ def directTraffic(request):
 	"""
 
 	# TODO: try except here (top level)
-
-	requestService = getRequestService(request)
-	requestChem = getRequestChemical(request)
-	response = sendRequestToWebService(requestService, requestChem)
-	return HttpResponse(response.content)
+	try:
+		requestService = getRequestService(request)
+		requestChem = getRequestChemical(request)
+		response = sendRequestToWebService(requestService, requestChem)
+		return HttpResponse(response.content)
+	except:
+		return HttpResponse("error")
 
 
 def getRequestService(request):
@@ -37,7 +39,7 @@ def getRequestService(request):
 	try:
 		service = request.POST.get('service')
 	except AttributeError:
-		logging.warning("error: request has no attribute 'POST'")
+		logging.warning("attribute error")
 		raise
 	except KeyError:
 		logging.warning("error: request as no key 'service'")

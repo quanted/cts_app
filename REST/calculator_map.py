@@ -259,19 +259,4 @@ class ChemaxonCalc(Calculator):
 				raise
 		except KeyError:
 			print "Property does not exist in ChemAxon"
-
-	# def getTransformationProducts(self, structure, gen_limit, pop_limit, trans_libs):
-		
-	# 	postData = {
-	# 		'structure': self.chem_struct,
-	# 		'generationLimit': self.gen_limit,
-	# 		'populationLimit': self.pop_limit,
-	# 		'likelyLimit': self.likely_limit,
-	# 		'transformationLibraries': self.trans_libs,
-	# 		'excludeCondition': ""
-	# 		# 'generateImages': False
-	# 	}
-
-	# 	try:
-	# 		res = jchem_rest.getTransProducts()
 		

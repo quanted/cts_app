@@ -80,6 +80,10 @@ class chemspec(object):
 
 		output_val = json.loads(response.content) # convert json to dict
 
+		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		fileout.write(json.dumps(output_val))
+		fileout.close()
+
 		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
 		data_root = {}
@@ -225,6 +229,9 @@ def getStereoInfo(output_val, dec):
 	stereoValues = output_val['data'][0]['stereoisomer']
 
 	if 'result' in stereoValues:
+
+		logging.info("type: {}".format(type(stereoValues['result'])))
+
 		if 'image' in stereoValues['result']:
 			stereoDict['image'] = stereoValues['result']['image']['image']
 		structInfo = getStructInfo(stereoValues['result']['structureData']['structure'])
