@@ -2,8 +2,6 @@
 # Herein lies the map to the various calculators' queries #
 ###########################################################
 
-# from django.conf import settings
-# from test_cts import views
 import requests
 import jchem_rest
 
@@ -22,7 +20,7 @@ class Calculator(object):
 		self.baseUrl = ''
 
 	@classmethod
-	def getCalcObject(cls, calc):
+	def getCalcObject(self, calc):
 		if calc == 'chemaxon':
 			return ChemaxonCalc()
 		elif calc == 'test':

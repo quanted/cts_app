@@ -80,9 +80,9 @@ class chemspec(object):
 
 		output_val = json.loads(response.content) # convert json to dict
 
-		fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		fileout.write(json.dumps(output_val))
-		fileout.close()
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(json.dumps(output_val))
+		# fileout.close()
 
 		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
@@ -90,7 +90,7 @@ class chemspec(object):
 		if 'data' in output_val and len(output_val['data']) > 0:
 			data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
 
-		# Build response dictionaries
+		# Pick out data from response, build dictionaries model
 		if 'pKa' in data_root:
 			self.pkaDict = getPkaInfo(output_val, self.pKa_decimals)
 		if 'isoelectricPoint' in data_root:
@@ -231,6 +231,10 @@ def getStereoInfo(output_val, dec):
 	if 'result' in stereoValues:
 
 		logging.info("type: {}".format(type(stereoValues['result'])))
+
+		# for item in stereoValues['result']:
+
+		# logging.info("ITEM: {}".format(item))
 
 		if 'image' in stereoValues['result']:
 			stereoDict['image'] = stereoValues['result']['image']['image']

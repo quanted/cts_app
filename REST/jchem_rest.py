@@ -33,6 +33,124 @@ class Urls:
 	metabolizerUrl = efsBase + '/metabolizer'
 
 
+class JchemProperty(object):
+	def __init__(self):
+		self.name = ''
+		self.url = ''
+		self.postData = {}
+
+	def setPostDataValue(self, propKey, propValue):
+		try:
+			self.postData[self.name][propKey] = propValue
+		except KeyError:
+			logging.warning("key {} does not exist".format(propKey))
+			pass
+		except Exception as e:
+			logging.warning("error occured: {}".format(e))
+			pass
+
+	@classmethod
+	def getProperty(self, prop):
+		if prop == 'pKa':
+			return Pka()
+		elif prop == 'isoelectricPoint':
+			return IsoelectricPoint()
+		elif prop == 'majorMicrospecies':
+			return MajorMicrospecies()
+		elif prop == 'tautomerization':
+			return Tautomerization()
+		elif prop == 'stereoisomer':
+			return Stereoisomer()
+		else:
+			pass
+
+	# def getDataFromWebService(self, structure):
+
+
+class Pka(JchemProperty):
+	def __init__(self):
+		JchemProperty.__init__(self)
+		self.name = 'pKa'
+		self.url = '/webservices/rest-v0/util/calculate/pKa'
+		self.postData = {
+			"pKa": {
+				"pHLower": 0.0,
+				"pHUpper": 14.0,
+				"pHStep": 0.1,
+				"temperature": 298.0,
+				"micro": False,
+				"considerTautomerization": True,
+				"pKaLowerLimit": -20.0,
+				"pKaUpperLimit": 10.0,
+				"prefix": "DYNAMIC"
+			}
+		}
+
+class IsoelectricPoint(JchemProperty):
+	def __init__(self):
+		JchemProperty.__init__(self)
+		self.name = 'isoelectricPoint'
+		self.url = '/webservices/rest-v0/util/calculate/isoelectricPoint'
+		self.postData = {
+			"isoelectricPoint": {
+	    		"pHStep": 0.1,
+				"doublePrecision": 2
+			}
+		}
+
+class MajorMicrospecies(JchemProperty):
+	def __init__(self):
+		JchemProperty.__init__(self)
+		self.name = 'majorMicrospecies'
+		self.url = '/webservices/rest-v0/util/calculate/majorMicrospecies'
+		self.postData = {
+			"majorMicrospecies": {
+	    		"pH": 7.4,
+				"takeMajorTautomericForm": False
+			}
+		}
+
+class Tautomerization(JchemProperty):
+	def __init__(self):
+		JchemProperty.__init__(self)
+		self.name = 'tautomerization'
+		self.url = '/webservices/rest-v0/util/calculate/tautomerization'
+		self.postData = {
+			"tautomerization": {
+				"calculationType": "DOMINANT",
+				"maxStructureCount": 1000,
+				"considerPH": False,
+				"enableMaxPathLength": True,
+				"maxPathLength": 4,
+				"rationalTautomerGenerationMode": False,
+				"singleFragmentMode": True,
+				"protectAromaticity": True,
+			    "protectCharge": True,
+				"excludeAntiAromaticCompounds": True,
+				"protectDoubleBondStereo": False,
+				"protectAllTetrahedralStereoCenters": False,
+				"protectLabeledTetrahedralStereoCenters": False,
+				"protectEsterGroups": True,
+				"ringChainTautomerizationAllowed": False
+			}
+		}
+
+class Stereoisomer(JchemProperty):
+	def __init__(self):
+		JchemProperty.__init__(self)
+		self.name = 'stereoisomer'
+		self.url = '/webservices/rest-v0/util/calculate/stereoisomer'
+		self.postData = {
+			"stereoisomer": {
+				"stereoisomerismType": "TETRAHEDRAL",
+				"maxStructureCount": 1,
+				"protectDoubleBondStereo": False,
+				"protectTetrahedralStereo": False,
+				"filterInvalid3DStructures": False
+			}
+		}
+
+
 def doc(request):
 	"""
 	API Documentation Page

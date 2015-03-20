@@ -28,7 +28,8 @@ def directTraffic(request):
 		response = sendRequestToWebService(requestService, requestChem)
 		return HttpResponse(response.content)
 	except:
-		return HttpResponse("error")
+		logging.warning("error occured in jchem_traffic_cop")
+		return HttpResponse(json.dumps({"error": "an error occured during the request"}))
 
 
 def getRequestService(request):
