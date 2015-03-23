@@ -8,6 +8,7 @@ import requests
 import chemspec_parameters # Chemical Speciation parameters
 # from REST import rest_funcs
 from REST import jchem_rest
+from REST.jchem_rest import JchemProperty as JProp
 import logging
 # from django.http import HttpRequest
 import chemspec_tables
@@ -40,260 +41,304 @@ class chemspec(object):
 		self.tautomer_pH = tautomer_pH
 		self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
 
-		dataDict = {"chemical": self.chem_struct}
+		jchemDataDict = {}
 
-		if pkaChkbox == 'on':
-			pkaInputsDict = {
-				# "pKa_decimals":self.pKa_decimals, 
+		# NOTE: Change this for upcoming batch stuff???
+		if pkaChkbox == 'on' or pkaChkbox == True:
+			# make call for pKa:
+			pkaObj = JProp.getPropObj('pKa')
+			pkaObj.setPostDataValues({
 				"pHLower":self.pKa_pH_lower,
 				"pHUpper":self.pKa_pH_upper,
 				"pHStep":self.pKa_pH_increment,
-			}
-			mmsInputsDict = {
-				"pH": self.pH_microspecies
-			}
-			isoInputsDict = {
-				"pHStep": self.isoelectricPoint_pH_increment
-			}  
-			dataDict.update({"pKa": pkaInputsDict})
-			dataDict.update({"majorMicrospecies": mmsInputsDict})
-			dataDict.update({"isoelectricPoint": isoInputsDict})
-		
-		if tautChkbox == 'on':
-			tautInputsDict = {
+			})
+			pkaObj.makeDataRequest(self.chem_struct)
+			jchemDataDict.update({pkaObj.name: json.loads(pkaObj.results)})
+
+			# make call for majorMS:
+			majorMsObj = JProp.getPropObj('majorMicrospecies')
+			majorMsObj.setPostDataValue('pH', 'self.pH_microspecies')
+			majorMsObj.makeDataRequest(self.chem_struct)
+			jchemDataDict.update({majorMsObj.name: json.loads(majorMsObj.results)})
+
+			# make call for isoPt:
+			isoPtObj = JProp.getPropObj('isoelectricPoint')
+			isoPtObj.setPostDataValue('pHStep', self.isoelectricPoint_pH_increment)
+			isoPtObj.makeDataRequest(self.chem_struct)
+			jchemDataDict.update({isoPtObj.name: json.loads(isoPtObj.results)})
+
+		if tautChkbox == 'on' or tautChkbox == True:
+			tautObj = JProp.getPropObj('tautomerization')
+			tautObj.setPostDataValues({
 				"maxStructureCount":self.tautomer_maxNoOfStructures,
 				"pH":self.tautomer_pH,
 				"considerPH": True
-			}
-			dataDict.update({"tautomerization": tautInputsDict})
+			})
+			tautObj.makeDataRequest(self.chem_struct)
+			jchemDataDict.update({tautObj.name: json.loads(tautObj.results)})
 
-		if stereoChkbox == 'on':
-			stereoInputsDict = {
-				"maxNumberOfStereoisomers":self.stereoisomers_maxNoOfStructures
-			}
-			dataDict.update({"stereoisomer": stereoInputsDict})
+		if stereoChkbox == 'on' or stereoChkbox == True:
+			stereoObj = JProp.getPropObj('stereoisomer')
+			stereoObj.setPostDataValue('maxNumberOfStereoisomers', self.stereoisomers_maxNoOfStructures)
+			stereoObj.makeDataRequest(self.chem_struct)
+			jchemDataDict.update({stereoObj.name: json.loads(stereoObj.results)})
 
-		request = requests.Request(data=dataDict)
-		response = jchem_rest.getChemSpecData(request) # gets json string response of chemical data
+		self.jchemPropObjects = {
+			'pKa': pkaObj,
+			'majorMicrospecies': majorMsObj,
+			'isoelectricPoint': isoPtObj,
+			'tautomerization': tautObj,
+			'stereoisomer': stereoObj
+		}
 
-		self.rawData = response.content
+		# if pkaChkbox == 'on':
+		# 	pkaInputsDict = {
+		# 		# "pKa_decimals":self.pKa_decimals, 
+		# 		"pHLower":self.pKa_pH_lower,
+		# 		"pHUpper":self.pKa_pH_upper,
+		# 		"pHStep":self.pKa_pH_increment,
+		# 	}
+		# 	mmsInputsDict = {
+		# 		"pH": self.pH_microspecies
+		# 	}
+		# 	isoInputsDict = {
+		# 		"pHStep": self.isoelectricPoint_pH_increment
+		# 	}  
+		# 	dataDict.update({"pKa": pkaInputsDict})
+		# 	dataDict.update({"majorMicrospecies": mmsInputsDict})
+		# 	dataDict.update({"isoelectricPoint": isoInputsDict})
+		
+		# if tautChkbox == 'on':
+		# 	tautInputsDict = {
+		# 		"maxStructureCount":self.tautomer_maxNoOfStructures,
+		# 		"pH":self.tautomer_pH,
+		# 		"considerPH": True
+		# 	}
+		# 	dataDict.update({"tautomerization": tautInputsDict})
 
-		output_val = json.loads(response.content) # convert json to dict
+		# if stereoChkbox == 'on':
+		# 	stereoInputsDict = {
+		# 		"maxNumberOfStereoisomers":self.stereoisomers_maxNoOfStructures
+		# 	}
+		# 	dataDict.update({"stereoisomer": stereoInputsDict})
+
+		# request = requests.Request(data=dataDict)
+		# response = jchem_rest.getChemSpecData(request) # gets json string response of chemical data
+
+		# self.rawData = response.content
+
+		# output_val = json.loads(response.content) # convert json to dict
 
 		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(json.dumps(output_val))
+		# fileout.write(json.dumps(jchemDataDict))
 		# fileout.close()
 
-		self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
+		# self.pkaDict, self.stereoDict, self.tautDict, self.isoPtDict, self.majorMsDict = {}, {}, {}, {}, {}
 
-		data_root = {}
-		if 'data' in output_val and len(output_val['data']) > 0:
-			data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
+		# data_root = {}
+		# if 'data' in output_val and len(output_val['data']) > 0:
+		# 	data_root = output_val['data'][0] #could have more than one in future (i.e., batch mode)
 
-		# Pick out data from response, build dictionaries model
-		if 'pKa' in data_root:
-			self.pkaDict = getPkaInfo(output_val, self.pKa_decimals)
-		if 'isoelectricPoint' in data_root:
-			self.isoPtDict = getIsoelectricPtInfo(output_val, self.pKa_decimals)
-		if 'majorMicrospecies' in data_root:
-			self.majorMsDict = getMajorMicrospecies(output_val, self.pKa_decimals)
-		if 'stereoisomer' in data_root:
-			self.stereoDict = getStereoInfo(output_val, self.pKa_decimals)
-		if 'tautomerization' in data_root:
-			self.tautDict = getTautInfo(output_val, self.pKa_decimals)
+		# # Pick out data from response, build dictionaries model
+		# if 'pKa' in data_root:
+		# 	self.pkaDict = getPkaInfo(output_val, self.pKa_decimals)
+		# if 'isoelectricPoint' in data_root:
+		# 	self.isoPtDict = getIsoelectricPtInfo(output_val, self.pKa_decimals)
+		# if 'majorMicrospecies' in data_root:
+		# 	self.majorMsDict = getMajorMicrospecies(output_val, self.pKa_decimals)
+		# if 'stereoisomer' in data_root:
+		# 	self.stereoDict = getStereoInfo(output_val, self.pKa_decimals)
+		# if 'tautomerization' in data_root:
+		# 	self.tautDict = getTautInfo(output_val, self.pKa_decimals)
 
 
 # Builds isoelectricPoint dictionary
-def getIsoelectricPtInfo(output_val, dec):
+# def getIsoelectricPtInfo(output_val, dec):
 
-	isoPtKeys = ['isoPt']
-	isoPtDict = {}
-	isoPtDict = {key: None for key in isoPtKeys} # initialize dict with None values
-	isoPtData = output_val['data'][0]['isoelectricPoint']
+# 	isoPtKeys = ['isoPt']
+# 	isoPtDict = {key: None for key in isoPtKeys} # initialize dict with None values
+# 	isoPtData = output_val['data'][0]['isoelectricPoint']
 
-	if 'hasIsoelectricPoint' in isoPtData and isoPtData['hasIsoelectricPoint'] != False:
-		isoPtDict.update({'isoPt': round(isoPtData['isoelectricPoint'], dec)})
-		if 'chartData' in isoPtData:
-			isoPtList = isoPtData['chartData']['values'] # get list of xy values for isoPt
-			valsList = []
-			for pt in isoPtList:
-				xyPair = []
-				for key,value in pt.items():
-					xyPair.append(value)
-				valsList.append(xyPair)
-			isoPtDict.update({'isoPtChartData': valsList})
-		return isoPtDict
-	else:
-		return None
-
-
-def getMajorMicrospecies(output_val, dec):
-
-	majorMsRoot = output_val['data'][0]['majorMicrospecies']
-	majorMsDict = {}
-	majorMsImage = '' # image path of structure
-
-	if 'result' in majorMsRoot:
-
-		# Get image data from result:
-		if 'image' in majorMsRoot['result']:
-			majorMsImage = majorMsRoot['result']['image']['image']
-			majorMsDict.update({"image": majorMsImage})
-			# majorMsDict.update({"image": majorMsRoot['result']['image']['image']})
-		else:
-			majorMsImage = 'No major microspecies'
-
-		# Get structure data from result:
-		# structInfo = getStructInfo(majorMsRoot) # get info such as iupac, mass, etc.
-		structInfo = getStructInfo(majorMsRoot['result']['structureData']['structure'])
-
-		majorMsDict.update(structInfo)
-
-	else:
-		majorMsDict = None
-
-	return majorMsDict
+# 	if 'hasIsoelectricPoint' in isoPtData and isoPtData['hasIsoelectricPoint'] != False:
+# 		isoPtDict.update({'isoPt': round(isoPtData['isoelectricPoint'], dec)})
+# 		if 'chartData' in isoPtData:
+# 			isoPtList = isoPtData['chartData']['values'] # get list of xy values for isoPt
+# 			valsList = []
+# 			for pt in isoPtList:
+# 				xyPair = []
+# 				for key,value in pt.items():
+# 					xyPair.append(value)
+# 				valsList.append(xyPair)
+# 			isoPtDict.update({'isoPtChartData': valsList})
+# 		return isoPtDict
+# 	else:
+# 		return None
 
 
-# Builds pKa dictionary 
-def getPkaInfo(output_val, dec):
+# def getMajorMicrospecies(output_val, dec):
 
-	pkaDict = {}
-	pkaKeys = ['mostBasicPka', 'mostAcidicPka', 'parentImage', 'msImageUrlList', 'microDistData']
-	pkaDict = {key: None for key in pkaKeys} # Initialize dict values to None
+# 	majorMsRoot = output_val['data'][0]['majorMicrospecies']
+# 	majorMsDict = {}
+# 	majorMsImage = '' # image path of structure
 
-	pkaRoot = output_val['data'][0]['pKa']
+# 	if 'result' in majorMsRoot:
 
-	# Check if pka data exist
-	if 'result' in pkaRoot:
-		# pkaDict.update({'mostBasicPka': pkaRoot['mostBasic']})
-		# pkaDict.update({'mostAcidicPka': pkaRoot['mostAcidic']})
-		pkaDict.update({'mostBasicPka': []})
-		for item in pkaRoot['mostBasic']:
-			pkaDict['mostBasicPka'].append(round(item, dec))
-		pkaDict.update({'mostAcidicPka': []})
-		for item in pkaRoot['mostAcidic']:
-			pkaDict['mostAcidicPka'].append(round(item, dec))
+# 		# Get image data from result:
+# 		if 'image' in majorMsRoot['result']:
+# 			majorMsImage = majorMsRoot['result']['image']['image']
+# 			majorMsDict.update({"image": majorMsImage})
+# 			# majorMsDict.update({"image": majorMsRoot['result']['image']['image']})
+# 		else:
+# 			majorMsImage = 'No major microspecies'
 
-		parentDict = {'image': pkaRoot['result']['image']['image']}
-		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
-		# logging.warning(parentDict)
+# 		# Get structure data from result:
+# 		# structInfo = getStructInfo(majorMsRoot) # get info such as iupac, mass, etc.
+# 		structInfo = getStructInfo(majorMsRoot['result']['structureData']['structure'])
 
-		pkaDict.update({'parent': parentDict})
-		# pkaDict.update({'parent': pkaRoot['result']['image']['image']})
+# 		majorMsDict.update(structInfo)
 
-		# Check if 'microspecies' key exist in dict
-		if 'microspecies' in pkaRoot:
-			# need to declare all the microspecies images:
-			microspeciesList = pkaRoot['microspecies']
+# 	else:
+# 		majorMsDict = None
 
-			msImageUrlList = [] # list of microspecies image urls
-			for ms in microspeciesList:
-				msStructDict = {} # list element in msImageUrlList
-				msStructDict.update({"image": ms['image']['image']})
-				structInfo = getStructInfo(ms['structureData']['structure'])
-				msStructDict.update(structInfo)
-				msImageUrlList.append(msStructDict)
-
-			pkaDict.update({'msImageUrlList': msImageUrlList})
-
-			# get microspecies distribution data for plotting
-			microDist = pkaRoot['chartData']
-
-			# microDistData = []	
-			microDistData = {}
-			inc = 0	
-			for ms in microDist:
-				valuesList = [] # format: [[ph1,con1], [ph2, con2], ...] per ms
-				for vals in ms['values']:
-					xy = [] # [ph1, con1]
-					xy.append(vals['pH'])
-					xy.append(100.0 * vals['concentration']) # convert to %
-					valuesList.append(xy)
-
-				# microDistData.update({msImageUrlList[inc]['iupac'] : valuesList})
-				microDistData.update({ms['key'] : valuesList})
-				msImageUrlList[inc].update({"key":ms['key']})
-				inc += 1
-				# microDistData.append(valuesList)
-
-			pkaDict.update({'microDistData': microDistData})
-
-	return pkaDict
+# 	return majorMsDict
 
 
-def getStereoInfo(output_val, dec):
+# # Builds pKa dictionary 
+# def getPkaInfo(output_val, dec):
 
-	stereoDict = {'image': [None]} # Initialize dict for stereoisomer image url
+# 	pkaKeys = ['mostBasicPka', 'mostAcidicPka', 'parentImage', 'msImageUrlList', 'microDistData']
+# 	pkaDict = {key: None for key in pkaKeys} # Initialize dict values to None
 
-	stereoValues = output_val['data'][0]['stereoisomer']
+# 	pkaRoot = output_val['data'][0]['pKa']
 
-	if 'result' in stereoValues:
+# 	# Check if pka data exist
+# 	if 'result' in pkaRoot:
+# 		pkaDict.update({'mostBasicPka': []})
+# 		for item in pkaRoot['mostBasic']:
+# 			pkaDict['mostBasicPka'].append(round(item, dec))
+# 		pkaDict.update({'mostAcidicPka': []})
+# 		for item in pkaRoot['mostAcidic']:
+# 			pkaDict['mostAcidicPka'].append(round(item, dec))
 
-		logging.info("type: {}".format(type(stereoValues['result'])))
+# 		parentDict = {'image': pkaRoot['result']['image']['image']}
+# 		parentDict.update(getStructInfo(pkaRoot['result']['structureData']['structure']))
+# 		# logging.warning(parentDict)
 
-		# for item in stereoValues['result']:
+# 		pkaDict.update({'parent': parentDict})
+# 		# pkaDict.update({'parent': pkaRoot['result']['image']['image']})
 
-		# logging.info("ITEM: {}".format(item))
+# 		# Check if 'microspecies' key exist in dict
+# 		if 'microspecies' in pkaRoot:
+# 			# need to declare all the microspecies images:
+# 			microspeciesList = pkaRoot['microspecies']
 
-		if 'image' in stereoValues['result']:
-			stereoDict['image'] = stereoValues['result']['image']['image']
-		structInfo = getStructInfo(stereoValues['result']['structureData']['structure'])
-		stereoDict.update(structInfo)
+# 			msImageUrlList = [] # list of microspecies image urls
+# 			for ms in microspeciesList:
+# 				msStructDict = {} # list element in msImageUrlList
+# 				msStructDict.update({"image": ms['image']['image']})
+# 				structInfo = getStructInfo(ms['structureData']['structure'])
+# 				msStructDict.update(structInfo)
+# 				msImageUrlList.append(msStructDict)
 
-	return stereoDict
+# 			pkaDict.update({'msImageUrlList': msImageUrlList})
+
+# 			# get microspecies distribution data for plotting
+# 			microDist = pkaRoot['chartData']
+
+# 			# microDistData = []	
+# 			microDistData = {}
+# 			inc = 0	
+# 			for ms in microDist:
+# 				valuesList = [] # format: [[ph1,con1], [ph2, con2], ...] per ms
+# 				for vals in ms['values']:
+# 					xy = [] # [ph1, con1]
+# 					xy.append(vals['pH'])
+# 					xy.append(100.0 * vals['concentration']) # convert to %
+# 					valuesList.append(xy)
+
+# 				# microDistData.update({msImageUrlList[inc]['iupac'] : valuesList})
+# 				microDistData.update({ms['key'] : valuesList})
+# 				msImageUrlList[inc].update({"key":ms['key']})
+# 				inc += 1
+# 				# microDistData.append(valuesList)
+
+# 			pkaDict.update({'microDistData': microDistData})
+
+# 	return pkaDict
 
 
-def getTautInfo(output_val, dec):
+# def getStereoInfo(output_val, dec):
 
-	tautDict = {'tautStructs': [None]}
-	tautValues = output_val['data'][0]['tautomerization']
+# 	stereoDict = {'image': [None]} # Initialize dict for stereoisomer image url
 
-	if 'result' in tautValues:
-		imageList = [] # list of dicts, where dict is molecule's image, smiles, mass, etc.
-		for taut in tautValues['result']:
-			tautStructDict = {}
-			tautStructDict.update({"image": taut['image']['image']}) #append to list
-			structInfo = getStructInfo(taut['structureData']['structure'])
-			tautStructDict.update(structInfo)
+# 	stereoValues = output_val['data'][0]['stereoisomer']
 
-			# adding "dist" key for % distribution:
-			tautStructDict.update({"dist": 100 * round(taut['dominantTautomerDistribution'], 4)})
-			logging.info(tautStructDict)
+# 	if 'result' in stereoValues:
 
-			imageList.append(tautStructDict)
+# 		logging.info("type: {}".format(type(stereoValues['result'])))
 
-		tautDict.update({'tautStructs': imageList})
+# 		# for item in stereoValues['result']:
 
-	return tautDict
+# 		# logging.info("ITEM: {}".format(item))
+
+# 		if 'image' in stereoValues['result']:
+# 			stereoDict['image'] = stereoValues['result']['image']['image']
+# 		structInfo = getStructInfo(stereoValues['result']['structureData']['structure'])
+# 		stereoDict.update(structInfo)
+
+# 	return stereoDict
 
 
-def getStructInfo(mrvData):
-	"""
-	Appends structure info to image url 
-	Input: .mrv format structure
-	Output: dict with structure's info (i.e., formula, iupac, mass, smiles),
-	or dict with aforementioned keys but None values
-	"""
+# def getTautInfo(output_val, dec):
 
-	request = requests.Request(data={"chemical": mrvData})
-	response = jchem_rest.mrvToSmiles(request)
-	smilesDict = json.loads(response.content)
+# 	tautDict = {'tautStructs': [None]}
+# 	tautValues = output_val['data'][0]['tautomerization']
 
-	request = requests.Request(data={"chemical": smilesDict["structure"], "addH": True})
+# 	if 'result' in tautValues:
+# 		imageList = [] # list of dicts, where dict is molecule's image, smiles, mass, etc.
+# 		for taut in tautValues['result']:
+# 			tautStructDict = {}
+# 			tautStructDict.update({"image": taut['image']['image']}) #append to list
+# 			structInfo = getStructInfo(taut['structureData']['structure'])
+# 			tautStructDict.update(structInfo)
 
-	response = jchem_rest.getChemDetails(request)
-	structDict = json.loads(response.content)
+# 			# adding "dist" key for % distribution:
+# 			tautStructDict.update({"dist": 100 * round(taut['dominantTautomerDistribution'], 4)})
+# 			logging.info(tautStructDict)
 
-	infoDictKeys = ['formula', 'iupac', 'mass', 'smiles']
-	infoDict = {key: None for key in infoDictKeys} # init dict with infoDictKeys and None vals
+# 			imageList.append(tautStructDict)
 
-	struct_root = {} # root of data in structInfo
-	if 'data' in structDict:
-		struct_root = structDict['data'][0]
-		infoDict.update({"formula": struct_root['formula']})
-		infoDict.update({"iupac":  struct_root['iupac']})
-		infoDict.update({"mass":  struct_root['mass']})
-		infoDict.update({"smiles":  struct_root['smiles']})
+# 		tautDict.update({'tautStructs': imageList})
 
-	return infoDict
+# 	return tautDict
+
+
+# def getStructInfo(mrvData):
+# 	"""
+# 	Appends structure info to image url 
+# 	Input: .mrv format structure
+# 	Output: dict with structure's info (i.e., formula, iupac, mass, smiles),
+# 	or dict with aforementioned keys but None values
+# 	"""
+
+# 	request = requests.Request(data={"chemical": mrvData})
+# 	response = jchem_rest.mrvToSmiles(request)
+# 	smilesDict = json.loads(response.content)
+
+# 	request = requests.Request(data={"chemical": smilesDict["structure"], "addH": True})
+
+# 	response = jchem_rest.getChemDetails(request)
+# 	structDict = json.loads(response.content)
+
+# 	infoDictKeys = ['formula', 'iupac', 'mass', 'smiles']
+# 	infoDict = {key: None for key in infoDictKeys} # init dict with infoDictKeys and None vals
+
+# 	struct_root = {} # root of data in structInfo
+# 	if 'data' in structDict:
+# 		struct_root = structDict['data'][0]
+# 		infoDict.update({"formula": struct_root['formula']})
+# 		infoDict.update({"iupac":  struct_root['iupac']})
+# 		infoDict.update({"mass":  struct_root['mass']})
+# 		infoDict.update({"smiles":  struct_root['smiles']})
+
+# 	return infoDict
