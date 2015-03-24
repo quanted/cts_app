@@ -130,16 +130,7 @@ class Pka(JchemProperty):
 		"""
 		Picks out pKa acidic value(s), returns list
 		"""
-		logging.info("$ result type: {} $".format(type(self.results)))
 		pkaValList = []
-		# try:
-		# 	for pkaVal in self.results['mostAcidic']:
-		# 		pkaValList.append(pkaVal)
-		# 	return pkaValList
-		# except TypeError as te:
-		# 	self.results = 
-
-
 		if 'mostAcidic' in self.results:
 			# logging.info("$ type: {} $".format(self.results['mostAcidic']))
 			for pkaVal in self.results['mostAcidic']:
@@ -238,7 +229,7 @@ class IsoelectricPoint(JchemProperty):
 		"""
 		Returns isoelectricPoint chart data
 		"""
-		isoPtChartData = {'isoPtChartData': None}
+		# isoPtChartData = {'isoPtChartData': None}
 		valsList = []
 		try:
 			for pt in self.results['chartData']['values']:
@@ -248,10 +239,10 @@ class IsoelectricPoint(JchemProperty):
 				valsList.append(xyPair)
 		except KeyError as ke:
 			logging.warning("key error: {}".format(ke))
-			return isoPtChartData
+			return valsList
 		else:
-			isoPtChartData['isoPtChartData'] = valsList
-			return isoPtChartData
+			# isoPtChartData['isoPtChartData'] = valsList
+			return valsList
 
 class MajorMicrospecies(JchemProperty):
 	def __init__(self):
@@ -303,16 +294,16 @@ class Tautomerization(JchemProperty):
 
 	def getTautomers(self):
 		tautDict = {'tautStructs': [None]}
-		tautValues = output_val['data'][0]['tautomerization']
-		imageList = []
+		tautImageList = []
 		try:
 			for taut in self.results['result']:
-				tautStructDict = {'image': self.results['result']['image']['image']}
-				structInfo = getStructInfo(self.results['result']['structureData']['structure'])
+				tautStructDict = {'image': taut['image']['image']}
+				structInfo = getStructInfo(taut['structureData']['structure'])
 				tautStructDict.update(structInfo)
-				tautStructDict.update({'dist': 100 * round(self.results['dominantTautomerDistribution'], 4)})
-				imageList.append(tautStructDict)
-			tautDict.update({'tautStructs': imageList})
+				tautStructDict.update({'dist': 100 * round(taut['dominantTautomerDistribution'], 4)})
+				tautImageList.append(tautStructDict)
+			tautDict.update({'tautStructs': tautImageList})
+			return tautImageList
 		except KeyError as ke:
 			logging.warning("key error: {}".format(ke))
 			return None
@@ -325,7 +316,7 @@ class Stereoisomer(JchemProperty):
 		self.postData = {
 			"stereoisomer": {
 				"stereoisomerismType": "TETRAHEDRAL",
-				"maxStructureCount": 1,
+				"maxStructureCount": 100,
 				"protectDoubleBondStereo": False,
 				"protectTetrahedralStereo": False,
 				"filterInvalid3DStructures": False
@@ -350,9 +341,9 @@ class Stereoisomer(JchemProperty):
 		except KeyError as ke:
 			logging.warning("key error: {}".format(ke))
 			return None
-		except Exception as e:
-			logging.warning("other shit went down: {}".format(e))
-			return None
+		# except Exception as e:
+		# 	logging.warning("other shit went down: {}".format(e))
+		# 	return None
 
 
 def doc(request):

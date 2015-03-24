@@ -202,9 +202,9 @@ def table_outputs(chemspec_obj):
 
     html += getPkaResults(chemspec_obj)
     html += getIsoPtResults(chemspec_obj)
-    # html += getMajorMsImages(chemspec_obj)
-    # html += table_stereo_results(chemspec_obj)
-    # html += table_taut_results(chemspec_obj)
+    html += getMajorMsImages(chemspec_obj)
+    html += getStereoisomersResults(chemspec_obj)
+    html += getTautomerResults(chemspec_obj)
     html += """
     </div>
     """
@@ -215,41 +215,47 @@ def getIsoPtResults(chemspec_obj):
     """
     IsoelectricPoint calculations
     """
-    isoPtObj = chemspec_obj.jchemPropObjects['isoelectricPoint']
-    logging.info(isoPtObj.results)
-    html = """
-    <H4 class="out_1 collapsible" id="section6"><span></span>Isoelectric Point</H4>
-    <div class="out_">
-    """
-    isoPt = isoPtObj.getIsoelectricPoint()
-    isoPtChartData = isoPtObj.getIsoPtChartData()
-    if isoPt:
-        html += '<div id="isoPtData" class="hideData">'
-        html += mark_safe(json.dumps(isoPtChartData))
-        html += '</div>'
-        html += render_to_string('cts_plot_isoelectricPoint.html', {"ip": isoPt})
+    try:
+        isoPtObj = chemspec_obj.jchemPropObjects['isoelectricPoint']
+        isoPt = isoPtObj.getIsoelectricPoint()
+        isoPtChartData = isoPtObj.getIsoPtChartData()
+    except AttributeError:
+        logging.info("isoelectricPoint not checked..moving on..")
+        return ""
     else:
-        html += '<p>No isoelectric point</p>'
-    html += '</div>'
-    return html
+        html = """
+        <H4 class="out_1 collapsible" id="section6"><span></span>Isoelectric Point</H4>
+        <div class="out_">
+        """
+        if isoPt:
+            html += '<div id="isoPtData" class="hideData">'
+            html += mark_safe(json.dumps(isoPtChartData))
+            html += '</div>'
+            html += render_to_string('cts_plot_isoelectricPoint.html', {"ip": isoPt})
+        else:
+            html += '<p>No isoelectric point</p>'
+        html += '</div>'
+        return html
 
 
 def getMajorMsImages(chemspec_obj):
     """
     MajorMicrospecies image
     """
-    if chemspec_obj.majorMsDict:
+    try:
+        majorMsDict = chemspec_obj.jchemPropObjects['majorMicrospecies'].getMajorMicrospecies()
+    except AttributeError:
+        logging.info("major microspecies not checked..moving on..")
+        return ""
+    else:
         html = """
         <H4 class="out_1 collapsible" id="section6"><span></span>Major Microspecies at pH: {}</H4>
-        <div class="out_ shiftRight">
-        """.format(chemspec_obj.pH_microspecies)
-        html += wrap_molecule(chemspec_obj.majorMsDict, None, mdWidth, scale)
+        <div class="out_ shiftRight">""".format(chemspec_obj.pH_microspecies)
+        html += wrap_molecule(majorMsDict, None, mdWidth, scale)
         html += """
         </div>
         """
         return html
-    else:
-        return ""
 
 
 def getPkaResults(chemspec_obj):
@@ -258,11 +264,16 @@ def getPkaResults(chemspec_obj):
     <div class="out_">
     """
     # acidic/basic pKa values:
-    pkaValues = {
-        'Acidic pKa Value(s)': chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka(),
-        'Basic pKa Value(s)': chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
-    }
-    html += tmpl.render(Context(dict(data=pkaValues)))
+    try:
+        pkaValues = {
+            'Acidic pKa Value(s)': chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka(),
+            'Basic pKa Value(s)': chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
+        }
+    except AttributeError:
+        logging.info("pKa not selected..moving..")
+        return "" # get out of here!
+    else:
+        html += tmpl.render(Context(dict(data=pkaValues)))
 
     # pKa parent species:
     html += '<table id="msMain"><tr><td>'
@@ -290,49 +301,63 @@ def getPkaResults(chemspec_obj):
     return html
 
 
-def table_stereo_results(chemspec_obj):
+def getStereoisomersResults(chemspec_obj):
     """
     Stereoisomers image 
     """
-    if chemspec_obj.stereoDict:
-        html = """
-        <H4 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H4>
-        <div class="out_ shiftRight">
-        """
-        html += wrap_molecule(chemspec_obj.stereoDict, None, mdWidth, scale)
-        html += """
-        </div>
-        """
-        return html
-    else:
+    try:
+        stereoDict = chemspec_obj.jchemPropObjects['stereoisomers'].getStereoisomers()
+    except AttributeError:
+        logging.info("stereoisomers not checked..moving on..")
         return ""
 
+    logging.info("*** {} ***".format(stereoDict))
 
-def table_taut_results(chemspec_obj):
+    html = """
+    <H4 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H4>
+    <div class="out_ shiftRight">
+    """
+    html += wrap_molecule(stereoDict, None, mdWidth, scale)
+    html += """
+    </div>
+    """
+    return html
+
+
+def getTautomerResults(chemspec_obj):
     """
     Tautomer image
     """
-    if chemspec_obj.tautDict:
-        html = """
-        <H4 class="out_1 collapsible" id="section11"><span></span>Tautomerization</H4>
-        <div class="out_ shiftRight">
-        """
-        html += '<dl style="display:inline-block">'
-        for item in chemspec_obj.tautDict['tautStructs']:
-            html += '<dd style="float:left;">'
-            if item and 'dist' in item:
-                html += "Percent Dist: {}%".format(item['dist'])
-                html += wrap_molecule(item, None, mdWidth, scale)
-            else:
-                html += "No tautomers"
-            html += '</dd>'
-        html += "</dl>"
-        html += """
-        </div><br><br>
-        """
-        return html
-    else:
+    try:
+        tautStructs = chemspec_obj.jchemPropObjects['tautomerization'].getTautomers()
+    except AttributeError:
+        logging.info("tautomerization not selected..moving on..")
         return ""
+
+    html = """
+    <H4 class="out_1 collapsible" id="section11"><span></span>Tautomerization</H4>
+    <div class="out_ shiftRight">
+    """
+
+    # try:
+    html += '<dl style="display:inline-block">'
+    for item in tautStructs:
+        html += '<dd style="float:left;">'
+        if item and 'dist' in item:
+            html += "Percent Dist: {}%".format(item['dist'])
+            html += wrap_molecule(item, None, mdWidth, scale)
+        else:
+            html += "No tautomers"
+        html += '</dd>'
+    html += "</dl>"
+    # except TypeError:
+        # logging.info("no tautomers..")
+        # html += 'no tautomers'
+    # finally:
+    html += """
+    </div>
+    """
+    return html
 
 
 def wrap_molecule(propDict, height, width, scale):
