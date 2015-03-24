@@ -201,7 +201,7 @@ def table_outputs(chemspec_obj):
     # html += inTmpl.render(Context(dict(data=getPkaResults(chemspec_obj), heading="pKa")))
 
     html += getPkaResults(chemspec_obj)
-    # html += getIsoPtResults(chemspec_obj)
+    html += getIsoPtResults(chemspec_obj)
     # html += getMajorMsImages(chemspec_obj)
     # html += table_stereo_results(chemspec_obj)
     # html += table_taut_results(chemspec_obj)
@@ -215,28 +215,23 @@ def getIsoPtResults(chemspec_obj):
     """
     IsoelectricPoint calculations
     """
-    if chemspec_obj.isoPtDict:
-        html = """
-        <H4 class="out_1 collapsible" id="section6"><span></span>Isoelectric Point</H4>
-        <div class="out_">
-        """
-        # isoelectric point value:
-        tblData = getIsoPtData(chemspec_obj)
-        ip = tblData['Isoelectric Point']
-        # html += tmpl.render(Context(dict(data=tblData)))
-
-        # isoelectric point plot:
-        if 'isoPtChartData' in chemspec_obj.isoPtDict:
-            html += '<div id="isoPtData" class="hideData">'
-            html += mark_safe(json.dumps(chemspec_obj.isoPtDict['isoPtChartData']))
-            html += '</div>'
-            html += render_to_string('cts_plot_isoelectricPoint.html', {"ip": ip})
-        html += """
-        </div>
-        """
-        return html
+    isoPtObj = chemspec_obj.jchemPropObjects['isoelectricPoint']
+    logging.info(isoPtObj.results)
+    html = """
+    <H4 class="out_1 collapsible" id="section6"><span></span>Isoelectric Point</H4>
+    <div class="out_">
+    """
+    isoPt = isoPtObj.getIsoelectricPoint()
+    isoPtChartData = isoPtObj.getIsoPtChartData()
+    if isoPt:
+        html += '<div id="isoPtData" class="hideData">'
+        html += mark_safe(json.dumps(isoPtChartData))
+        html += '</div>'
+        html += render_to_string('cts_plot_isoelectricPoint.html', {"ip": isoPt})
     else:
-        return ""
+        html += '<p>No isoelectric point</p>'
+    html += '</div>'
+    return html
 
 
 def getMajorMsImages(chemspec_obj):
@@ -258,109 +253,41 @@ def getMajorMsImages(chemspec_obj):
 
 
 def getPkaResults(chemspec_obj):
-    """
-    pKa Calculations
-    """
     html = """
     <H4 class="out_1 collapsible" id="section6"><span></span>pKa</H4>
     <div class="out_">
     """
-    logging.info("### {} ###".format(chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()))
-    tblData = [
-        chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka(),
-        chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
-    ]
-    html += tmpl.render(Context(dict(data=tblData)))
+    # acidic/basic pKa values:
+    pkaValues = {
+        'Acidic pKa Value(s)': chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka(),
+        'Basic pKa Value(s)': chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
+    }
+    html += tmpl.render(Context(dict(data=pkaValues)))
 
-    # pKa parent/microspecies images:
-    # html += """
-    # <table id="msMain">
-    # <tr>
-    # <td>
-    # """
-    # if 'parent' in chemspec_obj.pkaDict:
-    #     html += wrap_molecule(chemspec_obj.pkaDict['parent'], None, lgWidth, scale) + "<br>"
-    # html += """
-    # </td>
-    # <td>
-    # """
-    # if chemspec_obj.pkaDict['msImageUrlList']:
-    #     for item in chemspec_obj.pkaDict['msImageUrlList']:
-    #         html += wrap_molecule(item, None, smWidth, scale)
-    # else: 
-    #     html += 'No microspecies to plot'
-    # html += """
-    # </td>
-    # <td>
-    # """
+    # pKa parent species:
+    html += '<table id="msMain"><tr><td>'
+    html += wrap_molecule(chemspec_obj.jchemPropObjects['pKa'].getParent(), None, lgWidth, scale)
+    html += '<br></td><td>'
 
-    # # Microspecies Distribution Plot:
-    # if chemspec_obj.pkaDict['microDistData']:
-    #     html += """
-    #     <br>
-    #     <div id="microDistData1" class="hideData">
-    #     """
-    #     html += mark_safe(json.dumps(chemspec_obj.pkaDict['microDistData']))
-    #     html += '</div>'
-    #     html += render_to_string('cts_plot_microspecies_dist.html')
-    # html += """
-    # </td>
-    # </table>
-    # </div>
-    # """
-    # return html
+    # pKa microspecies:
+    microspeciesList = chemspec_obj.jchemPropObjects['pKa'].getMicrospecies()
+    try:
+        for item in microspeciesList:
+            html += wrap_molecule(item, None, smWidth, scale)
+    except TypeError as te:
+        logging.info("no microspecies to plot..moving on")
+        html += 'No microspecies to plot'
 
+    html += '</td><td><br>'
 
+    # Microspecies Distribution Plot:
+    html += '<div id="microDistData1" class="hideData">'
+    html += mark_safe(json.dumps(chemspec_obj.jchemPropObjects['pKa'].getChartData()))
+    html += '</div>'
+    html += render_to_string('cts_plot_microspecies_dist.html')
+    html += '</td></table></div>'
 
-    # if chemspec_obj.pkaDict:
-    #     html = """
-    #     <H4 class="out_1 collapsible" id="section6"><span></span>pKa</H4>
-    #     <div class="out_">
-    #     """
-
-    #     # pKa acidic/basic values:
-    #     tblData = getPkaValues(chemspec_obj)
-    #     html += tmpl.render(Context(dict(data=tblData)))
-
-    #     # pKa parent/microspecies images:
-    #     html += """
-    #     <table id="msMain">
-    #     <tr>
-    #     <td>
-    #     """
-    #     if 'parent' in chemspec_obj.pkaDict:
-    #         html += wrap_molecule(chemspec_obj.pkaDict['parent'], None, lgWidth, scale) + "<br>"
-    #     html += """
-    #     </td>
-    #     <td>
-    #     """
-    #     if chemspec_obj.pkaDict['msImageUrlList']:
-    #         for item in chemspec_obj.pkaDict['msImageUrlList']:
-    #             html += wrap_molecule(item, None, smWidth, scale)
-    #     else: 
-    #         html += 'No microspecies to plot'
-    #     html += """
-    #     </td>
-    #     <td>
-    #     """
-
-    #     # Microspecies Distribution Plot:
-    #     if chemspec_obj.pkaDict['microDistData']:
-    #         html += """
-    #         <br>
-    #         <div id="microDistData1" class="hideData">
-    #         """
-    #         html += mark_safe(json.dumps(chemspec_obj.pkaDict['microDistData']))
-    #         html += '</div>'
-    #         html += render_to_string('cts_plot_microspecies_dist.html')
-    #     html += """
-    #     </td>
-    #     </table>
-    #     </div>
-    #     """
-    #     return html
-    # else:
-    #     return ""
+    return html
 
 
 def table_stereo_results(chemspec_obj):

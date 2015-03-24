@@ -41,7 +41,7 @@ class JchemProperty(object):
 		self.url = ''
 		self.structure = '' # cas, smiles, iupac, etc. 
 		self.postData = {},
-		self.results = '' # json string
+		self.results = {}
 
 	def setPostDataValue(self, propKey, propValue):
 		"""
@@ -85,7 +85,7 @@ class JchemProperty(object):
 			logging.warning("timeout exception: {}".format(te))
 			raise
 		else:
-			self.results = response.content
+			self.results = json.loads(response.content)
 			return response
 
 	@classmethod
@@ -130,9 +130,18 @@ class Pka(JchemProperty):
 		"""
 		Picks out pKa acidic value(s), returns list
 		"""
+		logging.info("$ result type: {} $".format(type(self.results)))
 		pkaValList = []
+		# try:
+		# 	for pkaVal in self.results['mostAcidic']:
+		# 		pkaValList.append(pkaVal)
+		# 	return pkaValList
+		# except TypeError as te:
+		# 	self.results = 
+
+
 		if 'mostAcidic' in self.results:
-			logging.info("$ {} $".format(self.results['mostAcidic']))
+			# logging.info("$ type: {} $".format(self.results['mostAcidic']))
 			for pkaVal in self.results['mostAcidic']:
 				pkaValList.append(pkaVal)
 			return pkaValList
@@ -546,7 +555,7 @@ def getStructInfo(structure):
 	smilesDict = json.loads(response.content)
 
 	request = requests.Request(data={"chemical": smilesDict["structure"], "addH": True})
-	response = jchem_rest.getChemDetails(request)
+	response = getChemDetails(request)
 	structDict = json.loads(response.content)
 
 	infoDictKeys = ['formula', 'iupac', 'mass', 'smiles']
