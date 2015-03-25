@@ -51,10 +51,10 @@ class JchemProperty(object):
 			self.postData[self.name][propKey] = propValue
 		except KeyError:
 			logging.warning("key {} does not exist".format(propKey))
-			raise
+			return None
 		except Exception as e:
 			logging.warning("error occured: {}".format(e))
-			raise
+			return None
 	
 	def setPostDataValues(self, multiKeyValueDict):
 		"""
@@ -64,14 +64,22 @@ class JchemProperty(object):
 			for key, value in multiKeyValueDict.items():
 				self.postData[self.name][key] = value
 		except KeyError:
-			logging.warning("key {} does not exist".format(propKey))
-			raise
+			logging.warning("key {} does not exist".format(key))
+			return None
 		except Exception as e:
 			logging.warning("error occured: {}".format(e))
-			raise
+			return None
 
 	def makeDataRequest(self, structure):
 		url = self.baseUrl + self.url
+		self.postData.update({
+			"result-display": {
+	            "include":["structureData", "image"],
+	            "parameters":{
+	                "structureData":"smiles"
+	            }
+        	}
+        })
 		postData = {
 			"structure": structure,
 			"parameters": self.postData
@@ -80,11 +88,15 @@ class JchemProperty(object):
 			response = requests.post(url, data=json.dumps(postData), headers=headers, timeout=60)
 		except requests.exceptions.ConnectionError as ce:
 			logging.warning("connection exception: {}".format(ce))
-			raise
+			return None
 		except requests.exceptions.Timeout as te:
 			logging.warning("timeout exception: {}".format(te))
-			raise
+			return None
 		else:
+			logging.info("Response Type: {}".format(type(response.content)))
+			fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+			fileout.write(response.content)
+			fileout.close()
 			self.results = json.loads(response.content)
 			return response
 
@@ -113,17 +125,15 @@ class Pka(JchemProperty):
 		self.name = 'pKa'
 		self.url = '/webservices/rest-v0/util/calculate/pKa'
 		self.postData = {
-			"pKa": {
-				"pHLower": 0.0,
-				"pHUpper": 14.0,
-				"pHStep": 0.1,
-				"temperature": 298.0,
-				"micro": False,
-				"considerTautomerization": True,
-				"pKaLowerLimit": -20.0,
-				"pKaUpperLimit": 10.0,
-				"prefix": "DYNAMIC"
-			}
+			"pHLower": 0.0,
+			"pHUpper": 14.0,
+			"pHStep": 0.1,
+			"temperature": 298.0,
+			"micro": False,
+			"considerTautomerization": True,
+			"pKaLowerLimit": -20.0,
+			"pKaUpperLimit": 10.0,
+			"prefix": "DYNAMIC"
 		}
 
 	def getMostAcidicPka(self):
@@ -209,10 +219,8 @@ class IsoelectricPoint(JchemProperty):
 		self.name = 'isoelectricPoint'
 		self.url = '/webservices/rest-v0/util/calculate/isoelectricPoint'
 		self.postData = {
-			"isoelectricPoint": {
-	    		"pHStep": 0.1,
-				"doublePrecision": 2
-			}
+    		"pHStep": 0.1,
+			"doublePrecision": 2
 		}
 
 	def getIsoelectricPoint(self):
@@ -250,10 +258,8 @@ class MajorMicrospecies(JchemProperty):
 		self.name = 'majorMicrospecies'
 		self.url = '/webservices/rest-v0/util/calculate/majorMicrospecies'
 		self.postData = {
-			"majorMicrospecies": {
-	    		"pH": 7.4,
-				"takeMajorTautomericForm": False
-			}
+    		"pH": 7.4,
+			"takeMajorTautomericForm": False
 		}
 
 	def getMajorMicrospecies(self):
@@ -273,23 +279,21 @@ class Tautomerization(JchemProperty):
 		self.name = 'tautomerization'
 		self.url = '/webservices/rest-v0/util/calculate/tautomerization'
 		self.postData = {
-			"tautomerization": {
-				"calculationType": "DOMINANT",
-				"maxStructureCount": 1000,
-				"considerPH": False,
-				"enableMaxPathLength": True,
-				"maxPathLength": 4,
-				"rationalTautomerGenerationMode": False,
-				"singleFragmentMode": True,
-				"protectAromaticity": True,
-			    "protectCharge": True,
-				"excludeAntiAromaticCompounds": True,
-				"protectDoubleBondStereo": False,
-				"protectAllTetrahedralStereoCenters": False,
-				"protectLabeledTetrahedralStereoCenters": False,
-				"protectEsterGroups": True,
-				"ringChainTautomerizationAllowed": False
-			}
+			"calculationType": "DOMINANT",
+			"maxStructureCount": 1000,
+			"considerPH": False,
+			"enableMaxPathLength": True,
+			"maxPathLength": 4,
+			"rationalTautomerGenerationMode": False,
+			"singleFragmentMode": True,
+			"protectAromaticity": True,
+		    "protectCharge": True,
+			"excludeAntiAromaticCompounds": True,
+			"protectDoubleBondStereo": False,
+			"protectAllTetrahedralStereoCenters": False,
+			"protectLabeledTetrahedralStereoCenters": False,
+			"protectEsterGroups": True,
+			"ringChainTautomerizationAllowed": False
 		}
 
 	def getTautomers(self):
@@ -314,35 +318,34 @@ class Stereoisomer(JchemProperty):
 		self.name = 'stereoisomer'
 		self.url = '/webservices/rest-v0/util/calculate/stereoisomer'
 		self.postData = {
-			"stereoisomer": {
-				"stereoisomerismType": "TETRAHEDRAL",
-				"maxStructureCount": 100,
-				"protectDoubleBondStereo": False,
-				"protectTetrahedralStereo": False,
-				"filterInvalid3DStructures": False
-			}
+			"stereoisomerismType": "TETRAHEDRAL",
+			"maxStructureCount": 100,
+			"protectDoubleBondStereo": False,
+			"protectTetrahedralStereo": False,
+			"filterInvalid3DStructures": False
 		}
 
 	def getStereoisomers(self):
 		stereoList = []
-		try:
-			if self.results['stereoisomerCount'] > 1:
-				for stereo in self.results['result']:
-					stereoDict = {'image': stereo['image']['image']}
-					structInfo = getStructInfo(stereo['structureData']['structure'])
-					stereoDict.update(structInfo)
-					stereoList.append(stereoDict)
-			else:
-				stereoDict = {'image': self.results['result']['image']['image']}
-				structInfo = getStructInfo(self.results['result']['structureData']['structure'])
-				stereoDict.update(structInfo)
-				stereoList.append(stereoDict)
-			return stereoList
-		except KeyError as ke:
-			logging.warning("key error: {}".format(ke))
-			return None
-		# except Exception as e:
-		# 	logging.warning("other shit went down: {}".format(e))
+		# logging.info("response type $ {}".format(type(self.results)))
+		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+		# fileout.write(json.dumps(self.results))
+		# fileout.close()
+		# try:
+		inc = 1
+		logging.info("Number of stereoisomers: {}".format(len(self.results['result'])))
+		for stereo in self.results['result']:
+			logging.info("STEREO {}: {}".format(inc, stereo['structureData']['structure']))
+			stereoDict = {'image': stereo['image']['image']}
+			structInfo = getStructInfo(stereo['structureData']['structure'])
+			logging.info("After structInfo code...")
+			stereoDict.update(structInfo)
+			stereoList.append(stereoDict)
+			inc += 1
+		logging.info("Stereo List: {}".format(stereoList))
+		return stereoList
+		# except KeyError as ke:
+		# 	logging.warning("key error: {}".format(ke))
 		# 	return None
 
 
@@ -542,10 +545,14 @@ def getStructInfo(structure):
 	Output: dict with structure's info (i.e., formula, iupac, mass, smiles),
 	or dict with aforementioned keys but None values
 	"""
-	response = mrvToSmiles(requests.Request(data={'chemical': structure}))
-	smilesDict = json.loads(response.content)
+	logging.info("STRUCTURE: {}".format(structure))
+	# response = mrvToSmiles(requests.Request(data={'chemical': structure}))
+	# smilesDict = json.loads(response.content)
 
-	request = requests.Request(data={"chemical": smilesDict["structure"], "addH": True})
+	# logging.info("structure response: {}".format(smilesDict))
+
+	request = requests.Request(data={"chemical": structure, "addH": True})
+	# request = requests.Request(data={"chemical": smilesDict["structure"], "addH": True})
 	response = getChemDetails(request)
 	structDict = json.loads(response.content)
 

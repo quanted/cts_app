@@ -306,18 +306,22 @@ def getStereoisomersResults(chemspec_obj):
     Stereoisomers image 
     """
     try:
-        stereoDict = chemspec_obj.jchemPropObjects['stereoisomers'].getStereoisomers()
+        stereoList = chemspec_obj.jchemPropObjects['stereoisomers'].getStereoisomers()
     except AttributeError:
         logging.info("stereoisomers not checked..moving on..")
         return ""
 
-    logging.info("*** {} ***".format(stereoDict))
-
     html = """
-    <H4 class="out_1 collapsible" id="section10"><span></span>Stereoisomers</H4>
-    <div class="out_ shiftRight">
-    """
-    html += wrap_molecule(stereoDict, None, mdWidth, scale)
+    <H4 class="out_1 collapsible" id="section10"><span></span>Stereoisomers ({})</H4>
+    <div class="out_ shiftRight">""".format(len(stereoList))
+
+    html += '<dl style="display:inline-block">'
+    for item in stereoList:
+        html += '<dd style="float:left;">'
+        html += wrap_molecule(item, None, mdWidth, scale)
+        html += '</dd>'
+    html += "</dl>"
+
     html += """
     </div>
     """

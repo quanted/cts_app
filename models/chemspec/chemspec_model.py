@@ -82,7 +82,6 @@ class chemspec(object):
 
 		if stereoChkbox == 'on' or stereoChkbox == True:
 			stereoObj = JProp.getPropObj('stereoisomer')
-			stereoObj.setPostDataValue('maxNumberOfStereoisomers', self.stereoisomers_maxNoOfStructures)
 			stereoObj.makeDataRequest(self.chem_struct)
 			jchemDataDict.update({stereoObj.name: stereoObj.results})
 
