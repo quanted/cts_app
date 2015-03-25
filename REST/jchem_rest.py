@@ -327,26 +327,16 @@ class Stereoisomer(JchemProperty):
 
 	def getStereoisomers(self):
 		stereoList = []
-		# logging.info("response type $ {}".format(type(self.results)))
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(json.dumps(self.results))
-		# fileout.close()
-		# try:
-		inc = 1
-		logging.info("Number of stereoisomers: {}".format(len(self.results['result'])))
-		for stereo in self.results['result']:
-			logging.info("STEREO {}: {}".format(inc, stereo['structureData']['structure']))
-			stereoDict = {'image': stereo['image']['image']}
-			structInfo = getStructInfo(stereo['structureData']['structure'])
-			logging.info("After structInfo code...")
-			stereoDict.update(structInfo)
-			stereoList.append(stereoDict)
-			inc += 1
-		logging.info("Stereo List: {}".format(stereoList))
-		return stereoList
-		# except KeyError as ke:
-		# 	logging.warning("key error: {}".format(ke))
-		# 	return None
+		try:
+			for stereo in self.results['result']:
+				stereoDict = {'image': stereo['image']['image']}
+				structInfo = getStructInfo(stereo['structureData']['structure'])
+				stereoDict.update(structInfo)
+				stereoList.append(stereoDict)
+			return stereoList
+		except KeyError as ke:
+			logging.warning("key error: {}".format(ke))
+			return None
 
 
 def doc(request):
