@@ -93,10 +93,6 @@ class JchemProperty(object):
 			logging.warning("timeout exception: {}".format(te))
 			return None
 		else:
-			logging.info("Response Type: {}".format(type(response.content)))
-			fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-			fileout.write(response.content)
-			fileout.close()
 			self.results = json.loads(response.content)
 			return response
 

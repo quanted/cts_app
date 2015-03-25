@@ -235,6 +235,7 @@ def output_pchem_table(pchemprop_obj):
             "kow_wph": getKowWphChemaxon(chemaxonResults, pchemprop_obj.kow_ph),
             "water_sol": getWaterSolChemaxon(chemaxonResults)
         }
+        logging.info("CHEMAXON DICT: {}".format(chemaxonDataDict))
     except AttributeError:
         pass
 
@@ -251,6 +252,11 @@ def output_pchem_table(pchemprop_obj):
     pchemHTML += str(pchemprop_parameters.form(None))
 
     html += pchemHTML
+
+    html += render_to_string('cts_pchemprop_ajax_calls.html',
+                                {   "chemaxonData": mark_safe(chemaxonDataDict), 
+                                    "kow_ph": kow_ph, 
+                                    "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict)})
 
     html += """
     </div>
