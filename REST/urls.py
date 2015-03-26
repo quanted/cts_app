@@ -9,7 +9,7 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('REST',
     # url(r'^docs/', include('docs.urls')),
     # (r'^$', 'jchem_rest.doc'),  # Landing page
-    (r'^ws/traffic-cop/?$', 'jchem_traffic_cop.directTraffic'),
+    (r'^ws/traffic-cop/?$', 'jchem_traffic_cop.directJchemTraffic'),
     (r'^docs/?$', 'jchem_rest.doc'),
     (r'^ws/getChemDetails/?$', 'jchem_rest.getChemDetails'),
     (r'^ws/mrvToSmiles/?$', 'jchem_rest.mrvToSmiles'),

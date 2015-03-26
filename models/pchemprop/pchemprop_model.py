@@ -101,76 +101,70 @@ class pchemprop(object):
 		if 'chemaxon' in self.checkedCalcsAndPropsDict:
 			self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict, self.kow_ph)
 
-		# if any(name in self.checkedCalcsAndPropsDict for name in ['test', 'epi', 'measured']):
-		# 	makeTestRequests(self.chem_struct, self.checkedCalcsAndPropsDict) # gets test, measured, and epi data
-
-		# fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-		# fileout.write(json.dumps(self.chemaxonResultsDict))
-		# fileout.close()
 
 
-def dataReturn(sess, resp):
-	"""
-	Callback function for async requests
-	This is currently doing nothing, but could be
-	used for the batch stuff later
-	"""
-	global requestCounter
-	global totalRequest
+# def dataReturn(sess, resp):
+# 	"""
+# 	Callback function for async requests
+# 	This is currently doing nothing, but could be
+# 	used for the batch stuff later
+# 	"""
+# 	global requestCounter
+# 	global totalRequest
 
-	requestCounter += 1 # response from session request received
-	logging.info("> Received {} requests out of {} total".format(requestCounter, totalRequest))
+# 	requestCounter += 1 # response from session request received
+# 	logging.info("> Received {} requests out of {} total".format(requestCounter, totalRequest))
 
 
-def makeTestRequests(structure, checkedCalcsAndPropsDict):
-	"""
-	Gets pchemprop data from TEST ws.
-	Inputs: chemical structure, dict of checked properties by calculator
-	(e.g., { 'test': ['kow_no_ph', 'melting_point'] })
-	Returns: dict of TEST props in template-friendly format (see pchemprop_tables)
-	"""
+# def makeTestRequests(structure, checkedCalcsAndPropsDict):
+# 	"""
+# 	Gets pchemprop data from TEST ws.
+# 	Inputs: chemical structure, dict of checked properties by calculator
+# 	(e.g., { 'test': ['kow_no_ph', 'melting_point'] })
+# 	Returns: dict of TEST props in template-friendly format (see pchemprop_tables)
+# 	"""
 	
-	molID = 7 # NOTE: recycling id for now. this will change when db is implemented!!
-	baseUrl = os.environ['CTS_TEST_SERVER']
+# 	molID = 7 # NOTE: recycling id for now. this will change when db is implemented!!
+# 	baseUrl = os.environ['CTS_TEST_SERVER']
 
-	requests.get(baseUrl + "/test/test/calc/" + str(molID) + "/reset") # clear molecule values
+# 	requests.get(baseUrl + "/test/test/calc/" + str(molID) + "/reset") # clear molecule values
 
-	# give molecule an id to use for test calculations
-	postData = { "id": molID, "smiles": str(structure) }
-	requests.post(baseUrl + "/test/molecules", data=json.dumps(postData), 
-								headers={'Content-Type': 'application/json'})
+# 	# give molecule an id to use for test calculations
+# 	postData = { "id": molID, "smiles": str(structure) }
+# 	requests.post(baseUrl + "/test/molecules", data=json.dumps(postData), 
+# 								headers={'Content-Type': 'application/json'})
 
-	session = FuturesSession() # start a sesh
+# 	session = FuturesSession() # start a sesh
 
-	global totalRequest
-	totalRequest = 0
+# 	global totalRequest
+# 	totalRequest = 0
 
-	CalcDict = {
-		'test': calcMap.TestCalc(), 
-		'epi': calcMap.EpiCalc(), 
-		'measured': calcMap.MeasuredCalc()
-	}
+# 	CalcDict = {
+# 		'test': calcMap.TestCalc(), 
+# 		'epi': calcMap.EpiCalc(), 
+# 		'measured': calcMap.MeasuredCalc()
+# 	}
 
-	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
-		if calcPropsList and calc != 'chemaxon':
-			Calc = CalcDict[calc] # select Calc object
-			for prop in calcPropsList:
-				try:
-					for method in Calc.methods:
-						url = baseUrl + Calc.getUrl(str(molID), prop, method)
-						# session.get(url, timeout=20, background_callback=dataReturn)
-						totalRequest += 1
-				except AttributeError:
-					url = baseUrl + Calc.getUrl(str(molID), prop) # url for calcs with no methods
-					totalRequest += 1
-				except requests.exceptions.Timeout:
-					logging.warning("Timeout Exception! Call: {}->{}".format(calc, prop))
-				except Exception as e:
-					logging.warning("General Exception: {}".format(e))
-				else:
-					# time.sleep(0.5) # maybe this will help TEST out some
-					session.get(url, timeout=30, background_callback=dataReturn)
-					# session.get(url, timeout=30)
+# 	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
+# 		if calcPropsList and calc != 'chemaxon':
+# 			Calc = CalcDict[calc] # select Calc object
+# 			for prop in calcPropsList:
+# 				try:
+# 					for method in Calc.methods:
+# 						url = baseUrl + Calc.getUrl(str(molID), prop, method)
+# 						# session.get(url, timeout=20, background_callback=dataReturn)
+# 						totalRequest += 1
+# 				except AttributeError:
+# 					url = baseUrl + Calc.getUrl(str(molID), prop) # url for calcs with no methods
+# 					totalRequest += 1
+# 				except requests.exceptions.Timeout:
+# 					logging.warning("Timeout Exception! Call: {}->{}".format(calc, prop))
+# 				except Exception as e:
+# 					logging.warning("General Exception: {}".format(e))
+# 				else:
+# 					# time.sleep(0.5) # maybe this will help TEST out some
+# 					session.get(url, timeout=30, background_callback=dataReturn)
+# 					# session.get(url, timeout=30)
 
 
 def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):

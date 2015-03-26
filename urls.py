@@ -5,9 +5,10 @@ from django.conf.urls import patterns, include, url
 
 # The previous urlpatterns is using views as a prefix breaking the use of django apps 
 urlpatterns = patterns('',
-    url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
+    # url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
+    url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
     url(r'^test-cts/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
-    url(r'^jchem-cts/', include('REST.urls'))
+    url(r'^jchem-cts/', include('REST.urls')),
 )
 
 # All view functions here must be in '/views/views.py'

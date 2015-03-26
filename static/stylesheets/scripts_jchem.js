@@ -1,6 +1,6 @@
 var marvinSketcherInstance;
-
 var jchemGatewayUrl = "/jchem-cts/ws/traffic-cop/";
+var portalUrl = "/cts/portal";
 
 
 $(document).ready(function handleDocumentReady (e) {
@@ -45,9 +45,9 @@ $(document).ajaxStart(function () {
 });
 
 
-//Gets formula, iupac, smiles, mass, and marvin structure 
-//for chemical in Lookup Chemical textarea
 function importMol(dataObj) {
+  //Gets formula, iupac, smiles, mass, and marvin structure 
+  //for chemical in Lookup Chemical textarea
 
   var chemical = $('#id_chem_struct').val().trim();
 
@@ -56,7 +56,8 @@ function importMol(dataObj) {
     return;
   }
 
-  ajaxCall(getParamsObj("getChemDetails", chemical), function(chemResults) {
+  // ajaxCall(getParamsObj("getChemDetails", chemical), function(chemResults) {
+  getChemDetails(chemical, function(chemResults) {
     if (chemResults != "Fail") {
       data = chemResults.data[0];
       populateResultsTbl(data);
@@ -70,40 +71,67 @@ function importMol(dataObj) {
 }
 
 
-//Gets smiles, iupac, formula, mass for chemical 
-//drawn in MarvinJS
 function importMolFromCanvas() {
+  //Gets smiles, iupac, formula, mass for chemical 
+  //drawn in MarvinJS
 
-  marvinSketcherInstance.exportStructure("mrv").then(function(source) {
+  marvinSketcherInstance.exportStructure("mrv").then(function(mrvChemical) {
 
-    if (source == '<cml><MDocument></MDocument></cml>') {
+    if (mrvChemical == '<cml><MDocument></MDocument></cml>') {
       displayErrorInTextbox("Draw a chemical, then try again");
       return;
     }
 
-    ajaxCall(getParamsObj("mrvToSmiles", source), function(smilesResult) {
+    mrvToSmiles(mrvChemical, function(smilesResult) {
 
       var smiles = smilesResult['structure'];
-      ajaxCall(getParamsObj("getChemDetails", smiles), function(chemResults) {
 
-          data = chemResults.data[0];
-          populateResultsTbl(data);
+      getChemDetails(smiles, function(chemResults) {
+
+        data = chemResults.data[0];
+        populateResultsTbl(data);
 
       });
 
     });
 
+    // ajaxCall(getParamsObj("mrvToSmiles", mrvChemical), function(smilesResult) {
+
+    //   var smiles = smilesResult['structure'];
+    //   ajaxCall(getParamsObj("getChemDetails", smiles), function(chemResults) {
+
+    //       data = chemResults.data[0];
+    //       populateResultsTbl(data);
+
+    //   });
+
+    // });
+
+  });
+}
+
+
+function getChemDetails(chemical, callback) {
+  ajaxCall(getParamsObj("getChemDetails", chemical), function(chemResults) {
+    callback(chemResults);
+  });
+}
+
+
+function mrvToSmiles(chemical, callback) {
+  ajaxCall(getParamsObj("mrvToSmiles", chemical), function(smilesResult) {
+    callback(smilesResult);
   });
 }
 
 
 function getParamsObj(service, chemical) {
   var params = new Object();
-  params.url = jchemGatewayUrl;
+  params.url = portalUrl;
   params.type = "POST";
   // params.contentType = "application/json";
   params.dataType = "json";
-  params.data = {"service": service, "chemical": chemical};
+  params.data = {"ws": "jchem", "service": service, "chemical": chemical}; // for portal
   return params;
 }
 

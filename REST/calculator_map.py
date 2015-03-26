@@ -9,8 +9,7 @@ import jchem_rest
 class Calculator(object):
 	"""
 	Skeleton class for calculators
-
-	NOTE: molID is recycled, always use "7"
+	NOTE: molID is recycled, always uses "7"
 	"""
 	def __init__(self):
 		self.name = ''
@@ -180,7 +179,7 @@ class ChemaxonCalc(Calculator):
 		Calculator.__init__(self)
 
 		metabolizerUrl = "/efsws/rest/metabolizer" # TODO: figure out better book keeping for urls 
-		jchemUrl = "/webservices/rest-v0/util/{}/{}"
+		self.urlStruct = "/webservices/rest-v0/util/calculate/{}"
 
 		self.name = "chemaxon"
 
@@ -188,20 +187,20 @@ class ChemaxonCalc(Calculator):
 		# Or do another way I haven't thought of yet?
 		self.propMap = {
 			'water_sol': {
-				'urlKey': '',
+				'urlKey': 'solubility',
 				'resultKey': ''
 			},
 			'ion_con': {
-				'urlKey': '',
+				'urlKey': 'pKa',
 				'resultKey': ''
 			},
 			'kow_no_ph': {
-				'urlKey': '',
+				'urlKey': 'logD',
 				'resultKey': '',
 				'methods': ['KLOP', 'VG', 'PHYS']
 			},
 			'kow_wph': {
-				'urlKey': '',
+				'urlKey': 'logP',
 				'resultKey': '',
 				'methods': ['KLOP', 'VG', 'PHYS']
 			}
@@ -249,12 +248,10 @@ class ChemaxonCalc(Calculator):
 
 	def getPchemPropData(self, propKey):
 		try:
-			if propKey in self.propMap:
-				req = requests.Request(data=getPostDataForProp(propKey))
-				res = jchem_rest.getChemSpecData(req) # send request to jchem_rest
-				return res
-			else:
-				raise
+			req = requests.Request(data=getPostDataForProp(propKey))
+			res = jchem_rest.getChemSpecData(req) # send request to jchem_rest
+			return res
 		except KeyError:
-			print "Property does not exist in ChemAxon"
+			logging.warning("Property does not exist in ChemAxon")
+			raise
 		

@@ -13,6 +13,8 @@ import pytz
 import os
 import time
 
+from django.http import HttpResponse # todo: remove this and only use requests
+
 
 headers = {'Content-Type' : 'application/json'}
 
@@ -67,10 +69,10 @@ class JchemProperty(object):
 			logging.warning("key {} does not exist".format(key))
 			return None
 		except Exception as e:
-			logging.warning("error occured: {}".format(e))
+			logging.warning("error occured: {}".format(e)) 	
 			return None
 
-	def makeDataRequest(self, structure):
+	def makeDataRequest(self, structure): 
 		url = self.baseUrl + self.url
 		self.postData.update({
 			"result-display": {
@@ -335,6 +337,90 @@ class Stereoisomer(JchemProperty):
 			return None
 
 
+class Solubility(JchemProperty):
+	def __init__(self):
+		JchemProperty.__init__(self)
+		self.name = 'solubility'
+		self.url = '/webservices/rest-v0/util/calculate/solubility'
+		self.postData = {
+			"pHLower": 0.0,
+			"pHUpper": 14.0,
+			"pHStep": 0.1,
+			"unit": "MGPERML"
+		}
+
+	def getSolubility(self):
+		"""
+	    Gets water solubility for chemaxon
+	    """
+		try:
+			return 1000.0 * self.results['intrinsicSolubility']
+		except KeyError as ke:
+			logging.warning("key error: {}".format(ke))
+			return None
+
+
+class LogP(JchemProperty):
+	def __init__(self):
+		JchemProperty.__init__(self)
+		self.name = 'logP'
+		self.url = '/webservices/rest-v0/util/calculate/logP'
+		self.postData = {
+			"method": "WEIGHTED",
+			"wVG": 1.0,
+			"wKLOP": 1.0,
+			"wPHYS": 1.0,
+			"Cl": 0.1,
+			"NaK": 0.1,
+			"considerTautomerization": False
+		}
+
+	def getLogP(self):
+		"""
+	    Gets pH-independent kow
+	    """
+        try:
+			return self.results['logpnonionic']
+		except KeyError as ke:
+			logging.warning("ker error: {}".format(ke))
+			return None
+
+
+class LogD(JchemProperty):
+	def __init__(self):
+		JchemProperty.__init__(self)
+		self.name = 'logD'
+		self.url = '/webservices/rest-v0/util/calculate/logD'
+		self.postData = {
+			"pHLower": 0.0,
+			"pHUpper": 14.0,
+			"pHStep": 0.1,
+			"method": "WEIGHTED",
+			"wVG": 1.0,
+			"wKLOP": 1.0,
+			"wPHYS": 1.0,
+			"Cl": 0.1,
+			"NaK": 0.1,
+			"considerTautomerization": False
+		}
+
+	def getLogD(self, ph):
+		"""
+	    Gets pH-dependent kow
+	    """
+	    try:
+	    	ph = float(ph)
+	    	chartDataList = self.results['charData']['values']
+	    	for xyPair in chartDataList:
+	    		if xyPair['pH'] == round(ph, 1):
+	    			value = xyPair['logD']
+	    			break
+	    	return value
+	    except KeyError as ke:
+	    	logging.warning("key error: {}".format(ke))
+	    	return None
+	       
+
 def doc(request):
 	"""
 	API Documentation Page
@@ -352,18 +438,30 @@ def getChemDetails(request):
 	The iupac, formula, mass, and smiles string of the chemical
 	along with the mrv of the chemical (to display in marvinjs)
 	"""
-	# now expecting requests Request type, not django Request
-	logging.info("(jchem) Request Data: {}".format(request.data))
-	logging.info(type(request.data))
-	chem = request.data.get('chemical')
+
 	addH = False
-	if 'addH' in request.data:
-		addH = True
-	ds = Data_Structures()
-	data = ds.chemDeatsStruct(chem, addH) # format request to jchem
-	data = json.dumps(data) # convert dict to json string
-	url = Urls.jchemBase + Urls.detailUrl
-	return web_call(url, request, data)
+
+	try:
+		chem = request.data.get('chemical')
+		logging.info("> using DATA <")
+	except AttributeError:
+		logging.info("> using POST <")
+		chem = request.POST.get('chemical')
+		if 'addH' in request.POST:
+			addH = True
+	else:
+		if 'addH' in request.data:
+			addH = True
+	finally:
+		# logging.info("chemical: {}".format(chem))
+		ds = Data_Structures()
+		data = ds.chemDeatsStruct(chem, addH) # format request to jchem
+		data = json.dumps(data) # convert dict to json string
+		# logging.info("data: {}".format(data))
+		# logging.info("data type: {}".format(type(data)))
+		url = Urls.jchemBase + Urls.detailUrl
+		# logging.info("url: {}".format(url))
+		return web_call(url, request, data)
 
 
 def smilesToImage(request):
@@ -520,7 +618,12 @@ def getpchemprops(request):
 	"""
 	from models.pchemprop import pchemprop_output
 	pchemprop_obj = pchemprop_output.pchempropOutputPage(request) # run model (pchemprop_[output, model])
-	data = json.dumps(pchemprop_obj.checkedCalcAndPropsDict)
+
+	# logging.info("pchemprop attributes: {}".format(dir(pchemprop_obj)))
+
+	data = json.dumps({"checkedCalcsAndProps": pchemprop_obj.checkedCalcsAndPropsDict, 
+						"chemaxonResults": pchemprop_obj.chemaxonResultsDict})
+	# return requests.Response(content=data, content_type="application/json")
 	return HttpResponse(data, content_type="application/json")
 
 
@@ -560,10 +663,13 @@ def web_call(url, request, data):
 	and POST data. Returns an http response.
 	"""
 	try:
+		logging.info("making call...")
+		logging.info("url: {}".format(url))
 		response = requests.post(url, data=data, headers=headers, timeout=60)
+		logging.info("received response: {}".format(response.content))
 		return response
 	except Exception as e:
-		logging.warning("{}".format(e))
+		logging.warning("error at web call: {}".format(e))
 		raise 
 
 

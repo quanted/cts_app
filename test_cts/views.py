@@ -56,8 +56,6 @@ def less_simple_proxy(request):
   try:
     calc = request.POST.get("calc")
     prop = request.POST.get("prop")
-    # calc = request.data.get("calc")
-    # prop = request.data.get("prop")
 
     # logging.info("calc: {}, prop: {}".format(calc, prop))
 

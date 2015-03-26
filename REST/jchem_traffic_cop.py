@@ -9,7 +9,7 @@ import json
 services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'mrvToSmiles', 'getTransProducts']
 
 
-def directTraffic(request):
+def directJchemTraffic(request):
 	"""
 	Redirects request from frontend to the 
 	approriate jchem web service. All calls going

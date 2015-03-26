@@ -7,6 +7,7 @@
 <!-- ### END JIT REFERENCES ### -->
 
 <script type="text/javascript" src="/static/stylesheets/jquery-ui.js"></script>
+<script type="text/javascript" src="/static/stylesheets/scripts_jchem.js"></script>
 
 <script>
 var labelType, useGradients, nativeTextSupport, animate;
@@ -39,32 +40,30 @@ var Log = {
 };
 
 
-$(document).ready(function() { 
-
-    //"wait" cursor during ajax events
-    $(document).ajaxStart(function () {
-        $('body').addClass('wait');
-    }).ajaxComplete(function () {
-        $('body').removeClass('wait');
-    });
-
-    $('#tabs').click(function(event) {
-        tabDisplayLogic(event);
-    });
-
-    // Get Data button for gathering pchem props for node:
-    $('#btn-pchem-getdata').click(function() {
-        newGetPchemData();
-        // getPchemData();
-    });
-
-    // Collapses/expands content below table header row (th).
-    // Used for popup data table for gentrans output
-    $('#tabs-1').on('click', 'table th', function() {
-        $(this).parent().nextUntil('tr.header').toggle();
-    });
-
+// $(document).ready(function() { 
+//"wait" cursor during ajax events
+$(document).ajaxStart(function () {
+    $('body').addClass('wait');
+}).ajaxComplete(function () {
+    $('body').removeClass('wait');
 });
+
+$('#tabs').click(function(event) {
+    tabDisplayLogic(event);
+});
+
+// Get Data button for gathering pchem props for node:
+$('#btn-pchem-getdata').click(function() {
+    newGetPchemData();
+    // getPchemData();
+});
+
+// Collapses/expands content below table header row (th).
+// Used for popup data table for gentrans output
+$('#tabs-1').on('click', 'table th', function() {
+    $(this).parent().nextUntil('tr.header').toggle();
+});
+// });
 
 
 var currentNode; //#####keeps up with selected node######
@@ -253,8 +252,8 @@ function getMolecularInfo(node) {
 
     var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
-    //Append molecular info to table:
-    makeAjaxCall(getChemDetailsObj(node.data.smiles), function(chemResults) {
+
+    getChemDetails(node.data.smiles, function(chemResults) {
 
         data = chemResults.data[0];
 
@@ -269,7 +268,6 @@ function getMolecularInfo(node) {
                 $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
             }
         }
-
         $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
 
     });
@@ -322,9 +320,11 @@ function newGetPchemData() {
     segment for the metabolite table in the "metabolite info" tab
     */
 
-    //Call pchemprop_model at "Get data" button click? Is this possible?
 
-    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; //$$$$$$$$$$$$$$$$$$$
+    //TODO: Check if metabolite already has pchem data before making call ******
+
+
+    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac'];
     var params = {"data":{}}; //POST data for pchemprops_model call
 
     //Gets smiles, mass, iupac, and formula from metabolite
@@ -351,11 +351,7 @@ function newGetPchemData() {
         params["data"][this.name] = this.checked;
     });
 
-    // params["data"]["chem_struct"] = $("#tabs-1 td:contains('smiles')").next().text(); //smiles string
-    // params["data"]["chem_struct"] = $("table#" + currentNode.id + "_table td:contains('smiles')").next().text(); //smiles string
-
     params["data"]["chem_struct"] = currentNode.data['smiles'];
-
     params["url"] = "/jchem-cts/ws/getpchemprops/"; //calls pchemprop model
     params["type"] = "POST";
     // params["contentType"] = "application/json";
@@ -363,17 +359,9 @@ function newGetPchemData() {
 
     makeAjaxCall(params, function(pchemResults) {
 
-        var chemaxonMethods = ["KLOP", "VG", "PHYS"]; //calculation methods for chemaxon
-        // var tableID = '#' + node.id + '_table'; //table id
+        var chemaxonData = pchemResults["chemaxonResults"];
 
-        // var tableID = '#tabs-1 table';
-        var tableID = 'table#' + currentNode.id + '_table';
-        var table = $(tableID); //table element
-        // var mainDiv = $(tableID).parent(); //popup container div
-        var newRow = ""; //str var for building rows
-        var rowWithMethods = ""; //for handling rows with methods
-
-        // Skip if pchemprops already exist:
+        // Skip if pchemprops already exist: (old way, creating pchem row instead of filling table)
         // var hasPchemProps = false;
         // $(tableID + ' th').each(function() {
         //     if($(this).text().indexOf('p-Chem Properties') >= 0) {
