@@ -416,7 +416,7 @@ class LogD(JchemProperty):
 	    """
 		try:
 			ph = float(ph)
-			chartDataList = self.results['chartData']['values']
+			chartDataList = self.results['charData']['values']
 			for xyPair in chartDataList:
 				if xyPair['pH'] == round(ph, 1):
 					value = xyPair['logD']
