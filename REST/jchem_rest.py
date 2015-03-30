@@ -114,6 +114,12 @@ class JchemProperty(object):
 			return Tautomerization()
 		elif prop == 'stereoisomer':
 			return Stereoisomer()
+		elif prop == 'solubility':
+			return Solubility()
+		elif prop == 'logP':
+			return LogP()
+		elif prop == 'logD':
+			return LogD()
 		else:
 			pass
 
@@ -379,7 +385,7 @@ class LogP(JchemProperty):
 		"""
 	    Gets pH-independent kow
 	    """
-        try:
+		try:
 			return self.results['logpnonionic']
 		except KeyError as ke:
 			logging.warning("ker error: {}".format(ke))
@@ -408,17 +414,17 @@ class LogD(JchemProperty):
 		"""
 	    Gets pH-dependent kow
 	    """
-	    try:
-	    	ph = float(ph)
-	    	chartDataList = self.results['charData']['values']
-	    	for xyPair in chartDataList:
-	    		if xyPair['pH'] == round(ph, 1):
-	    			value = xyPair['logD']
-	    			break
-	    	return value
-	    except KeyError as ke:
-	    	logging.warning("key error: {}".format(ke))
-	    	return None
+		try:
+			ph = float(ph)
+			chartDataList = self.results['chartData']['values']
+			for xyPair in chartDataList:
+				if xyPair['pH'] == round(ph, 1):
+					value = xyPair['logD']
+					break
+			return value
+		except KeyError as ke:
+			logging.warning("key error: {}".format(ke))
+			return None
 	       
 
 def doc(request):
