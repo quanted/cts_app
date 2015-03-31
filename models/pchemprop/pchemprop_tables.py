@@ -251,7 +251,8 @@ def output_pchem_table(pchemprop_obj):
 
     html += render_to_string('cts_pchemprop_ajax_calls.html',
                                 {   "chemaxonData": mark_safe(chemaxonData), 
-                                    "kow_ph": kow_ph, 
+                                    "kow_ph": kow_ph,
+                                    "structure": mark_safe(pchemprop_obj.chem_struct),
                                     "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict)})
 
     html += """

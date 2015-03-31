@@ -53,7 +53,6 @@ class pchemprop(object):
 		self.kow_ph = kow_ph
 		self.koc = koc
 
-		# Create dictionary of chemprops with keys --> field names
 		checkedPropsDict = {
 			"melting_point": self.melting_point,
 			"boiling_point": self.boiling_point,
@@ -68,6 +67,7 @@ class pchemprop(object):
 			"koc": self.koc
 		}
 
+		# calculator checkboxes' values:
 		calcluatorsDict = {
 			"chemaxon": chemaxon,
 			"epi": epi,
@@ -93,10 +93,11 @@ class pchemprop(object):
 							propList.append(propKey)
 				self.checkedCalcsAndPropsDict.update({calcKey:propList})
 
+		self.chemaxonResultsDict = None
 
-		if 'chemaxon' in self.checkedCalcsAndPropsDict:
-			self.chemaxonResultsDict = newGetChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict, 
-																self.kow_ph)
+		# if 'chemaxon' in self.checkedCalcsAndPropsDict:
+		# 	self.chemaxonResultsDict = newGetChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict, 
+																# self.kow_ph)
 
 
 def newGetChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
