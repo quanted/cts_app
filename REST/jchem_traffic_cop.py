@@ -21,7 +21,6 @@ def directJchemTraffic(request):
 	Format: {"service": "", "data": {usual POST data}}
 	"""
 
-	# TODO: try except here (top level)
 	try:
 		requestService = getRequestService(request)
 		requestChem = getRequestChemical(request)

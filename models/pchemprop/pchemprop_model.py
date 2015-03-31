@@ -15,13 +15,14 @@ import decimal
 import os
 import time
 
-from REST import calculator_map as calcMap
+from REST.calculator_map import Calculator as calc
+from REST.jchem_rest import JchemProperty as jp
 from requests_futures.sessions import FuturesSession
 
 
 n = 3 # number of decimal places to round values
-requestCounter = 0 # yeah figure out a better way to do this...
-totalRequest = 0 # total number of request. again, better way please
+# requestCounter = 0 # yeah figure out a better way to do this...
+# totalRequest = 0 # total number of request. again, better way please
 
 
 class pchemprop(object):
@@ -75,6 +76,7 @@ class pchemprop(object):
 			"measured": measured
 		}
 
+
 		# dict with keys of checked calculators and values of 
 		# checked properties that are also available for said calculators
 		# format: { key: "calculator name", value: [checked property ids] }
@@ -91,155 +93,35 @@ class pchemprop(object):
 							propList.append(propKey)
 				self.checkedCalcsAndPropsDict.update({calcKey:propList})
 
-		############questionable...##########
-		global requestCounter
-		requestCounter = 0 # initialize request counter
-		global totalRequest
-		totalRequest = 0
-		#####################################
 
 		if 'chemaxon' in self.checkedCalcsAndPropsDict:
-			self.chemaxonResultsDict = getChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict, self.kow_ph)
+			self.chemaxonResultsDict = newGetChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict, 
+																self.kow_ph)
 
 
-
-# def dataReturn(sess, resp):
-# 	"""
-# 	Callback function for async requests
-# 	This is currently doing nothing, but could be
-# 	used for the batch stuff later
-# 	"""
-# 	global requestCounter
-# 	global totalRequest
-
-# 	requestCounter += 1 # response from session request received
-# 	logging.info("> Received {} requests out of {} total".format(requestCounter, totalRequest))
-
-
-# def makeTestRequests(structure, checkedCalcsAndPropsDict):
-# 	"""
-# 	Gets pchemprop data from TEST ws.
-# 	Inputs: chemical structure, dict of checked properties by calculator
-# 	(e.g., { 'test': ['kow_no_ph', 'melting_point'] })
-# 	Returns: dict of TEST props in template-friendly format (see pchemprop_tables)
-# 	"""
-	
-# 	molID = 7 # NOTE: recycling id for now. this will change when db is implemented!!
-# 	baseUrl = os.environ['CTS_TEST_SERVER']
-
-# 	requests.get(baseUrl + "/test/test/calc/" + str(molID) + "/reset") # clear molecule values
-
-# 	# give molecule an id to use for test calculations
-# 	postData = { "id": molID, "smiles": str(structure) }
-# 	requests.post(baseUrl + "/test/molecules", data=json.dumps(postData), 
-# 								headers={'Content-Type': 'application/json'})
-
-# 	session = FuturesSession() # start a sesh
-
-# 	global totalRequest
-# 	totalRequest = 0
-
-# 	CalcDict = {
-# 		'test': calcMap.TestCalc(), 
-# 		'epi': calcMap.EpiCalc(), 
-# 		'measured': calcMap.MeasuredCalc()
-# 	}
-
-# 	for calc, calcPropsList in checkedCalcsAndPropsDict.items():
-# 		if calcPropsList and calc != 'chemaxon':
-# 			Calc = CalcDict[calc] # select Calc object
-# 			for prop in calcPropsList:
-# 				try:
-# 					for method in Calc.methods:
-# 						url = baseUrl + Calc.getUrl(str(molID), prop, method)
-# 						# session.get(url, timeout=20, background_callback=dataReturn)
-# 						totalRequest += 1
-# 				except AttributeError:
-# 					url = baseUrl + Calc.getUrl(str(molID), prop) # url for calcs with no methods
-# 					totalRequest += 1
-# 				except requests.exceptions.Timeout:
-# 					logging.warning("Timeout Exception! Call: {}->{}".format(calc, prop))
-# 				except Exception as e:
-# 					logging.warning("General Exception: {}".format(e))
-# 				else:
-# 					# time.sleep(0.5) # maybe this will help TEST out some
-# 					session.get(url, timeout=30, background_callback=dataReturn)
-# 					# session.get(url, timeout=30)
-
-
-def getChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
-	"""
-	Building the web call to make based on checked properties
-	for chemaxon.
-
-	Input: dict of checked/available properties for calculators
-	Returns: dict of chemaxon props in template-friendly format
-	"""
-
+def newGetChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
 	chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
-	propMethodsList = ['KLOP', 'PHYS', 'VG'] # methods of calculation for pchemprops (chemaxon)
-
+	logging.info("PH TYPE: {}".format(type(phForLogD)))
 	if chemaxonPropsList:
-
-		chemaxonDict = {} # dict of results (values) per method (keys)
-
-		# TODO: Some segments of the below repeat and could probably be looped..
-		# change that at some point
+		calcObj = calc.getCalcObject('chemaxon') # get instance of chemaxon calculator
+		chemaxonResults = {}
 		for prop in chemaxonPropsList:
-			if prop == "water_sol":
-				postDict = {
-					"chemical": structure,
-					"solubility": {
-						"pHLower": 0,
-						"pHUpper": 14,
-						"pHStep": 0.1,
-						# "unit": "LOGS"
-						"unit": "MGPERML"
-					}
-				}
-				data = json.loads(makeJchemCall(postDict))
-				chemaxonDict.update({"water_sol": data})
-			if prop == "ion_con":
-				postDict = {
-					"chemical": structure,
-					"pKa": { 
-						"pHLower": 0, # note: default values
-						"pHUpper": 14,
-						"pHStep": 0.1
-					}
-				}
-				data = json.loads(makeJchemCall(postDict))
-				chemaxonDict.update({"ion_con": data})
-			if prop == "kow_no_ph":
-				chemaxonDict.update({prop: {}})
-				for method in propMethodsList:
-					postDict = {
-						"chemical": structure,	
-						"logP": {
-							"method": method
-						}
-					}
-					data = json.loads(makeJchemCall(postDict))
-					chemaxonDict[prop].update({method: data})
-				
-			if prop == "kow_wph":
-				chemaxonDict.update({prop: {}})
-				for method in propMethodsList:
-					postDict = {
-						"chemical": structure,
-						"logD": {
-							"method": method,
-							"pHLower": phForLogD,
-							"pHUpper": phForLogD,
-							"pHStep": 0.1
-						}
-					}
-					data = json.loads(makeJchemCall(postDict))
-					chemaxonDict[prop].update({method: data})
-
-		return chemaxonDict
-
-
-def makeJchemCall(postDict):
-	response = jchem_rest.getChemSpecData(requests.Request(data=postDict))
-	return response.content
+			if prop == 'water_sol':
+				propObj = jp.getPropObject('solubility')
+				propObj.makeDataRequest(structure)
+				chemaxonResults.update({prop: propObj.getSolubility()})
+			elif prop == 'ion_con':
+				propObj = jp.getPropObject('pKa')
+				propObj.makeDataRequest(structure)
+				chemaxonResults.update({prop: {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}})
+			elif prop == 'kow_no_ph':
+				propObj = jp.getPropObject('logP')
+				propObj.makeDataRequest(structure)
+				chemaxonResults.update({prop: propObj.getLogP()})
+			elif prop == 'kow_wph':
+				propObj = jp.getPropObject('logD')
+				propObj.makeDataRequest(structure)
+				chemaxonResults.update({prop: propObj.getLogD(phForLogD)})
+		return chemaxonResults
+	else:
+		return None

@@ -226,16 +226,17 @@ def output_pchem_table(pchemprop_obj):
     <script type="text/javascript" src="/static/stylesheets/scripts_pchemprop_removeInputs.js"></script>
     """
 
-    chemaxonDataDict = {}
+    chemaxonData = {}
     try:
-        chemaxonResults = pchemprop_obj.chemaxonResultsDict
-        chemaxonDataDict = {
-            "ion_con": getIonConDataChemaxon(chemaxonResults),
-            "kow_no_ph": getKowNoPhChemaxon(chemaxonResults),
-            "kow_wph": getKowWphChemaxon(chemaxonResults, pchemprop_obj.kow_ph),
-            "water_sol": getWaterSolChemaxon(chemaxonResults)
-        }
-        logging.info("CHEMAXON DICT: {}".format(chemaxonDataDict))
+        chemaxonData = pchemprop_obj.chemaxonResultsDict
+        logging.info("(tables) Chemaxon Results: {} (/tables)".format(chemaxonData))
+        # chemaxonData = {
+        #     "ion_con": getIonConDataChemaxon(chemaxonResults),
+        #     "kow_no_ph": getKowNoPhChemaxon(chemaxonResults),
+        #     "kow_wph": getKowWphChemaxon(chemaxonResults, pchemprop_obj.kow_ph),
+        #     "water_sol": getWaterSolChemaxon(chemaxonResults)
+        # }
+
     except AttributeError:
         pass
 
@@ -243,18 +244,13 @@ def output_pchem_table(pchemprop_obj):
     if pchemprop_obj.kow_ph:
         kow_ph = round(float(pchemprop_obj.kow_ph), 1)
 
-    # html += render_to_string('cts_pchemprop_outputTable.html', 
-    #                             {   "chemaxonData": chemaxonDataDict, 
-    #                                 "kow_ph": kow_ph, 
-    #                                 "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict) })
-
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))
 
     html += pchemHTML
 
     html += render_to_string('cts_pchemprop_ajax_calls.html',
-                                {   "chemaxonData": mark_safe(chemaxonDataDict), 
+                                {   "chemaxonData": mark_safe(chemaxonData), 
                                     "kow_ph": kow_ph, 
                                     "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict)})
 

@@ -99,7 +99,7 @@ class JchemProperty(object):
 			return response
 
 	@classmethod
-	def getPropObj(self, prop):
+	def getPropObject(self, prop):
 		"""
 		For getting prop objects in a general,
 		loop-friendly way
@@ -122,6 +122,7 @@ class JchemProperty(object):
 			return LogD()
 		else:
 			pass
+
 
 class Pka(JchemProperty):
 	def __init__(self):
@@ -416,7 +417,7 @@ class LogD(JchemProperty):
 	    """
 		try:
 			ph = float(ph)
-			chartDataList = self.results['charData']['values']
+			chartDataList = self.results['chartData']['values']
 			for xyPair in chartDataList:
 				if xyPair['pH'] == round(ph, 1):
 					value = xyPair['logD']
