@@ -42,7 +42,7 @@ def directJchemTraffic(request):
 
 	except Exception as e:
 		logging.warning("error occured in jchem_traffic_cop: {}".format(e))
-		return HttpResponse(json.dumps({"error": "request error"}))
+		return HttpResponse(json.dumps({"error": "request error", "calc": "chemaxon", "prop": prop}))
 
 
 def getRequestService(request):

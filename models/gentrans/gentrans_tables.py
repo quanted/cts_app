@@ -101,7 +101,7 @@ def table_all(gentrans_obj):
 
     # html_all += table_metabolite_info(gentrans_obj) # included in table_metabolites() now
 
-    html_all += insertPchempropScript()
+    html_all += insertPchemPropScript() # script for pchemprop table
     html_all += table_metabolites(gentrans_obj)
 
     # html_all += pchemprop_input_fields(gentrans_obj)
@@ -185,12 +185,14 @@ def table_metabolites(gentrans_obj):
     <div class="out_">
     """
     html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
-
     html += table_metabolite_info(gentrans_obj)
     html += '<br>'
-
     html += render_to_string('cts_gentrans_tree.html')
-
+    html += render_to_string('cts_pchemprop_ajax_calls.html', {
+                                    "kow_ph": "null",
+                                    "structure": "null",
+                                    "checkedCalcsAndProps": "null"
+                            })
     html += """
     </div>
     """
@@ -226,7 +228,7 @@ def table_metabolite_info(gentrans_obj):
     return html
 
 
-def insertPchempropScript():
+def insertPchemPropScript():
     return  '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
 
 

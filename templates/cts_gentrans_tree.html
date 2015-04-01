@@ -359,7 +359,13 @@ function newGetPchemData() {
 
     makeAjaxCall(params, function(pchemResults) {
 
-        var chemaxonData = pchemResults["chemaxonResults"];
+        // var chemaxonData = pchemResults["chemaxonResults"];
+        var checkedCalcsAndProps = pchemResults["checkedCalcsAndProps"];
+
+        var kowPH = $('#id_kow_ph').val();
+
+        // make those calls:
+        startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH);
 
         // Skip if pchemprops already exist: (old way, creating pchem row instead of filling table)
         // var hasPchemProps = false;

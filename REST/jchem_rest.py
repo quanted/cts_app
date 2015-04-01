@@ -556,63 +556,6 @@ def getTransProducts(request):
 	return results
 
 
-def standardizer(request):
-	"""
-	Standardizes a structure in any format 
-	recognized by Marvin, and the actions to
-	perfrom on the structure (e.g., aromatize, daromatize,
-	clear stereo, tautomerize, add explicit H, remove
-	explicit H, transform, and neutralize). 
-
-	NOTE: Just AddExplicitH and Aromatize configs for now.
-
-	Returns molecule in mrv format
-	"""
-	url = Urls.jchemBase + Urls.standardizerUrl
-	structure = request.POST.get('chemical')
-	getConfig = request.POST.get('config')
-	stdTmpl = """
-	<?xml version="1.0" encoding="UTF-8"?>
-	<StandardizerConfiguration>
-		<Actions>
-			<{{stdConfig}} ID="{{stdConfig}}"/>
-		</Actions>
-	</StandardizerConfiguration>
-	"""
-	stdData = Template(stdTmpl).render(Context(dict(stdConfig=getConfig)))
-	stdData = stdData.replace('\n', '').replace('\r', '').replace('\t', '')
-	data = {
-		"structure": structure,
-		"parameters": {
-        	"standardizerDefinition": stdData
-    	}
-	}
-	data = json.dumps(data)
-	results = web_call(url, request, data)
-	return results
-
-
-def hydrogenizer(request):
-	"""
-	Addition or removal of explicit 
-	hydrogens or lone pairs
-	Inputs: chemical, method (e.g., HYDROGENIZE)
-	Returns: molecule in mrv format 
-	"""
-	url = Urls.jchemBase + Urls.hydroUrl
-	structure = request.POST.get('chemical')
-	method = request.POST.get('method')
-	data = {
-		"structure": structure,
-		"parameters": {
-			"method": method
-		}
-	}
-	data = json.dumps(data) # convert to json string
-	results = web_call(url, request, data)
-	return results
-
-
 def getpchemprops(request):
 	"""
 	Calls pchemprop model to get pchem props 
@@ -626,11 +569,9 @@ def getpchemprops(request):
 	from models.pchemprop import pchemprop_output
 	pchemprop_obj = pchemprop_output.pchempropOutputPage(request) # run model (pchemprop_[output, model])
 
-	# logging.info("pchemprop attributes: {}".format(dir(pchemprop_obj)))
-
 	data = json.dumps({"checkedCalcsAndProps": pchemprop_obj.checkedCalcsAndPropsDict, 
 						"chemaxonResults": pchemprop_obj.chemaxonResultsDict})
-	# return requests.Response(content=data, content_type="application/json")
+
 	return HttpResponse(data, content_type="application/json")
 
 
@@ -641,11 +582,6 @@ def getStructInfo(structure):
 	Output: dict with structure's info (i.e., formula, iupac, mass, smiles),
 	or dict with aforementioned keys but None values
 	"""
-	logging.info("STRUCTURE: {}".format(structure))
-	# response = mrvToSmiles(requests.Request(data={'chemical': structure}))
-	# smilesDict = json.loads(response.content)
-
-	# logging.info("structure response: {}".format(smilesDict))
 
 	request = requests.Request(data={"chemical": structure, "addH": True})
 	# request = requests.Request(data={"chemical": smilesDict["structure"], "addH": True})
