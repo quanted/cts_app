@@ -222,23 +222,7 @@ def output_pchem_table(pchemprop_obj):
     <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>p-Chem Properties Results</H3>
     <div class="out_">
-
-    <script type="text/javascript" src="/static/stylesheets/scripts_pchemprop_removeInputs.js"></script>
     """
-
-    chemaxonData = {}
-    try:
-        chemaxonData = pchemprop_obj.chemaxonResultsDict
-        logging.info("(tables) Chemaxon Results: {} (/tables)".format(chemaxonData))
-        # chemaxonData = {
-        #     "ion_con": getIonConDataChemaxon(chemaxonResults),
-        #     "kow_no_ph": getKowNoPhChemaxon(chemaxonResults),
-        #     "kow_wph": getKowWphChemaxon(chemaxonResults, pchemprop_obj.kow_ph),
-        #     "water_sol": getWaterSolChemaxon(chemaxonResults)
-        # }
-
-    except AttributeError:
-        pass
 
     kow_ph = 0.0
     if pchemprop_obj.kow_ph:
@@ -248,13 +232,12 @@ def output_pchem_table(pchemprop_obj):
     pchemHTML += str(pchemprop_parameters.form(None))
 
     html += pchemHTML
-
-    html += render_to_string('cts_pchemprop_ajax_calls.html',
-                                {   "chemaxonData": mark_safe(chemaxonData), 
+    html += render_to_string('cts_pchemprop_cleanOutputTable.html', {"kow_ph": kow_ph});
+    html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "kow_ph": kow_ph,
                                     "structure": mark_safe(pchemprop_obj.chem_struct),
-                                    "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict)})
-
+                                    "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict)
+                            })
     html += """
     </div>
     """

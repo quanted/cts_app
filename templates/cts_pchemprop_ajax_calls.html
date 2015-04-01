@@ -74,7 +74,34 @@ function responseHandler(response) {
     //     makeTheCall()
     // }
 
-    $('.' + response['calc'] + '.' + response['prop']).html(JSON.stringify(response['data']));
+    $('.' + response['calc'] + '.' + response['prop']).html(organizeData(response['data']));
+}
+
+
+function organizeData(data) {
+    // organizes data, namely if it's
+    // more than a single value
+
+    if (typeof data === "number") {
+        return data;
+    }
+
+    var parsedData = "";
+    for (item in data) {
+        if (data.hasOwnProperty(item)) {
+            var itemVals = data[item];
+            if (itemVals.length == 0) {
+                parsedData += '<div>' + item + ': none</div>';
+            }
+            else {
+                for (var i = 0; i < itemVals.length; i++) {
+                    var label = item + String(i).sub() +  ': ';
+                    parsedData += '<div>' + label + itemVals[i] + '</div>';
+                }
+            }
+        }
+    }
+    return parsedData;
 }
 
 

@@ -1,3 +1,4 @@
+<script>
 $(document).ready(function() {
 	/*
 	Remove checkboxes, color coding, and bottom keys 
@@ -10,4 +11,10 @@ $(document).ready(function() {
 	$('#pchemprop_table td').removeClass('ChemCalcs_unavailable ChemCalcs_available');
 	$('#pchemprop_table td.colorKey').parent('tr').remove();
 	$('#id_kow_ph').prop('disabled', true); //disable float input for kow pH
+
+	// Display user-entered pH for logD (Octanol/Water Part...at pH):
+	$('#id_kow_ph').val({{kow_ph}});
+
+
 });
+</script>
