@@ -83,7 +83,7 @@ function organizeData(data) {
     // more than a single value
 
     if (typeof data === "number") {
-        return data;
+        return data.toFixed(4);
     }
 
     var parsedData = "";
@@ -96,7 +96,7 @@ function organizeData(data) {
             else {
                 for (var i = 0; i < itemVals.length; i++) {
                     var label = item + String(i).sub() +  ': ';
-                    parsedData += '<div>' + label + itemVals[i] + '</div>';
+                    parsedData += '<div>' + label + itemVals[i].toFixed(4) + '</div>';
                 }
             }
         }
