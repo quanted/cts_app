@@ -49,7 +49,7 @@ class chemspec(object):
 
 		if pkaChkbox == 'on' or pkaChkbox == True:
 			# make call for pKa:
-			pkaObj = JProp.getPropObj('pKa')
+			pkaObj = JProp.getPropObject('pKa')
 			pkaObj.setPostDataValues({
 				"pHLower":self.pKa_pH_lower,
 				"pHUpper":self.pKa_pH_upper,
@@ -59,19 +59,19 @@ class chemspec(object):
 			jchemDataDict.update({pkaObj.name: pkaObj.results})
 
 			# make call for majorMS:
-			majorMsObj = JProp.getPropObj('majorMicrospecies')
+			majorMsObj = JProp.getPropObject('majorMicrospecies')
 			majorMsObj.setPostDataValue('pH', 'self.pH_microspecies')
 			majorMsObj.makeDataRequest(self.chem_struct)
 			jchemDataDict.update({majorMsObj.name: majorMsObj.results})
 
 			# make call for isoPt:
-			isoPtObj = JProp.getPropObj('isoelectricPoint')
+			isoPtObj = JProp.getPropObject('isoelectricPoint')
 			isoPtObj.setPostDataValue('pHStep', self.isoelectricPoint_pH_increment)
 			isoPtObj.makeDataRequest(self.chem_struct)
 			jchemDataDict.update({isoPtObj.name: isoPtObj.results})
 
 		if tautChkbox == 'on' or tautChkbox == True:
-			tautObj = JProp.getPropObj('tautomerization')
+			tautObj = JProp.getPropObject('tautomerization')
 			tautObj.setPostDataValues({
 				"maxStructureCount":self.tautomer_maxNoOfStructures,
 				"pH":self.tautomer_pH,
@@ -81,7 +81,7 @@ class chemspec(object):
 			jchemDataDict.update({tautObj.name: tautObj.results})
 
 		if stereoChkbox == 'on' or stereoChkbox == True:
-			stereoObj = JProp.getPropObj('stereoisomer')
+			stereoObj = JProp.getPropObject('stereoisomer')
 			stereoObj.makeDataRequest(self.chem_struct)
 			jchemDataDict.update({stereoObj.name: stereoObj.results})
 
