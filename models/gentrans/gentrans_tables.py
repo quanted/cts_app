@@ -146,6 +146,7 @@ def table_inputs(gentrans_obj):
     html += """
     </table>
     </div>
+    <br>
     """
     return html
 
@@ -250,7 +251,8 @@ def metaboliteInfoTmpl():
                 <br><br>
                 {% autoescape off %}{{pchemHtml}}{% endautoescape %}
                 <br>
-                <input type="button" value="Get data" class="submit input_button" id="btn-pchem-getdata">
+                <input type="button" value="Get data" class="submit input_button btn-pchem" id="btn-pchem-getdata">
+                <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
                 <br>
                 <p class="gentransError">Must right-click a metabolite first</p>
             </div>

@@ -1626,9 +1626,22 @@ div.protoMetabolite {
 
 /* button for getting pchem props 
 for nodes on gentrans output */
-#btn-pchem-getdata {
+
+.btn-pchem {
   float: right;
 }
+
+#btn-pchem-getdata.btn-pchem {
+  margin-left: 20px;
+}
+
+/*#btn-pchem-getdata {
+  float: right;
+}
+
+#btn-pchem-cleardata {
+  float: right;
+}*/
 
 /*toggleClass for metaboliteInfo div*/
 .hide {
@@ -1676,4 +1689,11 @@ for nodes on gentrans output */
 #metaboliteInfo div {
   overflow-y: auto;
   font-family: 'Open Sans', sans-serif;
+}
+
+/* ajax call wait spinnerz */
+#spinner {
+  height: 20px;
+  width: 20px;
+  color: black;
 }

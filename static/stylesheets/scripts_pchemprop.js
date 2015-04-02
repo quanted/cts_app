@@ -73,6 +73,8 @@ $(document).ready(function() {
 
     pchempropTableLogic();
 
+    $('#btn-pchem-cleardata').on('click', clearPchemData);
+
 });
 
 function submitButtonLogic() {
@@ -111,4 +113,9 @@ function pchempropTableLogic() {
         if ($(this).is(':checked')) { $('td.' + colClass).fadeTo(0, 1); }
         else { $('td.' + colClass).fadeTo(0, 0.75); }
     });
+}
+
+function clearPchemData() {
+    // Clears all data on pchemprop table:
+    $('#pchemprop_table td').not('td.colorKey').html('');
 }
