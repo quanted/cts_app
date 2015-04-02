@@ -59,7 +59,7 @@ function makeTheCall(url, calcPropData) {
         type: "POST",
         dataType: "json",
         data: calcPropData,
-        timeout: 300,
+        timeout: 5000,
         // tryCount: 0,
         // retryLimit: 3,
         success: function(data) {
@@ -67,6 +67,12 @@ function makeTheCall(url, calcPropData) {
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(errorThrown);
+            var error = {
+                "error": textStatus,
+                "calc": calcPropData['calc'],
+                "prop": calcPropData['prop']
+            };
+            responseHandler(error);
         }
     });
 }

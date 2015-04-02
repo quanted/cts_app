@@ -54,8 +54,7 @@ $('#tabs').click(function(event) {
 
 // Get Data button for gathering pchem props for node:
 $('#btn-pchem-getdata').click(function() {
-    newGetPchemData();
-    // getPchemData();
+    getPchemData();
 });
 
 // Collapses/expands content below table header row (th).
@@ -252,7 +251,6 @@ function getMolecularInfo(node) {
 
     var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
-
     getChemDetails(node.data.smiles, function(chemResults) {
 
         data = chemResults.data[0];
@@ -312,17 +310,14 @@ function tabDisplayLogic(event) {
 }
 
 
-function newGetPchemData() {
+function getPchemData() {
     /* 
     This function does what getPchemData() does, but
     the idea for this new function is to get the data and
     populate it in the pchemprop table and not draw another
     segment for the metabolite table in the "metabolite info" tab
     */
-
-
     //TODO: Check if metabolite already has pchem data before making call ******
-
 
     var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac'];
     var params = {"data":{}}; //POST data for pchemprops_model call
@@ -367,17 +362,6 @@ function newGetPchemData() {
         // make those calls:
         startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH);
 
-        // Skip if pchemprops already exist: (old way, creating pchem row instead of filling table)
-        // var hasPchemProps = false;
-        // $(tableID + ' th').each(function() {
-        //     if($(this).text().indexOf('p-Chem Properties') >= 0) {
-        //         hasPchemProps = true;
-        //     }
-        // });
-        // if (hasPchemProps) return; //abort if there are already pchemprops for metabolite
-
-        // if (!("length" in table) || table.length <= 0) return; //abort if table not selected
-
     });
  
 }
@@ -394,102 +378,27 @@ function getChemDetailsObj(chemical) {
 }
 
 
-function getValuesFromData(calc, prop, data) {
-    //+++++++++++++++++++++++++++++++++++++++
-    //grabs values out of data dict based on
-    //the calculator and property
-    //+++++++++++++++++++++++++++++++++++++++
-    var value = {};
-    switch(calc) {
-        case "chemaxon":
-            switch(prop) {
-                case "ion_con":
-                    // Gets pka and pkb values
-                    value["Ionization Constant"] = {};
-                    var pka = data[0]["pKa"]["mostAcidic"];
-                    for (val in pka) {
-                        pka[val] = pka[val].toFixed(3); //round pka values
-                    }
-                    var pkb = data[0]["pKa"]["mostBasic"];
-                    for (val in pkb) {
-                        pkb[val] = pkb[val].toFixed(3); //round pka values
-                    }
-                    value["Ionization Constant"]["pka"] = pka;
-                    value["Ionization Constant"]["pkb"] = pkb;
-                    break;
-                case "kow_no_ph":
-                    // Gets logP value
-                    value["logP"] = data[0]["logP"]["logpnonionic"].toFixed(3);
-                    break;
-                case "kow_wph":
-                    // Gets logD value
-                    value["logD"] = data[0]["logD"]["logD"].toFixed(3);
-                    break;
-            }
-    }
-    return value;
-}
-
-
 function makeAjaxCall(params, callback) {
     $.ajax({
-      url : params.url,
-      type : params.type,
-      data : params.data,
-      dataType : params.dataType,
-      success : function(data) {
+      url: params.url,
+      type: params.type,
+      data: params.data,
+      dataType: params.dataType,
+      success: function(data) {
         var data = jsonRepack(data);
         callback(data);
       },
-      error : function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR, textStatus, errorThrown) {
         callback("Fail");
       },
+      timeout: 5000
     });
-}
-
-
-function getProperName(prop) {
-    //returns "proper" form of property name
-    //e.g., "ion_con" returns "Ionization Constant"
-    switch(prop) {
-        case "ion_con":
-            return "Ionization Constant";
-        case "kow_no_ph":
-            // return "Octanol/Water Partition Coefficient";
-            return "logP";
-        case "kow_wph":
-            // return "Octanol/Water Partition Coefficient with pH";
-            return "logD";
-        default:
-            return null;
-    }
 }
 
 
 function jsonRepack(jsonobj) {
   return JSON.parse(JSON.stringify(jsonobj));
 }
-
-
-//note: could use tooltips to help user navigate gentrans output
-// function tipit() {
-//     // Using qtip2 for tooltip
-//     $('.chemspec_molecule').each(function() {
-//         $(this).qtip({
-//             content: {
-//                 text: $(this).next('.tooltiptext')
-//             },
-//             style: {
-//                 classes: 'qtip-light'
-//             },
-//             position: {
-//                 my: 'bottom center',
-//                 at: 'center right',
-//                 target: 'mouse'
-//             }
-//         });
-//     });
-// }
 
 </script>
 
@@ -501,7 +410,6 @@ function jsonRepack(jsonobj) {
     </div>
     <div id="log"></div>
 </div>
-
 
 <script type="text/javascript">
 init();
