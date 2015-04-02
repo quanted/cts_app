@@ -226,6 +226,8 @@ function getMolecularInfo(node) {
     //Get molecular info upon right-clicking a metabolite
     //on the gentrans tree structure output
 
+    $('#tabs').tabs("option", "active", 0); //Go to "metabolite info" tab
+
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
     if ($('#tabs-1').has('p').length > 0) {
