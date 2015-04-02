@@ -21,7 +21,7 @@
 //                 $(tblCell).html('<img src="/static/images/loader.gif" height="20" width="20" />');
 
 //                 makeTheCall(calcPropData);
-//                 // makeTheCall(calcPropData, responseHandler);
+//                 // makeTheCall(calcPropData, parseResponseToPchemTable);
 //             }
 //         }
 //     }
@@ -37,7 +37,7 @@
 //         // tryCount: 0,
 //         // retryLimit: 3,
 //         success: function(data) {
-//             responseHandler(data);
+//             parseResponseToPchemTable(data);
 //             // callback(data); //return data to caller
 //         },
 //         error: function(jqXHR, textStatus, errorThrown) {
@@ -48,7 +48,7 @@
 // }
 
 
-// function responseHandler(response) {
+// function parseResponseToPchemTable(response) {
 //     //map response to pchemprop output table:
                 
 //     //check data for -9999.0 values, retry if so

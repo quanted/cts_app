@@ -226,6 +226,9 @@ function getMolecularInfo(node) {
     //Get molecular info upon right-clicking a metabolite
     //on the gentrans tree structure output
 
+    // Clear existing pchemprop table for new data:
+    clearPchemData(); // from scripts_pchemprop
+
     $('#tabs').tabs("option", "active", 0); //Go to "metabolite info" tab
 
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
@@ -243,6 +246,15 @@ function getMolecularInfo(node) {
         if ($('#tabs-1:has(div#' + node.id + '_div)').length > 0) {
             $('#tabs-1 div#' + node.id + '_div').show(); //show existing node data
             $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
+
+            // $$$$$$$$$$$$ this new $$$$$$$$$$$$$$$$$$$
+            if (node.data.hasOwnProperty('pchemprops')) {
+            	for (var i = 0; i < node.data.pchemprops.length; i++) {
+            		parseResponseToPchemTable(node.data.pchemprops[i], null);
+            	}
+		    }
+		    // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
             return;
         }
     }
@@ -271,6 +283,7 @@ function getMolecularInfo(node) {
         $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
 
     });
+
 }
 
 
@@ -358,11 +371,13 @@ function getPchemData() {
 
         // var chemaxonData = pchemResults["chemaxonResults"];
         var checkedCalcsAndProps = pchemResults["checkedCalcsAndProps"];
-
         var kowPH = $('#id_kow_ph').val();
 
-        // make those calls:
-        startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH);
+        // make those calls (function from cts_pchemprop_ajax_calls.html):
+        startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH, currentNode);
+
+        // TODO: Add metabolite's pchemprop data to node.data object
+
 
     });
  
