@@ -1,5 +1,8 @@
- CTS-specific styles for overriding shared style.css */
-body {2,4-dio
+/*************************************************
+CTS-specific styles for overriding shared style.css
+**************************************************/
+
+body {
   font-family: 'Open Sans', sans-serif;
 }
 
@@ -1621,20 +1624,6 @@ div.protoMetabolite {
   /*display: inline-block;*/
 }
 
-#metaboliteInfo {
-  /*overflow: hidden;*/
-  width: 750px;
-  position: center;
-}
-
-#metaboliteInfo div {
-  overflow-y: auto;
-}
-
-#metaboliteInfo table {
-  overflow: scroll;
-}
-
 /* button for getting pchem props 
 for nodes on gentrans output */
 #btn-pchem-getdata {
@@ -1683,7 +1672,8 @@ for nodes on gentrans output */
   box-shadow: 0px 0px 10px 2px #4289AA;
 }
 
-/* old error message class */
-/*.redFont {
-  color: #FF4D4D;
+/* metatolite info / p-Chem data div on gentrans output */
+#metaboliteInfo div {
+  overflow-y: auto;
+  font-family: 'Open Sans', sans-serif;
 }

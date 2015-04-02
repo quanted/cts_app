@@ -233,6 +233,7 @@ def insertPchemPropScript():
 
 
 def metaboliteInfoTmpl():
+    # <div id="metaboliteInfo">
     metaboliteInfoTmpl = """
     <div id="metaboliteInfo">
         <div id="tabs">
