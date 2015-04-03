@@ -65,7 +65,7 @@ def link_callback(uri, rel):
     return path
 
 
-@require_POST
+# @require_POST
 def pdfReceiver(request, model=''):
     """
     PDF Generation Receiver function.
@@ -73,33 +73,38 @@ def pdfReceiver(request, model=''):
     """
     from xhtml2pdf import pisa
     # viewmodule = importlib.import_module('.views', 'models.'+model)
-    # Open description txt
-    text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
-    description = text_description.read()
-    # Open algorithm txt
-    #text_algorithm = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_algorithm.txt'),'r')
-    #algorithms = text_algorithm.read()
 
-    input_str = description
-    input_str = input_str + parsePOST(request)
-    #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
+    logging.info("Inside pdfReceiver ~!")
 
-    packet = StringIO.StringIO() #write to memory
-    pisa.CreatePDF(input_str, dest = packet, link_callback = link_callback)
+    # # Open description txt
+    # text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
+    # description = text_description.read()
+    # # Open algorithm txt
+    # #text_algorithm = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_algorithm.txt'),'r')
+    # #algorithms = text_algorithm.read()
 
-    # Create timestamp
-    ts = datetime.datetime.now(pytz.UTC)
-    localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
-    jid = localDatetime.strftime('%Y%m%d%H%M')
+    # input_str = description
+    # input_str = input_str + parsePOST(request)
+    # #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
 
-    response = HttpResponse(packet.getvalue(), content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
+    # packet = StringIO.StringIO() #write to memory
+    # pisa.CreatePDF(input_str, dest = packet, link_callback = link_callback)
+
+    # # Create timestamp
+    # ts = datetime.datetime.now(pytz.UTC)
+    # localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
+    # jid = localDatetime.strftime('%Y%m%d%H%M')
+
+    # response = HttpResponse(packet.getvalue(), content_type='application/pdf')
+    # response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
     
-    return response
+    # return response
 
 
 @require_POST
 def htmlReceiver(request, model=''):
+
+    logging.info("INSIDE HTML RECEIVER")
 
     text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
     description = text_description.read()

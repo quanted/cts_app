@@ -187,6 +187,7 @@ def table_inputs(chemspec_obj):
     html += """
     </table>
     </div>
+    <br>
     """
     return html
 
