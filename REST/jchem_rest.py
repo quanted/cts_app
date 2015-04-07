@@ -606,10 +606,7 @@ def web_call(url, request, data):
 	and POST data. Returns an http response.
 	"""
 	try:
-		logging.info("making call...")
-		logging.info("url: {}".format(url))
 		response = requests.post(url, data=data, headers=headers, timeout=60)
-		logging.info("received response: {}".format(response.content))
 		return response
 	except Exception as e:
 		logging.warning("error at web call: {}".format(e))

@@ -1,4 +1,5 @@
 from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET
 import StringIO
 from django.http import HttpResponse
 from django.conf import settings
@@ -66,39 +67,41 @@ def link_callback(uri, rel):
 
 
 # @require_POST
+# @require_GET
 def pdfReceiver(request, model=''):
     """
     PDF Generation Receiver function.
     Sends POST data as string to xhtml2pdf library for processing
     """
     from xhtml2pdf import pisa
+    
     # viewmodule = importlib.import_module('.views', 'models.'+model)
 
-    logging.info("Inside pdfReceiver ~!")
+    logging.info("REQUEST: {}".format(request))
 
-    # # Open description txt
-    # text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
-    # description = text_description.read()
-    # # Open algorithm txt
-    # #text_algorithm = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_algorithm.txt'),'r')
-    # #algorithms = text_algorithm.read()
+    # Open description txt
+    text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
+    description = text_description.read()
+    # Open algorithm txt
+    #text_algorithm = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_algorithm.txt'),'r')
+    #algorithms = text_algorithm.read()
 
-    # input_str = description
-    # input_str = input_str + parsePOST(request)
-    # #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
+    input_str = description
+    input_str = input_str + parsePOST(request)
+    #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
 
-    # packet = StringIO.StringIO() #write to memory
-    # pisa.CreatePDF(input_str, dest = packet, link_callback = link_callback)
+    packet = StringIO.StringIO() #write to memory
+    pisa.CreatePDF(input_str, dest = packet, link_callback = link_callback)
 
-    # # Create timestamp
-    # ts = datetime.datetime.now(pytz.UTC)
-    # localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
-    # jid = localDatetime.strftime('%Y%m%d%H%M')
+    # Create timestamp
+    ts = datetime.datetime.now(pytz.UTC)
+    localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
+    jid = localDatetime.strftime('%Y%m%d%H%M')
 
-    # response = HttpResponse(packet.getvalue(), content_type='application/pdf')
-    # response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
+    response = HttpResponse(packet.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
     
-    # return response
+    return response
 
 
 @require_POST

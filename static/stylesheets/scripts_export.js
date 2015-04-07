@@ -4,14 +4,22 @@ $(document).ready(function () {
 
 	function parseOutput() {
 		// var doneDiv = $('#popup');    div#chart1,table:hidden
-		// var jq_html = $('<div />').append($("div.articles_output").children().not(':hidden, .metabolite').clone()).html();
-		// var jq_html = $('<div />').append($("div.articles_output").children('table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html();
-		var jq_html = $('<div>hey</div>').html();
+
+		// var test = $("div.articles_output").children();
+		// var test = $("div.articles_output").children(':not(.hideData)');
+		// var test = $("div.articles_output").children(':visible');
+		// var test = $("div.articles_output").find('table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1, table:hidden)');
+		// var test2 = $("div.articles_output").children('table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden, div.hideData, .qtip)');
+		
+		// var jq_html = $('<div />').append($(test2).clone()).html();
+		
+		var jq_html = $('<div />').append($("div.articles_output").children('table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html();
+		// var jq_html = $('<div>hey</div>').html();
 		var n_plot_1 = $('div[id^="chart"]').size();
 		var n_plot_2 = $('img[id^="chart"]').size();
 		var n_plot = n_plot_1 + n_plot_2;
 
-		console.log(n_plot);
+		console.log(jq_html);
 
 		var i=1;
 
@@ -21,7 +29,7 @@ $(document).ready(function () {
 			y_offset : 30
 		};
 
-		while(i <= n_plot){
+		while(i <= n_plot) {
 			try {
 				imgData.push($('#chart'+i).jqplotToImageStr(options));
 				i++;
@@ -56,8 +64,8 @@ $(document).ready(function () {
 
 	$('#pdfExport').click(function () {
 		parseOutput();
-		var test = $('form');
-		$('form').attr('action', 'pdf').submit();
+		// $('form').attr('action', 'pdf').submit();
+		$('form').attr({'action': 'pdf', 'method': 'POST'}).submit();
 	});
 
 	$('#htmlExport').click(function () {
