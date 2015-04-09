@@ -157,7 +157,7 @@ def timestamp(chemspec_obj="", batch_jid=""):
     else:
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
-    <div id="timestamp">
+    <div id="timestamp" class="out_">
         <b>Chemical Speciation - Version 1.0 (Alpha)<br>
     """
     html += st

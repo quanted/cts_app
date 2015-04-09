@@ -4,7 +4,13 @@ $(document).ready(function () {
 
 	function parseOutput() {
 		// var doneDiv = $('#popup');
-		var jq_html = $('<div />').append($("div.articles_output").children('table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html();
+		
+
+		// var jq_html = 'hey';
+		// var jq_html = $('<div />').append($("div.articles_output").children(':not(div#chart1,table:hidden)').clone()).html();
+		var jq_html = $('<div />').append($("div.articles_output").children('H2[class="model_header"], table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html();
+
+
 		var n_plot_1 = $('div[id^="chart"]').size();
 		var n_plot_2 = $('img[id^="chart"]').size();
 		var n_plot = n_plot_1 + n_plot_2;
@@ -54,7 +60,8 @@ $(document).ready(function () {
 
 	$('#pdfExport').click(function () {
 		parseOutput();
-		$('form').attr('action', 'pdf').submit();
+		$('form').attr({'action': 'pdf', 'method': 'POST'}).submit();
+		// $('form').attr('action', 'pdf').submit();
 	});
 
 	$('#htmlExport').click(function () {
@@ -80,14 +87,5 @@ $(document).ready(function () {
 			$span.stop().fadeTo(500, 0);
 		});
 	});
-
-	// $('#fadeExport_doc').append('<span class="hover"></span>').each(function () {
-	// 	var $span = $('> span.hover', this).css('opacity', 0);
-	// 	$(this).hover(function () {
-	// 		$span.stop().fadeTo(500, 1);
-	// 	}, function () {
-	// 		$span.stop().fadeTo(500, 0);
-	// 	});
-	// });
 
 });

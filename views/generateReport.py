@@ -11,6 +11,9 @@ import os
 import logging
 
 def parsePOST(request):
+
+    logging.info(request.POST)
+
     pdf_t = request.POST.get('pdf_t')
     pdf_nop = request.POST.get('pdf_nop')
     pdf_p = json.loads(request.POST.get('pdf_p'))
@@ -80,8 +83,10 @@ def pdfReceiver(request, model=''):
     logging.info("REQUEST: {}".format(request))
 
     # Open description txt
-    text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
-    description = text_description.read()
+    # text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
+    # description = text_description.read()
+    description = ''
+    
     # Open algorithm txt
     #text_algorithm = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_algorithm.txt'),'r')
     #algorithms = text_algorithm.read()
