@@ -26,7 +26,7 @@ scale = 100 # default is 28
 
 def getdjtemplate():
     dj_template ="""
-    <dl class="shiftRight">
+    <dl class="shiftRight" id="{{id|default:"none"}}">
     {% for label, value in data.items %}
         <dd>
         {{label}}: {{value|default:"none"}}
@@ -176,9 +176,9 @@ def table_inputs(chemspec_obj):
     """
     html = """
     <br>
-    <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
+    <H3 class="out_1 collapsible" id="userInputs"><span></span>User Inputs</H3>
     <div class="out_">
-    <table class="inputTableForOutput">
+    <table class="inputTableForOutput" id="inputsTable">
     """
     html += inTmpl.render(Context(dict(data=getMolTblData(chemspec_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getPkaInputs(chemspec_obj), heading="Ionization Parameters")))
@@ -225,7 +225,7 @@ def getIsoPtResults(chemspec_obj):
         return ""
     else:
         html = """
-        <H4 class="out_1 collapsible" id="section6"><span></span>Isoelectric Point</H4>
+        <H4 class="out_1 collapsible" id="isoPt"><span></span>Isoelectric Point</H4>
         <div class="out_">
         """
         if isoPt:
@@ -250,7 +250,7 @@ def getMajorMsImages(chemspec_obj):
         return ""
     else:
         html = """
-        <H4 class="out_1 collapsible" id="section6"><span></span>Major Microspecies at pH: {}</H4>
+        <H4 class="out_1 collapsible" id="majorMS"><span></span>Major Microspecies at pH: {}</H4>
         <div class="out_ shiftRight">""".format(chemspec_obj.pH_microspecies)
         html += wrap_molecule(majorMsDict, None, mdWidth, scale)
         html += """
@@ -261,7 +261,7 @@ def getMajorMsImages(chemspec_obj):
 
 def getPkaResults(chemspec_obj):
     html = """
-    <H4 class="out_1 collapsible" id="section6"><span></span>pKa</H4>
+    <H4 class="out_1 collapsible" id="pka"><span></span>pKa</H4>
     <div class="out_">
     """
     # acidic/basic pKa values:
@@ -274,10 +274,10 @@ def getPkaResults(chemspec_obj):
         logging.info("pKa not selected..moving..")
         return "" # get out of here!
     else:
-        html += tmpl.render(Context(dict(data=pkaValues)))
+        html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
 
     # pKa parent species:
-    html += '<table id="msMain"><tr><td>'
+    html += '<table id="msMain" class="inputTableForOutput"><tr><td>'
     html += wrap_molecule(chemspec_obj.jchemPropObjects['pKa'].getParent(), None, lgWidth, scale)
     html += '<br></td><td>'
 

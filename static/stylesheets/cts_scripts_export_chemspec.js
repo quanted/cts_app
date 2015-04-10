@@ -4,7 +4,17 @@ $(document).ready(function () {
 
 	function parseOutput() {
 		
-		var jq_html = $('<div />').append($("div.articles_output").children('H2[class="model_header"], table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html();
+		// var jq_html = $('<div />').append($("div.articles_output").children('H2[class="model_header"], table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html();
+
+		var elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
+		var inputTable = $('table#inputsTable');
+		var pka = $('h4#pka, dl#pkaValues');
+
+		elements = elements.add(inputTable); //?????
+		elements = elements.add(pka); //?????
+
+		var jq_html = $('<div />').append($(elements).clone()).html();
+
 
 		var n_plot_1 = $('div[id^="chart"]').size();
 		var n_plot_2 = $('img[id^="chart"]').size();
