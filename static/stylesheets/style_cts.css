@@ -1697,3 +1697,11 @@ for nodes on gentrans output */
   width: 20px;
   color: black;
 }
+
+/* styling for pdfs */
+.libPDF {
+  height: 700px;
+  width: 650px;
+  -webkit-border-radius: 0 0 4px 4px;
+  -webkit-box-shadow: 3px 3px 15px #CCC;
+}

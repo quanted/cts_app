@@ -58,8 +58,6 @@ $(document).ready(function () {
 
 	}
 
-	//new
-
 	$('#pdfExport').click(function () {
 		parseOutput();
 		$('form').attr({'action': 'pdf', 'method': 'POST'}).submit();
