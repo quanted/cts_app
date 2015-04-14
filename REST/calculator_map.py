@@ -169,6 +169,7 @@ class MeasuredCalc(Calculator):
 class ChemaxonCalc(Calculator):
 	"""
 	ChemAxon Calculator
+	NOTE: see jchem_rest instead
 	"""
 	def __init__(self):
 		Calculator.__init__(self)
@@ -198,53 +199,3 @@ class ChemaxonCalc(Calculator):
 				'methods': ['KLOP', 'VG', 'PHYS']
 			}
 		}
-
-	# def getPostDataForProp(prop, structure, method=None, phForLogD=None):
-	# 	postData = {}
-	# 	if prop == 'water_sol':
-	# 		postData = {
-	# 			"chemical": structure,
-	# 			"solubility": {
-	# 				"pHLower": 0,
-	# 				"pHUpper": 14,
-	# 				"pHStep": 0.1,
-	# 				"unit": "MGPERML"
-	# 			}
-	# 		}
-	# 	elif prop == 'ion_con':
-	# 		postData = {
-	# 			"chemical": structure,
-	# 			"pKa": { 
-	# 				"pHLower": 0,
-	# 				"pHUpper": 14,
-	# 				"pHStep": 0.1
-	# 			}
-	# 		}
-	# 	elif prop == 'kow_no_ph':
-	# 		postData = {
-	# 			"chemical": structure,	
-	# 			"logP": {
-	# 				"method": method
-	# 			}
-	# 		}
-	# 	elif prop == 'kow_wph':
-	# 		postData = {
-	# 			"chemical": structure,
-	# 			"logD": {
-	# 				"method": method,
-	# 				"pHLower": phForLogD,
-	# 				"pHUpper": phForLogD,
-	# 				"pHStep": 0.1
-	# 			}
-	# 		}
-	# 	return postData
-
-	# def getPchemPropData(self, propKey):
-	# 	try:
-	# 		req = requests.Request(data=getPostDataForProp(propKey))
-	# 		res = jchem_rest.getChemSpecData(req) # send request to jchem_rest
-	# 		return res
-	# 	except KeyError:
-	# 		logging.warning("Property does not exist in ChemAxon")
-	# 		raise
-	# 	

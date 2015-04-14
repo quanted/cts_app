@@ -1521,22 +1521,22 @@ body.wait *, body.wait
   /*border-bottom: 1px solid #333333;*/
 /*}*/
 
-.inputTableForOutput, .inputTableForOutput td, .inputTableForOutput th {
+.ctsTableStylin, .ctsTableStylin td, .ctsTableStylin th {
   font-size: 11px;
   border-spacing: 0px;
   background-color: transparent;
 }
 
-.inputTableForOutput {
+.ctsTableStylin {
   max-width: 450px;
 }
 
-.inputTableForOutput th {
+.ctsTableStylin th {
   /*font-size: 12px;*/
   background-color: #E7EADC;
 }
 
-.inputTableForOutput td {
+.ctsTableStylin td {
   text-align: left;
 }
 

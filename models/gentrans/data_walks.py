@@ -128,9 +128,9 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 	html += '</div>'
 
 	if molKey:
-		html += '<table class="inputTableForOutput" id="{}_table">'.format(molKey)
+		html += '<table class="ctsTableStylin" id="{}_table">'.format(molKey)
 	else:
-		html += '<table class="inputTableForOutput">'
+		html += '<table class="ctsTableStylin">'
 
 	if header:
 		html += '<tr class="header"><th colspan="2">' + header + '</th></tr>'

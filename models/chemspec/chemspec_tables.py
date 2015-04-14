@@ -178,7 +178,7 @@ def table_inputs(chemspec_obj):
     <br>
     <H3 class="out_1 collapsible" id="userInputs"><span></span>User Inputs</H3>
     <div class="out_">
-    <table class="inputTableForOutput" id="inputsTable">
+    <table class="ctsTableStylin" id="inputsTable">
     """
     html += inTmpl.render(Context(dict(data=getMolTblData(chemspec_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getPkaInputs(chemspec_obj), heading="Ionization Parameters")))
@@ -277,9 +277,9 @@ def getPkaResults(chemspec_obj):
         html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
 
     # pKa parent species:
-    html += '<table id="msMain" class="inputTableForOutput"><tr><td>'
+    html += '<table id="msMain" class="ctsTableStylin"><tr><td>Parent'
     html += wrap_molecule(chemspec_obj.jchemPropObjects['pKa'].getParent(), None, lgWidth, scale)
-    html += '<br></td><td>'
+    html += '<br></td><td id="ms-cell">Microspecies'
 
     # pKa microspecies:
     microspeciesList = chemspec_obj.jchemPropObjects['pKa'].getMicrospecies()

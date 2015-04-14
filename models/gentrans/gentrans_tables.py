@@ -139,7 +139,7 @@ def table_inputs(gentrans_obj):
     <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
     <div class="out_">
-    <table class="inputTableForOutput">
+    <table class="ctsTableStylin">
     """
     html += inTmpl.render(Context(dict(data=getStructInfo(gentrans_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getReactPathSimData(gentrans_obj), heading="Reaction Pathway Simulator")))

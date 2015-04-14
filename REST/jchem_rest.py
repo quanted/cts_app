@@ -175,7 +175,7 @@ class Pka(JchemProperty):
 		Returns dict with keys: image, formula, iupac, mass, and smiles
 		"""
 		try:
-			parentDict = {'image': self.results['result']['image']['image']}
+			parentDict = {'image': self.results['result']['image']['image'], 'key': 'parent'}
 			parentDict.update(getStructInfo(self.results['result']['structureData']['structure']))
 			return parentDict
 		except KeyError as ke:

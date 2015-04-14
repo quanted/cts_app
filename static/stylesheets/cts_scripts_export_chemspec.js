@@ -6,15 +6,23 @@ $(document).ready(function () {
 		
 		// var jq_html = $('<div />').append($("div.articles_output").children('H2[class="model_header"], table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html();
 
-		var elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
-		var inputTable = $('table#inputsTable');
-		var pka = $('h4#pka, dl#pkaValues');
+		// NOTE: This workflow wasn't having the default html capture due to its 
+		// nested info, hidden plot data, etc. So for now it's pretty much hard coded (sorry)
 
-		elements = elements.add(inputTable); //?????
-		elements = elements.add(pka); //?????
+		var elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
+		elements = elements.add('table#inputsTable'); // user inputs
+		elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
+		
+		var parentImage = $('#parent_div img'); // parent species
+		var parentTable = $('#parent_div.nodeWrapDiv table');
+		elements = elements.add(parentImage);
+		elements = elements.add(parentTable);
+
+		var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
+		// var ms = $('table#msMain td#ms-cell').children(':not(div.chemspec_molecule img)');
+		elements = elements.add(ms);
 
 		var jq_html = $('<div />').append($(elements).clone()).html();
-
 
 		var n_plot_1 = $('div[id^="chart"]').size();
 		var n_plot_2 = $('img[id^="chart"]').size();

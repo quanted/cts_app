@@ -173,7 +173,7 @@ def getStructInfoTemplate():
 
 def getInputTemplate():
     input_template = """
-    <table class="inputTableForOutput">
+    <table class="ctsTableStylin">
     <th colspan="2" class="alignLeft">{{heading}}</th>
     {% for label, value in data.items %}
         <tr>
