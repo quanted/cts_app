@@ -5,6 +5,7 @@
 import requests
 import json
 import logging
+import os
 # import jchem_rest
 
 headers = {'Content-Type' : 'application/json'}
@@ -18,7 +19,8 @@ class Calculator(object):
 	def __init__(self):
 		self.name = ''
 		self.propMap = {} # expecting list
-		self.baseUrl = 'http://134.67.114.6'
+		# self.baseUrl = 'http://134.67.114.6'
+		self.baseUrl = os.environ['CTS_TEST_SERVER']
 		self.urlStruct = ''
 		self.results = ''
 		# self.postData = 

@@ -60,11 +60,11 @@ function makeTheCall(url, calcPropData, node) {
         dataType: "json",
         data: calcPropData,
         timeout: 30000,
-        tryCount: 0,
-        retryLimit: 3,
+        // tryCount: 0,
+        // retryLimit: 3,
         success: function(data) {
-            console.log(this.tryCount);
-            console.log(this.retryLimit);
+            // console.log(this.tryCount);
+            // console.log(this.retryLimit);
             parseResponseToPchemTable(data, node, this);
         },
         error: function(jqXHR, textStatus, errorThrown) {
