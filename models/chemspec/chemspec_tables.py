@@ -277,9 +277,9 @@ def getPkaResults(chemspec_obj):
         html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
 
     # pKa parent species:
-    html += '<table id="msMain" class="ctsTableStylin"><tr><td>Parent'
+    html += '<table id="msMain" class="ctsTableStylin"><tr><td><h4 class="unstyle">Parent</h4>'
     html += wrap_molecule(chemspec_obj.jchemPropObjects['pKa'].getParent(), None, lgWidth, scale)
-    html += '<br></td><td id="ms-cell">Microspecies'
+    html += '<br></td><td id="ms-cell"><h4 class="unstyle">Microspecies</h4>'
 
     # pKa microspecies:
     microspeciesList = chemspec_obj.jchemPropObjects['pKa'].getMicrospecies()

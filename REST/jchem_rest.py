@@ -270,7 +270,7 @@ class MajorMicrospecies(JchemProperty):
 	def getMajorMicrospecies(self):
 		majorMsDict = {}
 		try:
-			majorMsDict.update({'image': self.results['result']['image']['image']})
+			majorMsDict.update({'image': self.results['result']['image']['image'], 'key': 'majorMS'})
 			structInfo = getStructInfo(self.results['result']['structureData']['structure'])
 			majorMsDict.update(structInfo) # add smiles, iupac, mass, formula key:values
 			return majorMsDict

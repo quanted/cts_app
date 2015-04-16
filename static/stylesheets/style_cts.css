@@ -1705,3 +1705,12 @@ for nodes on gentrans output */
   -webkit-border-radius: 0 0 4px 4px;
   -webkit-box-shadow: 3px 3px 15px #CCC;
 }
+
+/* styling for chemspec output, pKa labels ("parent", "microspecies");
+   basically unstyling H4 */
+h4.unstyle {
+  margin: 0px;
+  /*font-style: normal;*/
+  font-weight: normal;
+  vertical-align: top;
+}

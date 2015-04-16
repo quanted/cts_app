@@ -10,6 +10,7 @@ import json
 from REST.calculator_map import TestCalc
 from REST.calculator_map import EpiCalc
 from REST.calculator_map import MeasuredCalc
+from REST.calculator_map import Calculator as cmap
 
 
 # simple_proxy is a method that reaches out to a predefined (in the settings.py file for the project) API server, in this case, hosting TEST endpoints
@@ -56,82 +57,38 @@ def less_simple_proxy(request):
   try:
     calc = request.POST.get("calc")
     prop = request.POST.get("prop")
+    structure = request.POST.get("chemical")
 
-    # logging.info("calc: {}, prop: {}".format(calc, prop))
+    logging.info("{}".format(calc))
+    logging.info("{}".format(prop))
+    logging.info("{}".format(structure))
 
-    ### NOTE: this assumes a django httprequest
-    ### requests httprequest might be: calc = request.data.get("calc")
+    postData = {
+      "calc": calc,
+      "prop": prop
+    }
 
-    postData = {"calc": calc, "prop": prop}
+    # get data through calculator_map:
+    calcObj = cmap.getCalcObject(calc) # get calculator object
+    returnedData = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
+    # logging.info("DATA: {}".format(returnedData))
 
-    url = getUrlForCalcAndProp(calc, prop)
-    # logging.info("URL: {}".format(url))
+    postData.update({"data": returnedData}) # add that data
 
-    async_request = requests.get(TEST_URL + url) # call TEST web services
-    async_data = json.loads(async_request.content)
+    logging.info("DATA: {}".format(postData))
 
-    returnedData = pickDataFromJson(calc, prop, async_data) # pick out data from molecule object
-
-    # returnedCalcData = # call calc object with calc and prop values 
-
-    postData.update({"data": returnedData}) # append data key/value to postData
-    return HttpResponse(json.dumps(postData), content_type=async_request.headers['content-type'])
+    return HttpResponse(json.dumps(postData), content_type='application/json')
 
   except requests.HTTPError as e:
-    logging.warning("HTTP Error occured")
+    logging.warning("HTTP Error occured: {}".format(e))
     return HttpResponse(TEST_URL+e.msg, status=e.code, content_type='text/plain')
 
-  except ValueError:
-    logging.warning("POST data is incorrect")
+  except ValueError as ve:
+    logging.warning("POST data is incorrect: {}".format(ve))
     postData.update({"error": "value error"})
     return HttpResponse(json.dumps(postData), content_type='application/json')
 
-  except requests.exceptions.ConnectionError:
-    logging.warning("Connection error occured")
+  except requests.exceptions.ConnectionError as ce:
+    logging.warning("Connection error occured: {}".format(ce))
     postData.update({"error": "connection error"})
     return HttpResponse(json.dumps(postData), content_type='application/json')
-
-  # else:
-  #   logging.info("inside the else")
-  #   return HttpResponse(postData, content_type=async_request.headers['content-type'])
-
-
-def getUrlForCalcAndProp(calc, prop):
-  if calc == "test":
-    Test = TestCalc() # make instance of TEST class
-    return Test.getUrl("7", prop, "hierarchical")
-  elif calc == "epi":
-    Epi = EpiCalc()
-    return Epi.getUrl("7", prop)
-  elif calc == "measured":
-    Measured = MeasuredCalc()
-    return Measured.getUrl("7", prop)
-  else:
-    return ""
-
-
-def pickDataFromJson(calc, prop, jsonData):
-  Calc = getCalcObject(calc)
-  logging.info("Calc object: {}".format(Calc.name))
-  try:
-    key = Calc.propMap[prop]['resultKey']
-    return jsonData[key]
-  except AttributeError:
-    logging.warning("Error occured picking data from json!")
-    logging.warning("pickin key: {}, data: {}".format(key, jsonData))
-    return "error: no calculator"
-  except KeyError:
-    logging.warning("Error occured picking data from json!")
-    logging.warning("pickin key: {}, data: {}".format(key, jsonData))
-    return "error"
-
-
-def getCalcObject(calc):
-  logging.info("Getting calc object for {}".format(calc))
-  if calc == "test":
-    return TestCalc()
-  elif calc == "epi":
-    return EpiCalc()
-  elif calc == "measured":
-    return MeasuredCalc()
-

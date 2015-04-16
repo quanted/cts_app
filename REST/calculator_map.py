@@ -3,7 +3,11 @@
 ###########################################################
 
 import requests
-import jchem_rest
+import json
+import logging
+# import jchem_rest
+
+headers = {'Content-Type' : 'application/json'}
 
 
 class Calculator(object):
@@ -14,9 +18,10 @@ class Calculator(object):
 	def __init__(self):
 		self.name = ''
 		self.propMap = {} # expecting list
-		self.baseUrl = ''
+		self.baseUrl = 'http://134.67.114.6'
 		self.urlStruct = ''
-		self.baseUrl = ''
+		self.results = ''
+		# self.postData = 
 
 	@classmethod
 	def getCalcObject(self, calc):
@@ -31,24 +36,66 @@ class Calculator(object):
 		else:
 			raise TypeError('Valid calculators are chemaxon, test, epi, and measured')
 
-	def getUrl(self, molID, propKey, method=None):
-		if propKey in self.propMap:
-			calcProp = self.propMap[propKey]['urlKey']
-			if self.name == 'test':
-				if method: 
-					return self.urlStruct.format(molID, calcProp, method)
-				else: 
-					return "Error: TEST must have a method in the argument"
-			else: 
-				return self.urlStruct.format(molID, calcProp)
+	def getUrl(self, prop):
+		if prop in self.propMap:
+			calcProp = self.propMap[prop]['urlKey']
+			return self.urlStruct.format(calcProp)
 		else: 
-			return "Error: key not found"
+			return "Error: url key not found"
 
-	def getResultKey(self, propKey):
-		if propKey in self.propMap:
-			return self.propMap[propKey]['resultKey']
+	def getPropKey(self, prop):
+		if prop in self.propMap:
+			return self.propMap[prop]['propKey']
 		else:
-			return "Error: key not found"
+			return "Error: prop not found"
+
+	def getResultKey(self, prop):
+		if prop in self.propMap:
+			return self.propMap[prop]['resultKey']
+		else:
+			return "Error: result key not found"
+
+	def getPostData(self, calc, prop, method=None):
+		postData = {
+			"molecule": {
+				"inChIKey": "",
+				"iupacName": "",
+				"inChI": "",
+				"canonicalSmiles": ""
+			}
+		}
+		if calc == 'epi':
+			return postData
+		elif calc == 'test':
+			# logging.info(propMap)
+			postData.update({
+				"property": self.propMap[prop]['propKey'],
+				"method": "hierarchical"
+			})
+			return postData
+		else:
+			return "error!"
+
+	def makeDataRequest(self, structure, calc, prop, method=None):
+		post = self.getPostData(calc, prop)
+		post['molecule']['canonicalSmiles'] = structure
+
+		logging.info("post data: {}".format(post))
+
+		url = self.baseUrl + self.getUrl(prop)
+		logging.info("url: {}".format(url))
+
+		try:
+			response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
+		except requests.exceptions.ConnectionError as ce:
+			logging.info("connection exception: {}".format(ce))
+			return None
+		except requests.exceptions.Timeout as te:
+			logging.info("timeout exception: {}".format(te))
+			return None
+		else:
+			self.results = json.loads(response.content)
+			return self.results
 
 
 class TestCalc(Calculator):
@@ -59,25 +106,29 @@ class TestCalc(Calculator):
 
 		Calculator.__init__(self)
 
-		self.urlStruct = "/test/test/calc/{}/{}/{}" # molID, propKey, method
+		# self.urlStruct = "/test/test/calc/{}/{}/{}" # molID, propKey, method
+		self.urlStruct = "/api/calculations/TEST/HierarchicalMethod/{}"
 		self.methods = ['hierarchical'] # accounting for one method atm
 		self.name = "test"
-		self.baseUrl = "http://134.67.114.6/"
 		self.propMap = {
 			'melting_point': {
-				'urlKey': 'meltingPoint',
+				'urlKey': 'MeltingPoint',
+				'propKey': 'mp',
 				'resultKey': 'meltingPointTESTHierarchical',
 			},
 			'boiling_point': {
-				'urlKey': 'boilingPoint',
+				'urlKey': 'BoilingPoint',
+				'propKey': 'bp',
 				'resultKey': 'boilingPointTESTHierarchical'
 			},
 			'water_sol': {
-				'urlKey': 'waterSolubility',
+				'urlKey': 'WaterSolubility',
+				'propKey': 'ws',
 				'resultKey': 'waterSolubilityTESTHierarchical'
 			},
 			'vapor_press': {
-				'urlKey': 'vaporPressure',
+				'urlKey': 'VaporPressure',
+				'propKey': 'vp',
 				'resultKey': 'vaporPressureTESTHierarchical'
 			}
 		}
@@ -103,32 +154,38 @@ class EpiCalc(Calculator):
 		Calculator.__init__(self)
 
 		self.name = "epi"
-		self.urlStruct = "/test/epi/calc/{}/{}" # molID, propKey
+		# self.urlStruct = "/test/epi/calc/{}/{}" # molID, propKey
+		self.urlStruct = "/api/calculations/EpiSuite/{}"
 		self.methods = None
-		self.baseUrl = "http://134.67.114.6/"
 		self.propMap = {
 			'melting_point': {
 				'urlKey': 'meltingPtDegCEstimated',
+				'propKey': 'Melting Pt (deg C)(estimated)',
 				'resultKey': 'meltingPtDegCEstimated'
 			},
 			'boiling_point': {
 				'urlKey': 'boilingPtDegCEstimated',
+				'propKey': '',
 				'resultKey': 'boilingPtDegCEstimated'
 			},
 			'water_sol': {
 				'urlKey': 'waterSolMgLEstimated',
+				'propKey': '',
 				'resultKey': 'waterSolMgLEstimated'
 			},
 			'vapor_press': {
 				'urlKey': 'vaporPressMmHgEstimated',
+				'propKey': '',
 				'resultKey': 'vaporPressMmHgEstimated'
 			},
 			'henrys_law_con': {
 				'urlKey': 'henryLcBondAtmM3Mole',
+				'propKey': '',
 				'resultKey': 'henryLcBondAtmM3Mole'
 			},
 			'kow_no_ph': {
 				'urlKey': 'logKowEstimate',
+				'propKey': '',
 				'resultKey': 'logKowEstimate'
 			},
 		}
@@ -145,7 +202,6 @@ class MeasuredCalc(Calculator):
 
 		self.urlStruct = "/test/measured/{}/test/{}" # molID, propKey
 		self.methods = None
-		self.baseUrl = "http://134.67.114.6/"
 		self.propMap = {
 			'melting_point': {
 				'urlKey': 'meltingPoint',

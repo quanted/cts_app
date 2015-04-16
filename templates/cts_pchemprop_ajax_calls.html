@@ -43,7 +43,9 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 var tblCell = $('.' + calc + '.' + prop);
                 $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
 
+
                 makeTheCall(url, calcPropData, node);
+                // setTimeout(makeTheCall(url, calcPropData, node), 1000); //pause for 1s (changes nothing)
             }
         }
     }
@@ -57,11 +59,13 @@ function makeTheCall(url, calcPropData, node) {
         type: "POST",
         dataType: "json",
         data: calcPropData,
-        timeout: 5000,
-        // tryCount: 0,
-        // retryLimit: 3,
+        timeout: 30000,
+        tryCount: 0,
+        retryLimit: 3,
         success: function(data) {
-            parseResponseToPchemTable(data, node);
+            console.log(this.tryCount);
+            console.log(this.retryLimit);
+            parseResponseToPchemTable(data, node, this);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -76,7 +80,7 @@ function makeTheCall(url, calcPropData, node) {
 }
 
 
-function parseResponseToPchemTable(response, node) {
+function parseResponseToPchemTable(response, node, ajaxCall) {
     //map response to pchemprop output table:
 
     var calc = response['calc'];
@@ -84,10 +88,33 @@ function parseResponseToPchemTable(response, node) {
 
     if (response.hasOwnProperty('error')) {
         $('.' + calc + '.' + prop).html(response['error']); //add error to table
+        console.log(response['error']);
+
+        // // retry stuff...isn't working yet...
+        // ajaxCall.tryCount++; 
+        // if (ajaxCall.tryCount <= ajaxCall.retryLimit) {
+        //     // makeTheCall(ajaxCall.url, ajaxCall.data, node);
+        //     $.ajax(ajaxCall);
+        //     return;
+        // }
         return; //get out of there
     }
 
-    var data = response['data'];
+    var data;
+    if (response.hasOwnProperty('data')) {
+        if (calc != "chemaxon") {
+            if (response['data'].hasOwnProperty('error')) {
+                data = "error";
+                console.log(response['data']['error']);
+            }
+            else {
+                data = response['data']['value'];
+            }
+        }
+        else{
+            data = response['data'];
+        }
+    }
 
     $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
 
@@ -108,9 +135,13 @@ function organizeData(data) {
         return data.toFixed(3);
     }
 
+    if (typeof data === "string") {
+        return data
+    }
+
     var parsedData = "";
     for (item in data) {
-        if (data.hasOwnProperty(item)) {
+        if (data.hasOwnProperty(item) && data[item] != null) {
             var itemVals = data[item];
             if (itemVals.length == 0) {
                 parsedData += '<div>' + item + ': none</div>';

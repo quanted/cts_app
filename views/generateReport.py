@@ -34,7 +34,7 @@ def parsePOST(request):
             td {text-align:center; padding:2px; font-size:11px;}
             h2 {font-size:13px; color:#79973F}
             h3 {font-size:12px; color:#79973F}
-            h4 {font-size:12px; color:#79973F}
+            h4 {font-size:12px; color:#79973F; margin: 4px 0px 0px 0px}
             </style>
             """
     input_str = input_css + final_str

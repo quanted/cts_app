@@ -13,14 +13,20 @@ $(document).ready(function () {
 		elements = elements.add('table#inputsTable'); // user inputs
 		elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
 		
+		var parentTitle = $('table#msMain td:first h4');
 		var parentImage = $('#parent_div img'); // parent species
-		var parentTable = $('#parent_div.nodeWrapDiv table');
-		elements = elements.add(parentImage);
-		elements = elements.add(parentTable);
+		var parentTable = $('#parent_div table');
+
+		elements = elements
+					.add(parentTitle)
+					.add(parentImage)
+					.add(parentTable); //.add(parentImage).add(parentTable);
 
 		var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
-		// var ms = $('table#msMain td#ms-cell').children(':not(div.chemspec_molecule img)');
 		elements = elements.add(ms);
+
+		var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
+		elements = elements.add(majorMS);
 
 		var jq_html = $('<div />').append($(elements).clone()).html();
 
@@ -38,18 +44,12 @@ $(document).ready(function () {
 			y_offset : 30
 		};
 
-		while(i <= n_plot){
-			try {
-				imgData.push($('#chart'+i).jqplotToImageStr(options));
-				i++;
-				// console.log('a')
-			}
-			catch(e){
-				imgData.push($('#chart'+i).attr('src'));
-				i++;
-				// console.log('b')
-			}
-		}
+		try { imgData.push($('#microspecies-distribution').jqplotToImageStr(options)); }
+		catch(e) { console.log(e); }
+
+		try { imgData.push($('#isoelectric-point').jqplotToImageStr(options)); }
+		catch(e) { console.log(e); }
+
 
 		var imgData_json = JSON.stringify(imgData, null, '\t');
 		// console.log(imgData_json);
