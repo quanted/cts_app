@@ -89,21 +89,17 @@ function parseResponseToPchemTable(response, node, ajaxCall) {
     if (response.hasOwnProperty('error')) {
         $('.' + calc + '.' + prop).html(response['error']); //add error to table
         console.log(response['error']);
-
-        // // retry stuff...isn't working yet...
-        // ajaxCall.tryCount++; 
-        // if (ajaxCall.tryCount <= ajaxCall.retryLimit) {
-        //     // makeTheCall(ajaxCall.url, ajaxCall.data, node);
-        //     $.ajax(ajaxCall);
-        //     return;
-        // }
         return; //get out of there
     }
 
     var data;
     if (response.hasOwnProperty('data')) {
         if (calc != "chemaxon") {
-            if (response['data'].hasOwnProperty('error')) {
+            if (response['data'] == null) {
+                data = "error";
+                console.log("data has null value");
+            }
+            else if (response['data'].hasOwnProperty('error')) {
                 data = "error";
                 console.log(response['data']['error']);
             }
@@ -135,8 +131,8 @@ function organizeData(data) {
         return data.toFixed(3);
     }
 
-    if (typeof data === "string") {
-        return data
+    if (typeof data === "string" || data == null) {
+        return data;
     }
 
     var parsedData = "";
