@@ -30,8 +30,10 @@ $(document).ready(function () {
 
 		var jq_html = $('<div />').append($(elements).clone()).html();
 
-		var n_plot_1 = $('div[id^="chart"]').size();
-		var n_plot_2 = $('img[id^="chart"]').size();
+		var n_plot_1 = $('#microspecies-distribution').size();
+		var n_plot_2 = $('#isoelectric-point').size();
+		// var n_plot_1 = $('div[id^="chart"]').size();
+		// var n_plot_2 = $('img[id^="chart"]').size();
 		var n_plot = n_plot_1 + n_plot_2;
 
 		console.log(n_plot);
@@ -44,12 +46,13 @@ $(document).ready(function () {
 			y_offset : 30
 		};
 
-		try { imgData.push($('#microspecies-distribution').jqplotToImageStr(options)); }
-		catch(e) { console.log(e); }
-
-		try { imgData.push($('#isoelectric-point').jqplotToImageStr(options)); }
-		catch(e) { console.log(e); }
-
+		try { 
+			imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
+			imgData.push($('#isoelectric-point').jqplotToImageStr(options));
+		}
+		catch(e) { 
+			console.log(e);
+		}
 
 		var imgData_json = JSON.stringify(imgData, null, '\t');
 		// console.log(imgData_json);
@@ -74,7 +77,6 @@ $(document).ready(function () {
 	$('#pdfExport').click(function () {
 		parseOutput();
 		$('form').attr({'action': 'pdf', 'method': 'POST'}).submit();
-		// $('form').attr('action', 'pdf').submit();
 	});
 
 	$('#htmlExport').click(function () {

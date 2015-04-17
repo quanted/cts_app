@@ -609,7 +609,7 @@ def web_call(url, request, data):
 		response = requests.post(url, data=data, headers=headers, timeout=60)
 		return response
 	except Exception as e:
-		logging.warning("error at web call: {}".format(e))
+		logging.warning("error at web call: {} /error".format(e))
 		raise 
 
 

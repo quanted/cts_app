@@ -12,11 +12,14 @@ import logging
 
 def parsePOST(request):
 
-    logging.info(request.POST)
+    # logging.info("Request: {}".format(request.POST))
 
     pdf_t = request.POST.get('pdf_t')
     pdf_nop = request.POST.get('pdf_nop')
     pdf_p = json.loads(request.POST.get('pdf_p'))
+
+    # logging.info("plots: {} @@@".format(pdf_p))
+    
 
     # Append strings and check if charts are present
     final_str = pdf_t
@@ -80,7 +83,7 @@ def pdfReceiver(request, model=''):
     
     # viewmodule = importlib.import_module('.views', 'models.'+model)
 
-    logging.info("REQUEST: {}".format(request))
+    # logging.info("REQUEST: {}".format(request))
 
     # Open description txt
     # text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
@@ -92,7 +95,7 @@ def pdfReceiver(request, model=''):
     #algorithms = text_algorithm.read()
 
     input_str = description
-    input_str = input_str + parsePOST(request)
+    input_str += parsePOST(request)
     #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
 
     packet = StringIO.StringIO() #write to memory
