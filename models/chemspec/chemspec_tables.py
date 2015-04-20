@@ -113,15 +113,11 @@ inTmpl = Template(getInputTemplate())
 
 
 def table_all(chemspec_obj):
-    # html_all = '<script type="text/javascript" src="/static/stylesheets/structure_wrapper.js"></script>'
     html_all = '<script type="text/javascript" src="/static/stylesheets/qtip/jquery.qtip.js"></script>'
+    html_all += render_to_string('cts_export_chemspec.html', {'jchemDict': mark_safe(json.dumps(chemspec_obj.jchemDictResults))})
     html_all += '<link type="text/css" rel="stylesheet" href="/static/stylesheets/qtip/jquery.qtip.css"></link>'
-    # inputs:
     html_all += table_inputs(chemspec_obj)
-    # outputs:
     html_all += table_outputs(chemspec_obj)
-    # raw data button and textbox:
-    # html_all += render_to_string('cts_display_raw_data.html', {'rawData': chemspec_obj.rawData}) # temporary
     # qtip popup script for images with class "wrapped_molecule"
     html_all += """
     <script>
@@ -229,7 +225,7 @@ def getIsoPtResults(chemspec_obj):
         <div class="out_">
         """
         if isoPt:
-            html += '<div id="isoPtData" class="hideData">'
+            html += '<div id="isoPtData" class="hideData nopdf">'
             html += mark_safe(json.dumps(isoPtChartData))
             html += '</div>'
             html += render_to_string('cts_plot_isoelectricPoint.html', {"ip": isoPt})
@@ -293,7 +289,7 @@ def getPkaResults(chemspec_obj):
     html += '</td><td><br>'
 
     # Microspecies Distribution Plot:
-    html += '<div id="microDistData1" class="hideData">'
+    html += '<div id="microDistData1" class="hideData nopdf">'
     html += mark_safe(json.dumps(chemspec_obj.jchemPropObjects['pKa'].getChartData()))
     html += '</div>'
     html += render_to_string('cts_plot_microspecies_dist.html')
@@ -400,7 +396,7 @@ def wrap_molecule(propDict, height, width, scale):
     # html += '<tr><td align="center">' + infoDict['image'] + '</td></tr></table>'
 
     html = """
-    <div class="chemspec_molecule">
+    <div class="chemspec_molecule nopdf">
     """
     html += infoDict['image']
     html += """

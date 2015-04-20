@@ -43,7 +43,7 @@ class JchemProperty(object):
 		self.url = ''
 		self.structure = '' # cas, smiles, iupac, etc. 
 		self.postData = {},
-		self.results = {}
+		self.results = ''
 
 	def setPostDataValue(self, propKey, propValue):
 		"""

@@ -92,3 +92,8 @@ class chemspec(object):
 			'tautomerization': tautObj,
 			'stereoisomers': stereoObj
 		}
+
+		self.jchemDictResults = {}
+		for key, value in self.jchemPropObjects.items():
+			if value != None:
+				self.jchemDictResults.update({key: value.results})

@@ -9,17 +9,19 @@ import json
 import os
 
 import logging
+from bs4 import BeautifulSoup as bs
 
 def parsePOST(request):
 
     # logging.info("Request: {}".format(request.POST))
 
-    pdf_t = request.POST.get('pdf_t')
-    pdf_nop = request.POST.get('pdf_nop')
-    pdf_p = json.loads(request.POST.get('pdf_p'))
+    # pdf_t = request.POST.get('pdf_t')
+    # pdf_nop = request.POST.get('pdf_nop')
+    # pdf_p = json.loads(request.POST.get('pdf_p'))
 
-    # logging.info("plots: {} @@@".format(pdf_p))
-    
+    # logging.info(request.POST)
+
+    results = json.loads(request.POST)
 
     # Append strings and check if charts are present
     final_str = pdf_t
@@ -80,6 +82,7 @@ def pdfReceiver(request, model=''):
     Sends POST data as string to xhtml2pdf library for processing
     """
     from xhtml2pdf import pisa
+
     
     # viewmodule = importlib.import_module('.views', 'models.'+model)
 
