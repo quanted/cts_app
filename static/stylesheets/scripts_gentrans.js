@@ -41,6 +41,8 @@ $(document).ready(function() {
     $('select[name="ftt_selection"] option[value="2"]').prop('disabled', true);
     $('select[name="ftt_selection"] option[value="3"]').prop('disabled', true);
 
+    $('select[name="pop_limit"]').prop('disabled', true); //disable pop limit until it actually does something
+
     $('#id_aerobic_biodegrad').prop('disabled', true);
     $('#id_anaerobic_biodegrad').prop('disabled', true);
 

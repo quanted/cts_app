@@ -258,7 +258,7 @@ function ajaxCall(params, callback) {
       },
       error : function(jqXHR, textStatus, errorThrown) {
         callback("Fail");
-      },
+      }
 
   });
 }

@@ -20,8 +20,7 @@ def parsePOST(request):
     # pdf_p = json.loads(request.POST.get('pdf_p'))
 
     # logging.info(request.POST)
-
-    results = json.loads(request.POST)
+    results = request.POST
 
     # Append strings and check if charts are present
     final_str = pdf_t

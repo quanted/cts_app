@@ -264,7 +264,7 @@ class cts_reaction_options(forms.Form):
 	pop_limit = forms.ChoiceField (
 					choices=pop_limit_CHOICES,
 					label='Population Limit:',
-					required=False
+					required=False,
 				)
 
 	likely_limit = forms.FloatField (
@@ -276,8 +276,8 @@ class cts_reaction_options(forms.Form):
 					)
 
 	# add clean to force select option range
-	# def clean(self):
-
+    # def clean_status(self):
+    #    return self.instance.status
 
 
 # OECD Guidelines Selection

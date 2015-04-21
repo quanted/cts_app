@@ -6,17 +6,15 @@ Access to jchem web services
 import requests
 import json
 import logging
-from django.template import Template, Context
 from django.shortcuts import render
 import datetime
 import pytz
 import os
-import time
 
 from django.http import HttpResponse # todo: remove this and only use requests
 
 
-headers = {'Content-Type' : 'application/json'}
+headers = {'Content-Type': 'application/json'}
 
 
 class Urls:
@@ -61,7 +59,7 @@ class JchemProperty(object):
 	def setPostDataValues(self, multiKeyValueDict):
 		"""
 		Can set multiple key:values at once
-		"""
+        """
 		try:
 			for key, value in multiKeyValueDict.items():
 				self.postData[self.name][key] = value
