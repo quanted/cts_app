@@ -114,7 +114,7 @@ inTmpl = Template(getInputTemplate())
 
 def table_all(chemspec_obj):
     html_all = '<script type="text/javascript" src="/static/stylesheets/qtip/jquery.qtip.js"></script>'
-    html_all += render_to_string('cts_export_chemspec.html', {'jchemDict': mark_safe(json.dumps(chemspec_obj.jchemDictResults))})
+    # html_all += render_to_string('cts_export_chemspec.html', {'jchemDict': mark_safe(json.dumps(chemspec_obj.jchemDictResults))})
     html_all += '<link type="text/css" rel="stylesheet" href="/static/stylesheets/qtip/jquery.qtip.css"></link>'
     html_all += table_inputs(chemspec_obj)
     html_all += table_outputs(chemspec_obj)
@@ -336,7 +336,7 @@ def getTautomerResults(chemspec_obj):
         return ""
 
     html = """
-    <H4 class="out_1 collapsible" id="section11"><span></span>Tautomerization</H4>
+    <H4 class="out_1 collapsible" id="taut"><span></span>Tautomerization</H4>
     <div class="out_ shiftRight">
     """
 

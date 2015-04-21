@@ -16,7 +16,7 @@ $(document).ready(function () {
 		var parentTitle = $('table#msMain td:first h4');
 		var parentImage = $('#parent_div img'); // parent species
 		var parentTable = $('#parent_div table');
-        
+
 		elements = elements.add(parentTitle).add(parentImage).add(parentTable);
 
 		var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));

@@ -4,34 +4,56 @@ $(document).ready(function () {
 
 	function parseOutput() {
 		
-		var jq_html = $('<div />').append($("div.articles_output").children('H2[class="model_header"], table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html();
+		//var jq_html = $('<div />').append($("div.articles_output").children('H2[class="model_header"], table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html()
 
-		var n_plot_1 = $('div[id^="chart"]').size();
-		var n_plot_2 = $('img[id^="chart"]').size();
-		var n_plot = n_plot_1 + n_plot_2;
+        var path = window.location.href;
+        var elements;
 
-		console.log(n_plot);
-
-		var i=1;
-
-		var imgData = [];
-		var options = {
+        var options = {
 			x_offset : 30,
 			y_offset : 30
 		};
+        var imgData = [];
 
-		while(i <= n_plot){
-			try {
-				imgData.push($('#chart'+i).jqplotToImageStr(options));
-				i++;
-				// console.log('a')
-			}
-			catch(e){
-				imgData.push($('#chart'+i).attr('src'));
-				i++;
-				// console.log('b')
-			}
-		}
+        if (path.indexOf("chemspec") == -1 ) {
+            elements = $('div.articles_output').children().not(':hidden')
+        }
+        else {
+            elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
+            elements = elements.add('table#inputsTable'); // user inputs
+            elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
+
+            var parentTitle = $('table#msMain td:first h4');
+            var parentImage = $('#parent_div img'); // parent species
+            var parentTable = $('#parent_div table');
+
+            elements = elements.add(parentTitle).add(parentImage).add(parentTable);
+
+            var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
+            elements = elements.add(ms);
+
+            var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
+            elements = elements.add(majorMS);
+
+            var taut = $('h4#taut, #taut_div img, #taut_div table');
+            elements = elements.add(taut);
+
+            try {
+                imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
+                imgData.push($('#isoelectric-point').jqplotToImageStr(options));
+            }
+            catch(e) {
+                console.log(e);
+            }
+        }
+
+		var jq_html = $('<div />').append($(elements).clone()).html();
+
+		var n_plot_1 = $('#microspecies-distribution').size();
+		var n_plot_2 = $('#isoelectric-point').size();
+		var n_plot = n_plot_1 + n_plot_2;
+
+		console.log(n_plot);
 
 		var imgData_json = JSON.stringify(imgData, null, '\t');
 		// console.log(imgData_json);

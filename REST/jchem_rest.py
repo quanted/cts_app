@@ -59,7 +59,7 @@ class JchemProperty(object):
 	def setPostDataValues(self, multiKeyValueDict):
 		"""
 		Can set multiple key:values at once
-        """
+		"""
 		try:
 			for key, value in multiKeyValueDict.items():
 				self.postData[self.name][key] = value
@@ -74,12 +74,12 @@ class JchemProperty(object):
 		url = self.baseUrl + self.url
 		self.postData.update({
 			"result-display": {
-	            "include":["structureData", "image"],
-	            "parameters":{
-	                "structureData":"smiles"
-	            }
-        	}
-        })
+				"include":["structureData", "image"],
+				"parameters":{
+					"structureData":"smiles"
+				}
+			}
+		})
 		postData = {
 			"structure": structure,
 			"parameters": self.postData
@@ -222,7 +222,7 @@ class IsoelectricPoint(JchemProperty):
 		self.name = 'isoelectricPoint'
 		self.url = '/webservices/rest-v0/util/calculate/isoelectricPoint'
 		self.postData = {
-    		"pHStep": 0.1,
+			"pHStep": 0.1,
 			"doublePrecision": 2
 		}
 
@@ -261,7 +261,7 @@ class MajorMicrospecies(JchemProperty):
 		self.name = 'majorMicrospecies'
 		self.url = '/webservices/rest-v0/util/calculate/majorMicrospecies'
 		self.postData = {
-    		"pH": 7.4,
+			"pH": 7.4,
 			"takeMajorTautomericForm": False
 		}
 
@@ -290,7 +290,7 @@ class Tautomerization(JchemProperty):
 			"rationalTautomerGenerationMode": False,
 			"singleFragmentMode": True,
 			"protectAromaticity": True,
-		    "protectCharge": True,
+			"protectCharge": True,
 			"excludeAntiAromaticCompounds": True,
 			"protectDoubleBondStereo": False,
 			"protectAllTetrahedralStereoCenters": False,
@@ -304,7 +304,7 @@ class Tautomerization(JchemProperty):
 		tautImageList = []
 		try:
 			for taut in self.results['result']:
-				tautStructDict = {'image': taut['image']['image']}
+				tautStructDict = {'image': taut['image']['image'], 'key': 'taut'}
 				structInfo = getStructInfo(taut['structureData']['structure'])
 				tautStructDict.update(structInfo)
 				tautStructDict.update({'dist': 100 * round(taut['dominantTautomerDistribution'], 4)})
@@ -356,8 +356,8 @@ class Solubility(JchemProperty):
 
 	def getSolubility(self):
 		"""
-	    Gets water solubility for chemaxon
-	    """
+		Gets water solubility for chemaxon
+		"""
 		try:
 			return 1000.0 * self.results['intrinsicSolubility']
 		except KeyError as ke:
@@ -382,8 +382,8 @@ class LogP(JchemProperty):
 
 	def getLogP(self):
 		"""
-	    Gets pH-independent kow
-	    """
+		Gets pH-independent kow
+		"""
 		try:
 			return self.results['logpnonionic']
 		except KeyError as ke:
@@ -411,8 +411,8 @@ class LogD(JchemProperty):
 
 	def getLogD(self, ph):
 		"""
-	    Gets pH-dependent kow
-	    """
+		Gets pH-dependent kow
+		"""
 		try:
 			ph = float(ph)
 			chartDataList = self.results['chartData']['values']
@@ -424,7 +424,7 @@ class LogD(JchemProperty):
 		except KeyError as ke:
 			logging.warning("key error: {}".format(ke))
 			return None
-	       
+
 
 def doc(request):
 	"""
@@ -682,7 +682,7 @@ def addExplicitH(dataDict):
 
 
 def gen_jid():
-    ts = datetime.datetime.now(pytz.UTC)
-    localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
-    jid = localDatetime.strftime('%Y%m%d%H%M%S%f')
-    return jid
+	ts = datetime.datetime.now(pytz.UTC)
+	localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
+	jid = localDatetime.strftime('%Y%m%d%H%M%S%f')
+	return jid

@@ -13,14 +13,9 @@ from bs4 import BeautifulSoup as bs
 
 def parsePOST(request):
 
-    # logging.info("Request: {}".format(request.POST))
-
-    # pdf_t = request.POST.get('pdf_t')
-    # pdf_nop = request.POST.get('pdf_nop')
-    # pdf_p = json.loads(request.POST.get('pdf_p'))
-
-    # logging.info(request.POST)
-    results = request.POST
+    pdf_t = request.POST.get('pdf_t')
+    pdf_nop = request.POST.get('pdf_nop')
+    pdf_p = json.loads(request.POST.get('pdf_p'))
 
     # Append strings and check if charts are present
     final_str = pdf_t
