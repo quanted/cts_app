@@ -196,4 +196,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 			$(".back, #metaDataToggle, #metaDataText, #resetbutton").hide();
 		}
 	});
+
+    // if submit is enabled, make it glow for the slow
 }
