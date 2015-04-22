@@ -327,10 +327,10 @@ $(document).ready(function() {
     // Enable submit only if a reaction library is selected
     $('#cts_reaction_libs input:checkbox').on("change", function() {
         if ($('#cts_reaction_libs input:checkbox:checked').length > 0) {
-            $('input.submit').prop('disabled', false);
+            $('input.submit').prop('disabled', false).addClass('brightBorders');
         }
         else {
-            $('input.submit').prop('disabled', true);
+            $('input.submit').prop('disabled', true).removeClass('brightBorders');
         }
     });
 

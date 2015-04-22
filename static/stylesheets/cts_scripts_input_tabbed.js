@@ -198,4 +198,30 @@ function uberNavTabs( modelTabs, subTabs ) {
 	});
 
     // if submit is enabled, make it glow for the slow
+
+    $('input[type=submit]').change(function() {
+        if ($(this).prop('disabled', false)) {
+            $(this).addClass('brightBorders');
+        }
+        else {
+            $(this).removeClass('brightBorders');
+        }
+    });
+
+    //mouseover speciation table
+    //$('table.tab_Speciation').hover(
+    //    function() {
+    //        //mouseenter
+    //        $(this).removeClass('darken');
+    //        $(this).find('input[type=checkbox]').addClass('brightBorders');
+    //    },
+    //    function() {
+    //        //mouseleave
+    //        var checked = $(this).find('input[type=checkbox]').is(':checked');
+    //        if (!checked) {
+    //            $(this).addClass('darken');
+    //        }
+    //        $(this).find('input[type=checkbox]').removeClass('brightBorders');
+    //    }
+    //);
 }

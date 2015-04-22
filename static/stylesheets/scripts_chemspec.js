@@ -114,10 +114,10 @@ function enableTable(chkbox) {
 
         //Submit only enabled if a checkbox is selected:
         if ($('input[type="checkbox"]').is(":checked")) {
-            $('input[type="submit"]').prop('disabled', false);
+            $('input[type="submit"]').prop('disabled', false).addClass('brightBorders');
         }
         else {
-            $('input[type="submit"]').prop('disabled', true);
+            $('input[type="submit"]').prop('disabled', true).removeClass('brightBorders');
         }
 
     });

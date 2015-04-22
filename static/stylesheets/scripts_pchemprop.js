@@ -84,7 +84,7 @@ function submitButtonLogic() {
 
     //disable submit if no calculator is checked
     if ($('input[type=checkbox].col_header').is(':not(:checked)')) {
-        $('.submit.input_button').prop('disabled', true);
+        $('.submit.input_button').prop('disabled', true).removeClass('brightBorders');
     }
 
     //loop through calculators' checkboxes
@@ -97,7 +97,7 @@ function submitButtonLogic() {
 
             //enable submit if checked calculator has checked properties
             if ($(availableProps).parent().find('input[type=checkbox]').is(':checked')) {
-                $('.submit.input_button').prop('disabled', false);
+                $('.submit.input_button').prop('disabled', false).addClass('brightBorders');
             }
 
         }
