@@ -9,7 +9,7 @@ import json
 import os
 
 import logging
-from bs4 import BeautifulSoup as bs
+
 
 def parsePOST(request):
 
