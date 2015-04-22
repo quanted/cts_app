@@ -64,7 +64,7 @@ def link_callback(uri, rel):
 
 # @require_POST
 # @require_GET
-def pdfReceiver(request, model=''):
+def ctsPdfReceiver(request, model=''):
     """
     PDF Generation Receiver function.
     Sends POST data as string to xhtml2pdf library for processing
