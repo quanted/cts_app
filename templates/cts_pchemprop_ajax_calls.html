@@ -55,6 +55,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 function makeTheCall(url, calcPropData, node) {
     $.ajax({ 
         url: url,
+        async: false,
         type: "POST",
         dataType: "json",
         data: calcPropData,
