@@ -23,17 +23,18 @@ def parsePOST(request):
     if (int(pdf_nop)>0):
         for i in range(int(pdf_nop)):
             final_str = final_str + """<img id="imgChart1" src="%s" />"""%(pdf_p[i])
-            final_str = final_str + """<br>"""
+            # final_str = final_str + """<br>"""
 
     # Styling
     input_css="""
             <style>
-            table {margin-bottom:16px; border: 1px solid #666666;}
-            th {text-align:center; padding:2px; font-size:12px;}
-            td {text-align:center; padding:2px; font-size:11px;}
+            table {border: 1px solid #666666; font-family: 'Open Sans', sans-serif;}
+            th {text-align:center; padding:2px; font-size:11px;}
+            td {padding:2px; font-size:10px;}
             h2 {font-size:13px; color:#79973F}
-            h3 {font-size:12px; color:#79973F}
-            h4 {font-size:12px; color:#79973F; margin: 4px 0px 0px 0px}
+            h3 {font-size:12px; color:#79973F;}
+            h4 {font-size:12px; color:#79973F; padding-top:30px;}
+            .pdfDiv {border: 1px solid #000000;}
             </style>
             """
     input_str = input_css + final_str
@@ -46,15 +47,8 @@ def link_callback(uri, rel):
     """
     # use short variable names
     sUrl = settings.STATIC_URL      # Typically /static/
-    # os.path.abspath(os.path.dirname(__file__))
     sRoot = os.path.join(settings.PROJECT_ROOT, 'static')    # Typically /home/userX/project_static/
-    # mUrl = settings.MEDIA_URL       # Typically /static/media/
-    # mRoot = settings.MEDIA_ROOT     # Typically /home/userX/project_static/media/
 
-    # convert URIs to absolute system paths
-    # if uri.startswith(mUrl):
-    #     path = os.path.join(mRoot, uri.replace(mUrl, ""))
-    # elif uri.startswith(sUrl):
     if uri.startswith(sUrl):
         path = os.path.join(sRoot, uri.replace(sUrl, ""))
 
@@ -77,10 +71,6 @@ def pdfReceiver(request, model=''):
     """
     from xhtml2pdf import pisa
 
-    
-    # viewmodule = importlib.import_module('.views', 'models.'+model)
-
-    # logging.info("REQUEST: {}".format(request))
 
     # Open description txt
     # text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')

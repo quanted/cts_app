@@ -38,6 +38,9 @@ $(document).ready(function () {
             var taut = $('h4#taut, #taut_div img, #taut_div table');
             elements = elements.add(taut);
 
+            var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
+            elements = elements.add(stereo);
+
             try {
                 imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
                 imgData.push($('#isoelectric-point').jqplotToImageStr(options));

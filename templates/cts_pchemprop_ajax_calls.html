@@ -43,7 +43,6 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 var tblCell = $('.' + calc + '.' + prop);
                 $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
 
-
                 makeTheCall(url, calcPropData, node);
                 // setTimeout(makeTheCall(url, calcPropData, node), 1000); //pause for 1s (changes nothing)
             }

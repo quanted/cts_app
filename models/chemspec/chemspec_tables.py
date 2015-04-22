@@ -309,7 +309,7 @@ def getStereoisomersResults(chemspec_obj):
         return ""
 
     html = """
-    <H4 class="out_1 collapsible" id="section10"><span></span>Stereoisomers ({})</H4>
+    <H4 class="out_1 collapsible" id="stereo"><span></span>Stereoisomers ({})</H4>
     <div class="out_ shiftRight">""".format(len(stereoList))
 
     html += '<dl style="display:inline-block">'
