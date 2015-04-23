@@ -208,7 +208,7 @@ def input_struct_table(pchemprop_obj):
     <div class="out_">
     """
     html += inTmpl.render(Context(dict(data=getInputData(pchemprop_obj), heading="Molecular Information")))
-    html = html + """
+    html += """
     </div>
     """
     return html
@@ -232,7 +232,7 @@ def output_pchem_table(pchemprop_obj):
     pchemHTML += str(pchemprop_parameters.form(None))
 
     html += pchemHTML
-    html += render_to_string('cts_pchemprop_cleanOutputTable.html', {"kow_ph": kow_ph});
+    html += render_to_string('cts_pchemprop_cleanOutputTable.html', {"kow_ph": kow_ph})
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "kow_ph": kow_ph,
                                     "structure": mark_safe(pchemprop_obj.chem_struct),

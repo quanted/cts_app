@@ -28,16 +28,17 @@ def parsePOST(request):
     # Styling
     input_css="""
             <style>
+            body {font-family: 'Open Sans', sans-serif;}
             table {
                 border: 1px solid #666666;
-                font-family: 'Open Sans', sans-serif;
             }
             th {text-align:center; padding:2px; font-size:11px;}
-            td {padding:2px; font-size:10px;}
-            h2 {font-size:13px; color:#79973F}
+            td {padding:0px; font-size:10px; border: solid 1px #666666;}
+            h2 {font-size:13px; color:#79973F;}
             h3 {font-size:12px; color:#79973F;}
             h4 {font-size:12px; color:#79973F; padding-top:30px;}
             .pdfDiv {border: 1px solid #000000;}
+            div.tooltiptext {display: table;}
             </style>
             """
     input_str = input_css + final_str
@@ -67,7 +68,7 @@ def link_callback(uri, rel):
 
 # @require_POST
 # @require_GET
-def ctsPdfReceiver(request, model=''):
+def pdfReceiver(request, model=''):
     """
     PDF Generation Receiver function.
     Sends POST data as string to xhtml2pdf library for processing
@@ -89,7 +90,7 @@ def ctsPdfReceiver(request, model=''):
     #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
 
     packet = StringIO.StringIO() #write to memory
-    pisa.CreatePDF(input_str, dest = packet, link_callback = link_callback)
+    pisa.CreatePDF(input_str, dest=packet, link_callback=link_callback)
 
     # Create timestamp
     ts = datetime.datetime.now(pytz.UTC)
@@ -105,15 +106,15 @@ def ctsPdfReceiver(request, model=''):
 @require_POST
 def htmlReceiver(request, model=''):
 
-    logging.info("INSIDE HTML RECEIVER")
+    # text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
+    # description = text_description.read()
 
-    text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
-    description = text_description.read()
+    description = ""
 
     input_str = description
-    input_str = input_str + parsePOST(request)
+    input_str += parsePOST(request)
 
-    packet = StringIO.StringIO(input_str) #write to memory
+    packet = StringIO.StringIO(input_str)  # write to memory
 
     # Create timestamp
     ts = datetime.datetime.now(pytz.UTC)

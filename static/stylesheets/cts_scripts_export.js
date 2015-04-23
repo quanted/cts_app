@@ -16,7 +16,7 @@ $(document).ready(function () {
         var imgData = [];
 
         if (path.indexOf("chemspec") == -1 ) {
-            elements = $('div.articles_output').children().not(':hidden')
+            elements = $('div.articles_output').children().not(':hidden, div#export_menu');
         }
         else {
             elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
@@ -81,12 +81,11 @@ $(document).ready(function () {
 	$('#pdfExport').click(function () {
 		parseOutput();
 		$('form').attr({'action': 'pdf', 'method': 'POST'}).submit();
-		// $('form').attr('action', 'pdf').submit();
 	});
 
 	$('#htmlExport').click(function () {
 		parseOutput();
-		$('form').attr({'action': 'pdf', 'method': 'POST'}).submit();
+		$('form').attr({'action': 'html', 'method': 'POST'}).submit();
 	});
 
 
