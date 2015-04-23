@@ -1,5 +1,4 @@
 from django.views.decorators.http import require_POST
-from django.views.decorators.http import require_GET
 import StringIO
 from django.http import HttpResponse
 from django.conf import settings
