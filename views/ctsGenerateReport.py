@@ -38,7 +38,7 @@ def parsePOST(request):
             h3 {font-size:12px; color:#79973F;}
             h4 {font-size:12px; color:#79973F; padding-top:30px;}
             .pdfDiv {border: 1px solid #000000;}
-            div.tooltiptext {display: table;}
+            div.tooltiptext {display: table; border: 1px solid #333333; margin: 8px}
             </style>
             """
     input_str = input_css + final_str
