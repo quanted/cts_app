@@ -28,11 +28,12 @@ def parsePOST(request):
     input_css="""
             <style>
             body {font-family: 'Open Sans', sans-serif;}
-            table {
+            table, td, th {
                 border: 1px solid #666666;
             }
+            table {border-collapse: collapse;}
             th {text-align:center; padding:2px; font-size:11px;}
-            td {padding:2px; font-size:10px; border: solid 1px #666666;}
+            td {padding:2px; font-size:10px;}
             h2 {font-size:13px; color:#79973F;}
             h3 {font-size:12px; color:#79973F;}
             h4 {font-size:12px; color:#79973F; padding-top:30px;}
