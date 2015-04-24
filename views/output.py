@@ -33,15 +33,16 @@ def outputPageView(request, model='none', header=''):
 
     # Render output page view
     html = render_to_string('01cts_uberheader.html', {'title': header+' Output'})
-    html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'output'})
-    html = html + linksLeft.linksLeft()
-    html = html + render_to_string('04uberoutput_start.html', {
+    html += render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'output'})
+    html += linksLeft.linksLeft()
+    html += render_to_string('export.html', {})
+    html += render_to_string('04uberoutput_start.html', {
             'model_attributes': header+' Output'})
 
-    html = html + modelOutputHTML
-    html = html + render_to_string('export.html', {})
-    html = html + render_to_string('04uberoutput_end.html', {'model':model})
-    html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
+    html += modelOutputHTML
+    # html = html + render_to_string('export.html', {})
+    html += render_to_string('04uberoutput_end.html', {'model':model})
+    html += render_to_string('06cts_uberfooter.html', {'links': ''})
     
     # Handle Trex, which is not objectified yet
     # if model != 'trex':
