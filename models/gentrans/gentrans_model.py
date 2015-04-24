@@ -65,6 +65,8 @@ class gentrans(object):
 
         # reformat data for outputting to tree structure:
         data_walks.metID = 0
+        data_walks.n = 1
+        data_walks.j = 1
         self.results = data_walks.recursive(response.content)
 
         # logging.info("{} ###".format(self.results))
