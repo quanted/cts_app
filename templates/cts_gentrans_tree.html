@@ -66,6 +66,7 @@ $('#tabs-1').on('click', 'table th', function() {
 
 
 var currentNode; //#####keeps up with selected node######
+var genMax = {{ gen_max }};  // max generation limit
 
 
 function toggleHeaders() {
@@ -73,12 +74,41 @@ function toggleHeaders() {
 }
 
 
+function addGenKey(jsonObj, json) {
+    /* Adds genKey to node data. genKey is
+     * the numbering scheme for metabolites that
+     * identifies its depth and origin
+     * jsonObj - $jit.json object
+     * json - json string for spacetree*/
+
+    var depthList = new Array(genMax + 1).join('0').split('').map(parseFloat);  // array of 0's size of genMax
+
+    jsonObj.eachLevel(json, 0, genMax, function(node, depth) {
+
+        depthList[depth] += 1;
+        var key = "";
+        if (depth == 0) { key = "1"; }
+        else {
+            key = "1.";
+            for (var i = 1; i <= depth; i++) {
+                key += depthList[i] + ".";
+            }
+            if (depthList[depth + 1] > 0) {
+                depthList[depth + 1] = 0;
+            }
+            key = key.replace(/.\s*$/, '');  //cast thine trailing .'s aside
+        }
+        node.data.genKey = key;
+
+    });
+
+ }
+
+
 function init(){
 
     //init data
     var json = $.parseJSON($('#hiddenJson').val());
-
-    // json = $.grep(json, function(n) { return(n) });
 
     //attempt at fixing "child-parent" problem. maybe not the best..worked though
     newChilds = [];
@@ -115,10 +145,10 @@ function init(){
         transition: $jit.Trans.Quart.easeInOut,
         //set distance between node and its children
         levelDistance: 50,
-        //enable panning
+        //enable panning:
         Navigation: {
           enable: true,
-          // panning: true
+          panning: true
           // zooming: 50
         },
         //set node and edge styles
@@ -190,25 +220,26 @@ function init(){
             }
         },
 
-        // Tips: {
-        //     enable: true,
-        //     type: 'auto',
-        //     onShow: function(tip, node) {
-        //         tip.innerHTML = node.data.html; //shows metabolite table info
-        //     }
-        // },
+        Tips: {
+            enable: true,
+            type: 'auto',
+            onShow: function(tip, node) {
+                tip.innerHTML = node.data.genKey; //shows metabolite table info
+            }
+        },
 
         Events: {
             enable: true,
-
             onRightClick: function(node, eventInfo, e) {
-
                 currentNode = node; //###################################
                 getMolecularInfo(node);
-
             }
         }
     });
+
+    // trying it before loading json to st
+    addGenKey($jit.json, json);
+
     //load json data
     st.loadJSON(json);
     //compute node positions and layout

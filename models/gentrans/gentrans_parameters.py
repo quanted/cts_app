@@ -143,22 +143,22 @@ def form(formData):
 
 	html = '<div class="input_table tab tab_ReactionPathSim" style="display:none">'
 
-	form_cts_reaction_paths= cts_reaction_paths(formData)
-	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_paths)))
+	form_cts_reaction_paths = cts_reaction_paths(formData)
+	html += tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_paths)))
 
-	form_oecd_guidelines= cts_oecd_guidelines(formData)
-	html = html + tmpl_oecdGuidelines.render(Context(dict(form=form_oecd_guidelines)))
+	form_oecd_guidelines = cts_oecd_guidelines(formData)
+	html += tmpl_oecdGuidelines.render(Context(dict(form=form_oecd_guidelines)))
 
 	form_cts_reaction_sys = cts_reaction_sys(formData)
-	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_sys, header=mark_safe("Reaction System"))))
+	html += tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_sys, header=mark_safe("Reaction System"))))
 	
-	html = html + """<table id="respiration_tbl" class="input_table">
+	html += """<table id="respiration_tbl" class="input_table">
 	<tr><th colspan="3"> Select a respiration type </th></tr>
 	<tr>
 	"""
 
 	form_cts_respiration = cts_respiration(formData)
-	html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_respiration, header=mark_safe("Respiration"))))
+	html += tmpl_respirationTable.render(Context(dict(form=form_cts_respiration, header=mark_safe("Respiration"))))
 
 	# form_cts_aerobic = cts_aerobic()
 	# html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_aerobic, header=mark_safe("Aerobic"))))
@@ -166,10 +166,10 @@ def form(formData):
 	# form_cts_anaerobic = cts_anaerobic()
 	# html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_anaerobic, header=mark_safe("Anaerobic"))))
 
-	html = html + '</tr></table>'
+	html += '</tr></table>'
 
 	# html = html + '<table id="cts_reaction_options" class="tbl_wrap"><tr><td>' # table wrapper for react libs and options 
-	html = html + '<div id="alignLibAndOptions">'
+	html += '<div id="alignLibAndOptions">'
 
 	form_cts_reaction_libs = cts_reaction_libs(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, header=mark_safe("Reaction Libraries"))))
@@ -179,7 +179,7 @@ def form(formData):
 	form_cts_reaction_options = cts_reaction_options(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_options, header=mark_safe("Reaction Options"))))
 
-	html = html + """
+	html += """
 	</div>
 	</div>
 	"""
@@ -192,8 +192,10 @@ reaction_sys_CHOICES = (('0', 'Environmental'), ('1', 'Mammalian'))
 respiration_CHOICES = (('0', 'Make a selection'), ('1', 'Aerobic'), ('2', 'Anaerobic'))
 
 # Reaction Options
-gen_limit_CHOICES = (('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')) # generation limit
-pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8')) # population limit
+gen_limit_CHOICES = (('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'))  # generation limit
+gen_limit_max = gen_limit_CHOICES[-1][1]  # not used as field, but referenced in many-a-place
+pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'),
+                     ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'))  # population limit
 
 aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
 anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))

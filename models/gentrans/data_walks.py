@@ -42,7 +42,6 @@ def traverse(root):
 	"""
 
     global metID
-    global n
     global j
     testBool = False
     metID += 1
@@ -58,13 +57,11 @@ def traverse(root):
         newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, 28), "data": {}, "children": []})
         newDict['data'].update(popupBuilder({"smiles": parent, "generation": "0"}, metabolite_keys, "{}".format(metID),
                                             "Metabolite Information"))
-        newDict.update({"genKey": "1"})
         root = root[parent]
     else:
         if root['generation'] > 0:
             newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, 28), "data": {}, "children": []})
             newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
-            newDict.update({"genKey": "1." + str(j) + "." + str(n)})  # TODO: will only work for 2 gens!!!!!!
 
     for key, value in root.items():
         # testBool = True
@@ -77,9 +74,8 @@ def traverse(root):
                     newDict['children'].append(traverse(root2))
 
     if testBool == False:
-        n += 1
+        j = j
     else:
-        n = 1
         j += 1
     return newDict
 

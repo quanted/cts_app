@@ -6,6 +6,7 @@ from REST import jchem_rest
 import logging
 from django.http import HttpRequest
 import data_walks
+from gentrans_parameters import gen_limit_max as gen_max
 
 
 class gentrans(object):
@@ -28,6 +29,7 @@ class gentrans(object):
         self.abiotic_reduction = abiotic_reduction
         self.mamm_metabolism = mamm_metabolism
 
+        self.gen_max = gen_max
         self.gen_limit = gen_limit  # generation limit
         self.pop_limit = pop_limit  # population limit
         self.likely_limit = likely_limit
@@ -64,9 +66,8 @@ class gentrans(object):
         response = jchem_rest.getTransProducts(request)
 
         # reformat data for outputting to tree structure:
+        data_walks.j = 0
         data_walks.metID = 0
-        data_walks.n = 1
-        data_walks.j = 1
         self.results = data_walks.recursive(response.content)
 
         # logging.info("{} ###".format(self.results))

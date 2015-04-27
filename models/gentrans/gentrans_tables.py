@@ -130,11 +130,6 @@ def pchemprop_input_fields(gentrans_obj):
 
 
 def table_inputs(gentrans_obj):
-    """
-    An attempt at making one large table
-    for all user inputs
-    """
-
     html = """
     <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
@@ -188,7 +183,7 @@ def table_metabolites(gentrans_obj):
     html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
     html += table_metabolite_info(gentrans_obj)
     html += '<br>'
-    html += render_to_string('cts_gentrans_tree.html')
+    html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "kow_ph": "null",
                                     "structure": "null",
@@ -211,12 +206,9 @@ def table_metabolite_info(gentrans_obj):
     html = """
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script>
-    $(document).ready(function() { 
-
+    $(document).ready(function() {
         $("#tabs").tabs();
-
         $("#pchemprop_table").css('display', 'table');
-
     });
     </script>
     """
