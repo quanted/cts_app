@@ -137,7 +137,8 @@ function init(){
         offsetX: 300, //TODO: make more general, i.e., dependent on canvas size
         // offsetY: 400,
 
-        levelsToShow: 4, //# of levels at load and when clicking a node
+        constrained: false,
+{#        levelsToShow: 100,  // show all 'dem levels#}
 
         //set duration for the animation
         duration: 500,
@@ -462,5 +463,6 @@ function jsonRepack(jsonobj) {
 
 <script type="text/javascript">
 init();
+{#$('#metaboliteInfo').css('overflow-y', 'auto');#}
 </script>
 

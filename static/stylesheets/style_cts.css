@@ -457,7 +457,7 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
   height: 30px;
   width: 100px;
   background-image: url(/static/images/tabs/epa/sprites/algorithm.gif);
-  background-position: -185px -30px;f
+  background-position: -185px -30px;
 }
 .fadeRef_algorithm {
   display:inline-block;
@@ -1687,7 +1687,9 @@ for nodes on gentrans output */
 
 /* metatolite info / p-Chem data div on gentrans output */
 #metaboliteInfo div {
-  overflow-y: auto;
+  /*overflow-y: auto;*/
+  overflow: visible;
+  overflow-x: hidden;
   font-family: 'Open Sans', sans-serif;
 }
 
