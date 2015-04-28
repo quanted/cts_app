@@ -2,12 +2,15 @@ from django.views.decorators.http import require_POST
 import StringIO
 from django.http import HttpResponse
 from django.conf import settings
+from django.template import Context
 import datetime
 import pytz
 import json
 import os
 
 import logging
+from models.gentrans import data_walks
+from models.gentrans.gentrans_tables import buildMetaboliteTable
 
 
 def parsePOST(request):
@@ -15,13 +18,21 @@ def parsePOST(request):
     pdf_t = request.POST.get('pdf_t')
     pdf_nop = request.POST.get('pdf_nop')
     pdf_p = json.loads(request.POST.get('pdf_p'))
+    if 'pdf_json' in request.POST:
+        pdf_json = json.loads(request.POST.get('pdf_json'))
+    else:
+        pdf_json = None
 
     # Append strings and check if charts are present
     final_str = pdf_t
-    final_str = final_str + """<br>"""
+
+    metaboliteList = data_walks.buildHTML(pdf_json)  # List of dicts, which are node data
+    final_str += buildMetaboliteTable().render(Context(dict(headings=['genKey', 'smiles'], metaboliteList=metaboliteList)))
+
+    final_str += """<br>"""
     if (int(pdf_nop)>0):
         for i in range(int(pdf_nop)):
-            final_str = final_str + """<img id="imgChart1" src="%s" />"""%(pdf_p[i])
+            final_str += """<img id="imgChart1" src="%s" />"""%(pdf_p[i])
             # final_str = final_str + """<br>"""
 
     # Styling
@@ -35,7 +46,7 @@ def parsePOST(request):
             th {text-align:center; padding:2px; font-size:11px;}
             td {padding:2px; font-size:10px;}
             h2 {font-size:13px; color:#79973F;}
-            h3 {font-size:12px; color:#79973F;}
+            h3 {font-size:12px; color:#79973F; margin-top: 8px;}
             h4 {font-size:12px; color:#79973F; padding-top:30px;}
             .pdfDiv {border: 1px solid #000000;}
             div.tooltiptext {display: table; border: 1px solid #333333; margin: 8px; padding: 4px}

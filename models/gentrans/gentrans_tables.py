@@ -132,9 +132,9 @@ def pchemprop_input_fields(gentrans_obj):
 def table_inputs(gentrans_obj):
     html = """
     <br>
-    <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
+    <H3 class="out_1 collapsible" id="userInputs"><span></span>User Inputs</H3>
     <div class="out_">
-    <table class="ctsTableStylin">
+    <table class="ctsTableStylin" id="inputsTable">
     """
     html += inTmpl.render(Context(dict(data=getStructInfo(gentrans_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getReactPathSimData(gentrans_obj), heading="Reaction Pathway Simulator")))
@@ -152,7 +152,7 @@ def timestamp(gentrans_obj="", batch_jid=""):
     else:
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
-    <div class="out_">
+    <div class="out_" id="timestamp">
         <b>Generate Transformation Pathways Version 1.0</a> (Alpha)<br>
     """
     html = html + st
@@ -177,7 +177,7 @@ def table_metabolites(gentrans_obj):
     gentrans_obj.results = new_result
 
     html = """
-    <H3 class="out_1 collapsible" id="section1"><span></span>Reaction Pathways</H3>
+    <H3 class="out_1 collapsible" id="reactionPathways"><span></span>Reaction Pathways</H3>
     <div class="out_">
     """
     html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
@@ -252,3 +252,27 @@ def metaboliteInfoTmpl():
     </div>
     """
     return Template(metaboliteInfoTmpl)
+
+
+def buildMetaboliteTable():
+    metTableTmpl = """
+    <table id="gentrans_table">
+    <tr>
+    {% for heading in headings %}
+        <th>{{heading}}</th>
+    {% endfor %}
+    </tr>
+    {% for metabolite in metaboliteList %}
+        <tr>
+        {% for heading in headings %}
+            {% for key, value in metabolite.items %}
+                {% if key == heading %}
+                    <td>{{value}}</td>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </table>
+    """
+    return Template(metTableTmpl)

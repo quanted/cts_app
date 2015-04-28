@@ -1,15 +1,16 @@
 #cont {
-    width: 750px;
+    width: 815px;
     height: 600px;
     margin:0 auto;
     position:relative;
 }
 
 #center-cont {
+    width:815px;
     height:600px;
     position:absolute;
+    overflow: auto;
     top:0;
-    width:750px;
     left:0px;
     /*background-color:#1a1a1a;*/ /*original off-black*/
     /*background-color: #F4F7ED;*/ /*white from site background*/
@@ -51,9 +52,11 @@
     position:relative;
     width:750px;
     height:600px;
+    /*width: 800px;*/
+    /*height: 4000px;*/
     margin:auto;
     /*overflow:hidden;*/
-    overflow:auto;
+    /*overflow:auto;*/
 }
 
 #infovis img {

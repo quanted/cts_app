@@ -31,10 +31,7 @@ def recursive(jsonStr):
 
 
 metID = 0  # unique id for each node
-n = 0
-j = 0
 metabolite_keys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
-
 
 def traverse(root):
     """
@@ -42,13 +39,10 @@ def traverse(root):
 	"""
 
     global metID
-    global j
-    testBool = False
     metID += 1
     newDict = {}
 
-    logging.info("metID: {}".format(metID))
-    logging.info("n: {}".format(n))
+    logging.info("metabolites: {}".format(metID))
 
     tblID = "{}_table".format(metID)  # id for node's tooltip table
 
@@ -64,19 +58,12 @@ def traverse(root):
             newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
 
     for key, value in root.items():
-        # testBool = True
         if isinstance(value, dict):
-            testBool = False
             for key2, value2 in root[key].items():
-                testBool = True
                 root2 = root[key][key2]
                 if len(root2) > 0 and 'children' in newDict:
                     newDict['children'].append(traverse(root2))
 
-    if testBool == False:
-        j = j
-    else:
-        j += 1
     return newDict
 
 
@@ -170,3 +157,22 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
     dataProps["html"] = html
 
     return dataProps
+
+
+htmlList = []
+
+def buildHTML(jsonDict):
+    htmlListItem = {}
+    if 'data' in jsonDict:
+        if 'genKey' in jsonDict['data'] and 'smiles' in jsonDict['data']:
+            htmlListItem.update({
+                'genKey': jsonDict['data']['genKey'],
+                'smiles': jsonDict['data']['smiles']
+            })
+            htmlList.append(htmlListItem)
+
+    if 'children' in jsonDict and jsonDict['children']:
+        for child in jsonDict['children']:
+            buildHTML(child)
+
+    return htmlList

@@ -14,11 +14,9 @@ $(document).ready(function () {
 			y_offset : 30
 		};
         var imgData = [];
+        var jsonData = "";
 
-        if (path.indexOf("chemspec") == -1 ) {
-            elements = $('div.articles_output').children().not(':hidden, div#export_menu');
-        }
-        else {
+        if (path.indexOf("chemspec") > -1) {
             elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
             elements = elements.add('table#inputsTable'); // user inputs
             elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
@@ -49,6 +47,16 @@ $(document).ready(function () {
                 console.log(e);
             }
         }
+        else if (path.indexOf("gentrans") != -1) {
+            elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
+            elements = elements.add('table#inputsTable'); // user inputs
+            elements = elements.add('h3#reactionPathways');
+            jsonData = JSON.stringify(getSpaceTree().json);
+
+        }
+        else {
+            elements = $('div.articles_output').children().not(':hidden, div#export_menu');
+        }
 
 		var jq_html = $('<div />').append($(elements).clone()).html();
 
@@ -75,6 +83,11 @@ $(document).ready(function () {
 			.appendTo('.getpdf')
 			.find('input')
 			.val(imgData_json);
+
+        $('<tr style="display:none"><td><input type="hidden" name="pdf_json"></td></tr>')
+			.appendTo('.getpdf')
+			.find('input')
+			.val(jsonData);
 
 	}
 

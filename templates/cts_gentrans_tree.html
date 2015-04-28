@@ -79,13 +79,17 @@ function addGenKey(jsonObj, json) {
      * the numbering scheme for metabolites that
      * identifies its depth and origin
      * jsonObj - $jit.json object
-     * json - json string for spacetree*/
+     * json - json string for spacetree
+     * returns: list of tot num of nodes per depth*/
 
-    var depthList = new Array(genMax + 1).join('0').split('').map(parseFloat);  // array of 0's size of genMax
+    var depthList = new Array(genMax + 2).join('0').split('').map(parseFloat);  // array of 0's size of genMax
+    var numNodesPerDepth = new Array(genMax + 2).join('0').split('').map(parseFloat);
 
     jsonObj.eachLevel(json, 0, genMax, function(node, depth) {
 
         depthList[depth] += 1;
+        numNodesPerDepth[depth] += 1;  // tracking total nodes/depth
+
         var key = "";
         if (depth == 0) { key = "1"; }
         else {
@@ -102,9 +106,11 @@ function addGenKey(jsonObj, json) {
 
     });
 
+    return numNodesPerDepth;
+
  }
 
-
+var st;
 function init(){
 
     //init data
@@ -120,17 +126,17 @@ function init(){
     delete json['children']; //delete children element
     json.children = newChilds; //replace with array with valid ids
 
-    // smallest everthing-visible size
+    // smallest everything-visible size
     // var nodeHeight = 192;
     // var nodeWidth = 150;
 
     // pending thumbnail size (may go smaller):
-    var nodeHeight = 114;
+    var nodeHeight = 114; // TODO: Get values from a to-be-created node class
     var nodeWidth = 100;
     
     //init Spacetree
     //Create a new ST instance
-    var st = new $jit.ST({
+    st = new $jit.ST({
         //id of viz cont element
         injectInto: 'infovis',
 
@@ -138,15 +144,12 @@ function init(){
         // offsetY: 400,
 
         constrained: false,
-{#        levelsToShow: 100,  // show all 'dem levels#}
+        levelsToShow: 100,  // show all 'dem levels
 
         //set duration for the animation
         duration: 500,
-        //set animation transition type
-        transition: $jit.Trans.Quart.easeInOut,
-        //set distance between node and its children
-        levelDistance: 50,
-        //enable panning:
+        transition: $jit.Trans.Quart.easeInOut,  //set animation transition type
+        levelDistance: 50,  //set distance between node and its children (default: 30)
         Navigation: {
           enable: true,
           panning: true
@@ -236,10 +239,10 @@ function init(){
                 getMolecularInfo(node);
             }
         }
+
     });
 
-    // trying it before loading json to st
-    addGenKey($jit.json, json);
+    var nodeList = addGenKey($jit.json, json);  // Loops through nodes adding genKey to node.data
 
     //load json data
     st.loadJSON(json);
@@ -249,8 +252,47 @@ function init(){
     // st.geom.translate(new $jit.Complex(-200, 0), "current");
     //emulate a click on the root node.
     st.onClick(st.root);
+    resizeCanvas(nodeList, nodeHeight);
     //end
 
+}
+
+
+function getSpaceTree() {
+    if (st !== null) {
+        return st;
+    }
+    else {
+        return null;
+    }
+}
+
+
+function resizeCanvas(nodeList, nodeHeight) {
+    var count = getDeepestNodeCount(nodeList);
+    var offset = 4 * nodeHeight;
+    // need number of nodes at deepest level:
+    var height = count * nodeHeight + offset;  // calculate new height
+    st.canvas.resize(800, height);
+    st.select(st.root);  // re-select the node to replot the tree
+
+    // Increase size of containter divs as well:
+    $('#center-cont, #cont').height(height);
+
+    // st.config.offsetY
+}
+
+
+function getDeepestNodeCount(nodeList) {
+    /* Loops through list of node count per depth,
+     * returning the num of nodes at the deepest depth */
+    for (var i = nodeList.length - 1; i >= 0; i--) {
+        var numNodesAtDepth = nodeList[i];
+        if (numNodesAtDepth > 0) {
+            return numNodesAtDepth;
+        }
+    }
+    return "error: could not find any nodes in list";
 }
 
 
@@ -408,9 +450,6 @@ function getPchemData() {
 
         // make those calls (function from cts_pchemprop_ajax_calls.html):
         startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH, currentNode);
-
-        // TODO: Add metabolite's pchemprop data to node.data object
-
 
     });
  
