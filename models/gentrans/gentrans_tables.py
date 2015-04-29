@@ -182,13 +182,20 @@ def table_metabolites(gentrans_obj):
     """
     html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
     html += table_metabolite_info(gentrans_obj)
-    html += '<br>'
+    html += """
+    <br>
+    <select id="gen-select">
+        <option value="1" />1st gen </option>
+        <option value="2" />2nd gen </option>
+        <option value="3" />3rd gen </option>
+        <option value="4" />Show All </option>
+    </select>
+    """
     html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "kow_ph": "null",
                                     "structure": "null",
-                                    "checkedCalcsAndProps": "null"
-                            })
+                                    "checkedCalcsAndProps": "null"})
     html += """
     </div>
     """

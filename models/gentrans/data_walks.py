@@ -180,7 +180,9 @@ def buildTableValues(jsonDict):
     return htmlList
 
 
-""" The general version (issue making multiples of the same keys) """
+"""
+The general version (issue making multiples of the same keys)
+"""
 # def buildTableValues(jsonDict, keys):
 #     htmlListItem = {}
 #     if 'data' in jsonDict:

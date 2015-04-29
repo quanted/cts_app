@@ -12,6 +12,16 @@
 <script>
 var labelType, useGradients, nativeTextSupport, animate;
 
+
+// ########## My Globals!!! ###########
+var currentNode; //keeps up with selected node
+var genMax = {{ gen_max }};  // max generation limit
+var st; //spacetree object
+var nodeList; //list of # of nodes per depth
+var nodeHeight = 114; //default node height (image)
+var nodeWidth = 100; //default node width (image)
+// #####################################
+
 (function() {
   var ua = navigator.userAgent,
       iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
@@ -62,11 +72,16 @@ $('#btn-pchem-getdata').click(function() {
 $('#tabs-1').on('click', 'table th', function() {
     $(this).parent().nextUntil('tr.header').toggle();
 });
+
+$('#gen-select').change(function() {
+    var genLevel = $(this).find('option:selected').val();
+    var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);
+    st.config.levelsToShow = genLevel;
+    resizeCanvas(parsedNodeList);  // change canvas height
+    st.select(st.root);
+});
+
 // });
-
-
-var currentNode; //#####keeps up with selected node######
-var genMax = {{ gen_max }};  // max generation limit
 
 
 function toggleHeaders() {
@@ -110,7 +125,6 @@ function addGenKey(jsonObj, json) {
 
  }
 
-var st;
 function init(){
 
     //init data
@@ -129,10 +143,6 @@ function init(){
     // smallest everything-visible size
     // var nodeHeight = 192;
     // var nodeWidth = 150;
-
-    // pending thumbnail size (may go smaller):
-    var nodeHeight = 114; // TODO: Get values from a to-be-created node class
-    var nodeWidth = 100;
     
     //init Spacetree
     //Create a new ST instance
@@ -140,11 +150,11 @@ function init(){
         //id of viz cont element
         injectInto: 'infovis',
 
-        offsetX: 300, //TODO: make more general, i.e., dependent on canvas size
+        offsetX: 350, //TODO: make more general, i.e., dependent on canvas size
         // offsetY: 400,
 
         constrained: false,
-        levelsToShow: 100,  // show all 'dem levels
+        levelsToShow: 1,  // show all 'dem levels
 
         //set duration for the animation
         duration: 500,
@@ -242,7 +252,7 @@ function init(){
 
     });
 
-    var nodeList = addGenKey($jit.json, json);  // Loops through nodes adding genKey to node.data
+    nodeList = addGenKey($jit.json, json);  // Loops through nodes adding genKey to node.data
 
     //load json data
     st.loadJSON(json);
@@ -252,7 +262,7 @@ function init(){
     // st.geom.translate(new $jit.Complex(-200, 0), "current");
     //emulate a click on the root node.
     st.onClick(st.root);
-    resizeCanvas(nodeList, nodeHeight);
+    resizeCanvas(nodeList.slice(0, st.config.levelsToShow + 1), nodeHeight);
     //end
 
 }
@@ -268,8 +278,8 @@ function getSpaceTree() {
 }
 
 
-function resizeCanvas(nodeList, nodeHeight) {
-    var count = getDeepestNodeCount(nodeList);
+function resizeCanvas(nodes) {
+    var count = getDeepestNodeCount(nodes);
     var offset = 4 * nodeHeight;
     // need number of nodes at deepest level:
     var height = count * nodeHeight + offset;  // calculate new height
