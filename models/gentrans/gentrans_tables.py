@@ -101,7 +101,7 @@ def table_all(gentrans_obj):
 
     # html_all += table_metabolite_info(gentrans_obj) # included in table_metabolites() now
 
-    html_all += insertPchemPropScript() # script for pchemprop table
+    html_all += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
     html_all += table_metabolites(gentrans_obj)
 
     # html_all += pchemprop_input_fields(gentrans_obj)
@@ -221,10 +221,6 @@ def table_metabolite_info(gentrans_obj):
     return html
 
 
-def insertPchemPropScript():
-    return  '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
-
-
 def metaboliteInfoTmpl():
     # <div id="metaboliteInfo">
     metaboliteInfoTmpl = """
@@ -267,7 +263,7 @@ def buildMetaboliteTable():
         {% for heading in headings %}
             {% for key, value in metabolite.items %}
                 {% if key == heading %}
-                    <td>{{value}}</td>
+                    {% autoescape off %}<td>{{value}}</td>{% endautoescape %}
                 {% endif %}
             {% endfor %}
         {% endfor %}

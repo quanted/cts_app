@@ -99,9 +99,10 @@ def nodeWrapper(smiles, height, width, scale, key=None):
     return html
 
 
+# NOTE: imgChart1 ID is an attempt to get images to show up on pdf
 def imgTmpl():
     imgTmpl = """
-	<img class="metabolite" id="{{key|default:"none"}}" 
+	<img class="metabolite" id="{{key|default:""}} imgChart1"
 		alt="{{smiles}}" src="data:image/png;base64,{{img}}"
 		width="{{width}}" height="{{height}}" /> 
 	"""
@@ -161,18 +162,37 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 
 htmlList = []
 
-def buildHTML(jsonDict):
+def buildTableValues(jsonDict):
     htmlListItem = {}
     if 'data' in jsonDict:
-        if 'genKey' in jsonDict['data'] and 'smiles' in jsonDict['data']:
+        if 'genKey' in jsonDict['data'] and 'smiles' in jsonDict['data'] and 'name' in jsonDict:
             htmlListItem.update({
                 'genKey': jsonDict['data']['genKey'],
-                'smiles': jsonDict['data']['smiles']
+                'smiles': jsonDict['data']['smiles'],
+                'image': jsonDict['name']
             })
             htmlList.append(htmlListItem)
 
     if 'children' in jsonDict and jsonDict['children']:
         for child in jsonDict['children']:
-            buildHTML(child)
+            buildTableValues(child)
 
     return htmlList
+
+
+""" The general version (issue making multiples of the same keys) """
+# def buildTableValues(jsonDict, keys):
+#     htmlListItem = {}
+#     if 'data' in jsonDict:
+#         for key in keys:
+#             if key in jsonDict['data']:
+#                 htmlListItem.update({key: jsonDict['data'][key]})
+#             elif key in jsonDict:
+#                 htmlListItem.update({key: jsonDict[key]})
+#             htmlList.append(htmlListItem)
+#
+#     if 'children' in jsonDict and jsonDict['children']:
+#         for child in jsonDict['children']:
+#             buildTableValues(child, keys)
+#
+#     return htmlList
