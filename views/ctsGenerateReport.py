@@ -30,9 +30,7 @@ def parsePOST(request):
     if 'gentrans' in request.path:
         headings = ['genKey', 'smiles', 'image']  # TODO: class this in Metabolizer (jchem_rest) later
         metaboliteList = data_walks.buildTableValues(pdf_json)  # List of dicts, which are node data
-        final_str += mark_safe(buildMetaboliteTable().render(Context(dict(headings=headings, metaboliteList=metaboliteList))))
-
-        testStr = mark_safe(buildMetaboliteTable().render(Context(dict(headings=headings, metaboliteList=metaboliteList))))
+        final_str += buildMetaboliteTable().render(Context(dict(headings=headings, metaboliteList=metaboliteList)))
         # fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
         # fileout.write(testStr)
         # fileout.close()

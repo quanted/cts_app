@@ -50,7 +50,7 @@ var Log = {
 };
 
 
-// $(document).ready(function() { 
+// $(document).ready(function() {
 //"wait" cursor during ajax events
 $(document).ajaxStart(function () {
     $('body').addClass('wait');
@@ -245,9 +245,22 @@ function init(){
         Events: {
             enable: true,
             onRightClick: function(node, eventInfo, e) {
-                currentNode = node; //###################################
-                getMolecularInfo(node);
+                if (node) {
+                    currentNode = node;  // set global node tracking var
+                    // show metaboliteInfo div above selected node:
+                    $('div#metaboliteInfo').css({
+                        top: e.pageY - 600,
+                        left: e.pageX - 500
+                    }).show();
+                    getMolecularInfo(node);
+                }
             }
+
+            // Oldie but goodie
+            // onRightClick: function(node, eventInfo, e) {
+            //     currentNode = node; //###################################
+            //     getMolecularInfo(currentNode);
+            // }
         }
 
     });
@@ -314,22 +327,20 @@ function getMolecularInfo(node) {
     // Clear existing pchemprop table for new data:
     clearPchemData(); // from scripts_pchemprop
 
-    $('#tabs').tabs("option", "active", 0); //Go to "metabolite info" tab
-
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
-    if ($('#tabs-1').has('p').length > 0) {
-        $('#tabs-1').children('p').remove(); //remove initial paragraph
+    if ($('#mol-info-wrapper').has('p').length > 0) {
+        $('#mol-info-wrapper').children('p').remove(); //remove initial paragraph
     }
 
     //Deals with hiding/showing metabolite info
-    if ($('#tabs-1').has('div.nodeWrapDiv').length > 0) {
+    if ($('#mol-info-wrapper').has('div.nodeWrapDiv').length > 0) {
         
-        $('#tabs-1 div.nodeWrapDiv').hide(); //has node info already..hide it
+        $('#mol-info-wrapper div.nodeWrapDiv').hide(); //has node info already..hide it
 
         //check if data already exist for requested node:
-        if ($('#tabs-1:has(div#' + node.id + '_div)').length > 0) {
-            $('#tabs-1 div#' + node.id + '_div').show(); //show existing node data
+        if ($('#mol-info-wrapper:has(div#' + node.id + '_div)').length > 0) {
+            $('#mol-info-wrapper div#' + node.id + '_div').show(); //show existing node data
             $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
 
             // $$$$$$$$$$$$ this new $$$$$$$$$$$$$$$$$$$
@@ -344,15 +355,15 @@ function getMolecularInfo(node) {
         }
     }
 
-    $('#tabs-1').append(node.data.html); //add metabolite info to table
-    $('#' + node.id + "_table tr:contains('smiles')").remove(); //remove smiles key/value (assuming first key/value)
-    // $('#' + node.id + '_table tr:eq(1)').empty(); //remove smiles key/value (assuming first key/value)
+    $('#mol-info-wrapper').append(node.data.html); //add metabolite info to table
+    // $('#' + node.id + "_table tr:contains('smiles')").remove(); //remove smiles key/value (assuming first key/value)
+    $('#' + node.id + "_table tr").remove();
 
     var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
     getChemDetails(node.data.smiles, function(chemResults) {
 
-        data = chemResults.data[0];
+        var data = chemResults.data[0];
 
         //Add molecular info to table:
         $('#' + node.id + '_table').prepend('<tr class="header"><th colspan="2">Molecular Information</th></tr>');
@@ -365,7 +376,10 @@ function getMolecularInfo(node) {
                 $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
             }
         }
+
         $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
+        $('#' + node.id + '_table').show();
+        $('#pchemprop-wrapper').show().children(':not(.gentransError)').show();
 
     });
 
@@ -425,7 +439,7 @@ function getPchemData() {
     //Gets smiles, mass, iupac, and formula from metabolite
     for (i in acceptedKeys) {
         key = acceptedKeys[i];
-        var value = $('#tabs-1 td:contains(' + key + ')');
+        var value = $('#mol-info-wrapper td:contains(' + key + ')');
         params["data"][key] = $(value).next().text();
     }
 
@@ -501,11 +515,10 @@ function jsonRepack(jsonobj) {
 
 </script>
 
-
 <div id="cont">
     <div id="center-cont">
         <!-- the canvas container -->
-        <div id="infovis"></div>    
+        <div id="infovis"></div>
     </div>
     <div id="log"></div>
 </div>
