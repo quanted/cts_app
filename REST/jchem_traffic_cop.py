@@ -127,20 +127,20 @@ def getJchemPropData(chemical, prop, phForLogD=None):
 	if prop == 'water_sol':
 		propObj = jp.getPropObject('solubility')
 		propObj.makeDataRequest(chemical)
-		result =  propObj.getSolubility()
+		result = propObj.getSolubility()
 	elif prop == 'ion_con':
 		propObj = jp.getPropObject('pKa')
 		propObj.makeDataRequest(chemical)
-		result =  {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}
+		result = {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}
 	elif prop == 'kow_no_ph':
 		propObj = jp.getPropObject('logP')
 		propObj.makeDataRequest(chemical)
-		result =  propObj.getLogP()
+		result = propObj.getLogP()
 	elif prop == 'kow_wph':
 		propObj = jp.getPropObject('logD')
 		propObj.makeDataRequest(chemical)
-		result =  propObj.getLogD(phForLogD)
+		result = propObj.getLogD(phForLogD)
 	else:
 		result = None
-	resultDict = json.dumps({"calc": "chemaxon", "prop":prop, "data":result})
+	resultDict = json.dumps({"calc": "chemaxon", "prop": prop, "data": result})
 	return resultDict

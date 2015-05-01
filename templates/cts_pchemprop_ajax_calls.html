@@ -111,13 +111,18 @@ function parseResponseToPchemTable(response, node, ajaxCall) {
         }
     }
 
-    $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
+    var test = $('#mol-info-wrapper').children('div.nodeWrapDiv').attr('id');
+    if ($('#mol-info-wrapper').children('div.nodeWrapDiv').attr('id') == node.id + "_div") {
+        $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
+    }
 
     if (node !== 'undefined' && node != null) {
         if (!node.data.hasOwnProperty('pchemprops')) {
-            node.data.pchemprops = []; //array of with keys: calc, prop, data (single-level)
+            //node.data.pchemprops = []; //array of with keys: calc, prop, data (single-level)
+            node.data.test = "test";
         }
-        node.data.pchemprops.push({"calc": calc, "prop": prop, "data": data});
+        //node.data.pchemprops.push({"calc": calc, "prop": prop, "data": data});
+
     }
 }
 

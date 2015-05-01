@@ -246,16 +246,18 @@ def pchemHtmlTemplate():
 def metaboliteInfoTmpl():
     metaboliteInfoTmpl = """
     <div id="metaboliteInfo">
-        <div id="mol-info-wrapper"></div> {# wraps molecular info table #}
+        <div id="mol-info-wrapper">Selected Molecule:</div> {# wraps molecular info table #}
+        <br><br>
         <div id="pchemprop-wrapper" style="display:none;">
             Get p-chem properties for:
             <select id="gen-select-pchem">
-            <option value="0" />selected metabolite </option>
-            <option value="1" />up to 1st generation </option>
-            <option value="2" />up to 2nd generation </option>
-            <option value="3" />up to 3rd generation </option>
-            <option value="4" />all metabolites </option>
+            <option value=0 />selected metabolite </option>
+            <option value=1 />up to 1st generation </option>
+            <option value=2 />up to 2nd generation </option>
+            <option value=3 />up to 3rd generation </option>
+            <option value=4 />all metabolites </option>
             </select>
+            <br><br>
             <p>Select p-chem properties to gather for selected metabolite, then click "Get data" below..</p>
             {% autoescape off %}{{pchemHtml}}{% endautoescape %}
             <br>

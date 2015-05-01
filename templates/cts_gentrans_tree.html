@@ -17,6 +17,7 @@ var labelType, useGradients, nativeTextSupport, animate;
 var currentNode; //keeps up with selected node
 var genMax = {{ gen_max }};  // max generation limit
 var st; //spacetree object
+var json;  // spacetree json
 var nodeList; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
 var nodeWidth = 100; //default node width (image)
@@ -62,11 +63,6 @@ $('#tabs').click(function(event) {
     tabDisplayLogic(event);
 });
 
-// Get Data button for gathering pchem props for node:
-$('#btn-pchem-getdata').click(function() {
-    getPchemData();
-});
-
 // Collapses/expands content below table header row (th).
 // Used for popup data table for gentrans output
 $('#tabs-1').on('click', 'table th', function() {
@@ -81,7 +77,41 @@ $('#gen-select').change(function() {
     st.select(st.root);
 });
 
-// });
+// Get Data button for gathering pchem props for node:
+$('#btn-pchem-getdata').click(function() {
+    //Check  #gen-select-pchem value to determine how
+    //many nodes to get pchemprops for:
+
+    var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
+
+    if (genLevel == 0) {
+        // get pchemprops only for selected metabolite:
+        getPchemData(currentNode);
+        return;
+    }
+
+    var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
+
+    loopJson(parsedNodeList, function(results) {
+        // once it's done, reload json:
+
+    });
+
+});
+
+
+function loopJson(parsedNodeList) {
+    // loop through nodes calling getPchemData(node):
+    $jit.json.eachLevel(json, 0, parsedNodeList.length - 1, function(node, depth) {
+        getPchemData(node);
+    });
+}
+
+function mrvToSmiles(chemical, callback) {
+  ajaxCall(getParamsObj("mrvToSmiles", chemical), function(smilesResult) {
+    callback(smilesResult);
+  });
+}
 
 
 function toggleHeaders() {
@@ -125,13 +155,14 @@ function addGenKey(jsonObj, json) {
 
  }
 
+
 function init(){
 
     //init data
-    var json = $.parseJSON($('#hiddenJson').val());
+    json = $.parseJSON($('#hiddenJson').val());
 
     //attempt at fixing "child-parent" problem. maybe not the best..worked though
-    newChilds = [];
+    var newChilds = [];
     for (var i in json['children']) {
         if (json['children'][i].hasOwnProperty('id')) {
             newChilds.push(json['children'][i]);
@@ -140,11 +171,6 @@ function init(){
     delete json['children']; //delete children element
     json.children = newChilds; //replace with array with valid ids
 
-    // smallest everything-visible size
-    // var nodeHeight = 192;
-    // var nodeWidth = 150;
-    
-    //init Spacetree
     //Create a new ST instance
     st = new $jit.ST({
         //id of viz cont element
@@ -252,6 +278,7 @@ function init(){
                         top: e.pageY - 600,
                         left: e.pageX - 500
                     }).show();
+
                     getMolecularInfo(node);
                 }
             }
@@ -265,6 +292,7 @@ function init(){
 
     });
 
+    // todo: have this only run once!!!
     nodeList = addGenKey($jit.json, json);  // Loops through nodes adding genKey to node.data
 
     //load json data
@@ -343,13 +371,11 @@ function getMolecularInfo(node) {
             $('#mol-info-wrapper div#' + node.id + '_div').show(); //show existing node data
             $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
 
-            // $$$$$$$$$$$$ this new $$$$$$$$$$$$$$$$$$$
             if (node.data.hasOwnProperty('pchemprops')) {
             	for (var i = 0; i < node.data.pchemprops.length; i++) {
             		parseResponseToPchemTable(node.data.pchemprops[i], null);
             	}
 		    }
-		    // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
             return;
         }
@@ -424,23 +450,20 @@ function tabDisplayLogic(event) {
 }
 
 
-function getPchemData() {
-    /* 
-    This function does what getPchemData() does, but
-    the idea for this new function is to get the data and
-    populate it in the pchemprop table and not draw another
-    segment for the metabolite table in the "metabolite info" tab
-    */
+function getPchemData(node) {
+
     //TODO: Check if metabolite already has pchem data before making call ******
 
-    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac'];
+    if (!node) {
+        return;
+    }
+
     var params = {"data":{}}; //POST data for pchemprops_model call
 
-    //Gets smiles, mass, iupac, and formula from metabolite
-    for (i in acceptedKeys) {
-        key = acceptedKeys[i];
-        var value = $('#mol-info-wrapper td:contains(' + key + ')');
-        params["data"][key] = $(value).next().text();
+    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call
+    for (var i in acceptedKeys) {
+        var key = acceptedKeys[i];
+        params["data"][key] = null; // values are irrelevant (only need smiles)
     }
 
     //Return if no metabolite selected, i.e., null smiles, mass, etc. values
@@ -460,20 +483,25 @@ function getPchemData() {
         params["data"][this.name] = this.checked;
     });
 
-    params["data"]["chem_struct"] = currentNode.data['smiles'];
+    params["data"]["chem_struct"] = node.data['smiles'];
     params["url"] = "/jchem-cts/ws/getpchemprops/"; //calls pchemprop model
+{#    params["url"] = "/cts/portal";#}
     params["type"] = "POST";
     // params["contentType"] = "application/json";
     params["dataType"] = "json";
 
-    makeAjaxCall(params, function(pchemResults) {
+    makeAjaxCall(node, params, function(node, pchemResults) {
 
         // var chemaxonData = pchemResults["chemaxonResults"];
         var checkedCalcsAndProps = pchemResults["checkedCalcsAndProps"];
         var kowPH = $('#id_kow_ph').val();
 
         // make those calls (function from cts_pchemprop_ajax_calls.html):
-        startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH, currentNode);
+        // startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH, currentNode);
+        startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node);
+
+        // make border dark blue (has pchemprop data):
+        $("#" + node.id).children().addClass("hasPchemProps"); //highlight node
 
     });
  
@@ -491,7 +519,7 @@ function getChemDetailsObj(chemical) {
 }
 
 
-function makeAjaxCall(params, callback) {
+function makeAjaxCall(node, params, callback) {
     $.ajax({
       url: params.url,
       type: params.type,
@@ -499,7 +527,7 @@ function makeAjaxCall(params, callback) {
       dataType: params.dataType,
       success: function(data) {
         var data = jsonRepack(data);
-        callback(data);
+        callback(node, data);
       },
       error: function(jqXHR, textStatus, errorThrown) {
         callback("Fail");

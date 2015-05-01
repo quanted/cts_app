@@ -1770,3 +1770,8 @@ h4.unstyle {
   font-weight: normal;
   vertical-align: top;
 }
+
+/* border color for metabolites with pchemprops */
+.hasPchemProps {
+    border: 2px solid #356697;
+}
