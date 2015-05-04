@@ -183,16 +183,16 @@ def table_metabolites(gentrans_obj):
     """
     html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
     html += table_metabolite_info(gentrans_obj)
-    html += """
-    <br>
-    Display up to:
-    <select id="gen-select">
-        <option value="1" />1st gen </option>
-        <option value="2" />2nd gen </option>
-        <option value="3" />3rd gen </option>
-        <option value="4" />Show All </option>
-    </select>
-    """
+    # html += """
+    # <br>
+    # Display up to:
+    # <select id="gen-select">
+    #     <option value="1" />1st gen </option>
+    #     <option value="2" />2nd gen </option>
+    #     <option value="3" />3rd gen </option>
+    #     <option value="4" />Show All </option>
+    # </select>
+    # """
 
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))
@@ -221,9 +221,9 @@ def table_metabolite_info(gentrans_obj):
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script>
     $(document).ready(function() {
-        $("#metaboliteInfo").draggable();
+        //$("#metaboliteInfo").draggable();
         // $("#tabs").tabs();
-        //$("#pchemprop_table").css('display', 'table');
+        $("#pchemprop_table").css('display', 'table');
     });
     </script>
     """
@@ -243,12 +243,29 @@ def pchemHtmlTemplate():
     """
     return Template(pchem_html)
 
+
 def metaboliteInfoTmpl():
     metaboliteInfoTmpl = """
     <div id="metaboliteInfo">
-        <div id="mol-info-wrapper">Selected Molecule:</div> {# wraps molecular info table #}
-        <br><br>
-        <div id="pchemprop-wrapper" style="display:none;">
+        <div id="spacetree-nav">
+            <h3><span>Display up to:</span></h3>
+            <select id="gen-select">
+                <option value="1" />1st gen </option>
+                <option value="2" />2nd gen </option>
+                <option value="3" />3rd gen </option>
+                <option value="4" />Show All </option>
+            </select>
+        </div>
+        <br>
+        <h3 class="collapsible out_1"><span></span>Molecular Information</h3>
+        <div id="mol-info-wrapper">
+            Selected Molecule:
+            <div class="nodeWrapDiv"></div>
+            <table class="mol-info-table ctsTableStylin">
+            </table>
+        </div> {# wraps molecular info table #}
+        <h3 class="collapsible"><span></span>p-Chem Data</h3>
+        <div id="pchemprop-wrapper">
             Get p-chem properties for:
             <select id="gen-select-pchem">
             <option value=0 />selected metabolite </option>
@@ -265,40 +282,11 @@ def metaboliteInfoTmpl():
             <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
             <br>
             <p class="gentransError">Must right-click a metabolite first</p>
+            <p class="selectNodeForData">Select (right-click) a node to view p-chem data</p>
         </div>
     </div>
     """
     return Template(metaboliteInfoTmpl)
-
-
-#### Original Way (old, works) ####
-# def metaboliteInfoTmpl():
-#     # <div id="metaboliteInfo">
-#     metaboliteInfoTmpl = """
-#     <div id="metaboliteInfo">
-#         <div id="tabs">
-#             <ul>
-#                 <li><a href="#tabs-1">Metabolite Info</a></li>
-#                 <li><a href="#tabs-2">p-Chem Data</a></li>
-#             </ul>
-#             <div id="tabs-1"><p>This window is for displaying metabolite data as well as
-#             retrieving it. <br><br> First, right-click a metabolite to view any data it already has.
-#             Select the "Get data" tab to get p-chem properties for the metabolite</p></div>
-#             <div id="tabs-2">
-#                 <br>
-#                 Select p-chem properties to gather for selected metabolite, then click "Get data" below..
-#                 <br><br>
-#                 {% autoescape off %}{{pchemHtml}}{% endautoescape %}
-#                 <br>
-#                 <input type="button" value="Get data" class="submit input_button btn-pchem" id="btn-pchem-getdata">
-#                 <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
-#                 <br>
-#                 <p class="gentransError">Must right-click a metabolite first</p>
-#             </div>
-#         </div>
-#     </div>
-#     """
-#     return Template(metaboliteInfoTmpl)
 
 
 def buildMetaboliteTable():

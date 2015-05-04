@@ -1649,7 +1649,7 @@ for nodes on gentrans output */
 }
 
 /* error messages for popup metabolite navigation div */
-.gentransError {
+.gentransError, .selectNodeForData {
   color:red; 
   text-align:right; 
   margin-right:0px;
@@ -1691,17 +1691,17 @@ for nodes on gentrans output */
   /*overflow-y: auto;*/
   /*overflow: auto;*/
   /*overflow-x: hidden;*/
-  display: none;
+  /*display: none;*/
   font-family: 'Open Sans', sans-serif;
   background-color: white;
   border: 1px solid #666666;
   border-radius: 4px;
   /* for floating div testing */
   /*resize: vertical;*/
-  position: absolute;
+  /*position: absolute;*/
   /*position: fixed;*/
   /*display: none;*/
-  z-index: 1;
+  z-index: 10;
   /*height: auto;*/
   /*width: auto;*/
   /*height: 500px;*/
@@ -1709,42 +1709,17 @@ for nodes on gentrans output */
   /*max-height: 500px;*/
   width: 750px;
   padding: 8px;
+  margin-bottom: 2px;
   /*min-width: 780px;*/
   /*max-width: 850px;*/
 }
 
 #metaboliteInfo table {
-    display: none;
+    /*display: none;*/
 }
 
 #metaboliteInfo table, #metaboliteInfo p {
     margin: 2px;
-}
-
-#metaboliteInfo, #tabs {
-    /*height: 500px;*/
-    /*width: 820px;*/
-}
-
-#tabs {
-    position: fixed;
-    /*overflow-y: auto;*/
-    /*overflow-x: hidden;*/
-    /*resize: vertical;*/
-    /*min-height: 200px;*/
-      /*max-height: 500px;*/
-      /*width: 815px;*/
-      /*min-width: 780px;*/
-      /*max-width: 850px;*/
-    /*overflow: auto;*/
-    /*height: auto;*/
-    /*width: auto;*/
-    /*clear: both;*/
-}
-
-#tabs div {
-    /*position: absolute;*/
-    /*overflow: auto;*/
 }
 
 /* ajax call wait spinnerz */

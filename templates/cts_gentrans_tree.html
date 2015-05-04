@@ -14,11 +14,11 @@ var labelType, useGradients, nativeTextSupport, animate;
 
 
 // ########## My Globals!!! ###########
-var currentNode; //keeps up with selected node
+var currentNode = null; //keeps up with selected node
 var genMax = {{ gen_max }};  // max generation limit
-var st; //spacetree object
-var json;  // spacetree json
-var nodeList; //list of # of nodes per depth
+var st = null; //spacetree object
+var json = null;  // spacetree json
+var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
 var nodeWidth = 100; //default node width (image)
 // #####################################
@@ -37,6 +37,8 @@ var nodeWidth = 100; //default node width (image)
   useGradients = nativeCanvasSupport;
   animate = !(iStuff || !nativeCanvasSupport);
 
+{#  $('table#pchemprop_table').removeAttr('style').css('display', 'table');#}
+
 })();
 
 var Log = {
@@ -49,7 +51,6 @@ var Log = {
   }
 
 };
-
 
 // $(document).ready(function() {
 //"wait" cursor during ajax events
@@ -92,20 +93,16 @@ $('#btn-pchem-getdata').click(function() {
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
 
-    loopJson(parsedNodeList, function(results) {
-        // once it's done, reload json:
-
+    st.graph.eachNode(function(node) {
+        console.log(node);
+        // node must be within depth of parsedNodeList.length - 1
+        if (node._depth < parsedNodeList.length) {
+            getPchemData(node);
+        }
     });
 
 });
 
-
-function loopJson(parsedNodeList) {
-    // loop through nodes calling getPchemData(node):
-    $jit.json.eachLevel(json, 0, parsedNodeList.length - 1, function(node, depth) {
-        getPchemData(node);
-    });
-}
 
 function mrvToSmiles(chemical, callback) {
   ajaxCall(getParamsObj("mrvToSmiles", chemical), function(smilesResult) {
@@ -272,14 +269,14 @@ function init(){
             enable: true,
             onRightClick: function(node, eventInfo, e) {
                 if (node) {
-                    currentNode = node;  // set global node tracking var
                     // show metaboliteInfo div above selected node:
-                    $('div#metaboliteInfo').css({
-                        top: e.pageY - 600,
-                        left: e.pageX - 500
-                    }).show();
-
+                    //$('div#metaboliteInfo').css({
+                    //    top: e.pageY - 700,
+                    //    left: e.pageX - 500
+                    //}).show();
                     getMolecularInfo(node);
+                    currentNode = node;  // set global node tracking var
+                    //$("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
                 }
             }
 
@@ -352,63 +349,75 @@ function getMolecularInfo(node) {
     //Get molecular info upon right-clicking a metabolite
     //on the gentrans tree structure output
 
+    if (currentNode === node) {
+        return;  // do nothing if selecting already-selected node
+    }
+
     // Clear existing pchemprop table for new data:
     clearPchemData(); // from scripts_pchemprop
 
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
-    if ($('#mol-info-wrapper').has('p').length > 0) {
-        $('#mol-info-wrapper').children('p').remove(); //remove initial paragraph
+    var molInfo = $('#mol-info-wrapper');
+
+    if ($(molInfo).has('p').length > 0) {
+        $(this).children('p').remove(); //remove initial paragraph
     }
 
-    //Deals with hiding/showing metabolite info
-    if ($('#mol-info-wrapper').has('div.nodeWrapDiv').length > 0) {
-        
-        $('#mol-info-wrapper div.nodeWrapDiv').hide(); //has node info already..hide it
-
-        //check if data already exist for requested node:
-        if ($('#mol-info-wrapper:has(div#' + node.id + '_div)').length > 0) {
-            $('#mol-info-wrapper div#' + node.id + '_div').show(); //show existing node data
-            $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
-
-            if (node.data.hasOwnProperty('pchemprops')) {
-            	for (var i = 0; i < node.data.pchemprops.length; i++) {
-            		parseResponseToPchemTable(node.data.pchemprops[i], null);
-            	}
-		    }
-
-            return;
-        }
+    // only add node image if a different node has been clicked:
+    if (!currentNode || node.id != currentNode.id) {
+        molInfo.children('.nodeWrapDiv').empty();  // empty existing contents
+        molInfo.children('.nodeWrapDiv').append(addImageToMolInfo(node));  // add image to mol info
     }
 
-    $('#mol-info-wrapper').append(node.data.html); //add metabolite info to table
-    // $('#' + node.id + "_table tr:contains('smiles')").remove(); //remove smiles key/value (assuming first key/value)
-    $('#' + node.id + "_table tr").remove();
+    var molInfoDiv = $(molInfo).children('div.nodeWrapDiv');
+    var molInfoTable = $(molInfo).children('table.mol-info-table');
 
+    // Check node for molecular info:
+    if (node.data.hasOwnProperty("molecularInfo")) {
+        buildMolInfoTable(molInfoTable, node, node.data.molecularInfo);
+        $("#" + node.id).children().toggleClass("selectedMetabolite");  // highlight node
+        $(molInfoTable).show();  // show molecular info
+    }
+    else {
+        // add mol info to node.data.molecularInfo:
+        getChemDetails(node.data.smiles, function(chemResults) {
+            var data = chemResults.data[0];
+            node.data.molecularInfo = data;  // add mol info to node data
+            buildMolInfoTable(molInfoTable, node, data);  // build mol info table
+            $("#" + node.id).children().toggleClass("selectedMetabolite");  // highlight node
+            $(molInfo).children(molInfoDiv).show();
+        });
+    }
+
+    //$('#pchemprop-wrapper').show().children(':not(.gentransError)').show();  // show pchemprop table
+}
+
+
+function addImageToMolInfo(node) {
+    var nodeHTML = $.parseHTML(node.data.html);
+    var nodeImage = $(nodeHTML).children('div.metabolite_img');
+    return nodeImage;
+}
+
+
+function buildMolInfoTable(molTable, node, data) {
     var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
-    getChemDetails(node.data.smiles, function(chemResults) {
+    //Clear existing table data:
+    $(molTable).children().empty();
 
-        var data = chemResults.data[0];
-
-        //Add molecular info to table:
-        $('#' + node.id + '_table').prepend('<tr class="header"><th colspan="2">Molecular Information</th></tr>');
-        for (key in data) {
-            if ($.inArray(key, acceptedKeys) >= 0) {
-                var newRow = '<tr><td>';
-                newRow += key + '</td><td>';
-                newRow += data[key] + '</td></tr>';
-                $('#' + node.id + '_table tr:first').after(newRow);
-                $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
-            }
+     //Add molecular info to table:
+    $(molTable).prepend('<tr class="header"><th colspan="2">Molecular Information</th></tr>');
+    for (key in data) {
+        if ($.inArray(key, acceptedKeys) >= 0) {
+            var newRow = '<tr><td>';
+            newRow += key + '</td><td>';
+            newRow += data[key] + '</td></tr>';
+            $(molTable).find('tbody').append(newRow);
+            $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
         }
-
-        $("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
-        $('#' + node.id + '_table').show();
-        $('#pchemprop-wrapper').show().children(':not(.gentransError)').show();
-
-    });
-
+    }
 }
 
 
@@ -455,6 +464,7 @@ function getPchemData(node) {
     //TODO: Check if metabolite already has pchem data before making call ******
 
     if (!node) {
+        $('.gentransError').show();
         return;
     }
 

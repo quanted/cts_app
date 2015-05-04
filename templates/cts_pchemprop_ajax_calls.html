@@ -40,8 +40,16 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                     calcPropData.ws = "test";
                 }
 
-                var tblCell = $('.' + calc + '.' + prop);
-                $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                var pchemForSelectedNode = $('#gen-select-pchem').val();
+                var workflowPath = window.location.href;
+
+                if (workflowPath.indexOf("pchem") || pchemForSelectedNode == "0") {
+                    var tblCell = $('.' + calc + '.' + prop);
+                    $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                }
+                else {
+                    // blockUI code (getting pchemprops for multiple metabolites)
+                }
 
                 makeTheCall(url, calcPropData, node);
                 // setTimeout(makeTheCall(url, calcPropData, node), 1000); //pause for 1s (changes nothing)
@@ -64,7 +72,7 @@ function makeTheCall(url, calcPropData, node) {
         success: function(data) {
             // console.log(this.tryCount);
             // console.log(this.retryLimit);
-            parseResponseToPchemTable(data, node, this);
+            parseResponseToPchemTable(data, node, false);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -79,7 +87,7 @@ function makeTheCall(url, calcPropData, node) {
 }
 
 
-function parseResponseToPchemTable(response, node, ajaxCall) {
+function parseResponseToPchemTable(response, node, hasData) {
     //map response to pchemprop output table:
 
     var calc = response['calc'];
@@ -111,18 +119,25 @@ function parseResponseToPchemTable(response, node, ajaxCall) {
         }
     }
 
-    var test = $('#mol-info-wrapper').children('div.nodeWrapDiv').attr('id');
-    if ($('#mol-info-wrapper').children('div.nodeWrapDiv').attr('id') == node.id + "_div") {
+    if (window.location.href.indexOf("pchem") > -1) {
+        // at the pchemprop workflow, simplay display data:
         $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
     }
+    else {
+        if (node !== 'undefined' && node != null) {
+            if (!node.data.hasOwnProperty('pchemprops')) {
+                node.data.pchemprops = []; //array of with keys: calc, prop, data (single-level)
+            }
 
-    if (node !== 'undefined' && node != null) {
-        if (!node.data.hasOwnProperty('pchemprops')) {
-            //node.data.pchemprops = []; //array of with keys: calc, prop, data (single-level)
-            node.data.test = "test";
+            if (hasData == false) {
+                node.data.pchemprops.push({"calc": calc, "prop": prop, "data": data});
+            }
+
+            // only add html to table for node's table:
+            if (node.id == currentNode.id) {
+                $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
+            }
         }
-        //node.data.pchemprops.push({"calc": calc, "prop": prop, "data": data});
-
     }
 }
 
