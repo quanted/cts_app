@@ -269,22 +269,10 @@ function init(){
             enable: true,
             onRightClick: function(node, eventInfo, e) {
                 if (node) {
-                    // show metaboliteInfo div above selected node:
-                    //$('div#metaboliteInfo').css({
-                    //    top: e.pageY - 700,
-                    //    left: e.pageX - 500
-                    //}).show();
                     getMolecularInfo(node);
                     currentNode = node;  // set global node tracking var
-                    //$("#" + node.id).children().toggleClass("selectedMetabolite"); //highlight node
                 }
             }
-
-            // Oldie but goodie
-            // onRightClick: function(node, eventInfo, e) {
-            //     currentNode = node; //###################################
-            //     getMolecularInfo(currentNode);
-            // }
         }
 
     });
@@ -347,7 +335,8 @@ function getDeepestNodeCount(nodeList) {
 function getMolecularInfo(node) {
 
     //Get molecular info upon right-clicking a metabolite
-    //on the gentrans tree structure output
+    //on the gentrans tree structure output, and display
+    //pchemprops if node has any
 
     if (currentNode === node) {
         return;  // do nothing if selecting already-selected node
@@ -373,7 +362,8 @@ function getMolecularInfo(node) {
     var molInfoDiv = $(molInfo).children('div.nodeWrapDiv');
     var molInfoTable = $(molInfo).children('table.mol-info-table');
 
-    // Check node for molecular info:
+    // Check node for molecular info, download if node
+    // doesn't have any:
     if (node.data.hasOwnProperty("molecularInfo")) {
         buildMolInfoTable(molInfoTable, node, node.data.molecularInfo);
         $("#" + node.id).children().toggleClass("selectedMetabolite");  // highlight node
@@ -390,7 +380,16 @@ function getMolecularInfo(node) {
         });
     }
 
-    //$('#pchemprop-wrapper').show().children(':not(.gentransError)').show();  // show pchemprop table
+    // Check node for pchem properties, display if node has any:
+    if (node.data.hasOwnProperty("pchemprops")) {
+        // loop pchemprops calling parseResponseToPchemTable() (cts_pchemprop_ajax_calls)
+        for (var i = 0; i < node.data.pchemprops.length; i++) {
+            var response = node.data.pchemprops[i];  // "response" data
+            currentNode = node;  // will only display data for currentNode
+            parseResponseToPchemTable(response, node, true, true);
+        }
+    }
+
 }
 
 

@@ -40,19 +40,22 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                     calcPropData.ws = "test";
                 }
 
-                var pchemForSelectedNode = $('#gen-select-pchem').val();
+                var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
                 var workflowPath = window.location.href;
 
-                if (workflowPath.indexOf("pchem") || pchemForSelectedNode == "0") {
+                if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
                     var tblCell = $('.' + calc + '.' + prop);
                     $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                    makeTheCall(url, calcPropData, node, true);
                 }
                 else {
                     // blockUI code (getting pchemprops for multiple metabolites)
+                    // variable to keep track of displaying to pchem table or not
+                    makeTheCall(url, calcPropData, node, false);
                 }
 
-                makeTheCall(url, calcPropData, node);
-                // setTimeout(makeTheCall(url, calcPropData, node), 1000); //pause for 1s (changes nothing)
+                //makeTheCall(url, calcPropData, node, plotDataToTable);
+
             }
         }
     }
@@ -60,7 +63,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 }
 
 
-function makeTheCall(url, calcPropData, node) {
+function makeTheCall(url, calcPropData, node, plotDataToTable) {
     $.ajax({ 
         url: url,
         type: "POST",
@@ -72,7 +75,7 @@ function makeTheCall(url, calcPropData, node) {
         success: function(data) {
             // console.log(this.tryCount);
             // console.log(this.retryLimit);
-            parseResponseToPchemTable(data, node, false);
+            parseResponseToPchemTable(data, node, false, plotDataToTable);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -81,13 +84,13 @@ function makeTheCall(url, calcPropData, node) {
                 "calc": calcPropData['calc'],
                 "prop": calcPropData['prop']
             };
-            parseResponseToPchemTable(error);
+            parseResponseToPchemTable(error, null, false, plotDataToTable);
         }
     });
 }
 
 
-function parseResponseToPchemTable(response, node, hasData) {
+function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
     //map response to pchemprop output table:
 
     var calc = response['calc'];
@@ -119,8 +122,9 @@ function parseResponseToPchemTable(response, node, hasData) {
         }
     }
 
-    if (window.location.href.indexOf("pchem") > -1) {
-        // at the pchemprop workflow, simplay display data:
+    var workflowUrl = window.location.href;
+    if (workflowUrl.indexOf("pchem") > -1) {
+        // at the pchemprop workflow, simply display data:
         $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
     }
     else {
@@ -133,10 +137,14 @@ function parseResponseToPchemTable(response, node, hasData) {
                 node.data.pchemprops.push({"calc": calc, "prop": prop, "data": data});
             }
 
-            // only add html to table for node's table:
-            if (node.id == currentNode.id) {
+            if (plotDataToTable && currentNode) {
                 $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
             }
+
+            // only add html to table for node's table:
+            //if (node.id == currentNode.id) {
+            //    $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
+            //}
         }
     }
 }
