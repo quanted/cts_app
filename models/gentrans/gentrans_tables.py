@@ -264,6 +264,7 @@ def metaboliteInfoTmpl():
             <table class="mol-info-table ctsTableStylin">
             </table>
         </div> {# wraps molecular info table #}
+        <br>
         <h3 class="collapsible"><span></span>p-Chem Data</h3>
         <div id="pchemprop-wrapper">
             Get p-chem properties for:

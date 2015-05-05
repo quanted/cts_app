@@ -37,6 +37,8 @@ class Calculator(object):
             return EpiCalc()
         elif calc == 'measured':
             return MeasuredCalc()
+        elif calc == 'sparc':
+            return MeasuredCalc()
         else:
             raise TypeError('Valid calculators are chemaxon, test, epi, and measured')
 
@@ -259,4 +261,49 @@ class ChemaxonCalc(Calculator):
                 'resultKey': '',
                 'methods': ['KLOP', 'VG', 'PHYS']
             }
+        }
+
+class SPARCCalc(Calculator):
+    """
+	SPARC Calculator
+	"""
+
+    def __init__(self):
+        Calculator.__init__(self)
+
+        self.name = "sparc"
+        # self.urlStruct = "/test/epi/calc/{}/{}" # molID, propKey
+        self.urlStruct = "http://archemcalc.com/sparc-integration/rest/calc/multiProperty"
+        self.methods = None
+        self.propMap = {
+            'melting_point': {
+                'urlKey': 'meltingPtDegCEstimated',
+                'propKey': 'Melting Pt (deg C)(estimated)',
+                'resultKey': 'meltingPtDegCEstimated'
+            },
+            'boiling_point': {
+                'urlKey': 'boilingPtDegCEstimated',
+                'propKey': '',
+                'resultKey': 'boilingPtDegCEstimated'
+            },
+            'water_sol': {
+                'urlKey': 'waterSolMgLEstimated',
+                'propKey': '',
+                'resultKey': 'waterSolMgLEstimated'
+            },
+            'vapor_press': {
+                'urlKey': 'vaporPressMmHgEstimated',
+                'propKey': '',
+                'resultKey': 'vaporPressMmHgEstimated'
+            },
+            'henrys_law_con': {
+                'urlKey': 'henryLcBondAtmM3Mole',
+                'propKey': '',
+                'resultKey': 'henryLcBondAtmM3Mole'
+            },
+            'kow_no_ph': {
+                'urlKey': 'logKowEstimate',
+                'propKey': '',
+                'resultKey': 'logKowEstimate'
+            },
         }

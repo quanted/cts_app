@@ -62,7 +62,7 @@ class chemspec(object):
 
             # make call for majorMS:
             majorMsObj = JProp.getPropObject('majorMicrospecies')
-            majorMsObj.setPostDataValue('pH', 'self.pH_microspecies')
+            majorMsObj.setPostDataValue('pH', self.pH_microspecies)
             majorMsObj.makeDataRequest(self.chem_struct)
             jchemDataDict.update({majorMsObj.name: majorMsObj.results})
 
