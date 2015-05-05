@@ -5,6 +5,7 @@
 from REST import jchem_rest
 import logging
 from django.http import HttpRequest
+from django.http import HttpResponse
 import data_walks
 from gentrans_parameters import gen_limit_max as gen_max
 
@@ -63,7 +64,11 @@ class gentrans(object):
 
         request = HttpRequest()
         request.POST = dataDict
-        response = jchem_rest.getTransProducts(request)
+        try:
+            response = jchem_rest.getTransProducts(request)
+        except Exception as e:
+            logging.warning("error making data request: {}".format(e))
+            pass
 
         # reformat data for outputting to tree structure:
         data_walks.j = 0

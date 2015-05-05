@@ -1688,34 +1688,30 @@ for nodes on gentrans output */
 /* metatolite info / p-Chem data div on gentrans output */
 
 #metaboliteInfo {
-  /*overflow-y: auto;*/
-  /*overflow: auto;*/
-  /*overflow-x: hidden;*/
-  /*display: none;*/
   font-family: 'Open Sans', sans-serif;
-  background-color: white;
-  border: 1px solid #666666;
+  /*background-color: white;*/
+  /*border: 1px solid #666666;*/
   border-radius: 4px;
-  /* for floating div testing */
-  /*resize: vertical;*/
-  /*position: absolute;*/
-  /*position: fixed;*/
-  /*display: none;*/
+  /*box-shadow: 3px 3px 3px #999999;*/
   z-index: 10;
-  /*height: auto;*/
-  /*width: auto;*/
-  /*height: 500px;*/
-  /*min-height: 400px;*/
-  /*max-height: 500px;*/
   width: 750px;
   padding: 8px;
   margin-bottom: 2px;
-  /*min-width: 780px;*/
-  /*max-width: 850px;*/
+
+  /* trying to mimic ctsTableStylin look */
+  border-style: outset;
 }
 
-#metaboliteInfo table {
-    /*display: none;*/
+#metaboliteInfo div {
+    overflow: auto;
+}
+
+/*#metaboliteInfo h3 {*/
+    /*background-color: #F4F7ED;*/
+/*}*/
+
+#mol-info-wrapper div, #mol-info-wrapper table {
+    float: left;
 }
 
 #metaboliteInfo table, #metaboliteInfo p {

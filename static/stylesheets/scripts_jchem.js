@@ -64,7 +64,7 @@ function importMol(dataObj) {
       marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
     }
     else {
-      displayErrorInTextbox("An error has occured during the call..sorry about that");
+      displayErrorInTextbox("An error has occured during the call..");
     }
   });
 
@@ -94,18 +94,6 @@ function importMolFromCanvas() {
       });
 
     });
-
-    // ajaxCall(getParamsObj("mrvToSmiles", mrvChemical), function(smilesResult) {
-
-    //   var smiles = smilesResult['structure'];
-    //   ajaxCall(getParamsObj("getChemDetails", smiles), function(chemResults) {
-
-    //       data = chemResults.data[0];
-    //       populateResultsTbl(data);
-
-    //   });
-
-    // });
 
   });
 }
@@ -194,7 +182,7 @@ function dataWalker(key, value) {
     }
   }
   else {
-    if (value.hasOwnProperty("error")) {
+    if (value && value.hasOwnProperty("error")) {
       error = true;
       return false;
     }
@@ -220,9 +208,9 @@ function populateResultsTbl(data) {
 function displayErrorInTextbox(errorMessage) {
   //Displays error message in Lookup Chemical textbox
   if (typeof errorMessage === 'undefined' || errorMessage == "") {
-    errorMessage = "error retrieving chemical information...check chemical and try again.";
+    errorMessage = "error retrieving chemical information...";
   }
-  // $('#id_chem_struct').addClass("redFont");
+
   $('#id_chem_struct').addClass("formError");
   $('#id_chem_struct').val(errorMessage); //Enter SMILES txtbox
   $('#molecule').val(""); //SMILES string txtbox - results table
