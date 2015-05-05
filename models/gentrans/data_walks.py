@@ -99,10 +99,9 @@ def nodeWrapper(smiles, height, width, scale, key=None):
     return html
 
 
-# NOTE: imgChart1 ID is an attempt to get images to show up on pdf
 def imgTmpl():
     imgTmpl = """
-	<img class="metabolite" id="{{key|default:""}} imgChart1"
+	<img class="metabolite" id="{{key|default:""}}"
 		alt="{{smiles}}" src="data:image/png;base64,{{img}}"
 		width="{{width}}" height="{{height}}" /> 
 	"""
