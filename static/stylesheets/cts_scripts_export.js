@@ -47,12 +47,23 @@ $(document).ready(function () {
                 console.log(e);
             }
         }
-        else if (path.indexOf("gentrans") != -1) {
+        else if (path.indexOf("gentrans") > -1) {
             elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
             elements = elements.add('table#inputsTable'); // user inputs
             elements = elements.add('h3#reactionPathways');
-            jsonData = JSON.stringify(getSpaceTree().json);
-
+            var canvasNodes = getSpaceTree().graph.nodes;
+            var nodeArray = [];
+            for (var node in canvasNodes) {
+                if (canvasNodes.hasOwnProperty(node)) {
+                    var nodeItem = {
+                        'image': canvasNodes[node]['name'],
+                        'data': canvasNodes[node]['data']
+                    };
+                    nodeArray.push(nodeItem);
+                }
+            }
+            jsonData = JSON.stringify(nodeArray);  // getSpaceTree() from cts_gentrans_tree.html
+            //jsonData = JSON.stringify(getSpaceTree().json);  // getSpaceTree() from cts_gentrans_tree.html
         }
         else {
             elements = $('div.articles_output').children().not(':hidden, div#export_menu');

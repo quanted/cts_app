@@ -160,28 +160,28 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 
 
 htmlList = []
-
-def buildTableValues(jsonDict):
-    htmlListItem = {}
-    if 'data' in jsonDict:
-        if 'genKey' in jsonDict['data'] and 'smiles' in jsonDict['data'] and 'name' in jsonDict:
-            htmlListItem.update({
-                'genKey': jsonDict['data']['genKey'],
-                'smiles': jsonDict['data']['smiles'],
-                'image': jsonDict['name']
-            })
-            htmlList.append(htmlListItem)
-
-    if 'children' in jsonDict and jsonDict['children']:
-        for child in jsonDict['children']:
-            buildTableValues(child)
-
+def buildTableValues(nodeList, keys):
+    """
+    Builds list of dictionary items with
+    nodes' key:values for pdf
+    """
+    for node in nodeList:
+        htmlListItem = {}
+        for key in keys:
+            if key in node:
+                htmlListItem.update({key: node[key]})
+            elif 'data' in node and key in node['data']:
+                htmlListItem.update({key: node['data'][key]})
+            elif 'data' in node and 'pchemprops' in node['data']:
+                for prop in node['data']['pchemprops']:
+                    if key in prop['prop']:
+                        htmlListItem.update({key: prop['data']})
+            else:
+                htmlListItem.update({key: ''})
+        htmlList.append(htmlListItem)
     return htmlList
 
-
-"""
-The general version (issue making multiples of the same keys)
-"""
+# The general version (issue making multiples of the same keys)
 # def buildTableValues(jsonDict, keys):
 #     htmlListItem = {}
 #     if 'data' in jsonDict:
@@ -190,7 +190,7 @@ The general version (issue making multiples of the same keys)
 #                 htmlListItem.update({key: jsonDict['data'][key]})
 #             elif key in jsonDict:
 #                 htmlListItem.update({key: jsonDict[key]})
-#             htmlList.append(htmlListItem)
+#         htmlList.append(htmlListItem)
 #
 #     if 'children' in jsonDict and jsonDict['children']:
 #         for child in jsonDict['children']:

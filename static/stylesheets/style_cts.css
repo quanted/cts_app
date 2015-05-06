@@ -1595,6 +1595,7 @@ div.pchemCellWrap {
 #pchempropOutputTable td {
   padding: 0px;
   font-size: 12px;
+  text-align: left;
 }
 
 /* dropdown menu for node mouseover event */
@@ -1689,25 +1690,21 @@ for nodes on gentrans output */
 
 #metaboliteInfo {
   font-family: 'Open Sans', sans-serif;
-  /*background-color: white;*/
-  /*border: 1px solid #666666;*/
   border-radius: 4px;
-  /*box-shadow: 3px 3px 3px #999999;*/
-  z-index: 10;
+  z-index: 10; /*for when it floated*/
   width: 750px;
-  padding: 8px;
   margin-bottom: 2px;
-
-  /* trying to mimic ctsTableStylin look */
-  border-style: outset;
+  border: 1px outset;
+  background-color: #F4F7ED;
 }
 
 #metaboliteInfo div {
     overflow: auto;
+    padding: 8px;
 }
 
-/*#metaboliteInfo h3 {*/
-    /*background-color: #F4F7ED;*/
+/*#metaboliteInfo h3, #spacetree-nav {*/
+    /*background-color: #E7EADC;*/
 /*}*/
 
 #mol-info-wrapper div, #mol-info-wrapper table {
@@ -1716,6 +1713,11 @@ for nodes on gentrans output */
 
 #metaboliteInfo table, #metaboliteInfo p {
     margin: 2px;
+}
+
+/* div within metaboliteInfo */
+#pchemprop-wrapper table {
+    text-align: left;
 }
 
 /* ajax call wait spinnerz */

@@ -21,6 +21,7 @@ def parsePOST(request):
     pdf_p = json.loads(request.POST.get('pdf_p'))
     if 'pdf_json' in request.POST and request.POST['pdf_json']:
         pdf_json = json.loads(request.POST.get('pdf_json'))
+        # pdf_json = request.POST.get('pdf_json')
     else:
         pdf_json = None
 
@@ -28,12 +29,10 @@ def parsePOST(request):
     final_str = pdf_t
 
     if 'gentrans' in request.path:
-        headings = ['genKey', 'smiles', 'image']  # TODO: class this in Metabolizer (jchem_rest) later
-        metaboliteList = data_walks.buildTableValues(pdf_json)  # List of dicts, which are node data
+        # TODO: class this, e.g., Metabolizer (jchem_rest)
+        headings = ['genKey', 'smiles', 'water_sol', 'ion_con', 'kow_no_ph', 'kow_wph', 'image']  # in order of table columns
+        metaboliteList = data_walks.buildTableValues(pdf_json, headings)  # List of dicts, which are node data
         final_str += buildMetaboliteTable().render(Context(dict(headings=headings, metaboliteList=metaboliteList)))
-        # fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-        # fileout.write(testStr)
-        # fileout.close()
 
     # final_str += testImage()
 
@@ -52,7 +51,7 @@ def parsePOST(request):
             }
             table {border-collapse: collapse;}
             th {text-align:center; padding:2px; font-size:11px;}
-            td {padding:2px; font-size:10px;}
+            td {padding:2px; font-size:10px; overflow: auto;}
             h2 {font-size:13px; color:#79973F;}
             h3 {font-size:12px; color:#79973F; margin-top: 8px;}
             h4 {font-size:12px; color:#79973F; padding-top:30px;}
