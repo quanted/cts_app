@@ -167,12 +167,12 @@ function organizeData(data) {
         if (data.hasOwnProperty(item) && data[item] != null) {
             var itemVals = data[item];
             if (itemVals.length == 0) {
-                parsedData += '<div>' + item + ': none</div>';
+                parsedData += '<div class="pka-wrapper">' + item + ': none</div>';
             }
             else {
                 for (var i = 0; i < itemVals.length; i++) {
                     var label = item + String(i).sub() +  ': ';
-                    parsedData += '<div>' + label + itemVals[i].toFixed(3) + '</div>';
+                    parsedData += '<div class="pka-wrapper">' + label + itemVals[i].toFixed(3) + '</div>';
                 }
             }
         }

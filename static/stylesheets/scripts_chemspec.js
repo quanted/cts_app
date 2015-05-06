@@ -28,37 +28,38 @@ $(document).ready(function() {
     	// $('#chemEditDraw').hide();
     });
 
-    var isAllChecked_ChemCalcs = 1;
+    //var isAllChecked_ChemCalcs = 1;
 
-    var noOfInput_ChemCalcs = []
-    $('#tab_ChemCalcs').find('input').push(noOfInput_ChemCalcs);
-    noOfInput_ChemCalcs = noOfInput_ChemCalcs.length;
-    var noOfInput_ChemCalcs = $(".tab_ChemCalcs input").length -1;
+    //var noOfInput_ChemCalcs = [];
+    //$('#tab_ChemCalcs').find('input').push(noOfInput_ChemCalcs);
+    //noOfInput_ChemCalcs = noOfInput_ChemCalcs.length;
+    //var noOfInput_ChemCalcs = $(".tab_ChemCalcs input").length -1;
 
-    var isChecked_ChemCalcs = [];
-    $("#id_all").click(function() {
-        switch(isAllChecked_ChemCalcs) {
-            case 1:
-                isAllChecked_ChemCalcs = 0;
-                $(".tab_ChemCalcs input").prop( "checked", true );
-                console.log('Set checked');
-                break;
-            case 0:
-                $(".tab_ChemCalcs input").prop( "checked", false );
-                isAllChecked_ChemCalcs = 1;
-                console.log('Set unchecked');
-                break;
-            default:
-                console.log('JavaScript Error');
-        }
-    });
+    //var isChecked_ChemCalcs = [];
+    //$("#id_all").click(function() {
+    //    switch(isAllChecked_ChemCalcs) {
+    //        case 1:
+    //            isAllChecked_ChemCalcs = 0;
+    //            $(".tab_ChemCalcs input").prop( "checked", true );
+    //            console.log('Set checked');
+    //            break;
+    //        case 0:
+    //            $(".tab_ChemCalcs input").prop( "checked", false );
+    //            isAllChecked_ChemCalcs = 1;
+    //            console.log('Set unchecked');
+    //            break;
+    //        default:
+    //            console.log('JavaScript Error');
+    //    }
+    //});
 
     //default button
     $('#resetbutton').click(function(){
         //load default values to fields 
         for (key in chemspecDefaults) {
-            var test = $('input[name=' + key + ']');
-            $('input[name=' + key + ']').val(chemspecDefaults[key]);
+            if (chemspecDefaults.hasOwnProperty(key)) {
+                $('input[name=' + key + ']').val(chemspecDefaults[key]);
+            }
         }
         //check first table (calculate ionization constants parameters)
         var defaultChkbox = $('input[name=pka_chkbox]');
@@ -75,7 +76,7 @@ $(document).ready(function() {
         enableTable(this);
     });
 
-    //mouseover speciation table
+    //mouseover speciation table - highlight its textbox:
     $('table.tab_Speciation').hover(
         function() {
             //mouseenter
@@ -91,6 +92,19 @@ $(document).ready(function() {
             $(this).find('input[type=checkbox]').removeClass('brightBorders');
         }   
     );
+
+    // todo: fix this so that the user can still click the checkbox itself
+    //$('table.tab_Speciation').click(function() {
+    //    // check the table's checkbox if table is clicked:
+    //    var checkBox = $(this).find('input[type=checkbox]');
+    //    if ($(checkBox).is(':checked')) {
+    //        $(checkBox).prop('checked', false).trigger('change');
+    //    }
+    //    else {
+    //        $(checkBox).prop('checked', true).trigger('change');
+    //    }
+    //
+    //});
 
 });
 

@@ -1474,7 +1474,7 @@ body.wait *, body.wait
     cursor: progress !important;
 }
 
-#pchemprop_table_out td {
+#pchemprop_table td {
   text-align: left;
 }
 
@@ -1698,10 +1698,15 @@ for nodes on gentrans output */
   background-color: #F4F7ED;
 }
 
-#metaboliteInfo div {
+#spacetree-nav, #mol-info-wrapper, #pchemprop-wrapper {
     overflow: auto;
     padding: 8px;
 }
+
+/*#metaboliteInfo div {*/
+    /*overflow: auto;*/
+    /*padding: 8px;*/
+/*}*/
 
 /*#metaboliteInfo h3, #spacetree-nav {*/
     /*background-color: #E7EADC;*/
@@ -1747,4 +1752,8 @@ h4.unstyle {
 /* border color for metabolites with pchemprops */
 .hasPchemProps {
     border: 2px solid #356697;
+}
+
+div.pka-wrapper {
+    padding: 0px;
 }

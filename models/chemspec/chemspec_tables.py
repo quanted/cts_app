@@ -215,6 +215,8 @@ def getIsoPtResults(chemspec_obj):
     try:
         isoPtObj = chemspec_obj.jchemPropObjects['isoelectricPoint']
         isoPt = isoPtObj.getIsoelectricPoint()
+        if isoPt:
+            isoPt = round(isoPt, chemspec_obj.pKa_decimals)
         isoPtChartData = isoPtObj.getIsoPtChartData()
     except AttributeError:
         logging.info("isoelectricPoint not checked..moving on..")
@@ -261,10 +263,18 @@ def getPkaResults(chemspec_obj):
     <div class="out_">
     """
     # acidic/basic pKa values:
+    pka = chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()
+    pkb = chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
+    roundedPka, roundedPkb = [], []
+    for val in pka:
+        roundedPka.append(round(val, chemspec_obj.pKa_decimals))
+    for val in pkb:
+        roundedPkb.append(round(val, chemspec_obj.pKa_decimals))
+
     try:
         pkaValues = {
-            'Acidic pKa Value(s)': chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka(),
-            'Basic pKa Value(s)': chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
+            'Acidic pKa Value(s)': roundedPka,
+            'Basic pKa Value(s)': roundedPkb
         }
     except AttributeError:
         logging.info("pKa not selected..moving..")
