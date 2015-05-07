@@ -71,13 +71,7 @@ def parsePOST(request):
               border: 1px solid black;
               -pdf-keep-in-frame-mode: shrink;
             }
-
             </style>
-
-            <div id="test-div">kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
-            </div>
-
-
             """
     input_str = input_css + final_str
 
