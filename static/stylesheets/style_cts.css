@@ -1567,6 +1567,7 @@ body.wait *, body.wait
 .selectedMetabolite {
   /*border: 5px solid #eed;*/
   border: 2px solid #dee7ef;
+  background-color: rgba(222,231,239,1);
 }
 
 /* style for pchemprop output table data cell */
@@ -1693,14 +1694,24 @@ for nodes on gentrans output */
   border-radius: 4px;
   z-index: 10; /*for when it floated*/
   width: 750px;
-  margin-bottom: 2px;
+  margin-bottom: 8px;
   border: 1px outset;
   background-color: #F4F7ED;
 }
 
-#spacetree-nav, #mol-info-wrapper, #pchemprop-wrapper {
+#spacetree-nav {
+    margin-bottom: 16px;
+    margin-left: 2px;
+}
+
+#mol-info-wrapper {
+    display: none;
+}
+
+#mol-info-wrapper, #pchemprop-wrapper {
     overflow: auto;
-    padding: 8px;
+    padding: 4px;
+    margin: 4px;
 }
 
 /*#metaboliteInfo div {*/
@@ -1743,7 +1754,7 @@ for nodes on gentrans output */
 /* styling for chemspec output, pKa labels ("parent", "microspecies");
    basically unstyling H4 */
 h4.unstyle {
-  margin: 0px;
+  margin: 0;
   /*font-style: normal;*/
   font-weight: normal;
   vertical-align: top;
@@ -1754,6 +1765,13 @@ h4.unstyle {
     border: 2px solid #356697;
 }
 
+/* inner-div a metaboliteInfo */
 div.pka-wrapper {
-    padding: 0px;
+    padding: 0;
 }
+
+/* tinting a selected metabolite */
+.tint {
+    box-shadow: rgba(0,255,255,0.5);
+}
+

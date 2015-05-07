@@ -246,6 +246,11 @@ def pchemHtmlTemplate():
 
 def metaboliteInfoTmpl():
     metaboliteInfoTmpl = """
+    <div class="intro-text">
+        <p>Select (right-click) a metabolite to view its properties.</p>
+        <p>One can also view metabolites by generation using the "Display up to" selection below,</p>
+        <p>or view a metabolite's progeny by left-clicking the metabolite of interest.</p>
+    </div>
     <div id="metaboliteInfo">
 
         <div id="spacetree-nav">
@@ -258,11 +263,11 @@ def metaboliteInfoTmpl():
             </select>
         </div>
 
-        <br>
+
 
         <h3 class="collapsible out_1"><span></span>Molecular Information</h3>
         <div id="mol-info-wrapper">
-            Selected Molecule:
+            <p class="intro-text">Select (right-click) a metabolite to view its properties.</p>
             <br>
             <div class="nodeWrapDiv"></div>
             <table class="mol-info-table ctsTableStylin">
@@ -271,7 +276,7 @@ def metaboliteInfoTmpl():
 
         <br>
 
-        <h3 class="collapsible out_1"><span></span>p-Chem Data</h3>
+        <h3 class="collapsible out_1"><span></span>Get p-Chem Data</h3>
         <div id="pchemprop-wrapper">
             Get p-chem properties for:
             <select id="gen-select-pchem">

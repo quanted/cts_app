@@ -354,16 +354,22 @@ function getMolecularInfo(node) {
         return;  // do nothing if selecting already-selected node
     }
 
+    var molInfo = $('#mol-info-wrapper');
+
+    if ($(molInfo).has('p.intro-text').length > 0) {
+        $(molInfo).children('p.intro-text').remove();
+    }
+
     // Clear existing pchemprop table for new data:
     clearPchemData(); // from scripts_pchemprop
 
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
-    var molInfo = $('#mol-info-wrapper');
 
-    if ($(molInfo).has('p').length > 0) {
-        $(this).children('p').remove(); //remove initial paragraph
-    }
+
+{#    if ($(molInfo).has('p').length > 0) {#}
+{#        $(this).children('p').remove(); //remove initial paragraph#}
+{#    }#}
 
     // only add node image if a different node has been clicked:
     if (!currentNode || node.id != currentNode.id) {
@@ -378,7 +384,9 @@ function getMolecularInfo(node) {
     // doesn't have any:
     if (node.data.hasOwnProperty("molecularInfo")) {
         buildMolInfoTable(molInfoTable, node, node.data.molecularInfo);
-        $("#" + node.id).children().toggleClass("selectedMetabolite");  // highlight node
+
+        $("#" + node.id).children('img').toggleClass("selectedMetabolite");  // highlight node
+
         $(molInfoTable).show();  // show molecular info
     }
     else {
@@ -387,8 +395,14 @@ function getMolecularInfo(node) {
             var data = chemResults.data[0];
             node.data.molecularInfo = data;  // add mol info to node data
             buildMolInfoTable(molInfoTable, node, data);  // build mol info table
-            $("#" + node.id).children().toggleClass("selectedMetabolite");  // highlight node
-            $(molInfo).children(molInfoDiv).show();
+
+            $("#" + node.id).children('img').addClass("selectedMetabolite");  // highlight node
+{#            $(molInfo).children(molInfoDiv).show();#}
+            var molInfoHeader = $(molInfo).siblings('h3')[0];
+            if ($(molInfoHeader).hasClass('collapse-close')) {
+                $(molInfoHeader).removeClass('collapse-close').addClass('collapse-open');
+                $(molInfo).show();
+            }
         });
     }
 
@@ -472,7 +486,7 @@ function tabDisplayLogic(event) {
 
 function getPchemData(node) {
 
-    //TODO: Check if metabolite already has pchem data before making call ******
+    //TODO: Check if metabolite already has pchem data before making call ***********************
 
     if (!node) {
         $('.gentransError').show();
@@ -577,7 +591,7 @@ function blockInterface(block) {
                 "-webkit-box-shadow": "3px 3px 15px #333",
                 "-moz-box-shadow": "3px 3px 15px #333"
             },
-            message: '<h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
+            message: '<h2 class="popup_header">Retrieving data...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
             fadeIn: 500
         });
     }
