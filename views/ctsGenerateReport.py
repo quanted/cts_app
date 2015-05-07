@@ -45,12 +45,18 @@ def parsePOST(request):
     # Styling
     input_css="""
             <style>
+
+            @frame content_frame {
+                width: 1200px;
+                height: 5000px;
+            }
+
             body {font-family: 'Open Sans', sans-serif;}
             table, td, th {
                 border: 1px solid #666666;
             }
-            table, tr, td {
-              white-space: pre-line;
+            td {
+              float:left;
             }
             table {border-collapse: collapse;}
             th {text-align:center; padding:2px; font-size:11px;}
@@ -60,7 +66,18 @@ def parsePOST(request):
             h4 {font-size:12px; color:#79973F; padding-top:30px;}
             .pdfDiv {border: 1px solid #000000;}
             div.tooltiptext {display: table; border: 1px solid #333333; margin: 8px; padding: 4px}
+
+            #test-div {
+              border: 1px solid black;
+              -pdf-keep-in-frame-mode: shrink;
+            }
+
             </style>
+
+            <div id="test-div">kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+            </div>
+
+
             """
     input_str = input_css + final_str
 
