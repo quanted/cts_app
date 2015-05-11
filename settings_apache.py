@@ -31,6 +31,7 @@ os.environ.update({
     # 'CTS_TEST_SERVER': 'http://134.67.114.6',                   # test rest server (intranet)
     'CTS_JCHEM_SERVER': 'http://172.20.100.12',                 # jchem rest server (internal)
     'CTS_TEST_SERVER': 'http://172.20.100.16',         # test rest rserver (internal)
+    'wkhtmltopdf': PROJECT_ROOT + '\\wkhtmltopdf\\linux\\wkhtmltopdf',
     'PROJECT_PATH': PROJECT_ROOT,
     'SITE_SKIN': ''                          # Leave empty ('') for default skin, 'EPA' for EPA skin
 })
