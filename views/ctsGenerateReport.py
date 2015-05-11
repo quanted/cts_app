@@ -119,7 +119,8 @@ def pdfReceiver(request, model=''):
 
     packet = StringIO.StringIO() #write to memory
     # pisa.CreatePDF(input_str, dest=packet, link_callback=link_callback)
-    config = pdfkit.configuration(wkhtmltopdf='C:\\python27\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    # config = pdfkit.configuration(wkhtmltopdf='C:\\python27\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    config = pdfkit.configuration(wkhtmltopdf=os.environ['wkhtmltopdf'])
     pdf = pdfkit.from_string(input_str, False, configuration=config)
 
     # Create timestamp
