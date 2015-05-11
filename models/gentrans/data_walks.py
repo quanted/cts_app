@@ -160,7 +160,7 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 
 
 htmlList = []
-def buildTableValues(nodeList, keys):
+def buildTableValues(nodeList, keys, nRound):
     """
     Builds list of dictionary items with
     nodes' key:values for pdf
@@ -169,31 +169,72 @@ def buildTableValues(nodeList, keys):
         htmlListItem = {}
         for key in keys:
             if key in node:
-                htmlListItem.update({key: node[key]})
+                htmlListItem.update({key: roundValue(node[key], nRound)})
             elif 'data' in node and key in node['data']:
-                htmlListItem.update({key: node['data'][key]})
+                htmlListItem.update({key: roundValue(node['data'][key], nRound)})
             elif 'data' in node and 'pchemprops' in node['data']:
                 for prop in node['data']['pchemprops']:
                     if key in prop['prop']:
-                        htmlListItem.update({key: prop['data']})
+                        htmlListItem.update({key: roundValue(prop['data'], nRound)})
             else:
                 htmlListItem.update({key: ''})
         htmlList.append(htmlListItem)
     return htmlList
 
-# The general version (issue making multiples of the same keys)
-# def buildTableValues(jsonDict, keys):
-#     htmlListItem = {}
-#     if 'data' in jsonDict:
-#         for key in keys:
-#             if key in jsonDict['data']:
-#                 htmlListItem.update({key: jsonDict['data'][key]})
-#             elif key in jsonDict:
-#                 htmlListItem.update({key: jsonDict[key]})
+
+def roundValue(val, n):
+    try:
+        val = float(val)
+        return round(val, n)
+    except ValueError:
+        return val  # not num, don't round
+    except TypeError:
+        # accounting for if val is not string or number:
+        if isinstance(val, dict):
+            # assuming pKa dict
+            roundedDict = {}
+            for key, values in val.items():
+                if isinstance(values, list):
+                    pkaList = []
+                    for pka in values:
+                        pkaList.append(round(pka, n))
+                    roundedDict[key] = pkaList
+            return roundedDict
+
+
+# htmlList = []
+# def buildTableValues(nodeList, props, nRound):
+#     """
+#     Builds list of dictionary items with
+#     nodes' key:values for pdf
+#     """
+#     for node in nodeList:
+#         htmlListItem = {}
+#         for key in props:
+#             if key in node:
+#                 htmlListItem.update({
+#                     key: roundValue(node[key], nRound)
+#                 })
+#
+#             elif 'data' in node and key in node['data']:
+#                 htmlListItem.update({
+#                     key: roundValue(node['data'][key], nRound)
+#                 })
+#
+#             elif 'data' in node and 'pchemprops' in node['data']:
+#                 for prop in node['data']['pchemprops']:
+#                     calculator = prop['calc']
+#                     if key in prop['prop']:
+#                         if calculator in htmlListItem:
+#                             htmlListItem[calculator].update({
+#                                 key: roundValue(prop['data'], nRound)
+#                             })
+#                         else:
+#                             htmlListItem.update({
+#                                 calculator: {key: roundValue(prop['data'], nRound)}
+#                             })
+#
+#             else:
+#                 htmlListItem.update({key: ''})
 #         htmlList.append(htmlListItem)
-#
-#     if 'children' in jsonDict and jsonDict['children']:
-#         for child in jsonDict['children']:
-#             buildTableValues(child, keys)
-#
 #     return htmlList

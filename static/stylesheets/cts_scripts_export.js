@@ -9,6 +9,8 @@ $(document).ready(function () {
         var path = window.location.href;
         var elements;
 
+        $('table.getpdf').html("");
+
         var options = {
 			x_offset : 30,
 			y_offset : 30

@@ -303,7 +303,7 @@ def metaboliteInfoTmpl():
     return Template(metaboliteInfoTmpl)
 
 
-def buildMetaboliteTable():
+def buildMetaboliteTableForPDF():
     metTableTmpl = """
     <table id="gentrans_table">
     <tr>
@@ -314,11 +314,29 @@ def buildMetaboliteTable():
     {% for metabolite in metaboliteList %}
         <tr>
         {% for heading in headings %}
+
+            <td>
             {% for key, value in metabolite.items %}
+
                 {% if key == heading %}
-                    {% autoescape off %}<td>{{value}}</td>{% endautoescape %}
+
+                    {% if key != "ion_con" %}
+                        {% autoescape off %}{{value}}{% endautoescape %}
+                    {% else %}
+                        {% for pkaKey, pkaVals in value.items %}
+                            {% for pka in pkaVals %}
+                                {% autoescape off %}
+                                {{pkaKey}}<sub>{{forloop.counter}}</sub>: {{pka}} <br>
+                                {% endautoescape %}
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
                 {% endif %}
+
             {% endfor %}
+            </td>
+
         {% endfor %}
         </tr>
     {% endfor %}
