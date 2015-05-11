@@ -98,7 +98,7 @@ $(document).ready(function () {
         $('<tr style="display:none"><td><input type="hidden" name="pdf_json"></td></tr>')
 			.appendTo('.getpdf')
 			.find('input')
-			.val(jsonData);
+			.val(jsonData); // spacetree data
 
 	}
 

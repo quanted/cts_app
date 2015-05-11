@@ -114,7 +114,8 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 console.log(response['data']['error']);
             }
             else {
-                data = response['data']['value'];
+{#                data = response['data']['value'];#}
+                data = response['data']['val'];
             }
         }
         else{

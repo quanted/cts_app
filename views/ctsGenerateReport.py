@@ -3,11 +3,11 @@ import StringIO
 from django.http import HttpResponse
 from django.conf import settings
 from django.template import Context
-from django.utils.safestring import mark_safe
 import datetime
 import pytz
 import json
 import os
+import pdfkit
 
 import logging
 from models.gentrans import data_walks
@@ -46,17 +46,14 @@ def parsePOST(request):
     input_css="""
             <style>
 
-            @frame content_frame {
-                width: 1200px;
-                height: 5000px;
-            }
-
             body {font-family: 'Open Sans', sans-serif;}
             table, td, th {
                 border: 1px solid #666666;
             }
             td {
-              float:left;
+                /*word-wrap: normal;*/
+                max-width: 100px;
+                word-break: break-all;
             }
             table {border-collapse: collapse;}
             th {text-align:center; padding:2px; font-size:11px;}
@@ -67,12 +64,11 @@ def parsePOST(request):
             .pdfDiv {border: 1px solid #000000;}
             div.tooltiptext {display: table; border: 1px solid #333333; margin: 8px; padding: 4px}
 
-            #test-div {
-              border: 1px solid black;
-              -pdf-keep-in-frame-mode: shrink;
-            }
             </style>
             """
+
+    # final_str = '<div id="test-div">kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk</div>'
+
     input_str = input_css + final_str
 
     return input_str
@@ -122,14 +118,17 @@ def pdfReceiver(request, model=''):
     #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
 
     packet = StringIO.StringIO() #write to memory
-    pisa.CreatePDF(input_str, dest=packet, link_callback=link_callback)
+    # pisa.CreatePDF(input_str, dest=packet, link_callback=link_callback)
+    config = pdfkit.configuration(wkhtmltopdf='C:\\python27\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    pdf = pdfkit.from_string(input_str, False, configuration=config)
 
     # Create timestamp
     ts = datetime.datetime.now(pytz.UTC)
     localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
     jid = localDatetime.strftime('%Y%m%d%H%M')
 
-    response = HttpResponse(packet.getvalue(), content_type='application/pdf')
+    response = HttpResponse(pdf, content_type='application/pdf')
+    # response = HttpResponse(packet.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
 
     return response

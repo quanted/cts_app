@@ -248,9 +248,12 @@ def metaboliteInfoTmpl():
     metaboliteInfoTmpl = """
     <div class="intro-text">
         <p>Select (right-click) a metabolite to view its properties.</p>
-        <p>One can also view metabolites by generation using the "Display up to" selection below,</p>
-        <p>or view a metabolite's progeny by left-clicking the metabolite of interest.</p>
+        <p>Metabolites can be viewed by generation using the "Display up to" selection below,
+        or view a metabolite's progeny by left-clicking the metabolite of interest.</p>
+        <p>If some metabolites are hidden, the canvas can be panned by holding down the
+        left-click and moving the mouse.</p>
     </div>
+    <br>
     <div id="metaboliteInfo">
 
         <div id="spacetree-nav">
@@ -263,9 +266,7 @@ def metaboliteInfoTmpl():
             </select>
         </div>
 
-
-
-        <h3 class="collapsible out_1"><span></span>Molecular Information</h3>
+        <h3 class="collapsible out_1"><span></span>View Molecular Information</h3>
         <div id="mol-info-wrapper">
             <p class="intro-text">Select (right-click) a metabolite to view its properties.</p>
             <br>

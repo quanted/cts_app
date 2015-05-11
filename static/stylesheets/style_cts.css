@@ -1524,7 +1524,19 @@ body.wait *, body.wait
 .ctsTableStylin, .ctsTableStylin td, .ctsTableStylin th {
   font-size: 11px;
   border-spacing: 0px;
-  background-color: transparent;
+  /*background-color: transparent;*/
+  background-color: #F7F9F4;
+}
+
+.ctsTableStylin td {
+    word-wrap: break-word;
+    /*word-break: break-all;*/
+    max-width: 600px;
+}
+
+#userInputs {
+    table-layout: fixed;
+    max-width: 450px;
 }
 
 .ctsTableStylin {

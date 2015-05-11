@@ -63,12 +63,13 @@ class Calculator(object):
 
     def getPostData(self, calc, prop, method=None):
         postData = {
-            "molecule": {
-                "inChIKey": "",
-                "iupacName": "",
-                "inChI": "",
-                "canonicalSmiles": ""
-            }
+            # "molecule": {
+            #     "inChIKey": "",
+            #     "iupacName": "",
+            #     "inChI": "",
+            #     "canonicalSmiles": ""
+            # }
+            "smiles": ""
         }
         if calc == 'epi':
             return postData
@@ -84,11 +85,10 @@ class Calculator(object):
 
     def makeDataRequest(self, structure, calc, prop, method=None):
         post = self.getPostData(calc, prop)
-        post['molecule']['canonicalSmiles'] = structure
-
-        logging.info("post data: {}".format(post))
-
+        # post['molecule']['canonicalSmiles'] = structure
+        post['smiles'] = structure
         url = self.baseUrl + self.getUrl(prop)
+
         logging.info("url: {}".format(url))
 
         try:
@@ -161,7 +161,8 @@ class EpiCalc(Calculator):
 
         self.name = "epi"
         # self.urlStruct = "/test/epi/calc/{}/{}" # molID, propKey
-        self.urlStruct = "/api/calculations/EpiSuite/{}"
+        # self.urlStruct = "/api/calculations/EpiSuite/{}"
+        self.urlStruct = "/api/epiSuiteCalcs/{}"
         self.methods = None
         self.propMap = {
             'melting_point': {
