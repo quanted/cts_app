@@ -355,7 +355,7 @@ def getTautomerResults(chemspec_obj):
     for item in tautStructs:
         html += '<dd style="float:left;">'
         if item and 'dist' in item:
-            html += "Percent Dist: {}%".format(item['dist'])
+            html += '<p class="taut-percent" style="margin:0;">Percent Dist: {}%'.format(item['dist']) + "</p>"
             html += wrap_molecule(item, None, mdWidth, scale)
         else:
             html += "No tautomers"
