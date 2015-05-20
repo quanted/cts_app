@@ -117,12 +117,23 @@ def pdfReceiver(request, model=''):
 
     input_str = description
     input_str += parsePOST(request)
+
+    # fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
+    # fileout.write(input_str)
+    # fileout.close()
+
     #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
 
     packet = StringIO.StringIO(input_str) #write to memory
     # pisa.CreatePDF(input_str, dest=packet, link_callback=link_callback)  # the old way
+
     config = pdfkit.configuration(wkhtmltopdf=os.environ['wkhtmltopdf'])
-    options = {'orientation': 'Landscape'}
+
+    if 'pdf_json' in request.POST and request.POST['pdf_json']:
+        options = {'orientation': 'Landscape'}  # landscape only for metabolites output
+    else:
+        options = {'orientation': 'Portrait'}
+
     pdf = pdfkit.from_string(input_str, False, configuration=config, options=options)
 
     # Create timestamp

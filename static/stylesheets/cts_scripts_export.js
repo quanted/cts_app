@@ -35,7 +35,7 @@ $(document).ready(function () {
             var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
             elements = elements.add(majorMS);
 
-            var taut = $('h4#taut, #taut_div img, #taut_div table');
+            var taut = $('h4#taut, p.taut-percent, #taut_div img, #taut_div table');
             elements = elements.add(taut);
 
             var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
