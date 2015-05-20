@@ -13,7 +13,6 @@ $(document).ready(function() {
 
 function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node) {
     
-    var url = "/cts/portal";
     var ws = ""; // web service to direct to (jchem or test et al.)
     var calcPropData;
 
@@ -46,12 +45,12 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
                     var tblCell = $('.' + calc + '.' + prop);
                     $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
-                    makeTheCall(url, calcPropData, node, true);
+                    makeTheCall(calcPropData, node, true);
                 }
                 else {
                     // blockUI code (getting pchemprops for multiple metabolites)
                     // variable to keep track of displaying to pchem table or not
-                    makeTheCall(url, calcPropData, node, false);
+                    makeTheCall(calcPropData, node, false);
                 }
 
                 //makeTheCall(url, calcPropData, node, plotDataToTable);
@@ -63,9 +62,9 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 }
 
 
-function makeTheCall(url, calcPropData, node, plotDataToTable) {
+function makeTheCall(calcPropData, node, plotDataToTable) {
     $.ajax({ 
-        url: url,
+        url: "/cts/portal",
         type: "POST",
         dataType: "json",
         data: calcPropData,
@@ -114,7 +113,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 console.log(response['data']['error']);
             }
             else {
-{#                data = response['data']['value'];#}
+//{#                data = response['data']['value'];#}
                 data = response['data']['val'];
             }
         }
@@ -126,7 +125,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
     var workflowUrl = window.location.href;
     if (workflowUrl.indexOf("pchem") > -1) {
         // at the pchemprop workflow, simply display data:
-        $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
+        $('.' + calc + '.' + prop).html(organizeData(data, prop)); //add data to table
     }
     else {
         if (node !== 'undefined' && node != null) {
@@ -139,7 +138,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
             }
 
             if (plotDataToTable && currentNode) {
-                $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
+                $('.' + calc + '.' + prop).html(organizeData(data, prop)); //add data to table
             }
 
             // only add html to table for node's table:
@@ -151,12 +150,17 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
 }
 
 
-function organizeData(data) {
+function organizeData(data, prop) {
     // organizes data, namely if it's
     // more than a single value
 
     if (typeof data === "number") {
-        return data.toFixed(3);
+        if (prop == "water_sol" || prop == "vapor_press") {
+            return data.toExponential(3);
+        }
+        else {
+            return data.toFixed(3);
+        }
     }
 
     if (typeof data === "string" || data == null) {
