@@ -104,51 +104,51 @@ class Calculator(object):
             return self.results
 
 
-class TestCalc(Calculator):
-    """
-	TEST Calculator
-	"""
-
-    def __init__(self):
-
-        Calculator.__init__(self)
-
-        # self.urlStruct = "/test/test/calc/{}/{}/{}" # molID, propKey, method
-        self.urlStruct = "/api/calculations/TEST/HierarchicalMethod/{}"
-        self.methods = ['hierarchical']  # accounting for one method atm
-        self.name = "test"
-        self.propMap = {
-            'melting_point': {
-                'urlKey': 'MeltingPoint',
-                'propKey': 'mp',
-                'resultKey': 'meltingPointTESTHierarchical',
-            },
-            'boiling_point': {
-                'urlKey': 'BoilingPoint',
-                'propKey': 'bp',
-                'resultKey': 'boilingPointTESTHierarchical'
-            },
-            'water_sol': {
-                'urlKey': 'WaterSolubility',
-                'propKey': 'ws',
-                'resultKey': 'waterSolubilityTESTHierarchical'
-            },
-            'vapor_press': {
-                'urlKey': 'VaporPressure',
-                'propKey': 'vp',
-                'resultKey': 'vaporPressureTESTHierarchical'
-            }
-        }
-
-    def getPchemPropData(self, propKey):
-        try:
-            if propKey in self.propMap:
-                req = requests.Request(data={'calc': 'test', 'prop': propKey})
-                return test_cts.views.less_simple_proxy(req)
-            else:
-                raise  # ?
-        except KeyError:
-            print "Property does not exist in TEST"
+# class TestCalc(Calculator):
+#     """
+# 	TEST Calculator
+# 	"""
+#
+#     def __init__(self):
+#
+#         Calculator.__init__(self)
+#
+#         # self.urlStruct = "/test/test/calc/{}/{}/{}" # molID, propKey, method
+#         self.urlStruct = "/api/calculations/TEST/HierarchicalMethod/{}"
+#         self.methods = ['hierarchical']  # accounting for one method atm
+#         self.name = "test"
+#         self.propMap = {
+#             'melting_point': {
+#                 'urlKey': 'MeltingPoint',
+#                 'propKey': 'mp',
+#                 'resultKey': 'meltingPointTESTHierarchical',
+#             },
+#             'boiling_point': {
+#                 'urlKey': 'BoilingPoint',
+#                 'propKey': 'bp',
+#                 'resultKey': 'boilingPointTESTHierarchical'
+#             },
+#             'water_sol': {
+#                 'urlKey': 'WaterSolubility',
+#                 'propKey': 'ws',
+#                 'resultKey': 'waterSolubilityTESTHierarchical'
+#             },
+#             'vapor_press': {
+#                 'urlKey': 'VaporPressure',
+#                 'propKey': 'vp',
+#                 'resultKey': 'vaporPressureTESTHierarchical'
+#             }
+#         }
+#
+#     def getPchemPropData(self, propKey):
+#         try:
+#             if propKey in self.propMap:
+#                 req = requests.Request(data={'calc': 'test', 'prop': propKey})
+#                 return epi_cts.views.less_simple_proxy(req)
+#             else:
+#                 raise  # ?
+#         except KeyError:
+#             print "Property does not exist in TEST"
 
 
 class EpiCalc(Calculator):

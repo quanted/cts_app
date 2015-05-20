@@ -7,7 +7,7 @@ from django.conf.urls import patterns, include, url
 urlpatterns = patterns('',
     # url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
-    url(r'^test-cts/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
+    url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app
     url(r'^jchem-cts/', include('REST.urls')),
 )
 

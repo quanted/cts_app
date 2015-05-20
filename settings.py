@@ -73,7 +73,7 @@ INSTALLED_APPS = (
     # 'docs'
     'filters',
     # 'templatetags.my_filter'
-    'test_cts' # Pavan added this for the TEST suite CTS app.  Not to be confused with any other test software.
+    'epi_cts' # Pavan added this for the TEST suite CTS app.  Not to be confused with any other test software.
 )
 
 # This breaks the pattern of a "pluggable" TEST_CTS django app, but it also makes it convenient to describe the server hosting the TEST API.
