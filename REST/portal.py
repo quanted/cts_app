@@ -5,8 +5,8 @@ webservices proxy (i.e., test-cts or jchem_rest).
 
 import requests
 from django.http import HttpResponse
-import jchem_traffic_cop
-from epi_cts import views
+from chemaxon_cts import views as chemaxon_views
+from epi_cts import views as epi_views
 import logging
 
 
@@ -15,10 +15,10 @@ def directAllTraffic(request):
     if webservice == 'jchem':
         # note: jchem service is looking for 'service' and 'chemical'
         logging.info('directing to jchem..')
-        return jchem_traffic_cop.directJchemTraffic(request)
-    elif webservice == 'test':
+        return chemaxon_views.request_manager(request)
+    elif webservice == 'epi':
         logging.info('directing to test..')
-        return views.less_simple_proxy(request)
+        return epi_views.request_manager(request)
     elif webservice == 'sparc':
         pass
     else:

@@ -1,5 +1,7 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import patterns, include, url
+import epi_cts
+import chemaxon_cts
 # from django.contrib import admin
 # admin.autodiscover()
 
@@ -8,7 +10,7 @@ urlpatterns = patterns('',
     # url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
     url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app
-    url(r'^jchem-cts/', include('REST.urls')),
+    url(r'^jchem-cts/', include('chemaxon_cts.urls')),
 )
 
 # All view functions here must be in '/views/views.py'

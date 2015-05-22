@@ -7,8 +7,8 @@ import json
 import requests
 import chemspec_parameters  # Chemical Speciation parameters
 # from REST import rest_funcs
-from REST import jchem_rest
-from REST.jchem_rest import JchemProperty as JProp
+from chemaxon_cts import jchem_rest
+from chemaxon_cts.jchem_rest import JchemProperty as JProp
 import logging
 # from django.http import HttpRequest
 import chemspec_tables

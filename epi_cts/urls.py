@@ -7,9 +7,10 @@ from epi_cts import views
 #   TODO: This is a bit of a hackish solution to the CORS problem, but, for now, it's a solution.  
 #   For more information: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
 
-urlpatterns = patterns('',
-    url(r'^data/$', views.less_simple_proxy)
-    #  url(r'^api/(?P<path>.*)$', views.simple_proxy),
-    #  url(r'^(?P<model>.*?)/table/?$', views.index, name='index'),
-    #  url(r'^calc-kow/$', views.calc_kow)
-)
+#If you want to use these as stand alone calc APIs enable these urls
+# urlpatterns = patterns('',
+#     url(r'^data/$', views.request_manager)
+#     #  url(r'^api/(?P<path>.*)$', views.simple_proxy),
+#     #  url(r'^(?P<model>.*?)/table/?$', views.index, name='index'),
+#     #  url(r'^calc-kow/$', views.calc_kow)
+# )

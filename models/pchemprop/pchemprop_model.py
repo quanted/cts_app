@@ -2,21 +2,13 @@
 2014-08-13 (np)
 """
 
-import urllib2
-import json
-import requests
 import pchemprop_parameters # Chemical Calculator and Transformation Pathway parameters
-from REST import jchem_rest
-from django.http import HttpRequest
-from django.http import HttpResponse
+from chemaxon_cts import jchem_rest
 import logging
-from models.chemspec import chemspec_model # for getStructInfo(), TODO: move func to more generic place
-import decimal
-import os
-import time
 
-from REST.calculator_map import Calculator as calc
-from REST.jchem_rest import JchemProperty as jp
+#Need these if want to do data crunching on back end
+# from REST.epi_calculator import Calculator as calc
+from chemaxon_cts.jchem_rest import JchemProperty as jp
 from requests_futures.sessions import FuturesSession
 
 

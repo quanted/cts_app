@@ -2,10 +2,9 @@
 2014-08-13 (np)
 """
 
-from REST import jchem_rest
+from chemaxon_cts import jchem_rest
 import logging
 from django.http import HttpRequest
-from django.http import HttpResponse
 import data_walks
 from gentrans_parameters import gen_limit_max as gen_max
 

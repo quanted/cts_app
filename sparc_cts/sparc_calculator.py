@@ -142,12 +142,6 @@ def parse_sparc_result(sparc_result):
 
 
 
-
-
-
-
-
-
 class Calculations(object):
     def __init__(self):
         self.calculations = list()
@@ -246,6 +240,7 @@ class SparcQuery(object):
 
 class SPARCResult(object):
     def __init__(self):
+        self.valid = False
         self.smiles = ""
         self.pressure = 0.0
         self.meltingPoint = 0.0
@@ -255,7 +250,7 @@ class SPARCResult(object):
         self.userId = None
         self.apiKey = None
         self.doSolventInit = False
-        self.calculations = []
+        self.calculationResults = []
         self.solvents = []
         self.results = dict()
 
@@ -265,6 +260,9 @@ class SPARCResult(object):
         except ValueError:
             return False
 
+        valid = self.results["valid"]
+        if (valid = "true")
+            self.valid = True
         self.type = self.results["type"]
         self.smiles = self.results["smiles"]
         self.userId = self.results["userId"]
@@ -273,7 +271,7 @@ class SPARCResult(object):
         self.temperature = self.results["temperature"]
         self.pressure = self.results["pressure"]
         self.molWeight = self.results["molWeight"]
-
+        self.calculationResults = self.results["calculationResults"]
 
 
 

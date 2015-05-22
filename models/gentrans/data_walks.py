@@ -1,9 +1,7 @@
 import logging
 import json
 from django.http import HttpRequest
-from REST import jchem_rest
-from django.utils.encoding import smart_text
-import os
+from chemaxon_cts import jchem_rest
 from django.template import Context, Template, defaultfilters
 
 """

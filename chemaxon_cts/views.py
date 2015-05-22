@@ -10,7 +10,7 @@ from jchem_rest import JchemProperty as jp
 services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'mrvToSmiles', 'getTransProducts', 'getPchemProps']
 
 
-def directJchemTraffic(request):
+def request_manager(request):
 	"""
 	Redirects request from frontend to the 
 	approriate jchem web service. All calls going

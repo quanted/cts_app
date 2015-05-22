@@ -3,9 +3,8 @@ import datetime
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import logging
-import json
 import pchemprop_parameters
-from REST import calculator_map as calcMap
+
 
 
 
