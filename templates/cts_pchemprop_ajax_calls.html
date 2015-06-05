@@ -15,7 +15,6 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     
     var ws = ""; // web service to direct to (jchem or test et al.)
     var calcPropData;
-
     if (checkedCalcsAndProps == null) {
         return;
     } 
@@ -35,9 +34,14 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                         calcPropData.ph = kowPH;
                     }
                 }
-                else {
+                else if ( calc == "epi")
                     calcPropData.ws = "epi";
-                }
+
+                else if ( calc == "sparc")
+                    calcPropData.ws = "sparc";
+                else
+                    calcPropData.ws = null;
+
 
                 var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
                 var workflowPath = window.location.href;
@@ -103,7 +107,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
 
     var data;
     if (response.hasOwnProperty('data')) {
-        if (calc != "chemaxon") {
+        if ((calc != "chemaxon") && (calc != "sparc")) {
             if (response['data'] == null) {
                 data = "error";
                 console.log("data has null value");

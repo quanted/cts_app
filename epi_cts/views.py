@@ -20,7 +20,7 @@ def request_manager(request):
   output: returns data from TEST server
   """
 
-  TEST_URL = os.environ["CTS_EPI_SERVER"]
+  EPI_URL = os.environ["CTS_EPI_SERVER"]
   postData = {}
 
   try:
@@ -51,7 +51,7 @@ def request_manager(request):
 
   except requests.HTTPError as e:
     logging.warning("HTTP Error occured: {}".format(e))
-    return HttpResponse(TEST_URL+e.msg, status=e.code, content_type='text/plain')
+    return HttpResponse(EPI_URL+e.msg, status=e.code, content_type='text/plain')
 
   except ValueError as ve:
     logging.warning("POST data is incorrect: {}".format(ve))

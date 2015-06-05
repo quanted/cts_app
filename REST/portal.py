@@ -7,6 +7,7 @@ import requests
 from django.http import HttpResponse
 from chemaxon_cts import views as chemaxon_views
 from epi_cts import views as epi_views
+from sparc_cts import views as sparc_views
 import logging
 
 
@@ -17,9 +18,10 @@ def directAllTraffic(request):
         logging.info('directing to jchem..')
         return chemaxon_views.request_manager(request)
     elif webservice == 'epi':
-        logging.info('directing to test..')
+        logging.info('directing to epi..')
         return epi_views.request_manager(request)
     elif webservice == 'sparc':
-        pass
+        logging.info('directing to sparc..')
+        return sparc_views.request_manager(request)
     else:
         return HttpResponse("error: service requested does not exist")

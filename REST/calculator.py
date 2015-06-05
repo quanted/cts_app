@@ -5,6 +5,21 @@ import requests
 import json
 import logging
 import os
+from enum import Enum
+
+class CTSChemicalProperties(Enum):
+    boiling_point  = 0
+    melting_point  = 1
+    water_sol      = 3
+    vapor_press    = 4
+    mol_diss       = 5
+    ion_con        = 6
+    henrys_law_con = 7
+    kow_no_ph      = 8
+    kow_wph        = 9
+    kow_ph         = 10
+    kow            = 11
+
 
 headers = {'Content-Type': 'application/json'}
 

@@ -2,9 +2,16 @@ __author__ = 'KWOLFE'
 
 import sys
 import json
+import logging
+import requests
+import os
 from enum import Enum
 
-class CalcTypes(Enum):
+from REST.calculator import Calculator
+from REST.calculator import CTSChemicalProperties
+
+
+class SPARCChemicalProperties(Enum):
     NONE = 0
     VAPOR_PRESSURE = 1
     BOILING_POINT = 2
@@ -20,7 +27,7 @@ class CalcTypes(Enum):
     DISTRIBUTION = 12
     MULTIPLE_PROPERTY = 13
 
-class Units(Enum):
+class SPARCChemicalPropertyUnits(Enum):
     NO_UNITS = 0
     dummy = 1
     logAtm = 2
@@ -31,21 +38,85 @@ class Units(Enum):
     logAtmPerMolePerLiter = 7
     logMolefrac = 8
 
+chemPropMap = {
+    "water_sol" : "SOLUBILITY",
+    "vapor_press" : "VAPOR_PRESSURE",
+    "henrys_law_con" : "HENRYS_CONSTANT",
+    "mol_diss" : "DIFFUSION"
+}
 
-class Calculation(object):
-    def __init__(self, units=None, type=None, pressure=760.0, meltingpoint=0.0, temperature=25.0):
+
+class SPARC_Calc(Calculator):
+    def __init__(self, smiles, pressure=760.0, meltingpoint=0.0, temperature=25.0):
+
+        self.baseUrl = os.environ['CTS_SPARC_SERVER']
+
+        self.name = "sparc"
+        self.smiles = smiles
         self.solvents = dict()
-        self.units = units
-        self.type = type
         self.pressure = pressure
         self.meltingPoint = meltingpoint
         self.temperature = temperature
 
+    def get_sparc_query(self):
+        query = dict()
+        query["pressure"] = self.pressure
+        query["meltingPoint"] = self.meltingPoint
+        query["temperature"] = self.temperature
+        query["calculations"] = get_calculations()
 
-    def get_calculation(self):
+        query["smiles"] = self.smiles
+        query["userId"] = None
+        query["apiKey"] = None
+        query["type"] = "MULTIPLE_PROPERTY"
+        query["doSolventInit"] = False
+
+        return query
+
+
+    def get_calculations(self):
+
+        calculations = list()
+        calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm"))
+        calculations.append(get_calculation("BOILING_POINT", "degreesC"))
+
+        calculations.append(get_calculation("DIFFUSION", "NO_UNITS"))
+
+        calculations.append(get_calculation("VOLUME", "cmCubedPerMole"))
+
+        calculations.append(get_calculation("DENSITY", "gPercmCubed"))
+
+        calculations.append(get_calculation("POLARIZABLITY", "angCubedPerMolecule"))
+
+        calculations.append(get_calculation("INDEX_OF_REFRACTION", "dummy"))
+
+        calcHC = get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
+        calcHC["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
+        calculations.append(calcHC)
+
+        calcSol = get_calculation("SOLUBILITY", "logMolefrac")
+        calcSol["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
+        calculations.append(calcSol)
+
+        calcAct = get_calculation("ACTIVITY", "dummy")
+        calcAct["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
+        calculations.append(calcAct)
+
+        calculations.append(get_calculation("ELECTRON_AFFINITY", "dummy"))
+
+        calcDist = get_calculation("DISTRIBUTION", "NO_UNITS")
+        calcDist["solvents"].append(get_solvent("O", "water"))
+        calcDist["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
+        calculations.append(calcDist)
+
+        return calculations
+
+
+
+    def get_calculation(self, type=None, units=None):
         calc = dict()
         calc["solvents"] = list()
-        calc["units"] = self.units
+        calc["units"] = units
         calc["pressure"] = self.pressure
         calc["meltingPoint"] = self.meltingpoint
         calc["temperature"] = self.temperature
@@ -54,7 +125,54 @@ class Calculation(object):
         return calc
 
 
-def get_calculation(type=None, units=None, pressure=0.0, meltingpoint=0.0, temperature=0.0):
+    def makeDataRequest(self):
+
+        post = self.get_sparc_query()
+
+        headers = {'Content-Type': 'application/json'}
+        # post['molecule']['canonicalSmiles'] = structure
+        #post['smiles'] = structure
+        url = self.baseUrl
+
+        logging.info("url: {}".format(url))
+
+        try:
+            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
+        except requests.exceptions.ConnectionError as ce:
+            logging.info("connection exception: {}".format(ce))
+            return None
+        except requests.exceptions.Timeout as te:
+            logging.info("timeout exception: {}".format(te))
+            return None
+        else:
+            self.results = json.loads(response.content)
+            return self.results
+
+
+    def getPropertyValue(self, property):
+        result = ""
+
+        if self.results == None:
+            return None
+
+        if property in chemPropMap:
+            sparcProp = chemPropMap[property]
+        else:
+            return None
+
+        calcResults = self.results["calculationResults"]
+        for calc in calcResults:
+            if calc["type"] == sparcProp:
+                return calc["result"]
+
+        return None
+
+
+
+
+#  -----------------------End Class SPARC_Calculator----------------------------
+
+def get_calculation(type=None, units=None, pressure=760.0, meltingpoint=0.0, temperature=25.0):
     calc = dict()
     calc["solvents"] = list()
     calc["units"] = units
@@ -75,7 +193,7 @@ def get_solvent(smiles=None, name=None):
     return solvent
 
 
-def get_calculations(pressure=0.0, meltingPoint=0.0, temperature=0.0):
+def get_calculations(pressure=760.0, meltingPoint=0.0, temperature=25.0):
 
     p = pressure
     m = meltingPoint
@@ -142,55 +260,55 @@ def parse_sparc_result(sparc_result):
 
 
 
-class Calculations(object):
-    def __init__(self):
-        self.calculations = list()
-
-        calc1 = Calculation("VAPOR_PRESSURE", "logAtm")
-        self.calculations.append(calc1)
-
-        calc2 = Calculation("BOILING_POINT", "degreesC")
-        self.calculations.append(calc2)
-
-        calc3 = Calculation("DIFFUSION", "NO_UNITS")
-        self.calculations.append(calc3)
-
-        calc4 = Calculation("VOLUME", "cmCubedPerMole")
-        self.calculations.append(calc4)
-
-        calc5 = Calculation("DENSITY", "gPercmCubed")
-        self.calculations.append(calc5)
-
-        calc6 = Calculation("POLARIZABLITY", "angCubedPerMolecule")
-        self.calculations.append(calc6)
-
-        calc7 = Calculation("INDEX_OF_REFRACTION", "dummy")
-        self.calculations.append(calc7)
-
-        calc8 = Calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
-        solvent8 = Solvent("OCCCCCCCC", "octanol")
-        calc8.solvents.append(solvent8)
-        self.calculations.append(calc8)
-
-        calc9 = Calculation("SOLUBILITY", "logMolefrac")
-        solvent9 = Solvent("OCCCCCCCC", "octanol")
-        calc9.solvents.append(solvent9)
-        self.calculations.append(calc9)
-
-        calc10 = Calculation("ACTIVITY", "dummy")
-        solvent10 = Solvent("OCCCCCCCC", "octanol")
-        calc10.solvents.append(solvent10)
-        self.calculations.append(calc10)
-
-        calc11 = Calculation("ELECTRON_AFFINITY", "dummy")
-        self.calculations.append(calc11)
-
-        calc12 = Calculation("DISTRIBUTION", "NO_UNITS")
-        solvent12 = Solvent("O", "water")
-        calc12.solvents.append(solvent12)
-        solvent12b = Solvent("OCCCCCCCC", "octanol")
-        calc12.solvents.append(solvent12b)
-        self.calculations.append(calc12)
+# class Calculations(object):
+#     def __init__(self):
+#         self.calculations = list()
+#
+#         calc1 = Calculation("VAPOR_PRESSURE", "logAtm")
+#         self.calculations.append(calc1)
+#
+#         calc2 = Calculation("BOILING_POINT", "degreesC")
+#         self.calculations.append(calc2)
+#
+#         calc3 = Calculation("DIFFUSION", "NO_UNITS")
+#         self.calculations.append(calc3)
+#
+#         calc4 = Calculation("VOLUME", "cmCubedPerMole")
+#         self.calculations.append(calc4)
+#
+#         calc5 = Calculation("DENSITY", "gPercmCubed")
+#         self.calculations.append(calc5)
+#
+#         calc6 = Calculation("POLARIZABLITY", "angCubedPerMolecule")
+#         self.calculations.append(calc6)
+#
+#         calc7 = Calculation("INDEX_OF_REFRACTION", "dummy")
+#         self.calculations.append(calc7)
+#
+#         calc8 = Calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
+#         solvent8 = Solvent("OCCCCCCCC", "octanol")
+#         calc8.solvents.append(solvent8)
+#         self.calculations.append(calc8)
+#
+#         calc9 = Calculation("SOLUBILITY", "logMolefrac")
+#         solvent9 = Solvent("OCCCCCCCC", "octanol")
+#         calc9.solvents.append(solvent9)
+#         self.calculations.append(calc9)
+#
+#         calc10 = Calculation("ACTIVITY", "dummy")
+#         solvent10 = Solvent("OCCCCCCCC", "octanol")
+#         calc10.solvents.append(solvent10)
+#         self.calculations.append(calc10)
+#
+#         calc11 = Calculation("ELECTRON_AFFINITY", "dummy")
+#         self.calculations.append(calc11)
+#
+#         calc12 = Calculation("DISTRIBUTION", "NO_UNITS")
+#         solvent12 = Solvent("O", "water")
+#         calc12.solvents.append(solvent12)
+#         solvent12b = Solvent("OCCCCCCCC", "octanol")
+#         calc12.solvents.append(solvent12b)
+#         self.calculations.append(calc12)
 
     def get_calculation(self):
         return self.calculations
@@ -261,7 +379,7 @@ class SPARCResult(object):
             return False
 
         valid = self.results["valid"]
-        if (valid = "true")
+        if valid == "true":
             self.valid = True
         self.type = self.results["type"]
         self.smiles = self.results["smiles"]
