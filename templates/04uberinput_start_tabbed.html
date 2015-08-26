@@ -3,8 +3,10 @@
 <!-- <script type="text/javascript" src="/static/stylesheets/jquery.validate.js"></script> -->
 <script src="/static/stylesheets/efs/marvin4js/js/promise-0.1.1.min.js" type="text/javascript"></script>
 <script src="/static/stylesheets/efs/marvin4js/js/marvinjslauncher.js" type="text/javascript"></script>
+<script src="/static/stylesheets/parsley.js"></script>
 <!-- <script src="/static/stylesheets/marvin_test.js" type="text/javascript"></script> -->
 	<div class="articles_input">
 		<h2 class="model_header">{{ model_attributes }}</h2>
-		<form method="post" action="/cts/{{model}}/output">
+		<!-- <form method="post" action="/cts/{{model}}/output"> -->
+		<form id="{{model}}-form" method="post" action="/cts/{{model}}/output" data-parsley-validate> <!-- added parsley validation info -->
 <!--end 04uberinput_start-->

@@ -5,9 +5,9 @@
 from django import forms
 from django.template import Context, Template
 from django.utils.safestring import mark_safe
-from django.core import validators
 from models.forms import validation
 import logging
+from parsley.decorators import parsleyfy
 
 
 def tmpl_chemstructCTS():
@@ -71,6 +71,7 @@ def form(formData):
 	return html
 
 
+@parsleyfy
 class CTS_Chemical_Structure(forms.Form):
 	"""
 	Chemical Editor
@@ -80,11 +81,10 @@ class CTS_Chemical_Structure(forms.Form):
 					widget=forms.Textarea(attrs={'cols':50, 'rows':2}),
 					initial='',
 					label='Chemical Structure',
-					required=True
-					# validators=[] # front-end, pre-submit jquery validation for this field
 				)
 
 
+@parsleyfy
 class CTS_Speciation_Pka(forms.Form):
 	"""
 	Chemical Speciation
@@ -95,8 +95,6 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=3,
 						min_value=1,
 						max_value=10,
-						required=True,
-						validators=[validation.validate_integer]
 					)
 
 	pKa_pH_lower = forms.FloatField (
@@ -104,8 +102,6 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0,
 						min_value=0,
 						max_value=14,
-						required=False,
-						validators=[validation.validate_number]
 					)
 
 	pKa_pH_upper = forms.FloatField (
@@ -113,7 +109,6 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=14,
 						min_value=0,
 						max_value=14,
-						required=False
 					)
 
 	pKa_pH_increment = forms.FloatField (
@@ -121,7 +116,6 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0.2,
 						min_value=0.1,
 						max_value=1.0,
-						required=False
 					)
 
 	pH_microspecies = forms.FloatField (
@@ -129,7 +123,6 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=7.0,
 						min_value=0,
 						max_value=14,
-						required=False
 					)
 
 	isoelectricPoint_pH_increment = forms.FloatField (
@@ -137,48 +130,19 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0.5,
 						min_value=0.1,
 						max_value=1.0,
-						required=False
 					)
 
 	# Check box for selecting table
 	pka_chkbox = forms.BooleanField (
 						label='',
 						widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}),
-						required=False
+						required=False,
 					)
 
 
-	def clean(self):
-		"""
-		Function for individually-validated fields;
-		used for field-dependant conditionals 
-		"""
-
-		# +++ Django 1.8 Way +++
-		# cleanedData = super(CTS_Speciation_Pka, self).clean()
-		# phLo = float(cleanedData.get('pKa_pH_lower'))
-		# phHi = float(cleanedData.get('pKa_pH_upper'))
-		# if phLo >= phHi:
-		# 	self.add_error('pKa_pH_lower', "pH lower must be < pH upper")
-		# 	self.add_error('pKa_pH_upper', "pH upper must be > pH lower")
-
-		# +++ Django 1.6 Way +++
-		cleanedData = super(CTS_Speciation_Pka, self).clean()
-		pkaChkbox = cleanedData.get('')
-		phLo = cleanedData.get('pKa_pH_lower')
-		phHi = cleanedData.get('pKa_pH_upper')
-		if phLo >= phHi:
-			self._errors["pKa_pH_lower"] = self.error_class(["pH lower must be < pH upper"])
-			self._errors["pKa_pH_upper"] = self.error_class(["pH upper must be < pH lower"])
-
-			# these fields are no longer valid. remove them from the cleaned data:
-			del cleanedData["pKa_pH_lower"]
-			del cleanedData["pKa_pH_upper"]
-
-		return cleanedData
-
 
 # tautomerization table
+@parsleyfy
 class CTS_Speciation_Tautomer(forms.Form):
 
 	tautomer_maxNoOfStructures = forms.FloatField (
@@ -186,7 +150,6 @@ class CTS_Speciation_Tautomer(forms.Form):
 						initial=100,
 						min_value=1,
 						max_value=100,
-						required=False
 					)
 
 	tautomer_pH = forms.FloatField (
@@ -194,17 +157,17 @@ class CTS_Speciation_Tautomer(forms.Form):
 						initial=7.0,
 						min_value=0,
 						max_value=14,
-						required=False
 					)
 
 	tautomer_chkbox = forms.BooleanField (
 						label='', 
 						widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}),
-						required=False
+						required=False,
 					)
 
 
 # stereoisomer table
+@parsleyfy
 class CTS_Speciation_Stereoisomers(forms.Form):
 
 	stereoisomers_maxNoOfStructures = forms.FloatField (
@@ -212,13 +175,12 @@ class CTS_Speciation_Stereoisomers(forms.Form):
 						initial=100,
 						min_value=1,
 						max_value=100,
-						required=False
 					)
 
 	stereoisomer_chkbox = forms.BooleanField (
 						label='', 
 						widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}),
-						required=False
+						required=False,
 					)
 
 class ChemspecInp(CTS_Chemical_Structure, CTS_Speciation_Pka, CTS_Speciation_Tautomer, CTS_Speciation_Stereoisomers):

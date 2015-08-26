@@ -6,14 +6,18 @@ $( document ).ready(function() {
 
 		e.preventDefault();
 
-        $('.errorlist').remove();
-
-		$.blockUI({
-		  css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "60px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
-		  message: '<h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
-		  fadeIn:  500
-		});
-		setTimeout(function() {$('form').submit();}, 500);
+        if (validFields()) {
+        	$.blockUI({
+			  css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "60px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
+			  message: '<h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
+			  fadeIn:  500
+			});
+			setTimeout(function() {$('form').submit();}, 500);
+        }
+        else {
+        	return;
+        }
+		
 	});
 
 	$('#clearbutton').click(function(){
@@ -89,6 +93,10 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 	// Click handler
 	$('.input_nav ul li').click(function() {
+
+		// validate fields before tabbing
+		if (!validFields()) { return; }
+
 		// Check if "li" element has class (ignores the input buttons)
 		if ($(this).attr('class')) {
 			var testClass = $(this).attr("class").split(' ')[0];
@@ -142,6 +150,8 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 	$('.next').click(function () {
 
+        if (!validFields()) { return; }
+
 		window.scroll(0,0); //scroll to top
 
 		var tab = $(".tab:visible");
@@ -173,6 +183,8 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 	$('.back').click(function () {
 
+		if (!validFields()) { return; }
+
 		window.scroll(0, 0); //scroll to top
 
 		if (curr_ind > 0) {
@@ -198,7 +210,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 	});
 
     // if submit is enabled, make it glow for the slow
-
     $('input[type=submit]').change(function() {
         if ($(this).prop('disabled', false)) {
             $(this).addClass('brightBorders');
@@ -208,20 +219,11 @@ function uberNavTabs( modelTabs, subTabs ) {
         }
     });
 
-    //mouseover speciation table
-    //$('table.tab_Speciation').hover(
-    //    function() {
-    //        //mouseenter
-    //        $(this).removeClass('darken');
-    //        $(this).find('input[type=checkbox]').addClass('brightBorders');
-    //    },
-    //    function() {
-    //        //mouseleave
-    //        var checked = $(this).find('input[type=checkbox]').is(':checked');
-    //        if (!checked) {
-    //            $(this).addClass('darken');
-    //        }
-    //        $(this).find('input[type=checkbox]').removeClass('brightBorders');
-    //    }
-    //);
+}
+
+function validFields() {
+	// validate fields w/ parsely first
+    var form = $('form');
+    form.parsley().validate(); // validate form
+    return form.parsley().isValid(); // check if form is valid
 }

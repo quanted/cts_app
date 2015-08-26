@@ -6,6 +6,7 @@ from django import forms
 from django.template import Context, Template
 from django.utils.safestring import mark_safe
 from models.forms import validation
+from parsley.decorators import parsleyfy
 
 
 # Horizontally-aligned radio buttons template
@@ -209,6 +210,7 @@ specialStudies_CHOICES = [('0', 'Metabolism and Pharmacokinetics (870.7485)')]
 
 
 # Reaction Pathways
+@parsleyfy
 class cts_reaction_paths(forms.Form):
 
 	reaction_paths = forms.ChoiceField(
@@ -219,6 +221,7 @@ class cts_reaction_paths(forms.Form):
 					required=False)
 
 # Reaction System
+@parsleyfy
 class cts_reaction_sys(forms.Form):
 
 	reaction_system = forms.ChoiceField(
@@ -227,6 +230,7 @@ class cts_reaction_sys(forms.Form):
 					required=False)
 
 # Respiration
+@parsleyfy
 class cts_respiration(forms.Form):
 
 	respiration = forms.ChoiceField(
@@ -245,6 +249,7 @@ class cts_respiration(forms.Form):
 
 
 # Reaction Libraries
+@parsleyfy
 class cts_reaction_libs(forms.Form):
 	abiotic_hydrolysis = forms.BooleanField(required=False, label='Abiotic Hydrolysis')
 	aerobic_biodegrad = forms.BooleanField(required=False, label='Aerobic Biodegradation')
@@ -255,6 +260,7 @@ class cts_reaction_libs(forms.Form):
 
 
 # Reaction Options (e.g., generation limit, likely limit, etc.)
+@parsleyfy
 class cts_reaction_options(forms.Form):
 
 	gen_limit = forms.ChoiceField (
@@ -274,7 +280,6 @@ class cts_reaction_options(forms.Form):
 						initial=0.001,
 						min_value=0.001,
 						max_value=0.99,
-						required=False,
 					)
 
 	# add clean to force select option range
@@ -283,6 +288,7 @@ class cts_reaction_options(forms.Form):
 
 
 # OECD Guidelines Selection
+@parsleyfy
 class cts_oecd_guidelines(forms.Form):
 
 	# Main Selection Branch

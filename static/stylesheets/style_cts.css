@@ -1194,10 +1194,10 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
   background-color: #9AB2CB;
 }
 .tabUnsel {
-  color: #1F262A;
+  color: #4289AA;
 }
 .tabSel {
-  color: #4289AA;
+  color: #1F262A;
 }
 
 /* Tables */
@@ -1787,3 +1787,8 @@ div.pka-wrapper {
     box-shadow: rgba(0,255,255,0.5);
 }
 
+/* parsley field errors list */
+.parsley-errors-list li {
+  color: #FF3232;
+  
+}

@@ -77,7 +77,8 @@ class gentrans(object):
         # logging.info("{} ###".format(self.results))
 
         # fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-        # fileout.write(self.results)
+        # fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
+        # fileout.write(response.content)
         # fileout.close()
 
         self.rawData = response.content
