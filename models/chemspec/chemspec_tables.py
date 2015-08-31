@@ -320,18 +320,27 @@ def getStereoisomersResults(chemspec_obj):
 
     html = """
     <H4 class="out_1 collapsible" id="stereo"><span></span>Stereoisomers ({})</H4>
-    <div class="out_ shiftRight">""".format(len(stereoList))
-
-    html += '<dl style="display:inline-block">'
-    for item in stereoList:
-        html += '<dd style="float:left;">'
-        html += wrap_molecule(item, None, mdWidth, scale)
-        html += '</dd>'
-    html += "</dl>"
-
-    html += """
-    </div>
     """
+
+    if stereoList:
+        html += """
+        <div class="out_ shiftRight">""".format(len(stereoList))
+        
+        html += '<dl style="display:inline-block">'
+        for item in stereoList:
+            html += '<dd style="float:left;">'
+            html += wrap_molecule(item, None, mdWidth, scale)
+            html += '</dd>'
+        html += "</dl>"
+
+        html += """
+        </div>
+        """
+    else:
+        html += """
+        <p>Couldn't retrieve stereoisomer(s)..</p>
+        """
+
     return html
 
 
@@ -347,27 +356,34 @@ def getTautomerResults(chemspec_obj):
 
     html = """
     <H4 class="out_1 collapsible" id="taut"><span></span>Tautomerization</H4>
-    <div class="out_ shiftRight">
     """
 
-    # try:
-    html += '<dl style="display:inline-block">'
-    for item in tautStructs:
-        html += '<dd style="float:left;">'
-        if item and 'dist' in item:
-            html += '<p class="taut-percent" style="margin:0;">Percent Dist: {}%'.format(item['dist']) + "</p>"
-            html += wrap_molecule(item, None, mdWidth, scale)
-        else:
-            html += "No tautomers"
-        html += '</dd>'
-    html += "</dl>"
-    # except TypeError:
-        # logging.info("no tautomers..")
-        # html += 'no tautomers'
-    # finally:
-    html += """
-    </div>
-    """
+    if tautStructs:
+        html += """
+        <div class="out_ shiftRight">
+        """
+        # try:
+        html += '<dl style="display:inline-block">'
+        for item in tautStructs:
+            html += '<dd style="float:left;">'
+            if item and 'dist' in item:
+                html += '<p class="taut-percent" style="margin:0;">Percent Dist: {}%'.format(item['dist']) + "</p>"
+                html += wrap_molecule(item, None, mdWidth, scale)
+            else:
+                html += "No tautomers"
+            html += '</dd>'
+        html += "</dl>"
+        # except TypeError:
+            # logging.info("no tautomers..")
+            # html += 'no tautomers'
+        # finally:
+        html += """
+        </div>
+        """
+    else:
+        html += """
+        <p>Couldn't retrieve tautomer(s)..</p>
+        """
     return html
 
 
@@ -379,6 +395,9 @@ def wrap_molecule(propDict, height, width, scale):
     Inputs: property dict (e.g., pka, taut image urls)
     Outputs: name, iupac, forumula, mass data wrapped in table with image and name
     """
+
+    if not propDict:
+        return "<p>could not retrieve molecule image</p>"
 
     key = None
     if 'key' in propDict:

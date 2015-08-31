@@ -1,5 +1,21 @@
 $( document ).ready(function() {
 
+	// if errors on one tab but not another, go to tab
+	// that has errors displayed
+	var error_list = $('ul.errorlist');
+	if ($(error_list).length > 0) {
+		var closest_table = $(error_list).closest('table.input_table');
+		if ($(closest_table).hasClass('tab_Speciation')) {
+			// display tab_Speciation tab
+			$('.tab_Chemical').hide();
+			$('.tab_Speciation').show();
+			//highlight appropriate tab 
+			$('li.Chemical').removeClass('tabSel').addClass('tabUnsel');
+			$('li.Speciation').removeClass('tabUnsel').addClass('tabSel');
+		}
+	}
+
+
 	//++++++++++ From scripts_inputs.js in ubertool_eco ++++++++++++
 	//BlockUI on Form Submit
 	$("input[value='Submit']").click(function (e) {
@@ -27,7 +43,7 @@ $( document ).ready(function() {
 		//tab classes: [Chemical, Speciation] and [tabSel, tabUnsel]
 		//divs have classes: tab_Chemical or tab_Speciation
 
-		$('input:visible, textarea:visible').each(function() {
+		$('input:visible, textarea:visible').each(function () {
 			switch(this.type) {
 				case 'text':
 					$(this).val('');
@@ -92,7 +108,10 @@ function uberNavTabs( modelTabs, subTabs ) {
 	// $('.tabUnsel').hide();
 
 	// Click handler
-	$('.input_nav ul li').click(function() {
+	$('.input_nav ul li').not('#clearbutton').click(function() {
+
+		// don't validate fields if hitting "clear" button
+		// var test = $(this);
 
 		// validate fields before tabbing
 		if (!validFields()) { return; }
@@ -221,8 +240,9 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 }
 
+
 function validFields() {
-	// validate fields w/ parsely first
+	// validate fields w/ parsely
     var form = $('form');
     form.parsley().validate(); // validate form
     return form.parsley().isValid(); // check if form is valid

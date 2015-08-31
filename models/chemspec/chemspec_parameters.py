@@ -95,6 +95,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=3,
 						min_value=1,
 						max_value=10,
+						required=False,
 					)
 
 	pKa_pH_lower = forms.FloatField (
@@ -102,6 +103,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0,
 						min_value=0,
 						max_value=14,
+						required=False,
 					)
 
 	pKa_pH_upper = forms.FloatField (
@@ -109,6 +111,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=14,
 						min_value=0,
 						max_value=14,
+						required=False,
 					)
 
 	pKa_pH_increment = forms.FloatField (
@@ -116,6 +119,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0.2,
 						min_value=0.1,
 						max_value=1.0,
+						required=False,
 					)
 
 	pH_microspecies = forms.FloatField (
@@ -123,6 +127,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=7.0,
 						min_value=0,
 						max_value=14,
+						required=False,
 					)
 
 	isoelectricPoint_pH_increment = forms.FloatField (
@@ -130,6 +135,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0.5,
 						min_value=0.1,
 						max_value=1.0,
+						required=False,
 					)
 
 	# Check box for selecting table
@@ -138,6 +144,36 @@ class CTS_Speciation_Pka(forms.Form):
 						widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}),
 						required=False,
 					)
+
+
+	def clean(self):
+		"""
+		Function for individually-validated fields;
+		used for field-dependant conditionals 
+		"""
+
+		# +++ Django 1.8 Way +++
+		# cleanedData = super(CTS_Speciation_Pka, self).clean()
+		# phLo = float(cleanedData.get('pKa_pH_lower'))
+		# phHi = float(cleanedData.get('pKa_pH_upper'))
+		# if phLo >= phHi:
+		# 	self.add_error('pKa_pH_lower', "pH lower must be < pH upper")
+		# 	self.add_error('pKa_pH_upper', "pH upper must be > pH lower")
+
+		# +++ Django 1.6 Way +++
+		cleanedData = super(CTS_Speciation_Pka, self).clean()
+		pkaChkbox = cleanedData.get('')
+		phLo = cleanedData.get('pKa_pH_lower')
+		phHi = cleanedData.get('pKa_pH_upper')
+		if phLo >= phHi:
+			self._errors["pKa_pH_lower"] = self.error_class(["pH lower must be < pH upper"])
+			self._errors["pKa_pH_upper"] = self.error_class(["pH upper must be < pH lower"])
+
+			# these fields are no longer valid. remove them from the cleaned data:
+			del cleanedData["pKa_pH_lower"]
+			del cleanedData["pKa_pH_upper"]
+
+		return cleanedData
 
 
 

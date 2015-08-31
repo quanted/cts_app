@@ -187,14 +187,18 @@ class Pka(JchemProperty):
 		with keys: image, formula, iupac, mass, and smiles
 		"""
         if 'microspecies' in self.results:
-            msList = []
-            for ms in self.results['microspecies']:
-                msStructDict = {}  # list element in msList
-                msStructDict.update({'image': ms['image']['image'], 'key': ms['key']})
-                structInfo = getStructInfo(ms['structureData']['structure'])
-                msStructDict.update(structInfo)
-                msList.append(msStructDict)
-            return msList
+            try:
+                msList = []
+                for ms in self.results['microspecies']:
+                    msStructDict = {}  # list element in msList
+                    msStructDict.update({'image': ms['image']['image'], 'key': ms['key']})
+                    structInfo = getStructInfo(ms['structureData']['structure'])
+                    msStructDict.update(structInfo)
+                    msList.append(msStructDict)
+                return msList
+            except KeyError as ke:
+                logging.info("> key error: {}".format(ke))
+                return None
         else:
             logging.info("no microspecies in results")
             return None
@@ -340,7 +344,7 @@ class Stereoisomer(JchemProperty):
                 stereoList.append(stereoDict)
             return stereoList
         except KeyError as ke:
-            logging.warning("key error: {}".format(ke))
+            logging.warning("key error: {} @ jchem rest".format(ke))
             return None
 
 

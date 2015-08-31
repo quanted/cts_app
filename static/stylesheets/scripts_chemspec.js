@@ -28,6 +28,8 @@ $(document).ready(function() {
     	// $('#chemEditDraw').hide();
     });
 
+    $('#resetbutton').parent('li').show(); // only workflow with defaults button
+
     //var isAllChecked_ChemCalcs = 1;
 
     //var noOfInput_ChemCalcs = [];
