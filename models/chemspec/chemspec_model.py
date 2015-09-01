@@ -95,6 +95,12 @@ class chemspec(object):
             'stereoisomers': stereoObj
         }
 
+
+        # fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
+        # fileout.write(json.dumps(jchemDataDict))
+        # fileout.close()
+
+
         self.jchemDictResults = {}
         for key, value in self.jchemPropObjects.items():
             if value:

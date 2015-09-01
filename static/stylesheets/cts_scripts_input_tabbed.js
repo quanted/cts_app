@@ -25,7 +25,18 @@ $( document ).ready(function() {
 
 		e.preventDefault();
 
-        if (validFields()) {
+
+		// implement field validation for checked tables:
+		var tables_to_validate = $('table input:checkbox:checked').closest('table');
+		var input_fields = $(tables_to_validate).find('input').not('input:checkbox');
+
+		$('input').not('checkbox').removeAttr('data-parsley-group'); // remove from all fields
+		$(input_fields).attr('data-parsley-group', 'validate'); // add group name to inputs
+
+		$('form').parsley().validate("validate"); // todo: figure out why it's still validating the whole form
+		var valid = $('form').parsley().isValid();
+
+        if (valid) {
         	$.blockUI({
 			  css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "60px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
 			  message: '<h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
@@ -116,8 +127,11 @@ function uberNavTabs( modelTabs, subTabs ) {
 		// don't validate fields if hitting "clear" button
 		// var test = $(this);
 
+		var form = $('form');
+    	form.parsley().validate(); // validate form
+
 		// validate fields before tabbing
-		if (!validFields()) { return; }
+		if (!form.parsley().isValid()) { return; } // return if form not valid
 
 		// Check if "li" element has class (ignores the input buttons)
 		if ($(this).attr('class')) {

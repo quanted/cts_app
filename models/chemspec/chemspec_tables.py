@@ -36,26 +36,38 @@ def getdjtemplate():
     """
     return dj_template
 
-
 def getInputTemplate():
     input_template = """
     <th colspan="2" class="alignLeft">{{heading}}</th>
-    {% for label, value in data.items %}
-        <tr>
-        <td>{{label}}</td> <td>{{value|default:"none"}}</td>
-        </tr>
+    {% for keyval in data %}
+        {% for label, value in keyval.items %}
+            <tr>
+            <td>{{label}}</td> <td>{{value|default:"none"}}</td>
+            </tr>
+        {% endfor %}
     {% endfor %}
     """
     return input_template
 
+# def getInputTemplate():
+#     input_template = """
+#     <th colspan="2" class="alignLeft">{{heading}}</th>
+#     {% for label, value in data.items %}
+#         <tr>
+#         <td>{{label}}</td> <td>{{value|default:"none"}}</td>
+#         </tr>
+#     {% endfor %}
+#     """
+#     return input_template
+
 
 def getMolTblData(chemspec_obj):
-    data = {
-        'SMILES': chemspec_obj.smiles, 
-        'IUPAC': chemspec_obj.name, 
-        'Formula': chemspec_obj.formula, 
-        'Mass': chemspec_obj.mass
-    }
+    data = [
+        {'SMILES': chemspec_obj.smiles}, 
+        {'IUPAC': chemspec_obj.name}, 
+        {'Formula': chemspec_obj.formula}, 
+        {'Mass': chemspec_obj.mass}
+    ]
     return data
 
 
@@ -68,31 +80,52 @@ def getIsoPtData(chemspec_obj):
 
 # Ionization Constants (pKa) Parameters Data
 def getPkaInputs(chemspec_obj):
-    data = {
-        'Number of Decimals': chemspec_obj.pKa_decimals, 
-        'pH Lower Limit': chemspec_obj.pKa_pH_lower, 
-        'pH Upper Limit': chemspec_obj.pKa_pH_upper,  
-        'pH Step Size': chemspec_obj.pKa_pH_increment,
-        'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies,
-        'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment
-    }
+    data = [
+        {'Number of Decimals': chemspec_obj.pKa_decimals},
+        {'pH Lower Limit': chemspec_obj.pKa_pH_lower}, 
+        {'pH Upper Limit': chemspec_obj.pKa_pH_upper},  
+        {'pH Step Size': chemspec_obj.pKa_pH_increment},
+        {'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies},
+        {'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment}
+    ]
+    # data = {
+    #     'Number of Decimals': chemspec_obj.pKa_decimals, 
+    #     'pH Lower Limit': chemspec_obj.pKa_pH_lower, 
+    #     'pH Upper Limit': chemspec_obj.pKa_pH_upper,  
+    #     'pH Step Size': chemspec_obj.pKa_pH_increment,
+    #     'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies,
+    #     'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment
+    # }
     return data
+
+
+# Ionization Constants (pKa) Parameters Data
+# def getPkaInputs(chemspec_obj):
+#     data = {
+#         'Number of Decimals': chemspec_obj.pKa_decimals, 
+#         'pH Lower Limit': chemspec_obj.pKa_pH_lower, 
+#         'pH Upper Limit': chemspec_obj.pKa_pH_upper,  
+#         'pH Step Size': chemspec_obj.pKa_pH_increment,
+#         'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies,
+#         'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment
+#     }
+#     return data
 
 
 # Dominate Tautomer Distribution Data
 def getTautData(chemspec_obj):
-    data = {
-        'Maximum Number of Structures': chemspec_obj.tautomer_maxNoOfStructures, 
-        'at pH': chemspec_obj.tautomer_pH
-    }
+    data = [
+        {'Maximum Number of Structures': chemspec_obj.tautomer_maxNoOfStructures}, 
+        {'at pH': chemspec_obj.tautomer_pH}
+    ]
     return data
 
 
 # Stereoisomers Data
 def getStereoData(chemspec_obj):
-    data = {
-        'Maximum Number of Structures': chemspec_obj.stereoisomers_maxNoOfStructures
-    }
+    data = [
+        {'Maximum Number of Structures': chemspec_obj.stereoisomers_maxNoOfStructures}
+    ]
     return data
 
 
@@ -262,16 +295,16 @@ def getPkaResults(chemspec_obj):
     <H4 class="out_1 collapsible" id="pka"><span></span>pKa</H4>
     <div class="out_">
     """
-    # acidic/basic pKa values:
-    pka = chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()
-    pkb = chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
-    roundedPka, roundedPkb = [], []
-    for val in pka:
-        roundedPka.append(round(val, chemspec_obj.pKa_decimals))
-    for val in pkb:
-        roundedPkb.append(round(val, chemspec_obj.pKa_decimals))
 
     try:
+        # acidic/basic pKa values:
+        pka = chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()
+        pkb = chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
+        roundedPka, roundedPkb = [], []
+        for val in pka:
+            roundedPka.append(round(val, chemspec_obj.pKa_decimals))
+        for val in pkb:
+            roundedPkb.append(round(val, chemspec_obj.pKa_decimals))
         pkaValues = {
             'Acidic pKa Value(s)': roundedPka,
             'Basic pKa Value(s)': roundedPkb
