@@ -95,7 +95,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=3,
 						min_value=1,
 						max_value=10,
-						required=False,
+						# required=False,
 					)
 
 	pKa_pH_lower = forms.FloatField (
@@ -103,7 +103,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0,
 						min_value=0,
 						max_value=14,
-						required=False,
+						# required=False,
 					)
 
 	pKa_pH_upper = forms.FloatField (
@@ -111,7 +111,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=14,
 						min_value=0,
 						max_value=14,
-						required=False,
+						# required=False,
 					)
 
 	pKa_pH_increment = forms.FloatField (
@@ -119,7 +119,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0.2,
 						min_value=0.1,
 						max_value=1.0,
-						required=False,
+						# required=False,
 					)
 
 	pH_microspecies = forms.FloatField (
@@ -127,7 +127,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=7.0,
 						min_value=0,
 						max_value=14,
-						required=False,
+						# required=False,
 					)
 
 	isoelectricPoint_pH_increment = forms.FloatField (
@@ -135,7 +135,7 @@ class CTS_Speciation_Pka(forms.Form):
 						initial=0.5,
 						min_value=0.1,
 						max_value=1.0,
-						required=False,
+						# required=False,
 					)
 
 	# Check box for selecting table

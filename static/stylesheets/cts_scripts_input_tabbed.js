@@ -6,12 +6,15 @@ $( document ).ready(function() {
 	if ($(error_list).length > 0) {
 		var closest_table = $(error_list).closest('table.input_table');
 		if ($(closest_table).hasClass('tab_Speciation')) {
-			// display tab_Speciation tab
+			// display tab_Speciation tab:
 			$('.tab_Chemical').hide();
 			$('.tab_Speciation').show();
-			//highlight appropriate tab 
+			//highlight appropriate tab:
 			$('li.Chemical').removeClass('tabSel').addClass('tabUnsel');
 			$('li.Speciation').removeClass('tabUnsel').addClass('tabSel');
+			//display proper buttons:
+			$('.next, #metaDataToggle, #metaDataText').hide();
+			$(".back, .submit, #resetbutton").show();
 		}
 	}
 
