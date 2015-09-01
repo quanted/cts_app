@@ -45,6 +45,7 @@ chemPropMap = {
     "mol_diss" : "DIFFUSION"
 }
 
+########################## SPARC physical properties calculator interface ###################
 
 class SPARC_Calc(Calculator):
     def __init__(self, smiles, pressure=760.0, meltingpoint=0.0, temperature=25.0):
