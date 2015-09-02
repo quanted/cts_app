@@ -1,11 +1,12 @@
 <p><i>
 This web site is under development.  It is available for the purposes of receiving feedback and quality assurance from personnel in the EPA.
 </i></p>
+
 <p>
 The Chemical Transformation Simulator (CTS) provides the calculated physico-chemical properties of the parent chemical and transformation products, which are predicted as a function of the reaction system of interest.  This is accomplished through the integration of cheminformatics applications for the encoding of process science underlying transformation pathways, computational chemistry tools for the calculation of physico-chemical properties, and software technologies that provide access to on-line databases for environmental descriptors required for estimating environmental concentrations.
 </p>
 <p>
-The CTS consists of 6 modules, the selection and order of execution of which is based on the user’s choice of one of three available workflows:
+The user interacts with the alpha-version of the CTS through the execution of one of three available work flows (green tabs in left column) described below.  Each workflow invokes the CTS modules required to provide the data requested by the user.  Descriptions of the individual modules are provided by the tabs in the left-hand column. 
 </p>
 <p>
 <b>Chemical Editor (CE):</b>
@@ -16,13 +17,4 @@ Calculates p-chem properties for the parent chemical and predicted transformatio
 <br><br>
 <b>Reaction Pathway Simulator (RPS):</b>
 Generates potential transformation products based on user-specified reaction conditions
-<br><br>
-<b>Structure-based Database (SBD):</b>
-Populated with calculated and measured physico-chemical properties of parent and potential transformation products
-<br><br>
-<b>Earth Systems Model (ESM):</b>
-Provides data mining abilities for environmental descriptors such as pH and temperature
-<br><br>
-<b>Reaction Rate Calculator (RRC):</b>
-Calculates transformation products based on the parameritization and execution of QSARs and Algorithms
 </p>

@@ -9,14 +9,14 @@ from chemaxon_cts import views as chemaxon_views
 from epi_cts import views as epi_views
 from sparc_cts import views as sparc_views
 import logging
-import smilesFilter
+from smilesfilter import is_valid_smiles
 
 
 def directAllTraffic(request):
     webservice = request.POST.get('ws')
+
     if webservice == 'validSMILES':
-        # do stuff
-        return 
+        return is_valid_smiles(request.POST.get('chemical'))
     elif webservice == 'jchem':
         # note: jchem service is looking for 'service' and 'chemical'
         logging.info('directing to jchem..')

@@ -76,19 +76,25 @@ function importMol(chemical) {
   }
 
 
-
   // ajaxCall(getParamsObj("getChemDetails", chemical), function(chemResults) {
-  getChemDetails(chemical, function(chemResults) {
-    if (chemResults != "Fail") {
-      data = chemResults.data[0];
-      populateResultsTbl(data);
-      marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
-    }
-    else {
-      displayErrorInTextbox("An error has occured during the call..");
-    }
-  });
+  isValidSMILES(chemical, function (isValid) {
 
+    if (!isValid) {
+      displayErrorInTextbox("SMILES not valid (contains metals)..");
+      return;
+    }
+
+    getChemDetails(chemical, function(chemResults) {
+      if (chemResults != "Fail") {
+        data = chemResults.data[0];
+        populateResultsTbl(data);
+        marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
+      }
+      else {
+        displayErrorInTextbox("An error has occured during the call..");
+      }
+    });
+  });
 }
 
 
