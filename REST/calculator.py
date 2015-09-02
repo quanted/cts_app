@@ -5,6 +5,8 @@ import requests
 import json
 import logging
 import os
+import smilesfilter
+
 from enum import Enum
 
 class CTSChemicalProperties(Enum):
@@ -62,6 +64,9 @@ class Calculator(object):
             return self.propMap[prop]['resultKey']
         else:
             return "Error: result key not found"
+
+    def isValidSMILES(self, smiles):
+        return smilesfilter.is_valid_smiles(smiles)
 
     # def getPostData(self, calc, prop, method=None):
     #     postData = {"smiles": ""}
