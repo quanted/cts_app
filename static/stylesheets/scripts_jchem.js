@@ -28,9 +28,13 @@ $(document).ready(function handleDocumentReady (e) {
       }
   });
 
-  //redraw last chemcial if hitting back button from output:
-  var chemical = $("#id_chem_struct").val();
-  if (chemical != '' && chemical.indexOf('error') == -1) {
+  var chemical = $("#id_chem_struct").val().trim(); // chemical from textbox
+  var cached_chemical = sessionStorage.getItem('structure'); // check chemical cache
+
+  if (cached_chemical !== null && cached_chemical != '') {
+    importMol(cached_chemical);
+  }
+  else if (chemical != '' && chemical.indexOf('error') == -1) {
     importMol(chemical); 
   }
 
@@ -45,16 +49,33 @@ $(document).ajaxStart(function () {
 });
 
 
-function importMol(dataObj) {
+function importMol(chemical) {
   //Gets formula, iupac, smiles, mass, and marvin structure 
   //for chemical in Lookup Chemical textarea
+  // chemical = typeof chemical !== 'undefined' ? chemical : $('#id_chem_struct').val().trim();
 
-  var chemical = $('#id_chem_struct').val().trim();
+  var chemical_type = typeof chemical;
+  var chemical_inst = chemical instanceof String;
+  // var chemical_err = chemical.indexOf('error');
+
+  // if ((typeof chemical !== 'string' && !(chemical instanceof String)) || chemical.indexOf('error') == -1) {
+  if (typeof chemical !== 'string') {
+    // if chemical isn't string or String, or if it contains an error, 
+    // get chemical from textbox
+    chemical = $('#id_chem_struct').val().trim();
+  }
+
+
+  // var chemical = $('#id_chem_struct').val().trim();
+  sessionStorage.setItem('structure', chemical); // set current chemical in session cache
+  sessionStorage.setItem('marvinsketch', marvinSketcherInstance); // remember marvin instance
 
   if (chemical == "") {
     displayErrorInTextbox("Enter a chemical or draw one first");
     return;
   }
+
+
 
   // ajaxCall(getParamsObj("getChemDetails", chemical), function(chemResults) {
   getChemDetails(chemical, function(chemResults) {
@@ -99,27 +120,35 @@ function importMolFromCanvas() {
 }
 
 
+function isValidSMILES(chemical, callback) {
+  ajaxCall(getParamsObj("validateSMILES", "", chemical), function (result) {
+    callback(result);
+  });
+}
+
+
 function getChemDetails(chemical, callback) {
-  ajaxCall(getParamsObj("getChemDetails", chemical), function(chemResults) {
+  // var data = {"ws": "jchem", "service": service, "chemical": chemical};
+  ajaxCall(getParamsObj("jchem", "getChemDetails", chemical), function (chemResults) {
     callback(chemResults);
   });
 }
 
 
 function mrvToSmiles(chemical, callback) {
-  ajaxCall(getParamsObj("mrvToSmiles", chemical), function(smilesResult) {
+  ajaxCall(getParamsObj("jchem", "mrvToSmiles", chemical), function (smilesResult) {
     callback(smilesResult);
   });
 }
 
 
-function getParamsObj(service, chemical) {
+function getParamsObj(ws, service, chemical) {
   var params = new Object();
   params.url = portalUrl;
   params.type = "POST";
   // params.contentType = "application/json";
   params.dataType = "json";
-  params.data = {"ws": "jchem", "service": service, "chemical": chemical}; // for portal
+  params.data = {"ws": ws, "service": service, "chemical": chemical}; // for portal
   return params;
 }
 
