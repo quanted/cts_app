@@ -16,7 +16,7 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
     html = html + render_to_string('cts-jquery.html', {})
     html = html + render_to_string('04uberinput_start_tabbed.html', {
             'model': model,
-            'model_attributes': header+' Inputs'
+            'model_attributes': header
     })
     
     # html = html + render_to_string('04uberinput_tabbed_nav.html', {
