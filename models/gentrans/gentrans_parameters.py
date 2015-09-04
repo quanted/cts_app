@@ -134,54 +134,80 @@ def tmpl_oecdGuidelines():
 	return tmpl_oecdGuidelines
 
 
+def tmpl_new():
+	tmpl_new = """
+	<div class="input_table tab tab_ReactionPathSim" style="display:none;">
+		<div id="radio">
+		    <input type="radio" id="radio1" name="radio"><label for="radio1">Choice 1</label>
+		    <input type="radio" id="radio2" name="radio" checked="checked"><label for="radio2">Choice 2</label>
+		    <input type="radio" id="radio3" name="radio"><label for="radio3">Choice 3</label>
+	  	</div>
+  	</div>
+	"""
+
+
 # tmpl_horizontalRadios = Template(tmpl_horizontalRadios())
 tmpl_reactionSysCTS = Template(tmpl_reactionSysCTS())
 tmpl_respirationTable = Template(tmpl_respirationTable())
 tmpl_oecdGuidelines = Template(tmpl_oecdGuidelines())
 
+tmpl_new = Template(tmpl_new())
+
 # Method(s) called from *_inputs.py
 def form(formData):
 
-	html = '<div class="input_table tab tab_ReactionPathSim" style="display:none">'
+	# html = '<div class="input_table tab tab_ReactionPathSim" style="display:none">'
 
-	form_cts_reaction_paths = cts_reaction_paths(formData)
-	html += tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_paths)))
+	# form_cts_reaction_paths = cts_reaction_paths(formData)
+	# html += tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_paths)))
 
-	form_oecd_guidelines = cts_oecd_guidelines(formData)
-	html += tmpl_oecdGuidelines.render(Context(dict(form=form_oecd_guidelines)))
+	# form_oecd_guidelines = cts_oecd_guidelines(formData)
+	# html += tmpl_oecdGuidelines.render(Context(dict(form=form_oecd_guidelines)))
 
-	form_cts_reaction_sys = cts_reaction_sys(formData)
-	html += tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_sys, header=mark_safe("Reaction System"))))
+	# form_cts_reaction_sys = cts_reaction_sys(formData)
+	# html += tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_sys, header=mark_safe("Reaction System"))))
 	
-	html += """<table id="respiration_tbl" class="input_table">
-	<tr><th colspan="3"> Select a respiration type </th></tr>
-	<tr>
-	"""
+	# html += """<table id="respiration_tbl" class="input_table">
+	# <tr><th colspan="3"> Select a respiration type </th></tr>
+	# <tr>
+	# """
 
-	form_cts_respiration = cts_respiration(formData)
-	html += tmpl_respirationTable.render(Context(dict(form=form_cts_respiration, header=mark_safe("Respiration"))))
+	# form_cts_respiration = cts_respiration(formData)
+	# html += tmpl_respirationTable.render(Context(dict(form=form_cts_respiration, header=mark_safe("Respiration"))))
 
-	# form_cts_aerobic = cts_aerobic()
-	# html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_aerobic, header=mark_safe("Aerobic"))))
+	# # form_cts_aerobic = cts_aerobic()
+	# # html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_aerobic, header=mark_safe("Aerobic"))))
 
-	# form_cts_anaerobic = cts_anaerobic()
-	# html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_anaerobic, header=mark_safe("Anaerobic"))))
+	# # form_cts_anaerobic = cts_anaerobic()
+	# # html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_anaerobic, header=mark_safe("Anaerobic"))))
 
-	html += '</tr></table>'
+	# html += '</tr></table>'
 
-	# html = html + '<table id="cts_reaction_options" class="tbl_wrap"><tr><td>' # table wrapper for react libs and options 
-	html += '<div id="alignLibAndOptions">'
+	# # html = html + '<table id="cts_reaction_options" class="tbl_wrap"><tr><td>' # table wrapper for react libs and options 
+	# html += '<div id="alignLibAndOptions">'
 
-	form_cts_reaction_libs = cts_reaction_libs(formData)
-	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, header=mark_safe("Reaction Libraries"))))
+	# form_cts_reaction_libs = cts_reaction_libs(formData)
+	# html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, header=mark_safe("Reaction Libraries"))))
 
-	# html = html + '</td><td>'
+	# # html = html + '</td><td>'
 
-	form_cts_reaction_options = cts_reaction_options(formData)
-	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_options, header=mark_safe("Reaction Options"))))
+	# form_cts_reaction_options = cts_reaction_options(formData)
+	# html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_options, header=mark_safe("Reaction Options"))))
 
-	html += """
-	</div>
+	# html += """
+	# </div>
+	# </div>
+	# """
+
+	html = """
+	<div class="input_table tab tab_ReactionPathSim" style="display:none;">
+
+		<div id="radio" class="input_table">
+			<input type="radio" id="radio1" name="radio"><label for="radio1">Reaction System Guidelines</label>
+			<input type="radio" id="radio2" name="radio" checked="checked"><label for="radio2">OCSPP Guidelines</label>
+			<input type="radio" id="radio3" name="radio"><label for="radio3">Manual (advanced)</label>
+		</div>
+		
 	</div>
 	"""
 
@@ -265,9 +291,9 @@ class cts_reaction_options(forms.Form):
 
 	gen_limit = forms.ChoiceField (
 					choices=gen_limit_CHOICES,
-					label='Generation Limit:',
+					label='Number of generations:',
 					required=False
-				)
+				)	
 
 	# pop_limit = forms.ChoiceField (
 	# 				choices=pop_limit_CHOICES,
@@ -276,7 +302,7 @@ class cts_reaction_options(forms.Form):
 	# 			)
 
 	likely_limit = forms.FloatField (
-						label='Likely Limit:',
+						label='Likelihood limit:',
 						initial=0.001,
 						min_value=0.001,
 						max_value=0.99,
