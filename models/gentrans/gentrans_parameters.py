@@ -269,11 +269,11 @@ class cts_reaction_options(forms.Form):
 					required=False
 				)
 
-	pop_limit = forms.ChoiceField (
-					choices=pop_limit_CHOICES,
-					label='Population Limit:',
-					required=False,
-				)
+	# pop_limit = forms.ChoiceField (
+	# 				choices=pop_limit_CHOICES,
+	# 				label='Population Limit:',
+	# 				required=False,
+	# 			)
 
 	likely_limit = forms.FloatField (
 						label='Likely Limit:',

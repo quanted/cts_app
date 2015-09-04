@@ -25,7 +25,6 @@ $( document ).ready(function() {
 
 		e.preventDefault();
 
-
 		// implement field validation for checked tables:
 		var tables_to_validate = $('table input:checkbox:checked').closest('table');
 		var input_fields = $(tables_to_validate).find('input').not('input:checkbox');
