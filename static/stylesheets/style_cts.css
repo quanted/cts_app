@@ -1792,3 +1792,15 @@ div.pka-wrapper {
   color: #FF3232;
   
 }
+
+/* gentrans inputs rework */
+.gentrans-radio-group {
+  /*display: inline-block;*/
+}
+
+#reactsim-libs input {
+  width: 50px;
+}
+#reactsim-libs {
+  border: black 1px solid;
+}

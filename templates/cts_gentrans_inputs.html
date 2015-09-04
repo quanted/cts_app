@@ -2,11 +2,64 @@
 
 <div class="input_table tab tab_ReactionPathSim" style="display:none;">
 
-	<!-- First Selection Options -->
-	<div id="reactsim-options-1" class="reactsim-options">
-		<input type="radio" id="radio1" name="radio"><label for="radio1">Reaction System Guidelines</label>
-		<input type="radio" id="radio2" name="radio" checked="checked"><label for="radio2">OCSPP Guidelines</label>
-		<input type="radio" id="radio3" name="radio"><label for="radio3">Manual (advanced)</label>
+	<!-- Selection Options 1 -->
+	<div id="reactsim-options-1" class="gentrans-radio-group">
+		<h3>Options for selecting Reaction Libraries:</h3>
+		<input type="radio" id="radio1" class="gentrans-radio" name="radio-one"><label for="radio1">Reaction System Guide	lines</label>
+		<input type="radio" id="radio2" class="gentrans-radio" name="radio-one"><label for="radio2">OCSPP Guidelines</label>
+		<input type="radio" id="radio3" class="gentrans-radio" name="radio-one"><label for="radio3">Manual (advanced)</label>
+	</div>	
+
+	<br><br>
+
+	<!-- Selection Options 2 -->
+	<div id="reactsim-options-2" class="gentrans-radio-group">
+		<h3>Reaction System Description:</h3>
+		<input type="radio" id="radio4" name="radio-two"><label for="radio4">Environmental</label>
+		<input type="radio" id="radio5" name="radio-two"><label for="radio5">Mammalian</label>
+	</div>
+
+	<br><br>
+
+	<!-- Selection Options 3 -->
+	<div id="reactsim-options-3" class="gentrans-radio-group">
+		<h3>Select a respiration type:</h3>
+		<input type="radio" id="radio7" name="radio-three"><label for="radio7">Aerobic</label>
+		<input type="radio" id="radio8" name="radio-three"><label for="radio8">Anaerobic</label>
+	</div>
+
+	<br><br>
+
+	<!-- Reaction Libraries and Options -->
+	<div id="reactsim-select">
+
+		<!-- Reaction Libraries -->
+		<div id="reactsim-libs" class="gentrans-radio-group">
+			<h3>Reaction Libraries</h3>
+			<input type="radio" id="radio9" name="radio-four"><label for="radio9">Abiotic Hydrolysis</label>
+			<br>
+			<input type="radio" id="radio10" name="radio-four"><label for="radio10">Abiotic Reduction</label>
+			<br>
+			<input type="radio" id="radio11" name="radio-four"><label for="radio11">Mammalian Metabolism</label>
+		</div>
+
+		<!-- Reaction Options -->
+		<div id="reactsim-options" class="gentrans-radio-group">
+			<h3>Reaction Options</h3>
+			<input type="radio" id="radio12" name="radio-five"><label for="radio12">Number of generations</label>
+			<input type="radio" id="radio13" name="radio-five"><label for="radio13">Likelihood limit</label>
+		</div>
+
 	</div>
 	
 </div>
+
+<script>
+	$(function() {
+		$( ".gentrans-radio-group" ).buttonset(); // convert to pretty buttonset
+		
+		$('#radio1').hover(function() {
+        	$(this).css('cursor','pointer');
+    	});	
+	});
+</script>
