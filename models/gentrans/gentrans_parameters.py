@@ -22,20 +22,6 @@ def tmpl_respirationTable():
 	{% endfor %}
 	</td>
 
-	<td id="aerobic_picks">
-	<b>Aerobic</b> <br>
-	{%for choice in form.aerobic %}
-		{{choice}} <br>
-	{% endfor %}
-	</td>
-
-	<td id="anaerobic_picks">
-	<b>Anaerobic</b> <br>
-	{%for choice in form.anaerobic %}
-		{{choice}} <br>
-	{% endfor %}
-	</td>
-
 	{% endwith %}
 	"""
 	return tmpl_respirationTable
@@ -201,8 +187,8 @@ gen_limit_max = gen_limit_CHOICES[-1][1]  # not used as field, but referenced in
 pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'),
                      ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'))  # population limit
 
-aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
-anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))
+# aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
+# anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))
 
 oecd_guidelines_CHOICES = (('0', 'Fate, Transport, and Transformation (Series 835)'), ('1', 'Health Effects (Series 870)'))
 ftt_CHOICES = (('0', 'Make a selection'), ('1', 'Laboratory Abiotic Transformation Guidelines'), ('2', 'Transformation in Water and Soil Test Guidelines'), ('3', 'Transformation Chemical-Specific Test Guidelines'))
@@ -240,15 +226,15 @@ class cts_respiration(forms.Form):
 				choices=respiration_CHOICES,
 				required=False)
 
-	aerobic = forms.ChoiceField(
-				choices=aerobic_CHOICES,
-				widget=forms.RadioSelect(),
-				required=False)
+	# aerobic = forms.ChoiceField(
+	# 			choices=aerobic_CHOICES,
+	# 			widget=forms.RadioSelect(),
+	# 			required=False)
 
-	anaerobic = forms.ChoiceField(
-				choices=anaerobic_CHOICES,
-				widget=forms.RadioSelect(),
-				required=False)
+	# anaerobic = forms.ChoiceField(
+	# 			choices=anaerobic_CHOICES,
+	# 			widget=forms.RadioSelect(),
+	# 			required=False)
 
 
 # Reaction Libraries
