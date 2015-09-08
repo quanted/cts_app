@@ -8,10 +8,13 @@ $(document).ready(function handleDocumentReady (e) {
   var p = MarvinJSUtil.getEditor("#sketch");
   p.then(function (sketcherInstance) {
     marvinSketcherInstance = sketcherInstance;
+    
+    loadCachedChemical(); // 
+
     // initControl(); //binds action to initControl() function
   }, function (error) {
     alert("Cannot retrieve sketcher instance from iframe:"+error);
-  });  
+  });
 
   $('#setSmilesButton').on('click', importMol); // map button click to function
   $('#getSmilesButton').on('click', importMolFromCanvas);
@@ -21,32 +24,35 @@ $(document).ready(function handleDocumentReady (e) {
   var winleft = (browserWidth / 2) - 220 + "px";
   var wintop = (browserHeight / 2) - 30 + "px";
 
-  //Removes error styling when focused on textarea or input:
+  // Removes error styling when focused on textarea or input:
   $('textarea, input').focusin(function() {
       if ($(this).hasClass('formError')) {
         $(this).removeClass("formError").val("");
       }
   });
 
+});
+
+
+// "wait" cursor during ajax events
+$(document).ajaxStart(function () {
+    $('body').addClass('wait');
+}).ajaxComplete(function () {
+    $('body').removeClass('wait');
+});
+
+
+function loadCachedChemical() {
   var chemical = $("#id_chem_struct").val().trim(); // chemical from textbox
   var cached_chemical = sessionStorage.getItem('structure'); // check chemical cache
-
   if (cached_chemical !== null && cached_chemical != '') {
     importMol(cached_chemical);
   }
   else if (chemical != '' && chemical.indexOf('error') == -1) {
     importMol(chemical); 
   }
-
-});
-
-
-//"wait" cursor during ajax events
-$(document).ajaxStart(function () {
-    $('body').addClass('wait');
-}).ajaxComplete(function () {
-    $('body').removeClass('wait');
-});
+  else { return; }
+}
 
 
 function importMol(chemical) {
@@ -68,7 +74,6 @@ function importMol(chemical) {
 
   // var chemical = $('#id_chem_struct').val().trim();
   sessionStorage.setItem('structure', chemical); // set current chemical in session cache
-  sessionStorage.setItem('marvinsketch', marvinSketcherInstance); // remember marvin instance
 
   if (chemical == "") {
     displayErrorInTextbox("Enter a chemical or draw one first");
@@ -77,12 +82,12 @@ function importMol(chemical) {
 
 
   // ajaxCall(getParamsObj("getChemDetails", chemical), function(chemResults) {
-  isValidSMILES(chemical, function (isValid) {
+  // isValidSMILES(chemical, function (isValid) {
 
-    if (!isValid) {
-      displayErrorInTextbox("SMILES not valid (contains metals)..");
-      return;
-    }
+  //   if (!isValid) {
+  //     displayErrorInTextbox("SMILES not valid (contains metals)..");
+  //     return;
+  //   }
 
     getChemDetails(chemical, function(chemResults) {
       if (chemResults != "Fail") {
@@ -94,7 +99,7 @@ function importMol(chemical) {
         displayErrorInTextbox("An error has occured during the call..");
       }
     });
-  });
+  // });
 }
 
 
