@@ -10,13 +10,16 @@ from epi_cts import views as epi_views
 from sparc_cts import views as sparc_views
 import logging
 from smilesfilter import is_valid_smiles
+import json
 
 
 def directAllTraffic(request):
     webservice = request.POST.get('ws')
 
-    if webservice == 'validSMILES':
-        return is_valid_smiles(request.POST.get('chemical'))
+    if webservice == 'validateSMILES':
+        chemical = request.POST.get('chemical')
+        isValid = is_valid_smiles(chemical)
+        return HttpResponse(json.dumps({'isValid': isValid}), content_type='application/json')
     elif webservice == 'jchem':
         # note: jchem service is looking for 'service' and 'chemical'
         logging.info('directing to jchem..')
