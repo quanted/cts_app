@@ -2,6 +2,9 @@
 
 <!-- "Click" Menus -->
 <script type="text/javascript">
+function pulse() {
+  $('div#l_menu').toggleClass('brightBorders');
+}
 $( document ).ready(function() {
 	$('.fadeMenu').hover(function(){
 		// $(this).stop().animate({ backgroundColor:'#479147', color:'#FFFFFF'},500);
@@ -9,6 +12,9 @@ $( document ).ready(function() {
 		}, function(){
 			$(this).stop().animate({ backgroundColor:'#dee7ef', color:'#34322D'},500);
 	});
+	setInterval(function () {
+		pulse();
+	}, 1200);
 });
 </script>
 
