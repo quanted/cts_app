@@ -10,7 +10,7 @@ from django.shortcuts import render
 import datetime
 import pytz
 import os
-
+from django.utils.safestring import mark_safe
 from django.http import HttpResponse  # todo: remove this and only use requests
 
 
@@ -305,6 +305,10 @@ class Tautomerization(JchemProperty):
         }
 
     def getTautomers(self):
+        """
+        returns dict w/ key 'tautStructs' and
+        value is a list of tautomer images
+        """
         tautDict = {'tautStructs': [None]}
         tautImageList = []
         try:
@@ -483,19 +487,17 @@ def getChemDetails(request):
         logging.info("> using POST <")
         chem = request.POST.get('chemical')
         if 'addH' in request.POST:
+            logging.info("> adding explicitH")
             addH = True
     else:
         if 'addH' in request.data:
+            logging.info("> adding explicitH")
             addH = True
     finally:
-        # logging.info("chemical: {}".format(chem))
-        ds = Data_Structures()
+        ds = DataStructures()
         data = ds.chemDeatsStruct(chem, addH)  # format request to jchem
         data = json.dumps(data)  # convert dict to json string
-        # logging.info("data: {}".format(data))
-        # logging.info("data type: {}".format(type(data)))
         url = Urls.jchemBase + Urls.detailUrl
-        # logging.info("url: {}".format(url))
         return web_call(url, request, data)
 
 
@@ -561,7 +563,7 @@ def getChemSpecData(request):
 	Inputs - data types to get (e.g., pka, tautomer, etc.),
 	and all the fields from the 3 tables.
 	"""
-    ds = Data_Structures()
+    ds = DataStructures()
     addH = False
     if 'addH' in request.data:
         addH = True
@@ -627,6 +629,35 @@ def getStructInfo(structure):
     return infoDict
 
 
+def removeExplicitHFromSMILES(request):
+    """
+    removes explicit hydrogens from SMILES string.
+    expects request to have 'smiles' key
+    """
+    # request = requests.Request(data={'chemical': structure, })
+    try:
+        smiles = request.data.get('smiles')
+    except Exception as e:
+        logging.info("Exception at removeExplicitHFromSMILES: {}".format(e))
+        return
+    else:
+        post_data = {
+            "structure": smiles,
+            "parameters": "smiles",
+            "filterChain": [
+                {
+                    "filter": "hydrogenizer",
+                    "parameters": {
+                        "method": "DEHYDROGENIZE"
+                    }
+                }
+            ]
+        }
+        url = Urls.jchemBase + Urls.exportUrl
+        results = web_call(url, request, json.dumps(post_data))
+        return results
+
+
 def web_call(url, request, data):
     """
 	Makes the request to a specified URL
@@ -640,7 +671,7 @@ def web_call(url, request, data):
         raise
 
 
-class Data_Structures:
+class DataStructures:
     def chemDeatsStruct(self, chemical, addH=False):
         # return json data for chemical details
         chemDeatsDict = {
@@ -662,8 +693,9 @@ class Data_Structures:
                 }
             }
         }
-        if addH:
-            chemDeatsDict = addExplicitH(chemDeatsDict)
+        # if addH:
+            # chemDeatsDict = addExplicitH(chemDeatsDict)
+            # chemDeatsDict = removeExplicitH(chemDeatsDict)
         return chemDeatsDict
 
 
@@ -704,6 +736,20 @@ def addExplicitH(dataDict):
     filterChain = [{
                        "filter": "hydrogenizer",
                        "parameters": {"method": "HYDROGENIZE"}
+                   }]
+    dataDict['display'].update({'filterChain': filterChain})
+    return dataDict
+
+
+def removeExplicitH(dataDict):
+    """
+    Add explicitH option to data dictionary
+    for jchem web call. Assumes 'display' key
+    exists.
+    """
+    filterChain = [{
+                       "filter": "hydrogenizer",
+                       "parameters": {"method": "DEHYDROGENIZE"}
                    }]
     dataDict['display'].update({'filterChain': filterChain})
     return dataDict

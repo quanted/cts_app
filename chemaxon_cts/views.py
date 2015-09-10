@@ -23,9 +23,9 @@ def request_manager(request):
 	"""
 
 	try:
-		service = getRequestService(request)
-		chemical = getRequestChemical(request)
-		prop = getRequestProperty(request)
+		service = getRequestParam(request, 'service')
+		chemical = getRequestParam(request, 'chemical')
+		prop = getRequestParam(request, 'prop')
 		if prop == 'kow_wph':
 			ph = getRequestPh(request)
 		else:
@@ -37,12 +37,12 @@ def request_manager(request):
 		return HttpResponse(json.dumps({"error": "request error", "calc": "chemaxon", "prop": prop}))
 
 
-def getRequestService(request):
+def getRequestParam(request, key):
 	"""
-	Picks out service name from request
+	Picks out a key:value from request POST
 	"""
 	try:
-		service = request.POST.get('service')
+		value = request.POST.get(key)
 	except AttributeError as ae:
 		logging.warning("attribute error -- {}".format(ae))
 		raise
@@ -50,42 +50,58 @@ def getRequestService(request):
 		logging.warning("error: request as no key 'service' -- {}".format(ke))
 		raise
 	else:
-		if service in services:
-			return service
-		else:
-			raise KeyError("error: service {} is not recognized".format(service))
+		return value
 
 
-def getRequestChemical(request):
-	"""
-	Picks out chemical from request
-	"""
-	try:
-		chemical = request.POST.get('chemical')
-	except AttributeError as ae:
-		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
-		raise
-	except KeyError as ke:
-		logging.warning("error: request as no key 'chemical' -- {}".format(ke))
-		raise
-	else:
-		return chemical
+# def getRequestService(request):
+# 	"""
+# 	Picks out service name from request
+# 	"""
+# 	try:
+# 		service = request.POST.get('service')
+# 	except AttributeError as ae:
+# 		logging.warning("attribute error -- {}".format(ae))
+# 		raise
+# 	except KeyError as ke:
+# 		logging.warning("error: request as no key 'service' -- {}".format(ke))
+# 		raise
+# 	else:
+# 		if service in services:
+# 			return service
+# 		else:
+# 			raise KeyError("error: service {} is not recognized".format(service))
 
 
-def getRequestProperty(request):
-	"""
-	Picks out property from request
-	"""
-	try:
-		prop = request.POST.get('prop')
-	except AttributeError as ae:
-		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
-		raise
-	except KeyError as ke:
-		logging.warning("error: request has no key 'prop' -- {}".format(ke))
-		raise
-	else:
-		return prop
+# def getRequestChemical(request):
+# 	"""
+# 	Picks out chemical from request
+# 	"""
+# 	try:
+# 		chemical = request.POST.get('chemical')
+# 	except AttributeError as ae:
+# 		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
+# 		raise
+# 	except KeyError as ke:
+# 		logging.warning("error: request as no key 'chemical' -- {}".format(ke))
+# 		raise
+# 	else:
+# 		return chemical
+
+
+# def getRequestProperty(request):
+# 	"""
+# 	Picks out property from request
+# 	"""
+# 	try:
+# 		prop = request.POST.get('prop')
+# 	except AttributeError as ae:
+# 		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
+# 		raise
+# 	except KeyError as ke:
+# 		logging.warning("error: request has no key 'prop' -- {}".format(ke))
+# 		raise
+# 	else:
+# 		return prop
 
 
 def getRequestPh(request):
