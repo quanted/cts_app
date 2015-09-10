@@ -1696,11 +1696,16 @@ for nodes on gentrans output */
 
 /* highlights checkboxes on chemical speciation tab */
 .brightBorders {
-  box-shadow: 0px 0px 10px 2px #4289AA;
+  box-shadow: 0px 0px 15px 2px #4289AA;
+  border-radius: 10px;
+}
+
+/* main workflow links div */
+div#l_menu {
+  transition: all 1.2s ease;
 }
 
 /* metatolite info / p-Chem data div on gentrans output */
-
 #metaboliteInfo {
   font-family: 'Open Sans', sans-serif;
   border-radius: 4px;

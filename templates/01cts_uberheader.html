@@ -19,7 +19,6 @@
 <!-- import blockUI -->
   <script type="text/javascript" src="/static/stylesheets/jquery.blockUI.js"></script>
 
-
   <!-- jquery UI stuff -->
   <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> -->
   <!-- // <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> -->
@@ -38,6 +37,18 @@
 </head>
 
 <body>
+
+<script type="text/javascript">
+function pulse() {
+  $('div#l_menu').toggleClass('brightBorders');
+}
+
+$(document).ready(function () {
+  setInterval(function () {
+    pulse();
+  }, 1200);
+});
+</script>
 
 <!-- Main Container Div -->
 <div id="container">
