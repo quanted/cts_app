@@ -1697,7 +1697,7 @@ for nodes on gentrans output */
 /* highlights checkboxes on chemical speciation tab */
 .brightBorders {
   box-shadow: 0px 0px 15px 2px #4289AA;
-  border-radius: 10px;
+  /*border-radius: 10px;*/
 }
 
 /* main workflow links div */
