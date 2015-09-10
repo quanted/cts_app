@@ -72,6 +72,16 @@ def dehydrogenizeSMILES(smiles):
         raise e
 
 
+# def transformSMILES(smiles):
+#     """
+#     transforms SMILES string based on:
+#     N(=O)=O --> [N+](=O)[O-]
+#     """
+#     request = requests.Request(data={'smiles': smiles})
+#     response = jchem_rest.transformSMILES(request)
+
+
+
 def getDominateTautomer(smiles):
     """
     calls jchem_rest tautomer code, returns smiles
@@ -86,7 +96,7 @@ def getDominateTautomer(smiles):
     # })
     taut_obj.makeDataRequest(smiles)
     logging.info("taut results: {}".format(taut_obj.results))
-    
+
     try:
         dominant_taut = taut_obj.results['result'][0]['structureData']['structure']
         logging.info("dominant taut: {}".format(dominant_taut))
