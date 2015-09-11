@@ -664,6 +664,7 @@ def filterSMILES(request):
     """
     try:
         smiles = request.data.get('smiles')
+        logging.info("")
     except Exception as e:
         logging.info("exception at transformSMILES: {}".format(e))
         return
@@ -697,15 +698,15 @@ def filterSMILES(request):
 
         # POST data for in-house standardizer:
         post_data = {
-            "structure": "c1ccc(cc1)[N+](=O)[O-]",
+            "structure": smiles,
             "actions": [
                 "removeExplicitH",
-                "transform"
+                "transform",
                 "tautomerize",
                 "neutralize"
             ]
         }
-        url = Urls.efsBase + Urls.standardizerUrlEFS
+        url = Urls.standardizerUrlEFS # http://server/efsws/rest/standardizer
         results = web_call(url, request, json.dumps(post_data))
         return results
 

@@ -75,7 +75,7 @@ def filterSMILES(smiles):
         logging.info("NEW SMILES: {}".format(filtered_smiles))
         return filtered_smiles
     except Exception as e:
-        logging.info("> dehydrogenize in smilesfilter error: {}".format(e))
+        logging.info("> error in filterSMILES: {}".format(e))
         raise e
 
 
