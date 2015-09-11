@@ -71,7 +71,7 @@ def filterSMILES(smiles):
     logging.info("RESPONSE: {}".format(response.content))
 
     try:
-        filtered_smiles = json.loads(response.content)['result'][0] # picks out smiles from efs???
+        filtered_smiles = json.loads(response.content)['results'][0] # picks out smiles from efs???
         logging.info("NEW SMILES: {}".format(filtered_smiles))
         return filtered_smiles
     except Exception as e:
