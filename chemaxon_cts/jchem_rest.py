@@ -697,27 +697,12 @@ def filterSMILES(request):
 
         # POST data for in-house standardizer:
         post_data = {
-            "structure": "aspirin",
-            "parameters": "smiles",
-            "filterChain": [
-                {
-                    "filter": "standardizer",
-                    "parameters": {
-                        "standardizerDefinition": "[O:2]=[N:1]=O>>[O-:2][N+:1]=O"
-                    }
-                },
-                {
-                    "filter": "hydrogenizer",
-                    "parameters": {
-                        "method": "DEHYDROGENIZE"
-                    }
-                },
-                {
-                    "filter": "standardizer",
-                    "parameters": {
-                        "standardizerDefinition": "tautomerize"
-                    }
-                }
+            "structure": "c1ccc(cc1)[N+](=O)[O-]",
+            "actions": [
+                "tautomerize",
+                "removeExplicitH",
+                "transform",
+                "neutralize"
             ]
         }
         url = Urls.efsBase + Urls.standardizerUrlEFS
