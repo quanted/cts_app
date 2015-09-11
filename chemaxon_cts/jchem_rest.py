@@ -30,6 +30,7 @@ class Urls:
     # homegrown metabolizer ws:
     efsBase = cts_jchem_server + '/efsws/rest'
     metabolizerUrl = efsBase + '/metabolizer'
+    standardizerUrlEFS = efsBase + '/standardizer'
 
 
 class JchemProperty(object):
@@ -658,10 +659,8 @@ def removeExplicitHFromSMILES(request):
         return results
 
 
-def transformSMILES(request):
+def filterSMILES(request):
     """
-    transforms SMILES string based on:
-    N(=O)=O --> [N+](=O)[O-]
     """
     try:
         smiles = request.data.get('smiles')
@@ -669,6 +668,34 @@ def transformSMILES(request):
         logging.info("exception at transformSMILES: {}".format(e))
         return
     else:
+        # POST data for jchem web services:
+        # post_data = {
+        #     "structure": "aspirin",
+        #     "parameters": "smiles",
+        #     "filterChain": [
+        #         {
+        #             "filter": "standardizer",
+        #             "parameters": {
+        #                 "standardizerDefinition": "[O:2]=[N:1]=O>>[O-:2][N+:1]=O"
+        #             }
+        #         },
+        #         {
+        #             "filter": "hydrogenizer",
+        #             "parameters": {
+        #                 "method": "DEHYDROGENIZE"
+        #             }
+        #         },
+        #         {
+        #             "filter": "standardizer",
+        #             "parameters": {
+        #                 "standardizerDefinition": "tautomerize"
+        #             }
+        #         }
+        #     ]
+        # }
+        # url = Urls.jchemBase + Urls.exportUrl
+
+        # POST data for in-house standardizer:
         post_data = {
             "structure": "aspirin",
             "parameters": "smiles",
@@ -693,7 +720,7 @@ def transformSMILES(request):
                 }
             ]
         }
-        url = Urls.jchemBase + Urls.exportUrl
+        url = Urls.efsBase + Urls.standardizerUrlEFS
         results = web_call(url, request, json.dumps(post_data))
         return results
 
