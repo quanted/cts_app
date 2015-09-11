@@ -699,9 +699,9 @@ def filterSMILES(request):
         post_data = {
             "structure": "c1ccc(cc1)[N+](=O)[O-]",
             "actions": [
-                "tautomerize",
                 "removeExplicitH",
-                "transform",
+                "transform"
+                "tautomerize",
                 "neutralize"
             ]
         }
