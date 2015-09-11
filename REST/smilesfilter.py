@@ -47,12 +47,18 @@ def is_valid_smiles(smiles):
                                 }
 
 
+    return_val = {
+            "valid" : False,
+            "smiles": smiles,
+            "processedsmiles" : ""
+    }
     if any(x in smiles for x in excludestring):
-        return False
+        return return_val
     else:
-        # smiles = dehydrogenizeSMILES(smiles) # dehydrogenize smiles
-        # smiles = getDominateTautomer(smiles)
-        return True
+        processed_smiles = filterSMILES(smiles)
+        return_val["valid"] = True
+        return_val["processedsmiles"] = processed_smiles
+        return return_val
 
 
 def filterSMILES(smiles):
