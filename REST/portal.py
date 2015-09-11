@@ -18,8 +18,9 @@ def directAllTraffic(request):
 
     if webservice == 'validateSMILES':
         chemical = request.POST.get('chemical')
-        isValid = is_valid_smiles(chemical)
-        return HttpResponse(json.dumps({'isValid': isValid}), content_type='application/json')
+        json_results = json.dumps(is_valid_smiles(chemical)) # returns python dict
+        return HttpResponse(json_results, content_type='application/json')
+        # return HttpResponse(json.dumps({'isValid': isValid}), content_type='application/json')
     elif webservice == 'jchem':
         # note: jchem service is looking for 'service' and 'chemical'
         logging.info('directing to jchem..')

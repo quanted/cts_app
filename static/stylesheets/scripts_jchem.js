@@ -86,13 +86,19 @@ function importMol(chemical) {
 
       var smiles = chemResults.data[0].smiles;
 
-      isValidSMILES(smiles, function (isValid) {
+      isValidSMILES(smiles, function (processed_smiles_json) {
 
         // validate before populating
-        if (isValid['isValid']) {
+        if (processed_smiles_json['valid']) {
+
           data = chemResults.data[0];
+
+          // +++++ replace smiles with process smiles (todo: add instead of replace) +++++++++
+          data['smiles'] = processed_smiles_json['processedsmiles']
+
           populateResultsTbl(data);
           marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
+          
         }
         else {
           displayErrorInTextbox("SMILES not valid (contains metals)..");
