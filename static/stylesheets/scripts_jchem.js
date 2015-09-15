@@ -80,23 +80,24 @@ function importMol(chemical) {
       var smiles = smiles_result['structure'];
 
       // run smiles through validation/processing
-      isValidSMILES(smiles, function (processed_smiles_json) {
-        if (processed_smiles_json['valid']) {
+      // isValidSMILES(smiles, function (processed_smiles_json) {
+      //   if (processed_smiles_json['valid']) {
 
           // get chemical info of processed smiles
-          getChemDetails(processed_smiles_json['processedsmiles'], function (chemResults) {
+          // getChemDetails(processed_smiles_json['processedsmiles'], function (chemResults) {
+            getChemDetails(smiles, function (chemResults) {
             if (chemResults != "Fail") {
               data = chemResults.data[0];
-              data['processed_smiles'] = processed_smiles_json['processedsmiles'];
+              // data['processed_smiles'] = processed_smiles_json['processedsmiles'];
               populateResultsTbl(data);
               marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
             }
             else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
           });
 
-        }
-        else { displayErrorInTextbox("SMILES not valid.."); }
-      });
+      //   }
+      //   else { displayErrorInTextbox("SMILES not valid.."); }
+      // });
 
     }
     else { displayErrorInTextbox("An error has occured retrieving smiles.."); }

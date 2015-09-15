@@ -8,7 +8,7 @@ import logging
 
 # Need these if want to do data crunching on back end
 # from REST.epi_calculator import Calculator as calc
-from chemaxon_cts.jchem_rest import JchemProperty as jp
+from chemaxon_cts.jchem_calculator import JchemProperty as jp
 from requests_futures.sessions import FuturesSession
 
 

@@ -4,7 +4,7 @@ from chemaxon_cts import jchem_rest
 import requests
 import logging
 import json
-from chemaxon_cts.jchem_rest import JchemProperty as JProp
+from chemaxon_cts.jchem_calculator import JchemProperty as JProp
 
 
 def is_valid_smiles(smiles):

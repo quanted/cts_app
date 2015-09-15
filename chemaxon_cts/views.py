@@ -3,7 +3,7 @@ import requests
 import jchem_rest as jrest
 import logging
 import json
-from jchem_rest import JchemProperty as jp
+from jchem_calculator import JchemProperty as jp
 
 
 # TODO: get these from the to-be-modified jchem_rest class..
@@ -33,8 +33,9 @@ def request_manager(request):
 		response = sendRequestToWebService(service, chemical, prop, ph)
 		return HttpResponse(response)
 	except Exception as e:
-		logging.warning("error occured in jchem_traffic_cop: {}".format(e))
-		return HttpResponse(json.dumps({"error": "request error", "calc": "chemaxon", "prop": prop}))
+		logging.warning("error occured in request_manager: {}".format(e))
+		# return HttpResponse(json.dumps({"error": "request error", "calc": "chemaxon", "prop": prop}))
+		return HttpResponse("request_manager error: {}".format(e))
 
 
 def getRequestParam(request, key):
