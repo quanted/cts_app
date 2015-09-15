@@ -62,17 +62,11 @@ function importMol(chemical) {
 
   var chemical_type = typeof chemical;
   var chemical_inst = chemical instanceof String;
-  // var chemical_err = chemical.indexOf('error');
 
-  // if ((typeof chemical !== 'string' && !(chemical instanceof String)) || chemical.indexOf('error') == -1) {
   if (typeof chemical !== 'string') {
-    // if chemical isn't string or String, or if it contains an error, 
-    // get chemical from textbox
     chemical = $('#id_chem_struct').val().trim();
   }
 
-
-  // var chemical = $('#id_chem_struct').val().trim();
   sessionStorage.setItem('structure', chemical); // set current chemical in session cache
 
   if (chemical == "") {
@@ -80,38 +74,32 @@ function importMol(chemical) {
     return;
   }
 
-  getChemDetails(chemical, function(chemResults) {
+  // get smiles of user-entered chemical
+  convertToSMILES(chemical, function(smiles_result) {
+    if (smiles_result != "Fail") {
+      var smiles = smiles_result['structure'];
 
-    if (chemResults != "Fail") {
-
-      var smiles = chemResults.data[0].smiles;
-
+      // run smiles through validation/processing
       isValidSMILES(smiles, function (processed_smiles_json) {
-
-        // validate before populating
         if (processed_smiles_json['valid']) {
 
-          data = chemResults.data[0];
+          // get chemical info of processed smiles
+          getChemDetails(processed_smiles_json['processedsmiles'], function (chemResults) {
+            if (chemResults != "Fail") {
+              data = chemResults.data[0];
+              data['processed_smiles'] = processed_smiles_json['processedsmiles'];
+              populateResultsTbl(data);
+              marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
+            }
+            else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
+          });
 
-          // +++++ replace smiles with process smiles (todo: add instead of replace) +++++++++
-          data['smiles'] = processed_smiles_json['processedsmiles']
-
-          populateResultsTbl(data);
-          marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
-          
         }
-        else {
-          displayErrorInTextbox("SMILES not valid (contains metals)..");
-          return;
-        }
-
+        else { displayErrorInTextbox("SMILES not valid.."); }
       });
 
     }
-    else {
-      displayErrorInTextbox("An error has occured during the call..");
-    }
-
+    else { displayErrorInTextbox("An error has occured retrieving smiles.."); }
   });
 
 }
@@ -120,27 +108,23 @@ function importMol(chemical) {
 function importMolFromCanvas() {
   //Gets smiles, iupac, formula, mass for chemical 
   //drawn in MarvinJS
-
   marvinSketcherInstance.exportStructure("mrv").then(function(mrvChemical) {
-
     if (mrvChemical == '<cml><MDocument></MDocument></cml>') {
-      displayErrorInTextbox("Draw a chemical, then try again");
+      displayErrorInTextbox("Draw a chemical first..");
       return;
     }
-
-    mrvToSmiles(mrvChemical, function(smilesResult) {
-
-      var smiles = smilesResult['structure'];
-
-      getChemDetails(smiles, function(chemResults) {
-
-        data = chemResults.data[0];
-        populateResultsTbl(data);
-
-      });
-
+    convertToSMILES(mrvChemical, function(smiles_result) {
+      if (smiles_result != "Fail") {
+        var smiles = smiles_result['structure'];
+        getChemDetails(smiles, function(chemResults) {
+          if (chemResults != "Fail") {
+            data = chemResults.data[0];
+            populateResultsTbl(data);
+          }
+          else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
+        });
+      else { displayErrorInTextbox("An error has occured retrieving smiles.."); }
     });
-
   });
 }
 
@@ -160,8 +144,8 @@ function getChemDetails(chemical, callback) {
 }
 
 
-function mrvToSmiles(chemical, callback) {
-  ajaxCall(getParamsObj("jchem", "mrvToSmiles", chemical), function (smilesResult) {
+function convertToSMILES(chemical, callback) {
+  ajaxCall(getParamsObj("jchem", "convertToSMILES", chemical), function (smilesResult) {
     callback(smilesResult);
   });
 }

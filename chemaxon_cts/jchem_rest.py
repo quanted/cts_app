@@ -534,18 +534,18 @@ def smilesToImage(request):
     return imgData  # return dict of image data
 
 
-def mrvToSmiles(request):
+def convertToSMILES(request):
     """
-	mrvToSmiles
+	convertToSMILES
 
-	Inputs: chemical as mrv 
+	Inputs: chemical as mrv, smiles, etc. (chemaxon recognized)
 	Returns: SMILES string of chemical
 	"""
     # queryDict = request.POST
     chemStruct = request.data.get('chemical')  # chemical in <cml> format (marvin sketch)
     request = {
         "structure": chemStruct,
-        "inputFormat": "mrv",
+        # "inputFormat": "mrv",
         "parameters": "smiles"
     }
     data = json.dumps(request)  # serialize to json-formatted str
@@ -696,7 +696,7 @@ def filterSMILES(request):
         # }
         # url = Urls.jchemBase + Urls.exportUrl
 
-        # POST data for in-house standardizer:
+        # POST data for efs standardizer ws:
         post_data = {
             "structure": smiles,
             "actions": [

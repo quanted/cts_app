@@ -120,8 +120,8 @@ $('#btn-pchem-getdata').click(function() {
 });
 
 
-function mrvToSmiles(chemical, callback) {
-  ajaxCall(getParamsObj("mrvToSmiles", chemical), function(smilesResult) {
+function convertToSMILES(chemical, callback) {
+  ajaxCall(getParamsObj("convertToSMILES", chemical), function(smilesResult) {
     callback(smilesResult);
   });
 }

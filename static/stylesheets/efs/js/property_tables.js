@@ -314,7 +314,7 @@ function resetDynamicTable()
 //     }
 
 //     $.ajax({
-//       url : "/services/mrvToSmiles/",
+//       url : "/services/convertToSMILES/",
 //       // url : "/REST/service/" + chemical,
 //       type : "POST",
 //       data : {

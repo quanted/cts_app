@@ -7,7 +7,7 @@ from jchem_rest import JchemProperty as jp
 
 
 # TODO: get these from the to-be-modified jchem_rest class..
-services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'mrvToSmiles', 'getTransProducts', 'getPchemProps']
+services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMILES', 'getTransProducts', 'getPchemProps']
 
 
 def request_manager(request):
@@ -47,7 +47,7 @@ def getRequestParam(request, key):
 		logging.warning("attribute error -- {}".format(ae))
 		raise
 	except KeyError as ke:
-		logging.warning("error: request as no key 'service' -- {}".format(ke))
+		logging.warning("error: request has no key 'service' -- {}".format(ke))
 		raise
 	else:
 		return value
@@ -131,8 +131,8 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None):
 		response = jrest.getChemSpecData(request).content
 	elif service == 'smilesToImage':
 		response = jrest.smilesToImage(request).content
-	elif service == 'mrvToSmiles':
-		response = jrest.mrvToSmiles(request).content
+	elif service == 'convertToSMILES':
+		response = jrest.convertToSMILES(request).content
 	elif service == 'getPchemProps':
 		response = getJchemPropData(chemical, prop, phForLogD)
 	return response

@@ -125,12 +125,12 @@ def detailsBySmiles(request):
 
 
 """
-mrvToSmiles
+convertToSMILES
 
 Gets SMILES string for chemical drawn
 in Marvin Sketch
 """
-def mrvToSmiles(request):
+def convertToSMILES(request):
 
 	queryDict = request.POST
 
@@ -148,7 +148,7 @@ def mrvToSmiles(request):
 
 	url = Urls.base + Urls.exportUrl
 
-	logging.warning("inside jchem_rest - mrvToSmiles")
+	logging.warning("inside jchem_rest - convertToSMILES")
 
 	callback_response = HttpResponse()
 
