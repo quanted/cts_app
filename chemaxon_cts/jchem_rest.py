@@ -58,7 +58,7 @@ class JchemProperty(object):
 
     def setPostDataValues(self, multiKeyValueDict):
         """
-		Can set multiple key:values at once
+		Can set multiple key:values at once w/ dict
 		"""
         try:
             for key, value in multiKeyValueDict.items():

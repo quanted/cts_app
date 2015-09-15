@@ -123,6 +123,7 @@ function importMolFromCanvas() {
           }
           else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
         });
+      }
       else { displayErrorInTextbox("An error has occured retrieving smiles.."); }
     });
   });
@@ -164,10 +165,8 @@ function getParamsObj(ws, service, chemical) {
 
 var error = false;
 function containsErrors(results) {
-  """
-  check results for a multitude of errors.
-  walks an n-nested path. sorry it's convoluted.
-  """
+  // check results for a multitude of errors.
+  // walks an n-nested path. sorry it's convoluted.
   if (typeof results === "undefined") { error = true; }
   else if (results == "Fail") { error = true; }
   else if (typeof results === "object") { $.each(results, dataWalker); } // walk the nest
@@ -210,7 +209,7 @@ function dataWalker(key, value) {
       return false;
     }
   }
-  
+
   if (value !== null && typeof value === "object") {
     $.each(value, dataWalker); //recurse into progeny
   }
@@ -268,6 +267,8 @@ function ajaxCall(params, callback) {
         }
       },
       error : function(jqXHR, textStatus, errorThrown) {
+        // error handling to be displayed could happen here instead
+        // of in multiple places
         callback("Fail");
       }
 
