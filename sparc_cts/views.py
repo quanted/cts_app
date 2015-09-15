@@ -11,14 +11,8 @@ from sparc_calculator import SPARC_Calc
 
 
 def request_manager(request):
-    #
-    # less_simple_proxy takes a request and
-    # makes the proper call to the TEST web services.
-    # it relies on the epi_calculator to do such.
-    #
     # input: {"calc": [calculator], "prop": [property]}
     # output: returns data from TEST server
-    #
 
 
     try:
@@ -30,11 +24,6 @@ def request_manager(request):
             "calc": calc,
             "prop": prop
         }
-
-        logging.info("{}".format(calc))
-        logging.info("{}".format(prop))
-        logging.info("{}".format(structure))
-
 
         calcObj = SPARC_Calc(structure)
         returnedData = calcObj.makeDataRequest() # make call for data!

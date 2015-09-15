@@ -53,57 +53,6 @@ def getRequestParam(request, key):
 		return value
 
 
-# def getRequestService(request):
-# 	"""
-# 	Picks out service name from request
-# 	"""
-# 	try:
-# 		service = request.POST.get('service')
-# 	except AttributeError as ae:
-# 		logging.warning("attribute error -- {}".format(ae))
-# 		raise
-# 	except KeyError as ke:
-# 		logging.warning("error: request as no key 'service' -- {}".format(ke))
-# 		raise
-# 	else:
-# 		if service in services:
-# 			return service
-# 		else:
-# 			raise KeyError("error: service {} is not recognized".format(service))
-
-
-# def getRequestChemical(request):
-# 	"""
-# 	Picks out chemical from request
-# 	"""
-# 	try:
-# 		chemical = request.POST.get('chemical')
-# 	except AttributeError as ae:
-# 		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
-# 		raise
-# 	except KeyError as ke:
-# 		logging.warning("error: request as no key 'chemical' -- {}".format(ke))
-# 		raise
-# 	else:
-# 		return chemical
-
-
-# def getRequestProperty(request):
-# 	"""
-# 	Picks out property from request
-# 	"""
-# 	try:
-# 		prop = request.POST.get('prop')
-# 	except AttributeError as ae:
-# 		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
-# 		raise
-# 	except KeyError as ke:
-# 		logging.warning("error: request has no key 'prop' -- {}".format(ke))
-# 		raise
-# 	else:
-# 		return prop
-
-
 def getRequestPh(request):
 	"""
 	Picks out kow pH from request

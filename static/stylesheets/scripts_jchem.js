@@ -164,42 +164,27 @@ function getParamsObj(ws, service, chemical) {
 
 var error = false;
 function containsErrors(results) {
-
-  //Check results for a multitude of errors:
-  if (typeof results === "undefined") {
-    error = true;
-  }
-  else if (results == "Fail") {
-    error = true;
-  }
-  else if (typeof results === "object") {
-    $.each(results, dataWalker); //check n-nested object for errors
-  }
+  """
+  check results for a multitude of errors.
+  walks an n-nested path. sorry it's convoluted.
+  """
+  if (typeof results === "undefined") { error = true; }
+  else if (results == "Fail") { error = true; }
+  else if (typeof results === "object") { $.each(results, dataWalker); } // walk the nest
   else if (typeof results === "string") {
-    if (~results.indexOf("error")) {
-      error = true;
-    }
+    if (~results.indexOf("error")) { error = true; }
   }
-  else {
-    error = false;
-  }
-
+  else { error = false; }
   if (error == true) {
     error = false;
     return true;
   }
-  else {
-    return false;
-  }
-
+  else { return false; }
 }
 
 
 function dataWalker(key, value) {
   // check key and value for error
-  // var savePath = path;
-  // path = path ? (path + "." + key) : key;
-
   if (typeof key === "string") {
     if (~key.indexOf("error")) {
       error = true;
@@ -225,7 +210,7 @@ function dataWalker(key, value) {
       return false;
     }
   }
-
+  
   if (value !== null && typeof value === "object") {
     $.each(value, dataWalker); //recurse into progeny
   }

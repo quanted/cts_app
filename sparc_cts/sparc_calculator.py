@@ -259,58 +259,6 @@ def parse_sparc_result(sparc_result):
         print "Parse error"
         return False
 
-
-
-# class Calculations(object):
-#     def __init__(self):
-#         self.calculations = list()
-#
-#         calc1 = Calculation("VAPOR_PRESSURE", "logAtm")
-#         self.calculations.append(calc1)
-#
-#         calc2 = Calculation("BOILING_POINT", "degreesC")
-#         self.calculations.append(calc2)
-#
-#         calc3 = Calculation("DIFFUSION", "NO_UNITS")
-#         self.calculations.append(calc3)
-#
-#         calc4 = Calculation("VOLUME", "cmCubedPerMole")
-#         self.calculations.append(calc4)
-#
-#         calc5 = Calculation("DENSITY", "gPercmCubed")
-#         self.calculations.append(calc5)
-#
-#         calc6 = Calculation("POLARIZABLITY", "angCubedPerMolecule")
-#         self.calculations.append(calc6)
-#
-#         calc7 = Calculation("INDEX_OF_REFRACTION", "dummy")
-#         self.calculations.append(calc7)
-#
-#         calc8 = Calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
-#         solvent8 = Solvent("OCCCCCCCC", "octanol")
-#         calc8.solvents.append(solvent8)
-#         self.calculations.append(calc8)
-#
-#         calc9 = Calculation("SOLUBILITY", "logMolefrac")
-#         solvent9 = Solvent("OCCCCCCCC", "octanol")
-#         calc9.solvents.append(solvent9)
-#         self.calculations.append(calc9)
-#
-#         calc10 = Calculation("ACTIVITY", "dummy")
-#         solvent10 = Solvent("OCCCCCCCC", "octanol")
-#         calc10.solvents.append(solvent10)
-#         self.calculations.append(calc10)
-#
-#         calc11 = Calculation("ELECTRON_AFFINITY", "dummy")
-#         self.calculations.append(calc11)
-#
-#         calc12 = Calculation("DISTRIBUTION", "NO_UNITS")
-#         solvent12 = Solvent("O", "water")
-#         calc12.solvents.append(solvent12)
-#         solvent12b = Solvent("OCCCCCCCC", "octanol")
-#         calc12.solvents.append(solvent12b)
-#         self.calculations.append(calc12)
-
     def get_calculation(self):
         return self.calculations
 
@@ -391,11 +339,3 @@ class SPARCResult(object):
         self.pressure = self.results["pressure"]
         self.molWeight = self.results["molWeight"]
         self.calculationResults = self.results["calculationResults"]
-
-
-
-
-
-
-
-
