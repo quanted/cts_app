@@ -24,7 +24,15 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 
             if ( calc == "sparc" ) {
                 // send all properties to back
-                var post_data = {"chemical": structure, "calc": calc, "props": checkedCalcsAndProps[calc]};
+
+                var props_list = [];
+                for (var index in checkedCalcsAndProps["sparc"]) {
+                    if (checkedCalcsAndProps["sparc"].hasOwnProperty(index)) {
+                        props_list.push(checkedCalcsAndProps["sparc"][index]);
+                    }
+                }
+
+                var post_data = {"chemical": structure, "calc": calc, "props": props_list};
                 post_data.ws = "sparc";
                 makeTheCall(post_data, node, true);
             }
