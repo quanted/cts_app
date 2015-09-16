@@ -14,7 +14,7 @@ $(document).ready(function() {
 function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node) {
     
     var ws = ""; // web service to direct to (jchem or test et al.)
-    var calcPropData;
+    var calcPropData = {};
     if (checkedCalcsAndProps == null) {
         return;
     } 
@@ -22,43 +22,50 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     for (var calc in checkedCalcsAndProps) {
         if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
-            for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+            if ( calc == "sparc" ) {
+                // send all properties to back
+                var post_data = {"chemical": structure, "calc": calc, "props": checkedCalcsAndProps[calc]};
+                post_data.ws = "sparc";
+                makeTheCall(post_data, node, true);
+            }
+            else {
+                // loops through calculator's properties
+                for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
 
-                var prop = checkedCalcsAndProps[calc][i];
-                var calcPropData = {"chemical": structure, "calc": calc, "prop": prop};
+                    var prop = checkedCalcsAndProps[calc][i];
+                    calcPropData = {"chemical": structure, "calc": calc, "prop": prop};
 
-                if (calc == "chemaxon") {
-                    calcPropData.ws = "jchem";
-                    calcPropData.service = "getPchemProps";
-                    if (prop == "kow_wph") {
-                        calcPropData.ph = kowPH;
+                    if (calc == "chemaxon") {
+                        calcPropData.ws = "jchem";
+                        calcPropData.service = "getPchemProps";
+                        if (prop == "kow_wph") {
+                            calcPropData.ph = kowPH;
+                        }
                     }
+                    else if ( calc == "epi")
+                        calcPropData.ws = "epi";
+                    // else if ( calc == "sparc")
+                    //     calcPropData.ws = "sparc";
+                    // else
+                    //     calcPropData.ws = null;
+
+                    var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
+                    var workflowPath = window.location.href;
+
+                    if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
+                        var tblCell = $('.' + calc + '.' + prop);
+                        $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                        makeTheCall(calcPropData, node, true);
+                    }
+                    else {
+                        // blockUI code (getting pchemprops for multiple metabolites)
+                        // variable to keep track of displaying to pchem table or not
+                        makeTheCall(calcPropData, node, false);
+                    }
+
+                    //makeTheCall(url, calcPropData, node, plotDataToTable);
+
                 }
-                else if ( calc == "epi")
-                    calcPropData.ws = "epi";
-
-                else if ( calc == "sparc")
-                    calcPropData.ws = "sparc";
-                else
-                    calcPropData.ws = null;
-
-
-                var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
-                var workflowPath = window.location.href;
-
-                if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
-                    var tblCell = $('.' + calc + '.' + prop);
-                    $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
-                    makeTheCall(calcPropData, node, true);
-                }
-                else {
-                    // blockUI code (getting pchemprops for multiple metabolites)
-                    // variable to keep track of displaying to pchem table or not
-                    makeTheCall(calcPropData, node, false);
-                }
-
-                //makeTheCall(url, calcPropData, node, plotDataToTable);
-
             }
         }
     }
