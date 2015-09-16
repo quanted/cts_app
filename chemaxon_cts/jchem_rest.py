@@ -15,7 +15,7 @@ from django.utils.safestring import mark_safe
 from django.http import HttpResponse  # todo: remove this and only use requests
 
 
-headers = {'Content-Type': 'application/json'}
+headers = { 'Content-Type': 'application/json' }
 
 
 class Urls:
