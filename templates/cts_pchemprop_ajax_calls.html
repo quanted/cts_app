@@ -93,7 +93,13 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
         success: function(data) {
             // console.log(this.tryCount);
             // console.log(this.retryLimit);
-            parseResponseToPchemTable(data, node, false, plotDataToTable);
+            if (data['calc'] == "sparc") {
+                // sparc returns all props in json
+                parseSPARCResponseToPchemTable(data, plotDataToTable)
+            }
+            else {
+                parseResponseToPchemTable(data, node, false, plotDataToTable);
+            }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -105,6 +111,61 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
             parseResponseToPchemTable(error, null, false, plotDataToTable);
         }
     });
+}
+
+
+var sparcPropMap = {
+    "water_sol" : "SOLUBILITY",
+    "vapor_press" : "VAPOR_PRESSURE",
+    "henrys_law_con" : "HENRYS_CONSTANT",
+    "mol_diss" : "DIFFUSION",
+    "boiling_point": "BOILING_POINT"
+};
+
+function parseSPARCResponseToPchemTable(data, plotDataToTable) {
+    var calc = data['calc']; // sparc
+    var props = data['props']; // get sparc props list
+    var sparc_results = data['data']['calculationResults'];
+
+    console.log("parsing sparc data...");
+
+    for (prop in props) {
+        if (props.hasOwnProperty(prop)) {
+            // var sparcPropName = sparcPropMap[props[prop]];
+            console.log("current property: " + props[prop]);
+            getPropFromSPARCResults(data, props[prop], sparc_results, plotDataToTable);
+        }
+    }
+}
+
+
+function getPropFromSPARCResults(data, prop, sparc_results) {
+    var responseObj = {"calc": "sparc"}; // initial obj for parsing to table
+    var sparcProp = sparcPropMap[prop]; // get sparc's name for prop
+
+    console.log("parsing sparc results for property...");
+    console.log("sparc property: " + sparcProp);
+
+    for (index in sparc_results) {
+        if (sparc_results.hasOwnProperty(index)) {
+            var propObj = sparc_results[index]; // property object
+
+            console.log("sparc property: ");
+            console.log(propObj);
+
+            if (propObj['type'] == sparcProp) {
+
+                console.log("requested property found in sparc result...parsing to table...");
+
+                responseObj['prop'] = prop;
+                responseObj['data'] = propObj['result']; // prop result value
+                parseResponseToPchemTable(responseObj, null, false, true, plotDataToTable);
+
+                console.log("allegedly parsed to table...");
+
+            }
+        }
+    }
 }
 
 
@@ -132,7 +193,6 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 console.log(response['data']['error']);
             }
             else {
-//{#                data = response['data']['value'];#}
                 data = response['data']['val'];
             }
         }

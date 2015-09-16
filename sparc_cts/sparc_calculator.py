@@ -42,7 +42,8 @@ chemPropMap = {
     "water_sol" : "SOLUBILITY",
     "vapor_press" : "VAPOR_PRESSURE",
     "henrys_law_con" : "HENRYS_CONSTANT",
-    "mol_diss" : "DIFFUSION"
+    "mol_diss" : "DIFFUSION",
+    "boiling_point": "BOILING_POINT"
 }
 
 ########################## SPARC physical properties calculator interface ###################
@@ -150,21 +151,21 @@ class SPARC_Calc(Calculator):
             return self.results
 
 
-    def getPropertyValue(self, property):
+    def getPropertyValue(self, prop):
         result = ""
 
         if self.results == None:
             return None
 
-        if property in chemPropMap:
-            sparcProp = chemPropMap[property]
+        if prop in chemPropMap.keys():
+            sparcProp = chemPropMap[prop] # get key sparc understands
         else:
             return None
 
-        calcResults = self.results["calculationResults"]
-        for calc in calcResults:
-            if calc["type"] == sparcProp:
-                return calc["result"]
+        calcResults = self.results["calculationResults"] # list of prop results
+        for prop in calcResults:
+            if prop["type"] == sparcProp:
+                return prop["result"] # return prop value
 
         return None
 
