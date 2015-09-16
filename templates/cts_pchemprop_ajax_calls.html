@@ -117,8 +117,12 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
 var sparcPropMap = {
     "water_sol" : "SOLUBILITY",
     "vapor_press" : "VAPOR_PRESSURE",
+    "mol_diss" : "WATER_DIFFUSION",
+    "ion_con": "",
     "henrys_law_con" : "HENRYS_CONSTANT",
-    "mol_diss" : "DIFFUSION",
+    "kow_no_ph" : "DISTRIBUTION",
+    "kow_wph" : "ACTIVITY",
+    "kow_ph" : "",
     "boiling_point": "BOILING_POINT"
 };
 
@@ -139,7 +143,7 @@ function parseSPARCResponseToPchemTable(data, plotDataToTable) {
 }
 
 
-function getPropFromSPARCResults(data, prop, sparc_results) {
+function getPropFromSPARCResults(data, prop, sparc_results, plotDataToTable) {
     var responseObj = {"calc": "sparc"}; // initial obj for parsing to table
     var sparcProp = sparcPropMap[prop]; // get sparc's name for prop
 

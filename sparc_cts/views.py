@@ -17,7 +17,7 @@ def request_manager(request):
 
     try:
         calc = request.POST.get("calc")
-        props = request.POST.get("props")
+        props = request.POST.getlist("props[]")
         structure = request.POST.get("chemical")
 
         postData = {
