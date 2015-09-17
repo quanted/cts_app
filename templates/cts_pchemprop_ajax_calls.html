@@ -1,10 +1,26 @@
 <script type="text/javascript">
 
+var kowPH; // pH for logD
+
+var sparcPropMap = {
+    "water_sol" : "SOLUBILITY",
+    "vapor_press" : "VAPOR_PRESSURE",
+    "mol_diss" : "WATER_DIFFUSION",
+    "ion_con": "FULL_SPECIATION",
+    "henrys_law_con" : "HENRYS_CONSTANT",
+    "kow_no_ph" : "DISTRIBUTION",
+    "kow_wph" : "ACTIVITY",
+    // "kow_ph" : "LOGD",
+    "boiling_point": "BOILING_POINT"
+};
+
 $(document).ready(function() {
 
     var checkedCalcsAndProps = {{checkedCalcsAndProps}};
     var structure = "{{structure}}";
-    var kowPH = {{kow_ph}};
+    kowPH = {{kow_ph}};
+
+    sparcPropMap['kow_ph'] = kowPH;
 
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null);
 
@@ -113,18 +129,6 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
     });
 }
 
-
-var sparcPropMap = {
-    "water_sol" : "SOLUBILITY",
-    "vapor_press" : "VAPOR_PRESSURE",
-    "mol_diss" : "WATER_DIFFUSION",
-    "ion_con": "FULL_SPECIATION",
-    "henrys_law_con" : "HENRYS_CONSTANT",
-    "kow_no_ph" : "DISTRIBUTION",
-    "kow_wph" : "ACTIVITY",
-    "kow_ph" : "LOGD",
-    "boiling_point": "BOILING_POINT"
-};
 
 function parseSPARCResponseToPchemTable(data, plotDataToTable) {
     var calc = data['calc']; // sparc
