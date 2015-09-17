@@ -80,6 +80,6 @@ class EpiCalc(Calculator):
             logging.info("timeout exception: {}".format(te))
             return None
         else:
-            self.results = json.loads(response.content)
-            return self.results
+            self.results = response
+            return response
 
