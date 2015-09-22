@@ -1700,6 +1700,11 @@ for nodes on gentrans output */
   /*border-radius: 10px;*/
 }
 
+.darkBorders {
+  box-shadow: 0px 0px 15px 2px #356697;
+  /*border-radius: 10px;*/
+}
+
 /* main workflow links div */
 div#l_menu {
   transition: all 1.2s ease;

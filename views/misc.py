@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 import importlib
 import linksLeft
 import logging
+import os
 
 
 #######################################################################################
@@ -23,10 +24,8 @@ def fileNotFound(request, model=None):
     html = html + render_to_string('04ubertext_end.html', {})
     html = html + render_to_string('05cts_ubertext_links_right.html', {})
     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
-
     response = HttpResponse()
     response.write(html)
-
     return response
 
 def requestTimeout(request):
@@ -70,7 +69,7 @@ def displayPDF(request, reactionLib=None):
         return
 
     html = render_to_string('01cts_uberheader.html')
-    html += render_to_string('02cts_uberintroblock_nomodellinks.html', {'title2':'File not found'})
+    html += render_to_string('02cts_uberintroblock_nomodellinks.html')
     html += linksLeft.linksLeft()
     html += render_to_string('04ubertext_start.html', {
             'model_attributes': title,
@@ -84,6 +83,28 @@ def displayPDF(request, reactionLib=None):
     response = HttpResponse()
     response.write(html)
 
+    return response
+
+
+def downloadUserGuide(request):
+    
+    text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'views/main_text.txt'),'r')
+    xx = text_file2.read()
+
+    html = render_to_string('01cts_uberheader.html', {})
+    html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {})
+    html = html + linksLeft.linksLeft()
+    html = html + render_to_string('04ubertext_start_index.html', {
+            'text_paragraph':xx
+            })
+    html += """
+    <embed src="/static/docs/CTS_USER_Guide_weber_9-14-15.docx">
+    """
+    html = html + render_to_string('04ubertext_end.html',{})
+    html = html + render_to_string('05cts_ubertext_links_right.html', {})
+    html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
+    response = HttpResponse()
+    response.write(html)
     return response
 
 

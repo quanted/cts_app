@@ -104,8 +104,6 @@ class PChemProp(object):
             "measured": self.measured
         }
 
-        logging.info("pchemprop_model kow_ph: {}".format(self.kow_ph))
-
         # dict with keys of checked calculators and values of
         # checked properties that are also available for said calculators
         # format: { key: "calculator name", value: [checked property ids] }

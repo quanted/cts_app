@@ -353,7 +353,7 @@ def getStereoisomersResults(chemspec_obj):
 
     html = """
     <H4 class="out_1 collapsible" id="stereo"><span></span>Stereoisomers ({})</H4>
-    """
+    """.format(len(stereoList))
 
     if stereoList:
         html += """
