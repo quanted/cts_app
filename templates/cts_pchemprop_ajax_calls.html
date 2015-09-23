@@ -14,9 +14,12 @@ var sparcPropMap = {
     "boiling_point": "BOILING_POINT"
 };
 
+
+var checkedCalcsAndProps; // format --> {'calc': ['checked_prop', ..], ..}
+
 $(document).ready(function() {
 
-    var checkedCalcsAndProps = {{checkedCalcsAndProps}};
+    checkedCalcsAndProps = {{checkedCalcsAndProps}};
     var structure = "{{structure}}";
     kowPH = {{kow_ph}};
 

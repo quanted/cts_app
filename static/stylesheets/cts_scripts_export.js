@@ -2,116 +2,70 @@ var doneDiv = document.getElementById("popup");
 
 $(document).ready(function () {
 
-	function parseOutput() {
+	function parseOutput(file_type) {
 		
-		//var jq_html = $('<div />').append($("div.articles_output").children('H2[class="model_header"], table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html()
+        var elements, jq_html, imgData_json, n_plot;
+        var workflow = get_workflow(); // get current workflow name
+        var options = { x_offset : 30, y_offset : 30 }; // jqplotToImage options
+        var imgData = []; // jqplot images
+        var jsonData = ""; // json data string (originally intended for metabolites)
 
-        var path = window.location.href;
-        var elements;
+        elements = collect_dom(workflow); // get relevant dom objects
 
-        $('table.getpdf').html("");
-
-        var options = {
-			x_offset : 30,
-			y_offset : 30
-		};
-        var imgData = [];
-        var jsonData = "";
-
-        if (path.indexOf("chemspec") > -1) {
-            elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
-            elements = elements.add('table#inputsTable'); // user inputs
-            elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
-
-            var parentTitle = $('table#msMain td:first h4');
-            var parentImage = $('#parent_div img'); // parent species
-            var parentTable = $('#parent_div table');
-
-            elements = elements.add(parentTitle).add(parentImage).add(parentTable);
-
-            var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
-            elements = elements.add(ms);
-
-            var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
-            elements = elements.add(majorMS);
-
-            var taut = $('h4#taut, p.taut-percent, #taut_div img, #taut_div table');
-            elements = elements.add(taut);
-
-            var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
-            elements = elements.add(stereo);
-
-            try {
-                imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
-                imgData.push($('#isoelectric-point').jqplotToImageStr(options));
-            }
-            catch(e) {
-                console.log(e);
-            }
+        if (file_type == "pdf" || file_type == "html") {
+       		if (workflow == "chemspec") {
+	            try {
+	                imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
+	                imgData.push($('#isoelectric-point').jqplotToImageStr(options));
+	            }
+	            catch(e) { console.log(e); }
+	        }
+	        else if (workflow == "gentrans") {
+	            var canvasNodes = getSpaceTree().graph.nodes;
+	            var nodeArray = [];
+	            for (var node in canvasNodes) {
+	                if (canvasNodes.hasOwnProperty(node)) {
+	                    var nodeItem = {
+	                        'image': canvasNodes[node]['name'],
+	                        'data': canvasNodes[node]['data']
+	                    };
+	                    nodeArray.push(nodeItem);
+	                }
+	            }
+	            jsonData = JSON.stringify(nodeArray);  // spacetree data (cts_gentrans_tree.html)
+	        }
+			jq_html = $('<div />').append($(elements).clone()).html();
+			var n_plot_1 = $('#microspecies-distribution').size();
+			var n_plot_2 = $('#isoelectric-point').size();
+			n_plot = n_plot_1 + n_plot_2;
+			imgData_json = JSON.stringify(imgData, null, '\t');
         }
-        else if (path.indexOf("gentrans") > -1) {
-            elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
-            elements = elements.add('table#inputsTable'); // user inputs
-            elements = elements.add('h3#reactionPathways');
-            var canvasNodes = getSpaceTree().graph.nodes;
-            var nodeArray = [];
-            for (var node in canvasNodes) {
-                if (canvasNodes.hasOwnProperty(node)) {
-                    var nodeItem = {
-                        'image': canvasNodes[node]['name'],
-                        'data': canvasNodes[node]['data']
-                    };
-                    nodeArray.push(nodeItem);
-                }
-            }
-            jsonData = JSON.stringify(nodeArray);  // getSpaceTree() from cts_gentrans_tree.html
-            //jsonData = JSON.stringify(getSpaceTree().json);  // getSpaceTree() from cts_gentrans_tree.html
+        else if (file_type == "csv") {
+        	// send json object, no need for
+        	// html elements like pdf/html uses
+        	var content = build_csv(workflow);
+        	json_obj = { "headers": content[0], "data": content[1] };
+        	jsonData = JSON.stringify(json_obj);
         }
-        else {
-            elements = $('div.articles_output').children().not(':hidden, div#export_menu');
-        }
+        else { return; }
 
-		var jq_html = $('<div />').append($(elements).clone()).html();
-
-		var n_plot_1 = $('#microspecies-distribution').size();
-		var n_plot_2 = $('#isoelectric-point').size();
-		var n_plot = n_plot_1 + n_plot_2;
-
-		console.log(n_plot);
-
-		var imgData_json = JSON.stringify(imgData, null, '\t');
-		// console.log(imgData_json);
-	
-		$('<tr style="display:none"><td><input type="hidden" name="pdf_t"></td></tr>')
-			.appendTo('.getpdf')
-			.find('input')
-			.val(jq_html);
-
-		$('<tr style="display:none"><td><input type="hidden" name="pdf_nop"></td></tr>')
-			.appendTo('.getpdf')
-			.find('input')
-			.val(n_plot);
-
-		$('<tr style="display:none"><td><input type="hidden" name="pdf_p"></td></tr>')
-			.appendTo('.getpdf')
-			.find('input')
-			.val(imgData_json);
-
-        $('<tr style="display:none"><td><input type="hidden" name="pdf_json"></td></tr>')
-			.appendTo('.getpdf')
-			.find('input')
-			.val(jsonData); // spacetree data
+        append_to_request_table(jq_html, n_plot, imgData_json, jsonData); // append elements to request table
 
 	}
 
 	$('#pdfExport').click(function () {
-		parseOutput();
+		parseOutput('pdf');
 		$('form').attr({'action': 'pdf', 'method': 'POST'}).submit();
 	});
 
 	$('#htmlExport').click(function () {
-		parseOutput();
+		parseOutput('html');
 		$('form').attr({'action': 'html', 'method': 'POST'}).submit();
+	});
+
+	$('#csvExport').click(function () {
+        parseOutput('csv');
+       	$('form').attr({'action': 'csv', 'method': 'POST'}).submit(); 
 	});
 
 
@@ -133,4 +87,196 @@ $(document).ready(function () {
 		});
 	});
 
+	$('#fadeExport_csv').append('<span class="hover"></span>').each(function () {
+		var $span = $('> span.hover', this).css('opacity', 0);
+		$(this).hover(function () {
+			$span.stop().fadeTo(500, 1);
+		}, function () {
+			$span.stop().fadeTo(500, 0);
+		});
+	});
+
 });
+
+
+function append_to_request_table(jq_html, n_plot, imgData_json, jsonData) {
+	
+	var test = $('table.getpdf');
+
+	$('table.getpdf').html("");
+	
+	$('<tr style="display:none"><td><input type="hidden" name="pdf_t"></td></tr>')
+		.appendTo('.getpdf')
+		.find('input')
+		.val(jq_html);
+
+	$('<tr style="display:none"><td><input type="hidden" name="pdf_nop"></td></tr>')
+		.appendTo('.getpdf')
+		.find('input')
+		.val(n_plot);
+
+	$('<tr style="display:none"><td><input type="hidden" name="pdf_p"></td></tr>')
+		.appendTo('.getpdf')
+		.find('input')
+		.val(imgData_json);
+
+    $('<tr style="display:none"><td><input type="hidden" name="pdf_json"></td></tr>')
+		.appendTo('.getpdf')
+		.find('input')
+		.val(jsonData); 
+}
+
+
+function collect_dom(workflow) {
+	switch(workflow) {
+		case "chemspec":
+			elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
+	        elements = elements.add('table#inputsTable'); // user inputs
+	        elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
+	        var parentTitle = $('table#msMain td:first h4');
+	        var parentImage = $('#parent_div img'); // parent species
+	        var parentTable = $('#parent_div table');
+	        elements = elements.add(parentTitle).add(parentImage).add(parentTable);
+	        var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
+	        elements = elements.add(ms);
+	        var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
+	        elements = elements.add(majorMS);
+	        var taut = $('h4#taut, p.taut-percent, #taut_div img, #taut_div table');
+	        elements = elements.add(taut);
+	        var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
+	        elements = elements.add(stereo);
+	        return elements;
+	    case "pchemprop":
+	    	elements = $('div.articles_output').children().not(':hidden, div#export_menu');
+	    	return elements;
+	   	case "gentrans":
+	   		elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
+	        elements = elements.add('table#inputsTable'); // user inputs
+	        elements = elements.add('h3#reactionPathways');
+	        return elements;
+	    default:
+	    	elements = null;
+	    	return elements;
+	}
+}
+
+var pchem_props = ["melting_point", "boiling_point", "water_sol", 
+	"vapor_press", "mol_diss", "ion_con", "henrys_law_con", "kow_no_ph", 
+	"kow_wph", "kow_ph", "koc"];
+
+var pchem_calcs = ['chemaxon', 'epi', 'test', 'sparc'];
+
+function build_csv(workflow) {
+	// build csv on backend, probably best considering batching
+	var headers_array = [];
+	var data_array = [];
+	var content = []; // array with headers_array and data
+	var prop_data = {
+		"melting_point": [],
+		"boiling_point": [],
+		"water_sol": [],
+		"vapor_press": [],
+		"mol_diss": [],
+		"ion_con": [],
+		"henrys_law_con": [],
+		"kow_no_ph": [],
+		"kow_wph": [],
+		"koc": []
+	}; // {prop: [data, data, data, data]} in order of calc
+	switch(workflow) {
+		case "chemspec":
+			break;
+		case "pchemprop":
+			headers_array.push(""); // for formatting (keep rows same length)
+			for (var calc in checkedCalcsAndProps) {
+				if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+					for (var i = 0; i < calc.length; i++) {
+						// looping props of calc..
+						var calc_prop = checkedCalcsAndProps[calc][i];
+						var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
+						if (calc_prop == "ion_con") {
+							data = pick_out_pka(data);
+						}
+						if (data != null) {
+							prop_data[calc_prop].push(data);
+						}
+					}
+					headers_array.push(calc); // calcs
+				}
+			}
+			content.push(headers_array);
+			content.push(prop_data);
+			break;
+		case "gentrans":
+			break;
+	}
+	return content
+}
+
+
+function get_workflow() {
+	var path = window.location.href;
+	if (path.indexOf("chemspec") > -1) {
+		return "chemspec"
+	}
+	else if (path.indexOf("pchemprop") > -1) {
+		return "pchemprop"
+	}
+	else if (path.indexOf("gentrans") > -1) {
+		return "gentrans"		
+	}
+	else { return null; }
+}
+
+
+function pick_out_pka(html_string) {
+	var pkas = $.parseHTML(html_string);
+	var pka_string = "";
+	$(pkas).each(function () {
+		var pka_html = $(this).text();
+		pka_string += pka_html + " ";
+	});
+	return pka_string;
+}
+
+
+// function exportTableToCSV($table, filename) {
+
+//     var $rows = $table.find('tr:has(td)'),
+
+//         // Temporary delimiter characters unlikely to be typed by keyboard
+//         // This is to avoid accidentally splitting the actual contents
+//         tmpColDelim = String.fromCharCode(11), // vertical tab character
+//         tmpRowDelim = String.fromCharCode(0), // null character
+
+//         // actual delimiter characters for CSV format
+//         colDelim = '","',
+//         rowDelim = '"\r\n"',
+
+//         // Grab text from table into CSV formatted string
+//         csv = '"' + $rows.map(function (i, row) {
+//             var $row = $(row),
+//                 $cols = $row.find('td');
+
+//             return $cols.map(function (j, col) {
+//                 var $col = $(col),
+//                     text = $col.text();
+
+//                 return text.replace(/"/g, '""'); // escape double quotes
+
+//             }).get().join(tmpColDelim);
+
+//         }).get().join(tmpRowDelim)
+//             .split(tmpRowDelim).join(rowDelim)
+//             .split(tmpColDelim).join(colDelim) + '"',
+
+//         // Data URI
+//         csvData = 'data:application/csv;charset=utf-8,' + encodeURIComponent(csv);
+
+//     $(this)
+//         .attr({
+//         'download': filename,
+//             'href': csvData,
+//             'target': '_blank'
+//     });
+// }
