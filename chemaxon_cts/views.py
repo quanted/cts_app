@@ -23,11 +23,15 @@ def request_manager(request):
 	"""
 
 	try:
+
+		# logging.info("REQUEST: {}".format(request))
+
 		service = getRequestParam(request, 'service')
 		chemical = getRequestParam(request, 'chemical')
 		prop = getRequestParam(request, 'prop')
 		if prop == 'kow_wph':
 			ph = getRequestPh(request)
+			logging.info("KOW PH: {}".format(ph))
 		else:
 			ph = None
 		response = sendRequestToWebService(service, chemical, prop, ph)

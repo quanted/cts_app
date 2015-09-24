@@ -33,7 +33,7 @@ def pchempropOutputPage(request):
     pchemprop_obj.henrys_law_con = request.POST.get('henrys_law_con')
     pchemprop_obj.kow_no_ph = request.POST.get('kow_no_ph')
     pchemprop_obj.kow_wph = request.POST.get('kow_wph')
-    pchemprop_obj.kowPh = request.POST.get('kow_ph')
+    pchemprop_obj.kow_ph = request.POST.get('kow_ph')
     pchemprop_obj.koc = request.POST.get('koc')
     pchemprop_obj.fillCalcsandPropsDict()
 

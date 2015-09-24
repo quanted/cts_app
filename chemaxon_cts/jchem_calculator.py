@@ -10,6 +10,7 @@ import requests
 import json
 import logging
 import os
+from jchem_rest import getStructInfo
 
 headers = {'Content-Type': 'application/json'}
 
@@ -21,7 +22,7 @@ class JchemProperty(object):
         self.name = ''
         self.url = ''
         self.structure = ''  # cas, smiles, iupac, etc.
-        self.postData = {},
+        self.postData = {}
         self.results = ''
 
     def setPostDataValue(self, propKey, propValue):
@@ -30,9 +31,9 @@ class JchemProperty(object):
 		"""
         try:
             self.postData[propKey] = propValue
-        except KeyError:
+        except KeyError as ke:
             logging.warning("key {} does not exist".format(propKey))
-            return None
+            raise
         except Exception as e:
             logging.warning("error occured: {}".format(e))
             return None
@@ -44,7 +45,7 @@ class JchemProperty(object):
         try:
             for key, value in multiKeyValueDict.items():
                 self.postData[key] = value
-        except KeyError:
+        except KeyError as ke:
             logging.warning("key {} does not exist".format(key))
             return None
         except Exception as e:
@@ -67,15 +68,13 @@ class JchemProperty(object):
         }
         try:
             response = requests.post(url, data=json.dumps(postData), headers=headers, timeout=60)
-        except requests.exceptions.ConnectionError as ce:
-            logging.warning("connection exception: {}".format(ce))
-            return None
-        except requests.exceptions.Timeout as te:
-            logging.warning("timeout exception: {}".format(te))
-            return None
-        else:
             self.results = json.loads(response.content)
             return response
+        except ValueError as ve:
+            logging.warning("> error decoding json: {}".format(ve))
+            raise ValueError("error decoding json")
+        except requests.exceptions.RequestException as err:
+            raise err
 
     @classmethod
     def getPropObject(self, prop):
@@ -100,7 +99,7 @@ class JchemProperty(object):
         elif prop == 'logD':
             return LogD()
         else:
-            pass
+            raise ValueError("property object request does not exist")
 
 
 class Pka(JchemProperty):
