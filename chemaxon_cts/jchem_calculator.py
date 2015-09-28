@@ -415,27 +415,3 @@ class LogD(JchemProperty):
         except KeyError as ke:
             logging.warning("key error: {}".format(ke))
             return None
-
-
-# TODO: finish classing this up, just not a high priority at the moment
-# class Metabolizer(object):
-#     def __init__(self):
-#         self.baseUrl = os.environ['CTS_JCHEM_SERVER']
-#         self.url = '/efsws/rest/metabolizer'
-#         self.postData = {
-#             'structure': self.chem_struct,
-#             'generationLimit': self.gen_limit,
-#             'populationLimit': 0,
-#             'likelyLimit': self.likely_limit,
-#             'transformationLibraries': self.trans_libs,
-#             'excludeCondition': ""  # 'generateImages': False
-#         }
-#
-#     def getTransProducts(self, request):
-#         """
-#         Makes request to metabolizer on cgi server
-#         """
-#         url = Urls.metabolizerUrl
-#         data = json.dumps(request.POST)
-#         results = web_call(url, request, data)
-#         return results

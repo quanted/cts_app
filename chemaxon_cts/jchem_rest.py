@@ -114,7 +114,6 @@ def convertToSMILES(request):
 	Inputs: chemical as mrv, smiles, etc. (chemaxon recognized)
 	Returns: SMILES string of chemical
 	"""
-    # queryDict = request.POST
     chemStruct = request.data.get('chemical')  # chemical in <cml> format (marvin sketch)
     request = {
         "structure": chemStruct,

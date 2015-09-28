@@ -14,6 +14,8 @@ from models.gentrans import data_walks
 from models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
 from chemaxon_cts.jchem_rest import gen_jid
 import csv
+from django.core.cache import cache
+
 
 
 def parsePOST(request):
@@ -23,7 +25,6 @@ def parsePOST(request):
     pdf_p = json.loads(request.POST.get('pdf_p'))
     if 'pdf_json' in request.POST and request.POST['pdf_json']:
         pdf_json = json.loads(request.POST.get('pdf_json'))
-        logging.info(">>> JSON: {}".format(pdf_json))
         # pdf_json = request.POST.get('pdf_json')
     else:
         pdf_json = None
@@ -117,70 +118,117 @@ def htmlReceiver(request, model=''):
     packet.close()
     return response
 
+
+class CSV(object):
+    def __init__(self, model):
+        self.models = ['chemspec', 'pchemprop', 'gentrans']
+        if model and (model in self.models):
+            self.model = model # model name
+        else:
+            raise KeyError("Model - {} - not accepted..".format(model))
+        self.title = '' # workflow title
+        self.time = '' # time of run
+        self.csv_rows = {
+            'header_row': [],
+            'row_1': [] # row_n keys for batch mode
+        } # list of ordered csv rows
+        self.parent_info = ['smiles', 'name', 'mass', 'formula'] # original user sructure
+        self.header_row = [] # headers in order (per molecule)
+        self.data_row = [] # data in order w/ headers
+        self.jchem_structure = { # structure object
+            'smiles': '',
+            'mass': '',
+            'key': '',
+            'formula': '',
+            'image': '',
+            'iupac': ''
+        },
+        self.run_json = '' # json str from [model]_model.py
+        self.run_data = {} # run_json as an object
+
+    def parseToCSV(self):
+        self.run_json = cache.get('run_json') # todo: add error handling
+        self.run_data = json.loads(self.run_json)
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + self.run_data['jid'] + '.csv'
+
+        writer = csv.writer(response) # bind writer to http response
+
+        # build title section of csv..
+        writer.writerow(["title", self.run_data['title']])
+        writer.writerow(["time", self.run_data['time']])
+        writer.writerow([""])
+
+        # write parent info first and in order..
+        for prop in self.parent_info:
+            for key, val in self.run_data.items():
+                if key == prop:
+                    self.csv_rows['header_row'].append(key)
+                    self.csv_rows['row_1'].append(val)
+
+        # if model == 'chemspec':
+        #     for key, val in jchem_data['results'].items():
+        #         if key == 'isoelectricPoint':
+        #             header_row.append(key)
+        #             data_row.append(val)
+        #         elif key == 'pka' or key == 'pkb':
+        #             i = 0 # pka counter
+        #             for item in val:
+        #                 header_row.append(key + "{}".format(i))
+        #                 data_row.append(val)
+        #         elif key == 'pka-parent' or key == 'majorMicrospecies':
+        #             header_row.append(key + '-smiles')
+        #             data_row.append(jchem_data['results'][key]['smiles'])
+        #         elif key == 'pka-micospecies':
+        #             for ms in jchem_data['results'][key].items():
+        #                 # each ms is a jchem_structure object
+        #                 header_row.append(key + '-smiles')
+        #                 data_row.append(jchem_data['results'][key]['smiles'])
+
+        writer.writerow(self.csv_rows['header_row'])
+        writer.writerow(self.csv_rows['row_1'])
+
+        return response
+
+
 @require_POST
 def csvReceiver(request, model=''):
     """
     Save output as HTML
     """
 
-    logging.info("INSIDE CSV RECEIVER")
+    if model == 'chemspec':
+        csv_obj = CSV(model)
+        return csv_obj.parseToCSV()
 
-    json_data = request.POST.get('pdf_json')
-    json_dict = json.loads(json_data)
-    headers = json_dict['headers']
-    data = json_dict['data']
+    elif model == 'pchemprop':
+        ordered_props = ['smiles', 'name', 'mass', 'formula']
+        json_data = request.POST.get('pdf_json')
+        json_dict = json.loads(json_data)
+        headers = json_dict['headers']
+        data = json_dict['data']
+        struct_info = json_dict['structure_info'];
 
-    logging.info(json_data)
-    logging.info(headers)
-    logging.info(data)
+        jid = gen_jid() # create timestamp
+        time_str = datetime.datetime.strptime(struct_info['time'], '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
-    # input_str = ''
-    # input_str += parsePOST(request)
-    # packet = StringIO.StringIO(input_str)  # write to memory
-    jid = gen_jid() # create timestamp
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.csv'
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.csv'
 
-    writer = csv.writer(response)
-    writer.writerow(headers)
+        writer = csv.writer(response)
+        writer.writerow(["title", struct_info['title']])
+        writer.writerow(["time", time_str])
+        writer.writerow([""])
+        for prop in ordered_props:
+            for key, val in struct_info.items():
+                if key == prop and not (key in ['title', 'time']):
+                    writer.writerow([key, val])
+        writer.writerow([""])
+        writer.writerow(headers)
+        for prop, prop_vals in data.items():
+            row = prop_vals
+            row.insert(0, prop) # prepend row with prop label
+            writer.writerow(row)
 
-    for prop, prop_vals in data.items():
-        # logging.info("prop: {}".format(prop))
-        # logging.info("vals: {}".format(prop_vals))
-        row = prop_vals
-        row.insert(0, prop) # prepend row with prop label
-        logging.info("row: {}".format(row))
-        writer.writerow(row)
-
-
-    # writer.writerow(['First row', 'a', 'b', 'c'])
-    # writer.writerow(['Second row', 'a', 'b', 'c'])
-    # writer.writerow(['', 'calc1', 'calc2', 'calc3']) <-- headers
-    # writer.writerow(['', '', '', ''])
-    # writer.writerow(['prop_name', 'val1', 'val2', 'val3']) <-- arrays of data by prop
-
-
-    # packet.truncate(0)  # clear from memory?
-    # packet.close()
-    return response
-
-
-# def link_callback(uri, rel):
-#     """
-#     Convert HTML URIs to absolute system paths for xhtml2pdf to access those resoures
-#     """
-#     # use short variable names
-#     sUrl = settings.STATIC_URL      # Typically /static/
-#     sRoot = os.path.join(settings.PROJECT_ROOT, 'static')    # Typically /home/userX/project_static/
-
-#     if uri.startswith(sUrl):
-#         path = os.path.join(sRoot, uri.replace(sUrl, ""))
-
-#     # make sure that file exists
-#     if not os.path.isfile(path):
-#             raise Exception(
-#                     # 'media URI must start with %s or %s' % \
-#                     # (sUrl, mUrl))
-#                     'media URI must start with %s' % \
-#                     (sUrl))
-#     return path
+        return response

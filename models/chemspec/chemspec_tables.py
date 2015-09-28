@@ -2,11 +2,9 @@
 .. module:: chemspec_tables
    :synopsis: A useful module indeed.
 """
+__author__ = 'np'
 
-# import numpy
 from django.template import Context, Template, defaultfilters
-# from django.utils.safestring import mark_safe
-# import logging
 import time
 import datetime
 from django.template.loader import render_to_string
@@ -17,7 +15,7 @@ from django.utils.safestring import mark_safe
 from models.gentrans import data_walks
 
 
-# image sizes:
+# image sizes for jchem ws structures:
 lgWidth = 250
 mdWidth = 125 
 smWidth = 75
@@ -49,17 +47,6 @@ def getInputTemplate():
     """
     return input_template
 
-# def getInputTemplate():
-#     input_template = """
-#     <th colspan="2" class="alignLeft">{{heading}}</th>
-#     {% for label, value in data.items %}
-#         <tr>
-#         <td>{{label}}</td> <td>{{value|default:"none"}}</td>
-#         </tr>
-#     {% endfor %}
-#     """
-#     return input_template
-
 
 def getMolTblData(chemspec_obj):
     data = [
@@ -81,35 +68,14 @@ def getIsoPtData(chemspec_obj):
 # Ionization Constants (pKa) Parameters Data
 def getPkaInputs(chemspec_obj):
     data = [
-        {'Number of Decimals': chemspec_obj.pKa_decimals},
+        {'Number of Decimals for pKa': chemspec_obj.pKa_decimals},
         {'pH Lower Limit': chemspec_obj.pKa_pH_lower}, 
         {'pH Upper Limit': chemspec_obj.pKa_pH_upper},  
         {'pH Step Size': chemspec_obj.pKa_pH_increment},
         {'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies},
         {'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment}
     ]
-    # data = {
-    #     'Number of Decimals': chemspec_obj.pKa_decimals, 
-    #     'pH Lower Limit': chemspec_obj.pKa_pH_lower, 
-    #     'pH Upper Limit': chemspec_obj.pKa_pH_upper,  
-    #     'pH Step Size': chemspec_obj.pKa_pH_increment,
-    #     'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies,
-    #     'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment
-    # }
     return data
-
-
-# Ionization Constants (pKa) Parameters Data
-# def getPkaInputs(chemspec_obj):
-#     data = {
-#         'Number of Decimals': chemspec_obj.pKa_decimals, 
-#         'pH Lower Limit': chemspec_obj.pKa_pH_lower, 
-#         'pH Upper Limit': chemspec_obj.pKa_pH_upper,  
-#         'pH Step Size': chemspec_obj.pKa_pH_increment,
-#         'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies,
-#         'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment
-#     }
-#     return data
 
 
 # Dominate Tautomer Distribution Data
@@ -395,7 +361,6 @@ def getTautomerResults(chemspec_obj):
         html += """
         <div class="out_ shiftRight">
         """
-        # try:
         html += '<dl style="display:inline-block">'
         for item in tautStructs:
             html += '<dd style="float:left;">'
@@ -405,12 +370,8 @@ def getTautomerResults(chemspec_obj):
             else:
                 html += "No tautomers"
             html += '</dd>'
-        html += "</dl>"
-        # except TypeError:
-            # logging.info("no tautomers..")
-            # html += 'no tautomers'
-        # finally:
         html += """
+                </dl>
         </div>
         """
     else:
@@ -436,9 +397,6 @@ def wrap_molecule(propDict, height, width, scale):
     if 'key' in propDict:
         key = propDict['key']
 
-    # image = propDict['image']
-    # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100, key)) # displayed image
-    # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], height, width, key)) # displayed image
     image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
@@ -453,10 +411,6 @@ def wrap_molecule(propDict, height, width, scale):
         "smiles": smiles
     }
 
-    # html = '<table class="' + defaultfilters.slugify(infoDict['iupac']) +' wrapped_molecule">'
-    # # html += '<tr><td align="center">' + infoDict['iupac'] + '</td></tr>'
-    # html += '<tr><td align="center">' + infoDict['image'] + '</td></tr></table>'
-
     html = """
     <div class="chemspec_molecule nopdf">
     """
@@ -465,7 +419,6 @@ def wrap_molecule(propDict, height, width, scale):
     </div>
     """
     wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key, 'Molecular Information') # popup table image
-    # html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
     html += '<div class="tooltiptext ' + iupac + '">'
     html += wrappedDict['html']
     html += '</div>'

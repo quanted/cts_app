@@ -5,12 +5,12 @@ $(document).ready(function () {
 	function parseOutput(file_type) {
 		
         var elements, jq_html, imgData_json, n_plot;
-        var workflow = get_workflow(); // get current workflow name
+        var workflow = getWorkflow(); // get current workflow name
         var options = { x_offset : 30, y_offset : 30 }; // jqplotToImage options
         var imgData = []; // jqplot images
         var jsonData = ""; // json data string (originally intended for metabolites)
 
-        elements = collect_dom(workflow); // get relevant dom objects
+        elements = collectDOM(workflow); // get relevant dom objects
 
         if (file_type == "pdf" || file_type == "html") {
        		if (workflow == "chemspec") {
@@ -43,13 +43,13 @@ $(document).ready(function () {
         else if (file_type == "csv") {
         	// send json object, no need for
         	// html elements like pdf/html uses
-        	var content = build_csv(workflow);
-        	json_obj = { "headers": content[0], "data": content[1] };
+        	var content = buildCSV(workflow);
+        	json_obj = { "headers": content[0], "data": content[1], "structure_info": content[2] };
         	jsonData = JSON.stringify(json_obj);
         }
         else { return; }
 
-        append_to_request_table(jq_html, n_plot, imgData_json, jsonData); // append elements to request table
+        appendToRequestTable(jq_html, n_plot, imgData_json, jsonData); // append elements to request table
 
 	}
 
@@ -99,7 +99,7 @@ $(document).ready(function () {
 });
 
 
-function append_to_request_table(jq_html, n_plot, imgData_json, jsonData) {
+function appendToRequestTable(jq_html, n_plot, imgData_json, jsonData) {
 	
 	var test = $('table.getpdf');
 
@@ -127,7 +127,7 @@ function append_to_request_table(jq_html, n_plot, imgData_json, jsonData) {
 }
 
 
-function collect_dom(workflow) {
+function collectDOM(workflow) {
 	switch(workflow) {
 		case "chemspec":
 			elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
@@ -160,13 +160,8 @@ function collect_dom(workflow) {
 	}
 }
 
-var pchem_props = ["melting_point", "boiling_point", "water_sol", 
-	"vapor_press", "mol_diss", "ion_con", "henrys_law_con", "kow_no_ph", 
-	"kow_wph", "kow_ph", "koc"];
 
-var pchem_calcs = ['chemaxon', 'epi', 'test', 'sparc'];
-
-function build_csv(workflow) {
+function buildCSV(workflow) {
 	// build csv on backend, probably best considering batching
 	var headers_array = [];
 	var data_array = [];
@@ -185,6 +180,9 @@ function build_csv(workflow) {
 	}; // {prop: [data, data, data, data]} in order of calc
 	switch(workflow) {
 		case "chemspec":
+			headers_array.push("")
+			// need all other user inputs..
+			// navigatePopupTable();
 			break;
 		case "pchemprop":
 			headers_array.push(""); // for formatting (keep rows same length)
@@ -195,7 +193,7 @@ function build_csv(workflow) {
 						var calc_prop = checkedCalcsAndProps[calc][i];
 						var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
 						if (calc_prop == "ion_con") {
-							data = pick_out_pka(data);
+							data = pickOutPka(data);
 						}
 						if (data != null) {
 							prop_data[calc_prop].push(data);
@@ -206,15 +204,25 @@ function build_csv(workflow) {
 			}
 			content.push(headers_array);
 			content.push(prop_data);
+			// append calculator-independent data:
+			content.push({
+				"title": $('h2.model_header').html(),
+				"time": time,
+				"smiles": smiles,
+				"name": name,
+				"mass": mass,
+				"formula": formula
+			});
 			break;
 		case "gentrans":
 			break;
 	}
+	
 	return content
 }
 
 
-function get_workflow() {
+function getWorkflow() {
 	var path = window.location.href;
 	if (path.indexOf("chemspec") > -1) {
 		return "chemspec"
@@ -229,7 +237,7 @@ function get_workflow() {
 }
 
 
-function pick_out_pka(html_string) {
+function pickOutPka(html_string) {
 	var pkas = $.parseHTML(html_string);
 	var pka_string = "";
 	$(pkas).each(function () {
@@ -237,6 +245,19 @@ function pick_out_pka(html_string) {
 		pka_string += pka_html + " ";
 	});
 	return pka_string;
+}
+
+
+function navigatePopupTable() {
+	// get labels and values in qtip
+	// popup tables (wrap_molecule func)
+
+	// name format: #parent_table, #microspecies1_table
+	// NOTE: qtips may not show up until actually hovering over them
+	// $('div.qtip').each(function () {
+		var test = "yeah";
+		// var table = $(this).find('div.nodeWrapDiv > table'); // popup info tbl
+	// });
 }
 
 

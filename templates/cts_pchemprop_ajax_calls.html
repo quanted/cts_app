@@ -1,6 +1,7 @@
 <script type="text/javascript">
 
 var kowPH; // pH for logD
+var smiles, name, mass, formula, time;
 
 var sparcPropMap = {
     "water_sol" : "SOLUBILITY",
@@ -21,7 +22,12 @@ $(document).ready(function() {
 
     checkedCalcsAndProps = {{checkedCalcsAndProps}};
     var structure = "{{structure}}";
-    kowPH = {{kow_ph}};
+    kowPH = "{{kow_ph}}";
+    smiles = "{{structure}}";
+    name = "{{name}}";
+    mass = "{{mass}}";
+    formula = "{{formula}}";
+    time = "{{time}}";
 
     sparcPropMap['kow_ph'] = kowPH;
 
@@ -231,10 +237,6 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 $('.' + calc + '.' + prop).html(organizeData(data, prop)); //add data to table
             }
 
-            // only add html to table for node's table:
-            //if (node.id == currentNode.id) {
-            //    $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
-            //}
         }
     }
 }
