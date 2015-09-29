@@ -167,24 +167,29 @@ class CSV(object):
                     self.csv_rows['header_row'].append(key)
                     self.csv_rows['row_1'].append(val)
 
-        # if model == 'chemspec':
-        #     for key, val in jchem_data['results'].items():
-        #         if key == 'isoelectricPoint':
-        #             header_row.append(key)
-        #             data_row.append(val)
-        #         elif key == 'pka' or key == 'pkb':
-        #             i = 0 # pka counter
-        #             for item in val:
-        #                 header_row.append(key + "{}".format(i))
-        #                 data_row.append(val)
-        #         elif key == 'pka-parent' or key == 'majorMicrospecies':
-        #             header_row.append(key + '-smiles')
-        #             data_row.append(jchem_data['results'][key]['smiles'])
-        #         elif key == 'pka-micospecies':
-        #             for ms in jchem_data['results'][key].items():
-        #                 # each ms is a jchem_structure object
-        #                 header_row.append(key + '-smiles')
-        #                 data_row.append(jchem_data['results'][key]['smiles'])
+        if self.model == 'chemspec':
+            for key, val in self.run_data.items():
+                if key not in self.parent_info:
+                    if key == 'isoelectricPoint':
+                        self.csv_rows['header_row'].append(key)
+                        self.csv_rows['row_1'].append(val)
+                    elif key == 'pka' or key == 'pkb':
+                        i = 0 # pka counter
+                        for item in val:
+                            self.csv_rows['header_row'].append(key + str(i))
+                            self.csv_rows['row_1'].append(val)
+                            i+=1
+                    elif key == 'pka-parent' or key == 'majorMicrospecies':
+                        self.csv_rows['header_row'].append(key + '-smiles')
+                        self.csv_rows['row_1'].append(val['smiles'])
+                    elif key == 'pka-micospecies':
+                        for ms in val.items():
+                            # each ms is a jchem_structure object
+                            self.csv_rows['header_row'].append(key + '-smiles')
+                            self.csv_rows['row_1'].append(val['smiles'])
+
+        # elif model == 'pchemprop':
+
 
         writer.writerow(self.csv_rows['header_row'])
         writer.writerow(self.csv_rows['row_1'])
