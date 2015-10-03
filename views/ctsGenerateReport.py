@@ -146,29 +146,31 @@ class CSV(object):
         self.run_json = '' # json str from [model]_model.py
         self.run_data = {} # run_json as an object
 
-    def parseToCSV(self):
-        self.run_json = cache.get('run_json') # todo: add error handling
-        self.run_data = json.loads(self.run_json)
+        self.chemspec_headers_inputs = ['pKa decimals', 'min pH', 'max pH', 'pH step size', 'major MS pH', 
+        'Isoelect Pt pH step size', 'max tautomers', 'tautomer pH', 'max stereoisomers']
+        # self.chemspec_headers_outputs = ['pKa basic', 'pKa acidic', 'microspecies'] # deal with these differently (they vary)
+
+    def parseToCSV(self, run_data):
 
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + self.run_data['jid'] + '.csv'
+        response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + run_data['jid'] + '.csv'
 
         writer = csv.writer(response) # bind writer to http response
 
         # build title section of csv..
-        writer.writerow(["title", self.run_data['title']])
-        writer.writerow(["time", self.run_data['time']])
+        writer.writerow(["title", run_data['title']])
+        writer.writerow(["time", run_data['time']])
         writer.writerow([""])
 
         # write parent info first and in order..
         for prop in self.parent_info:
-            for key, val in self.run_data.items():
+            for key, val in run_data.items():
                 if key == prop:
                     self.csv_rows['header_row'].append(key)
                     self.csv_rows['row_1'].append(val)
 
         if self.model == 'chemspec':
-            for key, val in self.run_data.items():
+            for key, val in run_data.items():
                 if key not in self.parent_info:
                     if key == 'isoelectricPoint':
                         self.csv_rows['header_row'].append(key)
@@ -203,9 +205,16 @@ def csvReceiver(request, model=''):
     Save output as HTML
     """
 
+    try:
+        run_json = cache.get('run_json') # todo: add error handling
+        cache.delete('run_json')
+        run_data = json.loads(run_json)
+    except Exception as err:
+        raise err
+
     if model == 'chemspec':
         csv_obj = CSV(model)
-        return csv_obj.parseToCSV()
+        return csv_obj.parseToCSV(run_data)
 
     elif model == 'pchemprop':
         ordered_props = ['smiles', 'name', 'mass', 'formula']

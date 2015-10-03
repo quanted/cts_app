@@ -112,34 +112,6 @@ class chemspec(object):
             'mass': self.mass
         }
 
-        # fileout = open('C:\\Users\\nickpope\\Desktop\\out.txt', 'w')
-        # fileout.write(json.dumps(jchemDataDict))
-        # fileout.close()
-
-        # self.jchemDictResults = {}
-        # for key, value in self.jchemPropObjects.items():
-        #     if value:
-        #         self.jchemDictResults.update({key: None})
-        #         if key == 'pKa':
-        #             self.jchemDictResults[key] = {
-        #                 'pKa': pkaObj.getMostAcidicPka(),
-        #                 'pKb': pkaObj.getMostBasicPka(),
-        #                 'parent': pkaObj.getParent(),
-        #                 'microspecies': pkaObj.getMicrospecies(),
-        #                 'chartData': pkaObj.getChartData()
-        #             }
-        #         elif key == 'majorMicrospecies':
-        #             self.jchemDictResults[key] = majorMsObj.getMajorMicrospecies()
-        #         elif key == 'isoelectricPoint':
-        #             self.jchemDictResults[key] = {
-        #                 'isoelectricPoint': isoPtObj.getIsoelectricPoint(),
-        #                 'chartData': isoPtObj.getIsoPtChartData()
-        #             }
-        #         elif key == 'tautomerization':
-        #             self.jchemDictResults[key] = tautObj.getTautomers()
-        #         elif key == 'stereoisomers':
-        #             self.jchemDictResults[key] = stereoObj.getStereoisomers()
-
         self.jchemDictResults = {}
         for key, value in self.jchemPropObjects.items():
             if value:
@@ -164,5 +136,4 @@ class chemspec(object):
                     self.jchemDictResults.update({key: stereoObj.getStereoisomers()})
 
         run_data.update(self.jchemDictResults)
-
-        cache.set('run_json', json.dumps(run_data), 120) # manually clear??? (2 min currently)
+        cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
