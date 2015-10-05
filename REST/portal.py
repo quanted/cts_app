@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from chemaxon_cts import views as chemaxon_views
 from epi_cts import views as epi_views
 from sparc_cts import views as sparc_views
+from test_cts import views as test_views
 import logging
 from smilesfilter import is_valid_smiles
 import json
@@ -31,5 +32,8 @@ def directAllTraffic(request):
     elif webservice == 'sparc':
         logging.info('directing to sparc..')
         return sparc_views.request_manager(request)
+    elif webservice == 'test':
+        logging.info('directing to test..')
+        return test_views.request_manager(request)
     else:
         return HttpResponse("error: service requested does not exist")

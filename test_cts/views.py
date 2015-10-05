@@ -6,7 +6,7 @@ import logging
 import os
 import requests
 import json
-from epi_calculator import EpiCalc
+from test_calculator import TestCalc
 
 
 
@@ -14,13 +14,13 @@ def request_manager(request):
   """
   less_simple_proxy takes a request and
   makes the proper call to the TEST web services.
-  it relies on the epi_calculator to do such.
+  it relies on the test_calculator to do such.
 
   input: {"calc": [calculator], "prop": [property]}
   output: returns data from TEST server
   """
 
-  EPI_URL = os.environ["CTS_EPI_SERVER"]
+  TEST_URL = os.environ["CTS_TEST_SERVER"]
   postData = {}
 
   try:
@@ -33,20 +33,21 @@ def request_manager(request):
       "prop": prop
     }
 
-    # get data through epi_calculator:
-    # calcObj = cmap.getCalcObject(calc) # get calculator object
-    calcObj = EpiCalc()
+
+    calcObj = TestCalc()
     response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
 
-    postData.update({"data": json.loads(response.content)}) # add that data
+    prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
 
-    logging.info("DATA: {}".format(postData))
+    postData.update({"data": prop_data}) # add that data
+
+    logging.info("TEST DATA: {}".format(postData))
 
     return HttpResponse(json.dumps(postData), content_type='application/json')
 
   except requests.HTTPError as e:
     logging.warning("HTTP Error occured: {}".format(e))
-    return HttpResponse(EPI_URL+e.msg, status=e.code, content_type='text/plain')
+    return HttpResponse(TEST_URL+e.msg, status=e.code, content_type='text/plain')
 
   except ValueError as ve:
     logging.warning("POST data is incorrect: {}".format(ve))

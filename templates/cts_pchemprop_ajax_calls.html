@@ -75,12 +75,9 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                             calcPropData.ph = kowPH;
                         }
                     }
-                    else if ( calc == "epi")
-                        calcPropData.ws = "epi";
-                    // else if ( calc == "sparc")
-                    //     calcPropData.ws = "sparc";
-                    // else
-                    //     calcPropData.ws = null;
+                    else if (calc == "epi" || calc == "test") {
+                        calcPropData.ws = calc;
+                    }
 
                     var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
                     var workflowPath = window.location.href;

@@ -179,7 +179,7 @@ function buildCSV(workflow) {
 		"koc": []
 	}; // {prop: [data, data, data, data]} in order of calc
 
-	if model == "pchemprop":
+	if (model == "pchemprop") {
 		headers_array.push(""); // for formatting (keep rows same length)
 		for (var calc in checkedCalcsAndProps) {
 			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
@@ -208,6 +208,7 @@ function buildCSV(workflow) {
 			"mass": mass,
 			"formula": formula
 		});
+	}
 	
 	return content
 }
