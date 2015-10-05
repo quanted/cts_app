@@ -38,6 +38,9 @@ def request_manager(request):
     response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
 
     prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
+    logging.info(">>> {}".format(prop_data))
+    prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
+    logging.info(">>> {}".format(prop_data))
 
     postData.update({"data": prop_data}) # add that data
 
