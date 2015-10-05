@@ -247,6 +247,9 @@ function organizeData(data, prop) {
         if (prop == "water_sol" || prop == "vapor_press") {
             return data.toExponential(3);
         }
+        else if (prop == "mol_diss") {
+            return data.toExponential(-6);
+        }
         else {
             return data.toFixed(3);
         }
