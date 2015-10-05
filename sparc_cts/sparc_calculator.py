@@ -79,7 +79,8 @@ class SPARC_Calc(Calculator):
     def get_calculations(self):
 
         calculations = list()
-        calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm"))
+        # calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm")) ##############
+        calculations.append(get_calculation("VAPOR_PRESSURE", "mmHg")) # attempt to fix unit mismatch
         calculations.append(get_calculation("BOILING_POINT", "degreesC"))
 
         calculations.append(get_calculation("DIFFUSION", "NO_UNITS"))
@@ -92,11 +93,13 @@ class SPARC_Calc(Calculator):
 
         calculations.append(get_calculation("INDEX_OF_REFRACTION", "dummy"))
 
-        calcHC = get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
+        # calcHC = get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter") ###############
+        calcHC = get_calculation("HENRYS_CONSTANT", "atmmCubedPerMole") # attempt to fix unit mismatch
         calcHC["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcHC)
 
-        calcSol = get_calculation("SOLUBILITY", "logMolefrac")
+        # calcSol = get_calculation("SOLUBILITY", "logMolefrac") ###########
+        calcSol = get_calculation("SOLUBILITY", "mgPerLiter") # attempt to fix unit mismatch
         calcSol["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcSol)
 

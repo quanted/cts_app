@@ -28,7 +28,7 @@ os.environ.update({
     # 'CTS_JCHEM_SERVER': 'http://172.20.100.12',                 # jchem rest server (internal)
     # 'CTS_JCHEM_SERVER_INTRANET': 'http://134.67.114.2',         # jchem rest server (intranet)
     # 'CTS_TEST_SERVER_INTRANET': 'http://172.20.100.16',         # test rest rserver (internal)
-    # 'CTS_TEST_SERVER': 'http://134.67.114.6',                   # test rest server (intranet)
+    'CTS_TEST_SERVER': 'http:pg.gl',                   # test rest server (intranet)
     'CTS_JCHEM_SERVER': 'http://172.20.100.12',                 # jchem rest server (internal)
     'CTS_EPI_SERVER': 'http://172.20.100.16',         # test rest rserver (internal)
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080/sparc-integration/rest/calc/multiProperty',         # SPARC rest server (external)

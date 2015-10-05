@@ -197,7 +197,8 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
 
     var data;
     if (response.hasOwnProperty('data')) {
-        if ((calc != "chemaxon") && (calc != "sparc")) {
+        // if ((calc != "chemaxon") && (calc != "sparc")) {
+        if (calc == "epi") {
             if (response['data'] == null) {
                 data = "error";
                 console.log("data has null value");
