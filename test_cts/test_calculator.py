@@ -47,7 +47,7 @@ class TestCalc(Calculator):
     def makeDataRequest(self, structure, calc, prop, method=None):
         post = self.getPostData(calc, prop)
         post['identifiers']['SMILES'] = structure
-        url = self.baseUrl + self.getUrl(prop)
+        url = self.baseUrl + self.getUrl('fda', prop) #todo: add more in self.methods
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
         except requests.exceptions.ConnectionError as ce:
