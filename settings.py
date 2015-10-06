@@ -24,6 +24,7 @@ os.environ.update({
     # 'UBERTOOL_REST_SERVER': 'http://54.83.18.251:80',
     'CTS_TEST_SERVER': 'http://pg.gl', # test rest server (internal)
     'CTS_JCHEM_SERVER': 'http://134.67.114.2',
+    # 'CTS_JCHEM_SERVER': 'http://localhost:8080',
     # 'CTS_EPI_SERVER': 'http://134.67.114.6',  # test rest server (internal)
     'CTS_EPI_SERVER': 'http://win.pg.gl',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080/sparc-integration/rest/calc/multiProperty',  #http://n2626ugath802:8080/sparc-integration/rest/calc/multiProperty

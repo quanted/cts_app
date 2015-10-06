@@ -59,9 +59,9 @@ class EpiCalc(Calculator):
                 'resultKey': 'logKowEstimate'
             },
             'koc': {
-                'urlKey': 'soilAbsorptionCoefKoc',
+                'urlKey': 'soilAdsorptionCoefKoc',
                 'propKey': '',
-                'resultKey': 'soilAbsorptionCoefKoc'
+                'resultKey': 'soilAdsorptionCoefKoc'
             }
         }
 
