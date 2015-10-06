@@ -198,6 +198,21 @@ class SPARC_Calc(Calculator):
 
 #  -----------------------End Class SPARC_Calculator----------------------------
 
+def performUnitConversions(results_dict):
+        """
+        loops through sparc results, making any 
+        necessary conversions
+        """
+        prop_data = results_dict['calculationResults']
+        for prop in prop_data:
+            if prop['type'] == 'VAPOR_PRESSURE':
+                prop['result'] = 760.0 * math.exp(prop['result']) # log(Atm) --> mmHg
+            elif prop['type'] == 'HENRYS_CONSTANT':
+                prop['result'] = math.exp(prop['result']) / 1000.0 # log(atm-L/mol) --> atm-m3/mol
+            elif prop['type'] == 'SOLUBILITY':
+                prop['result'] = math.exp(prop['result']) # ???????? log(molefrac) --> mg/L ????????
+                
+
 def get_calculation(type=None, units=None, pressure=760.0, meltingpoint=0.0, temperature=25.0):
     calc = dict()
     calc["solvents"] = list()
