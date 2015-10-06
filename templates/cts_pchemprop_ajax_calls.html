@@ -247,7 +247,12 @@ function organizeData(data, prop) {
 
     if (typeof data === "number") {
         if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss" || prop == "henrys_law_con") {
-            return data.toExponential(3);
+            if (data == -9999) {
+                return "TEST error";
+            }
+            else {
+                return data.toExponential(3);
+            }
         }
         // else if (prop == "mol_diss") {
         //     return data.toExponential(-6);

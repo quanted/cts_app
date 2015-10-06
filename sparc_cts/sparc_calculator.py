@@ -243,8 +243,8 @@ def get_calculations(pressure=760.0, meltingPoint=0.0, temperature=25.0):
     calculations = list()
 
     # trying to add logD and ionization constant to sparc...
-    calculations.append(get_calculation("LOGD", "NO_UNITS", p, m, t)) # kow_wPh
-    calculations.append(get_calculation("FULL_SPECIATION", "NO_UNITS", p, m, t)) # ion_con
+    # calculations.append(get_calculation("LOGD", "NO_UNITS", p, m, t)) # kow_wPh
+    # calculations.append(get_calculation("FULL_SPECIATION", "NO_UNITS", p, m, t)) # ion_con
 
     calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm", p, m, t))
     calculations.append(get_calculation("BOILING_POINT", "degreesC", p, m, t))
