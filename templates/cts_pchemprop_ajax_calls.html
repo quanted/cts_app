@@ -245,7 +245,7 @@ function organizeData(data, prop) {
     // more than a single value
 
     if (typeof data === "number") {
-        if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss") {
+        if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss" || prop == "henrys_law_con") {
             return data.toExponential(3);
         }
         // else if (prop == "mol_diss") {
