@@ -58,6 +58,11 @@ class EpiCalc(Calculator):
                 'propKey': '',
                 'resultKey': 'logKowEstimate'
             },
+            'koc': {
+                'urlKey': 'soilAbsorptionCoefKoc',
+                'propKey': '',
+                'resultKey': 'soilAbsorptionCoefKoc'
+            }
         }
 
     def getPostData(self, calc, prop, method=None):
