@@ -140,9 +140,7 @@ function parseSPARCResponseToPchemTable(data, plotDataToTable) {
     var calc = data['calc']; // sparc
     var props = data['props']; // get sparc props list
     var sparc_results = data['data']['calculationResults'];
-
     console.log("parsing sparc data...");
-
     for (prop in props) {
         if (props.hasOwnProperty(prop)) {
             // var sparcPropName = sparcPropMap[props[prop]];
@@ -150,6 +148,7 @@ function parseSPARCResponseToPchemTable(data, plotDataToTable) {
             getPropFromSPARCResults(data, props[prop], sparc_results, plotDataToTable);
         }
     }
+    console.log("finished..");
 }
 
 
@@ -169,10 +168,11 @@ function getPropFromSPARCResults(data, prop, sparc_results, plotDataToTable) {
 
             if (propObj['type'] == sparcProp) {
 
-                console.log("requested property found in sparc result...parsing to table...");
+                console.log("requested property found in sparc results...parsing to table...");
 
                 responseObj['prop'] = prop;
                 responseObj['data'] = propObj['result']; // prop result value
+
                 parseResponseToPchemTable(responseObj, null, false, true, plotDataToTable);
 
                 console.log("allegedly parsed to table...");
@@ -245,12 +245,12 @@ function organizeData(data, prop) {
     // more than a single value
 
     if (typeof data === "number") {
-        if (prop == "water_sol" || prop == "vapor_press") {
+        if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss") {
             return data.toExponential(3);
         }
-        else if (prop == "mol_diss") {
-            return data.toExponential(-6);
-        }
+        // else if (prop == "mol_diss") {
+        //     return data.toExponential(-6);
+        // }
         else {
             return data.toFixed(3);
         }

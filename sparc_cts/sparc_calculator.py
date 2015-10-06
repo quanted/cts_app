@@ -78,9 +78,12 @@ class SPARC_Calc(Calculator):
 
     def get_calculations(self):
 
+        ############
+        # is it this get_caculations, or the global one that's actually being used??
+
         calculations = list()
-        # calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm")) ##############
-        calculations.append(get_calculation("VAPOR_PRESSURE", "log(atm)")) # attempt to fix unit mismatch
+        calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm")) ##############
+        # calculations.append(get_calculation("VAPOR_PRESSURE", "mmHg")) # attempt to fix unit mismatch
         calculations.append(get_calculation("BOILING_POINT", "degreesC"))
 
         calculations.append(get_calculation("DIFFUSION", "NO_UNITS"))
@@ -93,13 +96,13 @@ class SPARC_Calc(Calculator):
 
         calculations.append(get_calculation("INDEX_OF_REFRACTION", "dummy"))
 
-        # calcHC = get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter") ###############
-        calcHC = get_calculation("HENRYS_CONSTANT", "atm/(mol/m^3)") # attempt to fix unit mismatch
+        calcHC = get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter") ###############
+        # calcHC = get_calculation("HENRYS_CONSTANT", "atmmCubedPerMole") # attempt to fix unit mismatch
         calcHC["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcHC)
 
-        # calcSol = get_calculation("SOLUBILITY", "logMolefrac") ###########
-        calcSol = get_calculation("SOLUBILITY", "mg/l") # attempt to fix unit mismatch
+        calcSol = get_calculation("SOLUBILITY", "logMolefrac") ###########
+        # calcSol = get_calculation("SOLUBILITY", "mgPerLiter") # attempt to fix unit mismatch
         calcSol["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcSol)
 
@@ -151,6 +154,9 @@ class SPARC_Calc(Calculator):
             return None
         else:
             self.results = json.loads(response.content)
+
+            performUnitConversions(self.results)
+
             return self.results
 
 
@@ -172,6 +178,20 @@ class SPARC_Calc(Calculator):
 
         return None
 
+
+    def performUnitConversions(self, results_dict):
+        """
+        loops through sparc results, making any 
+        necessary conversions
+        """
+        prop_data = results_dict['calculationResults']
+        for prop in prop_data:
+            if prop['type'] == 'VAPOR_PRESSURE':
+                prop['result'] = 760.0 * math.exp(prop['result']) # log(Atm) --> mmHg
+            elif prop['type'] == 'HENRYS_CONSTANT':
+                prop['result'] = math.exp(prop['result']) / 1000.0 # log(atm-L/mol) --> atm-m3/mol
+            elif prop['type'] == 'SOLUBILITY':
+                prop['result'] = math.exp(prop['result']) # ???????? log(molefrac) --> mg/L ????????
 
 
 
