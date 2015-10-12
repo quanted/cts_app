@@ -197,7 +197,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
     var data;
     if (response.hasOwnProperty('data')) {
         // if ((calc != "chemaxon") && (calc != "sparc")) {
-        if (calc == "epi") {
+        if (calc == "test") {
             if (response['data'] == null) {
                 data = "error";
                 console.log("data has null value");
@@ -211,6 +211,9 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 var data_key = Object.keys(response['data']['properties']);
                 data = response['data']['properties'][data_key];
             }
+        }
+        else if (calc == "epi") {
+            data = response['val'];
         }
         else{
             data = response['data'];
@@ -247,16 +250,8 @@ function organizeData(data, prop) {
 
     if (typeof data === "number") {
         if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss" || prop == "henrys_law_con") {
-            if (data == -9999) {
-                return "TEST error";
-            }
-            else {
-                return data.toExponential(3);
-            }
+            return data.toExponential(3);
         }
-        // else if (prop == "mol_diss") {
-        //     return data.toExponential(-6);
-        // }
         else {
             return data.toFixed(3);
         }
