@@ -215,8 +215,14 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
         }
         else if (calc == "epi") {
             // data = response['val']; // the old way
-            var data_key = Object.keys(response['data']['properties']);
-            data = response['properties'][data_key];
+            // var data_key = Object.keys(response['data']['properties']);
+            var test = Object.keys(response['data']['properties']).length;
+            if (Object.keys(response['data']['properties']).length > 0) {
+                data = response['properties'][data_key];
+            }
+            else {
+                data = "calc error";
+            }
         }
         else {
             data = response['data'];
