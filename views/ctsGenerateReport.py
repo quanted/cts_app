@@ -122,6 +122,7 @@ def htmlReceiver(request, model=''):
 class CSV(object):
     def __init__(self, model):
         self.models = ['chemspec', 'pchemprop', 'gentrans']
+        self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
         if model and (model in self.models):
             self.model = model # model name
         else:
@@ -135,31 +136,21 @@ class CSV(object):
         self.parent_info = ['smiles', 'name', 'mass', 'formula'] # original user sructure
         self.header_row = [] # headers in order (per molecule)
         self.data_row = [] # data in order w/ headers
-        self.jchem_structure = { # structure object
-            'smiles': '',
-            'mass': '',
-            'key': '',
-            'formula': '',
-            'image': '',
-            'iupac': ''
-        },
         self.run_json = '' # json str from [model]_model.py
         self.run_data = {} # run_json as an object
 
-        self.chemspec_headers_inputs = ['pKa decimals', 'min pH', 'max pH', 'pH step size', 'major MS pH', 
-        'Isoelect Pt pH step size', 'max tautomers', 'tautomer pH', 'max stereoisomers']
-        # self.chemspec_headers_outputs = ['pKa basic', 'pKa acidic', 'microspecies'] # deal with these differently (they vary)
-
     def parseToCSV(self, run_data):
+        jid = gen_jid() # create timestamp
+        time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + run_data['jid'] + '.csv'
+        response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + jid + '.csv'
 
         writer = csv.writer(response) # bind writer to http response
 
         # build title section of csv..
-        writer.writerow(["title", run_data['title']])
-        writer.writerow(["time", run_data['time']])
+        writer.writerow([run_data['title']])
+        writer.writerow([run_data['time']])
         writer.writerow([""])
 
         # write parent info first and in order..
@@ -179,7 +170,7 @@ class CSV(object):
                         i = 0 # pka counter
                         for item in val:
                             self.csv_rows['header_row'].append(key + str(i))
-                            self.csv_rows['row_1'].append(val)
+                            self.csv_rows['row_1'].append(item)
                             i+=1
                     elif key == 'pka-parent' or key == 'majorMicrospecies':
                         self.csv_rows['header_row'].append(key + '-smiles')
@@ -189,9 +180,28 @@ class CSV(object):
                             # each ms is a jchem_structure object
                             self.csv_rows['header_row'].append(key + '-smiles')
                             self.csv_rows['row_1'].append(val['smiles'])
+                    elif key == 'stereoisomers' or key == 'tautomers':
+                        i = 0
+                        for item in val:
+                            self.csv_rows['header_row'].append(item['key'] + str(i))
+                            self.csv_rows['row_1'].append(item['smiles'])
+                            i+=1
 
-        # elif model == 'pchemprop':
-
+        elif self.model == 'pchemprop':
+            # TODO: Probably want props grouped together so it's easier to compare..
+            # ^ This could be a bit challenging uness run_data is changed to be 
+            # indexed by prop instead of calc..
+            for key, val in run_data.items():
+                if key in self.calcs:
+                    for prop, prop_val in val.items():
+                        if prop == "ion_con":
+                            # prop_val is dict w/ key:values of "pkan": "pkan val"..
+                            for pka_key, pka_val in prop_val.items():
+                                self.csv_rows['header_row'].append(key + '-' + pka_key)
+                                self.csv_rows['row_1'].append(pka_val)
+                        else:   
+                            self.csv_rows['header_row'].append(key + '-' + prop)
+                            self.csv_rows['row_1'].append(prop_val)
 
         writer.writerow(self.csv_rows['header_row'])
         writer.writerow(self.csv_rows['row_1'])
@@ -202,47 +212,26 @@ class CSV(object):
 @require_POST
 def csvReceiver(request, model=''):
     """
-    Save output as HTML
+    Save output as CSV
     """
-
-    try:
-        run_json = cache.get('run_json') # todo: add error handling
-        cache.delete('run_json')
-        run_data = json.loads(run_json)
-    except Exception as err:
-        raise err
-
     if model == 'chemspec':
-        csv_obj = CSV(model)
-        return csv_obj.parseToCSV(run_data)
+        try:
+            run_json = cache.get('run_json') # todo: add error handling
+            cache.delete('run_json')
+            run_data = json.loads(run_json)
+        except Exception as err:
+            raise err
 
     elif model == 'pchemprop':
-        ordered_props = ['smiles', 'name', 'mass', 'formula']
-        json_data = request.POST.get('pdf_json')
-        json_dict = json.loads(json_data)
-        headers = json_dict['headers']
-        data = json_dict['data']
-        struct_info = json_dict['structure_info'];
+        try:
+            run_json = cache.get('run_json') # get parent info from cache
+            cache.delete('run_json')
+            run_data = json.loads(run_json)
 
-        jid = gen_jid() # create timestamp
-        time_str = datetime.datetime.strptime(struct_info['time'], '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
+            json_data = request.POST.get('pdf_json') # checkCalcsAndProps dict
+            run_data.update(json.loads(json_data))
+        except Exception as err:
+            raise err
 
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.csv'
-
-        writer = csv.writer(response)
-        writer.writerow(["title", struct_info['title']])
-        writer.writerow(["time", time_str])
-        writer.writerow([""])
-        for prop in ordered_props:
-            for key, val in struct_info.items():
-                if key == prop and not (key in ['title', 'time']):
-                    writer.writerow([key, val])
-        writer.writerow([""])
-        writer.writerow(headers)
-        for prop, prop_vals in data.items():
-            row = prop_vals
-            row.insert(0, prop) # prepend row with prop label
-            writer.writerow(row)
-
-        return response
+    csv_obj = CSV(model)
+    return csv_obj.parseToCSV(run_data)

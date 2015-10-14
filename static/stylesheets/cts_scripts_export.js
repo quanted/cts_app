@@ -32,7 +32,7 @@ $(document).ready(function () {
 	                    nodeArray.push(nodeItem);
 	                }
 	            }
-	            jsonData = JSON.stringify(nodeArray);  // spacetree data (cts_gentrans_tree.html)
+	            jsonData = JSON.stringify(nodeArray); // spacetree data (cts_gentrans_tree.html)
 	        }
 			jq_html = $('<div />').append($(elements).clone()).html();
 			var n_plot_1 = $('#microspecies-distribution').size();
@@ -40,13 +40,33 @@ $(document).ready(function () {
 			n_plot = n_plot_1 + n_plot_2;
 			imgData_json = JSON.stringify(imgData, null, '\t');
         }
+
         else if (file_type == "csv") {
-        	// send json object, no need for
-        	// html elements like pdf/html uses
-        	var content = buildCSV(workflow);
-        	json_obj = { "headers": content[0], "data": content[1], "structure_info": content[2] };
-        	jsonData = JSON.stringify(json_obj);
+        	// if pchemprop, send pchemprop data from front end output
+        	if (workflow == "pchemprop") {
+        		var json_obj = {};
+        		for (var calc in checkedCalcsAndProps) {
+        			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+
+        				json_obj[calc] = {};
+
+        				for (var i = 0; i < calc.length; i++) {
+        					// looping props of calc..
+        					var calc_prop = checkedCalcsAndProps[calc][i];
+							var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
+							if (calc_prop == "ion_con") {
+								data = pickOutPka(data);
+							}
+							if (data != null) {
+								json_obj[calc][calc_prop] = data;
+							}
+        				}
+        			}
+        		}
+        	}
+        	jsonData = JSON.stringify(json_obj); // sends to ctsGenerateReport w/ key pdf_json
         }
+
         else { return; }
 
         appendToRequestTable(jq_html, n_plot, imgData_json, jsonData); // append elements to request table
@@ -123,7 +143,7 @@ function appendToRequestTable(jq_html, n_plot, imgData_json, jsonData) {
     $('<tr style="display:none"><td><input type="hidden" name="pdf_json"></td></tr>')
 		.appendTo('.getpdf')
 		.find('input')
-		.val(jsonData); 
+		.val(jsonData);
 }
 
 
@@ -161,80 +181,28 @@ function collectDOM(workflow) {
 }
 
 
-function buildCSV(workflow) {
-	// build csv on backend, probably best considering batching
-	var headers_array = [];
-	var data_array = [];
-	var content = []; // array with headers_array and data
-	var prop_data = {
-		"melting_point": [],
-		"boiling_point": [],
-		"water_sol": [],
-		"vapor_press": [],
-		"mol_diss": [],
-		"ion_con": [],
-		"henrys_law_con": [],
-		"kow_no_ph": [],
-		"kow_wph": [],
-		"koc": []
-	}; // {prop: [data, data, data, data]} in order of calc
-
-	if (model == "pchemprop") {
-		headers_array.push(""); // for formatting (keep rows same length)
-		for (var calc in checkedCalcsAndProps) {
-			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
-				for (var i = 0; i < calc.length; i++) {
-					// looping props of calc..
-					var calc_prop = checkedCalcsAndProps[calc][i];
-					var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
-					if (calc_prop == "ion_con") {
-						data = pickOutPka(data);
-					}
-					if (data != null) {
-						prop_data[calc_prop].push(data);
-					}
-				}
-				headers_array.push(calc); // calcs
-			}
-		}
-		content.push(headers_array);
-		content.push(prop_data);
-		// append calculator-independent data:
-		content.push({
-			"title": $('h2.model_header').html(),
-			"time": time,
-			"smiles": smiles,
-			"name": name,
-			"mass": mass,
-			"formula": formula
-		});
-	}
-	
-	return content
-}
-
-
 function getWorkflow() {
 	var path = window.location.href;
 	if (path.indexOf("chemspec") > -1) {
-		return "chemspec"
+		return "chemspec";
 	}
 	else if (path.indexOf("pchemprop") > -1) {
-		return "pchemprop"
+		return "pchemprop";
 	}
 	else if (path.indexOf("gentrans") > -1) {
-		return "gentrans"		
+		return "gentrans";		
 	}
 	else { return null; }
 }
 
 
 function pickOutPka(html_string) {
+	var pka_obj = {};
 	var pkas = $.parseHTML(html_string);
 	var pka_string = "";
 	$(pkas).each(function () {
-		var pka_html = $(this).text();
-		pka_string += pka_html + " ";
+		var key_val_array = $(this).text().split(': '); // "pka0: 1.23"
+		pka_obj[key_val_array[0]] = key_val_array[1];
 	});
-	return pka_string;
+	return pka_obj;
 }

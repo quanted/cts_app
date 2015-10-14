@@ -112,6 +112,7 @@ class chemspec(object):
             'mass': self.mass
         }
 
+        # builds chemspec output json obj for ctsGenerateReport.py
         self.jchemDictResults = {}
         for key, value in self.jchemPropObjects.items():
             if value:
@@ -131,7 +132,7 @@ class chemspec(object):
                         # 'chartData': isoPtObj.getIsoPtChartData()
                     })
                 elif key == 'tautomerization':
-                    self.jchemDictResults.update({key: tautObj.getTautomers()})
+                    self.jchemDictResults.update({'tautomers': tautObj.getTautomers()})
                 elif key == 'stereoisomers':
                     self.jchemDictResults.update({key: stereoObj.getStereoisomers()})
 

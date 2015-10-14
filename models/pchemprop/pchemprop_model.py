@@ -10,6 +10,9 @@ import logging
 # from REST.epi_calculator import Calculator as calc
 from chemaxon_cts.jchem_calculator import JchemProperty as jp
 from requests_futures.sessions import FuturesSession
+from django.core.cache import cache
+import datetime
+import json
 
 
 n = 3  # number of decimal places to round values
@@ -123,34 +126,48 @@ class PChemProp(object):
         #  self.chemaxonResultsDict = None
 
 
+        # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING ++++++++++++++
+        run_data = {
+            'title': "p-Chem Properties Output",
+            'jid': self.jid,
+            'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
+            'chem_struct': self.chem_struct,
+            'smiles': self.smiles,
+            'name': self.name,
+            'formula': self.formula,
+            'mass': self.mass
+        }
+        cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
+
+
+
 # if 'chemaxon' in self.checkedCalcsAndPropsDict:
 # 	self.chemaxonResultsDict = newGetChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict,
 # self.kow_ph)
 
-
-def newGetChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
-    chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
-    logging.info("PH TYPE: {}".format(type(phForLogD)))
-    if chemaxonPropsList:
-        calcObj = calc.getCalcObject('chemaxon')  # get instance of chemaxon calculator
-        chemaxonResults = {}
-        for prop in chemaxonPropsList:
-            if prop == 'water_sol':
-                propObj = jp.getPropObject('solubility')
-                propObj.makeDataRequest(structure)
-                chemaxonResults.update({prop: propObj.getSolubility()})
-            elif prop == 'ion_con':
-                propObj = jp.getPropObject('pKa')
-                propObj.makeDataRequest(structure)
-                chemaxonResults.update({prop: {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}})
-            elif prop == 'kow_no_ph':
-                propObj = jp.getPropObject('logP')
-                propObj.makeDataRequest(structure)
-                chemaxonResults.update({prop: propObj.getLogP()})
-            elif prop == 'kow_wph':
-                propObj = jp.getPropObject('logD')
-                propObj.makeDataRequest(structure)
-                chemaxonResults.update({prop: propObj.getLogD(phForLogD)})
-        return chemaxonResults
-    else:
-        return None
+# def newGetChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
+#     chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
+#     logging.info("PH TYPE: {}".format(type(phForLogD)))
+#     if chemaxonPropsList:
+#         calcObj = calc.getCalcObject('chemaxon')  # get instance of chemaxon calculator
+#         chemaxonResults = {}
+#         for prop in chemaxonPropsList:
+#             if prop == 'water_sol':
+#                 propObj = jp.getPropObject('solubility')
+#                 propObj.makeDataRequest(structure)
+#                 chemaxonResults.update({prop: propObj.getSolubility()})
+#             elif prop == 'ion_con':
+#                 propObj = jp.getPropObject('pKa')
+#                 propObj.makeDataRequest(structure)
+#                 chemaxonResults.update({prop: {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}})
+#             elif prop == 'kow_no_ph':
+#                 propObj = jp.getPropObject('logP')
+#                 propObj.makeDataRequest(structure)
+#                 chemaxonResults.update({prop: propObj.getLogP()})
+#             elif prop == 'kow_wph':
+#                 propObj = jp.getPropObject('logD')
+#                 propObj.makeDataRequest(structure)
+#                 chemaxonResults.update({prop: propObj.getLogD(phForLogD)})
+#         return chemaxonResults
+#     else:
+#         return None
