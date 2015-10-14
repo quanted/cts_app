@@ -197,13 +197,14 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
     var data;
     if (response.hasOwnProperty('data')) {
         // if ((calc != "chemaxon") && (calc != "sparc")) {
-        if (calc == "test") {
-            if (response['data'] == null) {
-                data = "error";
+        if (calc == "test" || calc == "epi") {
+            // var test = response['data']['properties'].keys().length;
+            if (response['data']['properties'] === "undefined") {
+                data = "calc returned nothing";
                 console.log("data has null value");
             }
             else if (response['data'].hasOwnProperty('error')) {
-                data = "error";
+                data = "calc error";
                 console.log(response['data']['error']);
             }
             else {
@@ -212,10 +213,10 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 data = response['data']['properties'][data_key];
             }
         }
-        else if (calc == "epi") {
-            data = response['val'];
-        }
-        else{
+        // else if (calc == "epi") {
+        //     data = response['val']; // the old way
+        // }
+        else {
             data = response['data'];
         }
     }
