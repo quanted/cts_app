@@ -24,4 +24,5 @@ Thumbs.db
 env/*
 build/*
 static/marvin4js-license.cxl
-
+local_path.py
+settings_local.py
