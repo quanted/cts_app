@@ -123,6 +123,8 @@ class CSV(object):
     def __init__(self, model):
         self.models = ['chemspec', 'pchemprop', 'gentrans']
         self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
+        self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 
+                        'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc']
         if model and (model in self.models):
             self.model = model # model name
         else:
@@ -191,17 +193,37 @@ class CSV(object):
             # TODO: Probably want props grouped together so it's easier to compare..
             # ^ This could be a bit challenging uness run_data is changed to be 
             # indexed by prop instead of calc..
-            for key, val in run_data.items():
-                if key in self.calcs:
-                    for prop, prop_val in val.items():
+            # for key, val in run_data.items():
+            #     if key in self.calcs:
+            #         for prop, prop_val in val.items():
+            #             if prop == "ion_con":
+            #                 # prop_val is dict w/ key:values of "pkan": "pkan val"..
+            #                 for pka_key, pka_val in prop_val.items():
+            #                     self.csv_rows['header_row'].append(key + '-' + pka_key)
+            #                     self.csv_rows['row_1'].append(pka_val)
+            #             else:   
+            #                 self.csv_rows['header_row'].append(key + '-' + prop)
+            #                 self.csv_rows['row_1'].append(prop_val)
+
+
+            logging.info(">>>> {}".format(run_data))
+
+            for prop in self.props:
+                for calc, calc_props in run_data.items():
+                    if prop in calc_props:
+
+                        logging.info("calc: {}".format(calc))
+                        logging.info("props: {}".format(calc_props))
+
                         if prop == "ion_con":
                             # prop_val is dict w/ key:values of "pkan": "pkan val"..
-                            for pka_key, pka_val in prop_val.items():
-                                self.csv_rows['header_row'].append(key + '-' + pka_key)
+                            for pka_key, pka_val in calc_props[prop].items():
+                                # self.csv_rows['header_row'].append(key + '-' + pka_key)
+                                self.csv_rows['header_row'].append("{} ({})".format(pka_key, calc))
                                 self.csv_rows['row_1'].append(pka_val)
                         else:   
-                            self.csv_rows['header_row'].append(key + '-' + prop)
-                            self.csv_rows['row_1'].append(prop_val)
+                            self.csv_rows['header_row'].append("{} ({})".format(prop, calc))
+                            self.csv_rows['row_1'].append(calc_props[prop])
 
         writer.writerow(self.csv_rows['header_row'])
         writer.writerow(self.csv_rows['row_1'])

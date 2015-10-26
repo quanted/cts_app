@@ -4,16 +4,26 @@ import logging
 
 @require_POST
 def pchempropOutputPage(request):
+
+    logging.info("@@@ pchemprop output page @@@")
+    logging.info("@@@ request post: {} @@@".format(request.POST))
+
     # return "test" 
     import pchemprop_model
     pchemprop_obj = pchemprop_model.PChemProp("single")
+
     # Chemical from Chemical Editor
     pchemprop_obj.chem_struct = request.POST.get('chem_struct')
+
+    logging.info("@@@ {} @@@".format(dir(pchemprop_obj)))
+
     pchemprop_obj.smiles = request.POST.get('smiles')
     pchemprop_obj.name = request.POST.get('name')
     pchemprop_obj.formula = request.POST.get('formula')
     pchemprop_obj.mass = request.POST.get('mass')
     pchemprop_obj.mass += " g/mol"
+
+
 
     # Pchem Properties Column Checkboxes
     pchemprop_obj.chemaxon = request.POST.get('chemaxon')
@@ -35,6 +45,9 @@ def pchempropOutputPage(request):
     pchemprop_obj.kow_wph = request.POST.get('kow_wph')
     pchemprop_obj.kow_ph = request.POST.get('kow_ph')
     pchemprop_obj.koc = request.POST.get('koc')
+
+    logging.info("@@@ BEFORE fillCalcsandPropsDict @@@")
+
     pchemprop_obj.fillCalcsandPropsDict()
 
     # dataDict = {}
@@ -47,6 +60,8 @@ def pchempropOutputPage(request):
     #                    kowPh, koc)
 
     # pchemprop_obj = pchemprop_model.pchemprop(None)
+
+    logging.info("PCHEMPROP OBJECT: {}".format(pchemprop_obj))
 
     return pchemprop_obj
 

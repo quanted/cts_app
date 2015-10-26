@@ -7,6 +7,9 @@ import json
 from chemaxon_cts.jchem_calculator import JchemProperty as JProp
 
 
+max_weight = 1500 # max weight [g/mol] for epi, test, and sparc
+
+
 def is_valid_smiles(smiles):
 
     excludestring = {".",

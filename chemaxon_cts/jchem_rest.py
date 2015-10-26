@@ -167,11 +167,23 @@ def getpchemprops(request):
 	This is only here for accessing pchemprop_model
 	via frontend ajax calls
 	"""
+    logging.info("!!!!!!!!!!!! is this even getting here?????")
     from models.pchemprop import pchemprop_output
+    logging.info("inside getpchemprops...")
+
+
+    # logging.info("#### REQUEST: {}".format(request))
+
     pchemprop_obj = pchemprop_output.pchempropOutputPage(request)  # run model (pchemprop_[output, model])
-    data = json.dumps({"checkedCalcsAndProps": pchemprop_obj.checkedCalcsAndPropsDict,
-                       "chemaxonResults": pchemprop_obj.chemaxonResultsDict})
-    return HttpResponse(data, content_type="application/json")
+    logging.info("PCHEMPROPS: {}".format(pchemprop_obj.checkedCalcsAndPropsDict))
+    # data = json.dumps({"checkedCalcsAndPropsDict": pchemprop_obj.checkedCalcsAndPropsDict})
+    # response = requests.Response()
+    # response.data = json.dumps({"checkedCalcsAndPropsDict": pchemprop_obj.checkedCalcsAndPropsDict})
+    return json.dumps(pchemprop_obj.checkedCalcsAndPropsDict)
+
+    # response = requests.post(url, data=data, headers=headers, timeout=60)
+
+    # return None
 
 
 def getStructInfo(structure):
@@ -224,6 +236,82 @@ def removeExplicitHFromSMILES(request):
         url = Urls.jchemBase + Urls.exportUrl
         results = web_call(url, request, json.dumps(post_data))
         return results
+
+
+def getMass(request):
+    """
+    get mass of structure
+    """
+    try:
+        smiles = request.data.get('smiles')
+    except Exception as e:
+        logging.info("Exception retrieving mass from jchem: {}".format(e))
+        raise
+    post_data = {
+        "structures": [
+            {"structure": smiles}
+        ],
+        "display": {
+            "include": [
+                "structureData"
+            ],
+            "additionalFields": {
+                "mass": "chemicalTerms(mass)"
+            },
+            "parameters": {
+                "structureData": "smiles"
+            }
+        }
+    }
+    url = Urls.jchemBase + Urls.detailUrl
+    results = web_call(url, request, json.dumps(post_data))
+    return results
+
+
+def clearStereo(request):
+    """
+    clear stereoisomers from structure
+    """
+    try:
+        smiles = request.data.get('smiles')
+    except Exception as e:
+        logging.info("Exception retrieving mass from jchem: {}".format(e))
+        raise
+    post_data = {
+        "structure": smiles,
+        "filterChain": [{
+            "filter": "standardizer",
+            "parameters": {
+                "standardizerDefinition": "clearstereo"
+            }
+        }]
+    }
+    url = Urls.jchemBase + Urls.standardizerUrl
+    results = web_call(url, request, json.dumps(post_data))
+    return results
+
+
+def transform(request):
+    """
+    transform [N+](=O)[O-] >> N(=O)=O
+    """
+    try:
+        smiles = request.data.get('smiles')
+    except Exception as e:
+        logging.info("Exception retrieving mass from jchem: {}".format(e))
+        raise
+    post_data = {
+        "structure": smiles,
+        "filterChain": [{
+            "filter": "standardizer",
+            "parameters": {
+                "standardizerDefinition": "[N+](=O)[O-]>>N(=O)=O"
+            }
+        }]
+    }
+    url = Urls.jchemBase + Urls.standardizerUrl
+    results = web_call(url, request, json.dumps(post_data))
+    return results
 
 
 def filterSMILES(request):

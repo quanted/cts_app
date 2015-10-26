@@ -229,7 +229,7 @@ def table_metabolite_info(gentrans_obj):
     """
 
     pchemHTML = render_to_string('cts_pchem.html', {})
-    pchemHTML += str(pchemprop_parameters.form(None))
+    pchemHTML += str(pchemprop_parameters.form(None)) # recycling!
 
     html += metaboliteInfoTmpl().render(Context(dict(pchemHtml=pchemHTML)))
 

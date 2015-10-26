@@ -369,12 +369,6 @@ function getMolecularInfo(node) {
 
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
-
-
-{#    if ($(molInfo).has('p').length > 0) {#}
-{#        $(this).children('p').remove(); //remove initial paragraph#}
-{#    }#}
-
     // only add node image if a different node has been clicked:
     if (!currentNode || node.id != currentNode.id) {
         molInfo.children('.nodeWrapDiv').empty();  // empty existing contents
@@ -398,14 +392,14 @@ function getMolecularInfo(node) {
         $(molInfoTable).show();  // show molecular info
     }
     else {
-        // add mol info to node.data.molecularInfo:
+        // add mol info to node.data.molecularInfo (from scripts_jchem.js):
         getChemDetails(node.data.smiles, function(chemResults) {
             var data = chemResults.data[0];
             node.data.molecularInfo = data;  // add mol info to node data
             buildMolInfoTable(molInfoTable, node, data);  // build mol info table
 
             $("#" + node.id).children('img').addClass("selectedMetabolite");  // highlight node
-{#            $(molInfo).children(molInfoDiv).show();#}
+
             var molInfoHeader = $(molInfo).siblings('h3')[0];
             if ($(molInfoHeader).hasClass('collapse-close')) {
                 $(molInfoHeader).removeClass('collapse-close').addClass('collapse-open');
@@ -494,16 +488,17 @@ function tabDisplayLogic(event) {
 
 function getPchemData(node) {
 
-    //TODO: Check if metabolite already has pchem data before making call ***********************
+    //TODO: Check if metabolite already has pchem data before making call *******
 
     if (!node) {
         $('.gentransError').show();
         return;
     }
 
-    var params = {"data":{}}; //POST data for pchemprops_model call
-
+    var smiles = node.data['smiles'];
+    var params = buildPostObject(smiles, "getPchemPropDict");
     var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call
+    
     for (var i in acceptedKeys) {
         var key = acceptedKeys[i];
         params["data"][key] = null; // values are irrelevant (only need smiles)
@@ -520,27 +515,11 @@ function getPchemData(node) {
         $('.gentransError').hide();
     }
 
-    var allCheckBoxes = $('#pchemprop_table input:checkbox');
+    makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {
 
-    $(allCheckBoxes).each(function() {
-        params["data"][this.name] = this.checked;
-    });
-
-    params["data"]["chem_struct"] = node.data['smiles'];
-    params["url"] = "/jchem-cts/ws/getpchemprops/"; //calls pchemprop model
-{#    params["url"] = "/cts/portal";#}
-    params["type"] = "POST";
-    // params["contentType"] = "application/json";
-    params["dataType"] = "json";
-
-    makeAjaxCall(node, params, function(node, pchemResults) {
-
-        // var chemaxonData = pchemResults["chemaxonResults"];
-        var checkedCalcsAndProps = pchemResults["checkedCalcsAndProps"];
         var kowPH = $('#id_kow_ph').val();
 
         // make those calls (function from cts_pchemprop_ajax_calls.html):
-        // startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH, currentNode);
         startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node);
 
         // make border dark blue (has pchemprop data):
@@ -551,14 +530,39 @@ function getPchemData(node) {
 }
 
 
-function getChemDetailsObj(chemical) {
-  var params = new Object();
-  params.url = "/jchem-cts/ws/getChemDetails/";
-  params.type = "POST";
-  params.contentType = "application/json";
-  params.dataType = "json";
-  params.data = { "chemical" : chemical };
-  return params;
+function buildPostObject(smiles, service) {
+    var params = new Object();
+    params.url = "/cts/portal";
+    params.type = "POST";
+    params.contentType = "application/json";
+    params.dataType = "json";
+    params.data = { 
+        "chemical" : smiles,
+        "ws": "jchem",
+        "service": service,
+    };
+    var allCheckBoxes = $('#pchemprop_table input:checkbox');
+    $(allCheckBoxes).each(function() {
+        params["data"][this.name] = this.checked;
+    });
+    params["data"]["chem_struct"] = smiles
+    // params["data"]["chem_struct"] = node.data['smiles'];
+    return params;
+}
+
+
+function getPchemDataObj(chemical) {
+    var params = new Object();
+    params.url = "/cts/portal";
+    params.type = "POST";
+    params.contentType = "application/json";
+    params.dataType = "json";
+    params.data = { 
+        "chemical" : chemical,
+        "ws": "jchem",
+        "service": "getPchemProps"
+    };
+    return params;
 }
 
 
@@ -625,6 +629,6 @@ function jsonRepack(jsonobj) {
 
 <script type="text/javascript">
 init();
-{#$('#metaboliteInfo').css('overflow-y', 'auto');#}
+// {#$('#metaboliteInfo').css('overflow-y', 'auto');#}
 </script>
 

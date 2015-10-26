@@ -7,6 +7,7 @@ import json
 import logging
 import os
 from REST.calculator import Calculator
+from REST.smilesfilter import max_weight
 # import jchem_rest
 
 headers = {'Content-Type': 'application/json'}
@@ -71,11 +72,15 @@ class EpiCalc(Calculator):
 
     def makeDataRequest(self, structure, calc, prop, method=None):
         post = self.getPostData(calc, prop)
+
+        # run structure through epi suite smiles filter..
+        logging.info("filtering smiles for epi suite...")
+        structure = smilesFilter(structure) # make sure mass is < 1500g/mol
+
         post['identifiers']['SMILES'] = structure # set smiles
         # post['smiles'] = structure
-        url = self.baseUrl + self.getUrl(prop)
 
-        logging.info("url: {}".format(url))
+        url = self.baseUrl + self.getUrl(prop)
 
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
@@ -89,3 +94,38 @@ class EpiCalc(Calculator):
             self.results = response
             return response
 
+def smilesFilter(structure):
+        """
+        EPI Suite dependent SMILES filtering!
+        """
+        from chemaxon_cts import jchem_rest
+
+        request = requests.Request()
+        request.data = { 'smiles': structure }
+
+        response = jchem_rest.getMass(request) # get mass from jchem ws
+        json_obj = json.loads(response.content)
+
+        # 1. check mass..
+        struct_mass = json_obj['data'][0]['mass']
+        if struct_mass > max_weight or struct_mass < 0:
+            raise Exception("chemical mass exceeds limit..")
+
+        # 2. now clear stereos from structure..
+        response = jchem_rest.clearStereo(request)
+        request.data = { 'chemical': response.content } # structure in mrv format
+
+        response = jchem_rest.convertToSMILES(request) # mrv >> smiles
+        filtered_smiles = json.loads(response.content)['structure'] # get stereoless structure
+
+        # 3. transform [N+](=O)[O-] >> N(=O)=O..
+        request.data = { 'smiles': filtered_smiles }
+        response = jchem_rest.transform(request)
+
+        request.data = { 'chemical': filtered_smiles }
+        response = jchem_rest.convertToSMILES(request)
+        filtered_smiles = json.loads(response.content)['structure']
+
+        logging.info(">>> FILTERED SMILES: {}".format(filtered_smiles))
+
+        return filtered_smiles

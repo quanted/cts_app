@@ -7,7 +7,8 @@ from jchem_calculator import JchemProperty as jp
 
 
 # TODO: get these from the to-be-modified jchem_rest class..
-services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMILES', 'getTransProducts', 'getPchemProps']
+services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMILES',
+				'getTransProducts', 'getPchemProps', 'getPchemPropDict']
 
 
 def request_manager(request):
@@ -23,23 +24,29 @@ def request_manager(request):
 	"""
 
 	try:
-
-		# logging.info("REQUEST: {}".format(request))
-
 		service = getRequestParam(request, 'service')
 		chemical = getRequestParam(request, 'chemical')
 		prop = getRequestParam(request, 'prop')
+
 		if prop == 'kow_wph':
 			ph = getRequestPh(request)
 			logging.info("KOW PH: {}".format(ph))
 		else:
 			ph = None
-		response = sendRequestToWebService(service, chemical, prop, ph)
+
+		if service == 'getPchemPropDict':
+			logging.info("IN HERE!!")
+			response = jrest.getpchemprops(request)
+		else:
+			response = sendRequestToWebService(service, chemical, prop, ph)
+
+		logging.info("REPONSE: {}".format(response))
+
 		return HttpResponse(response)
+
 	except Exception as e:
 		logging.warning("error occured in request_manager: {}".format(e))
-		# return HttpResponse(json.dumps({"error": "request error", "calc": "chemaxon", "prop": prop}))
-		return HttpResponse("request_manager error: {}".format(e))
+		raise HttpResponse(e)
 
 
 def getRequestParam(request, key):
@@ -93,6 +100,11 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None):
 
 
 def getJchemPropData(chemical, prop, phForLogD=None):
+
+	logging.info("###### getting jchem props!")
+	logging.info("###### prop: {}".format(prop))
+	logging.info("###### chemical: {}".format(chemical))
+
 	result = ""
 	if prop == 'water_sol':
 		propObj = jp.getPropObject('solubility')
@@ -112,5 +124,8 @@ def getJchemPropData(chemical, prop, phForLogD=None):
 		result = propObj.getLogD(phForLogD)
 	else:
 		result = None
+
+	logging.info("###### data: {}".format(result))
+
 	resultDict = json.dumps({"calc": "chemaxon", "prop": prop, "data": result})
 	return resultDict

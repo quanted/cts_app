@@ -42,15 +42,15 @@ $(document).ready(function () {
         }
 
         else if (file_type == "csv") {
-        	// if pchemprop, send pchemprop data from front end output
         	if (workflow == "pchemprop") {
         		var json_obj = {};
+        		// todo: loop props, then calcs so the csv can be ordered by props
         		for (var calc in checkedCalcsAndProps) {
         			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
         				json_obj[calc] = {};
 
-        				for (var i = 0; i < calc.length; i++) {
+        				for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
         					// looping props of calc..
         					var calc_prop = checkedCalcsAndProps[calc][i];
 							var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
@@ -64,6 +64,7 @@ $(document).ready(function () {
         			}
         		}
         	}
+        	console.log(json_obj);
         	jsonData = JSON.stringify(json_obj); // sends to ctsGenerateReport w/ key pdf_json
         }
 
