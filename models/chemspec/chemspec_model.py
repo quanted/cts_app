@@ -137,4 +137,5 @@ class chemspec(object):
                     self.jchemDictResults.update({key: stereoObj.getStereoisomers()})
 
         run_data.update(self.jchemDictResults)
-        cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
+        # cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
+        cache.set('chemspec_json', json.dumps(run_data), None) # must manually clear after use

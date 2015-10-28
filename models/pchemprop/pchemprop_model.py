@@ -16,8 +16,6 @@ import json
 
 
 n = 3  # number of decimal places to round values
-# requestCounter = 0 # yeah figure out a better way to do this...
-# totalRequest = 0 # total number of request. again, better way please
 
 
 class PChemProp(object):
@@ -123,10 +121,8 @@ class PChemProp(object):
                             propList.append(propKey)
                 self.checkedCalcsAndPropsDict.update({calcKey: propList})
 
-        #  self.chemaxonResultsDict = None
 
-
-        # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING ++++++++++++++
+        # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING +++++
         run_data = {
             'title': "p-Chem Properties Output",
             'jid': self.jid,
@@ -137,37 +133,9 @@ class PChemProp(object):
             'formula': self.formula,
             'mass': self.mass
         }
-        cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
 
+        logging.info("------------ RUN: {}".format(self.run_type))
 
-
-# if 'chemaxon' in self.checkedCalcsAndPropsDict:
-# 	self.chemaxonResultsDict = newGetChemaxonResults(self.chem_struct, self.checkedCalcsAndPropsDict,
-# self.kow_ph)
-
-# def newGetChemaxonResults(structure, checkedCalcsAndPropsDict, phForLogD):
-#     chemaxonPropsList = checkedCalcsAndPropsDict.get('chemaxon', None)
-#     logging.info("PH TYPE: {}".format(type(phForLogD)))
-#     if chemaxonPropsList:
-#         calcObj = calc.getCalcObject('chemaxon')  # get instance of chemaxon calculator
-#         chemaxonResults = {}
-#         for prop in chemaxonPropsList:
-#             if prop == 'water_sol':
-#                 propObj = jp.getPropObject('solubility')
-#                 propObj.makeDataRequest(structure)
-#                 chemaxonResults.update({prop: propObj.getSolubility()})
-#             elif prop == 'ion_con':
-#                 propObj = jp.getPropObject('pKa')
-#                 propObj.makeDataRequest(structure)
-#                 chemaxonResults.update({prop: {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}})
-#             elif prop == 'kow_no_ph':
-#                 propObj = jp.getPropObject('logP')
-#                 propObj.makeDataRequest(structure)
-#                 chemaxonResults.update({prop: propObj.getLogP()})
-#             elif prop == 'kow_wph':
-#                 propObj = jp.getPropObject('logD')
-#                 propObj.makeDataRequest(structure)
-#                 chemaxonResults.update({prop: propObj.getLogD(phForLogD)})
-#         return chemaxonResults
-#     else:
-#         return None
+        # cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
+        if self.run_type != 'metabolite':
+            cache.set('pchemprop_json', json.dumps(run_data), None) # must manually clear after use

@@ -190,40 +190,51 @@ class CSV(object):
                             i+=1
 
         elif self.model == 'pchemprop':
-            # TODO: Probably want props grouped together so it's easier to compare..
-            # ^ This could be a bit challenging uness run_data is changed to be 
-            # indexed by prop instead of calc..
-            # for key, val in run_data.items():
-            #     if key in self.calcs:
-            #         for prop, prop_val in val.items():
-            #             if prop == "ion_con":
-            #                 # prop_val is dict w/ key:values of "pkan": "pkan val"..
-            #                 for pka_key, pka_val in prop_val.items():
-            #                     self.csv_rows['header_row'].append(key + '-' + pka_key)
-            #                     self.csv_rows['row_1'].append(pka_val)
-            #             else:   
-            #                 self.csv_rows['header_row'].append(key + '-' + prop)
-            #                 self.csv_rows['row_1'].append(prop_val)
-
-
-            logging.info(">>>> {}".format(run_data))
-
             for prop in self.props:
                 for calc, calc_props in run_data.items():
                     if prop in calc_props:
-
-                        logging.info("calc: {}".format(calc))
-                        logging.info("props: {}".format(calc_props))
-
                         if prop == "ion_con":
-                            # prop_val is dict w/ key:values of "pkan": "pkan val"..
                             for pka_key, pka_val in calc_props[prop].items():
-                                # self.csv_rows['header_row'].append(key + '-' + pka_key)
                                 self.csv_rows['header_row'].append("{} ({})".format(pka_key, calc))
                                 self.csv_rows['row_1'].append(pka_val)
                         else:   
                             self.csv_rows['header_row'].append("{} ({})".format(prop, calc))
                             self.csv_rows['row_1'].append(calc_props[prop])
+
+        elif self.model == 'gentrans':
+            # TODO: class this, e.g., Metabolizer (jchem_rest)
+            # headings = ['genKey', 'smiles', 'water_sol', 'ion_con', 'kow_no_ph', 'kow_wph', 'image']
+            headings = ['genKey', 'smiles', 'melting_point', 'boiling_point', 'water_sol', 'vapor_press',
+                        'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc']
+            metaboliteList = data_walks.buildTableValues(run_data['pdf_json'], headings, 3)  # List of dicts, which are node data
+
+            # fileout = open("C:\\Users\\nickpope\\Desktop\\out.txt", "w")
+            # fileout.write(json.dumps(metaboliteList))
+            # fileout.close()
+
+            # TODO: organize metabolite pchem props by prop and calculator..
+            for heading in headings:
+                for metabolite in metaboliteList:
+                    # for heading in headings:
+                    for key, value in metabolite.items():
+                        if key == heading and key not in self.parent_info:
+                            # check for blank values..
+                            if value == None or value == '':
+                                self.csv_rows['header_row'].append(key)
+                                self.csv_rows['row_1'].append("")
+                            else:
+                                # move genkey to first item in row..
+                                if key == 'genKey':
+                                    self.csv_rows['header_row'].insert(0, key)
+                                    self.csv_rows['row_1'].insert(0, value)
+                                elif key != "ion_con":
+                                    self.csv_rows['header_row'].append(key)
+                                    self.csv_rows['row_1'].append(value)
+                                else:
+                                    for pka_key, pka_vals in value.items():
+                                        for pka in pka_vals:
+                                            self.csv_rows['header_row'].append(pka_key)
+                                            self.csv_rows['row_1'].append(pka)
 
         writer.writerow(self.csv_rows['header_row'])
         writer.writerow(self.csv_rows['row_1'])
@@ -236,22 +247,26 @@ def csvReceiver(request, model=''):
     """
     Save output as CSV
     """
-    if model == 'chemspec':
+    cache_key = "{}_json".format(model) # model-specific cache 
+
+    run_json = cache.get(cache_key) # todo: add error handling
+    cache.delete(cache_key)
+    run_data = json.loads(run_json)
+
+    if model == 'pchemprop':
         try:
-            run_json = cache.get('run_json') # todo: add error handling
-            cache.delete('run_json')
-            run_data = json.loads(run_json)
+            json_data = request.POST.get('pdf_json') # checkCalcsAndProps dict
+            run_data.update(json.loads(json_data))
         except Exception as err:
             raise err
 
-    elif model == 'pchemprop':
-        try:
-            run_json = cache.get('run_json') # get parent info from cache
-            cache.delete('run_json')
-            run_data = json.loads(run_json)
+    elif model == 'gentrans':
 
+        logging.info(cache.get('pchemprop_json'))
+
+        try:
             json_data = request.POST.get('pdf_json') # checkCalcsAndProps dict
-            run_data.update(json.loads(json_data))
+            run_data.update({'pdf_json': json.loads(json_data)})
         except Exception as err:
             raise err
 

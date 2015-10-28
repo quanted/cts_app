@@ -224,7 +224,6 @@ class IsoelectricPoint(JchemProperty):
         """
 		Returns isoelectricPoint chart data
 		"""
-        # isoPtChartData = {'isoPtChartData': None}
         valsList = []
         try:
             for pt in self.results['chartData']['values']:
@@ -236,7 +235,6 @@ class IsoelectricPoint(JchemProperty):
             logging.warning("key error: {}".format(ke))
             return valsList
         else:
-            # isoPtChartData['isoPtChartData'] = valsList
             return valsList
 
 

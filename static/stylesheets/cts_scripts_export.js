@@ -21,17 +21,7 @@ $(document).ready(function () {
 	            catch(e) { console.log(e); }
 	        }
 	        else if (workflow == "gentrans") {
-	            var canvasNodes = getSpaceTree().graph.nodes;
-	            var nodeArray = [];
-	            for (var node in canvasNodes) {
-	                if (canvasNodes.hasOwnProperty(node)) {
-	                    var nodeItem = {
-	                        'image': canvasNodes[node]['name'],
-	                        'data': canvasNodes[node]['data']
-	                    };
-	                    nodeArray.push(nodeItem);
-	                }
-	            }
+	            var nodeArray = buildMetabolitesArray();
 	            jsonData = JSON.stringify(nodeArray); // spacetree data (cts_gentrans_tree.html)
 	        }
 			jq_html = $('<div />').append($(elements).clone()).html();
@@ -42,8 +32,8 @@ $(document).ready(function () {
         }
 
         else if (file_type == "csv") {
+        	var json_obj = {};
         	if (workflow == "pchemprop") {
-        		var json_obj = {};
         		// todo: loop props, then calcs so the csv can be ordered by props
         		for (var calc in checkedCalcsAndProps) {
         			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
@@ -63,6 +53,9 @@ $(document).ready(function () {
         				}
         			}
         		}
+        	}
+        	else if (workflow == "gentrans") {
+        		json_obj = buildMetabolitesArray();
         	}
         	console.log(json_obj);
         	jsonData = JSON.stringify(json_obj); // sends to ctsGenerateReport w/ key pdf_json
@@ -118,6 +111,23 @@ $(document).ready(function () {
 	});
 
 });
+
+
+function buildMetabolitesArray() {
+	// calls cts_gentrans_tree function getSpaceTree()
+	var canvasNodes = getSpaceTree().graph.nodes;
+    var nodeArray = [];
+    for (var node in canvasNodes) {
+        if (canvasNodes.hasOwnProperty(node)) {
+            var nodeItem = {
+                'image': canvasNodes[node]['name'],
+                'data': canvasNodes[node]['data']
+            };
+            nodeArray.push(nodeItem);
+        }
+    }
+    return nodeArray;
+}
 
 
 function appendToRequestTable(jq_html, n_plot, imgData_json, jsonData) {

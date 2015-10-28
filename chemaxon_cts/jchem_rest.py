@@ -162,28 +162,14 @@ def getpchemprops(request):
 	Calls pchemprop model to get pchem props 
 	for a given molecule. This ws was
 	originally meant for getting pchem props 
-	for metabolites on the gentrans output page.
+	for METABOLITES on the gentrans output page.
 
 	This is only here for accessing pchemprop_model
 	via frontend ajax calls
 	"""
-    logging.info("!!!!!!!!!!!! is this even getting here?????")
     from models.pchemprop import pchemprop_output
-    logging.info("inside getpchemprops...")
-
-
-    # logging.info("#### REQUEST: {}".format(request))
-
-    pchemprop_obj = pchemprop_output.pchempropOutputPage(request)  # run model (pchemprop_[output, model])
-    logging.info("PCHEMPROPS: {}".format(pchemprop_obj.checkedCalcsAndPropsDict))
-    # data = json.dumps({"checkedCalcsAndPropsDict": pchemprop_obj.checkedCalcsAndPropsDict})
-    # response = requests.Response()
-    # response.data = json.dumps({"checkedCalcsAndPropsDict": pchemprop_obj.checkedCalcsAndPropsDict})
+    pchemprop_obj = pchemprop_output.pchempropOutputPage(request, True)  # run model for metabolite
     return json.dumps(pchemprop_obj.checkedCalcsAndPropsDict)
-
-    # response = requests.post(url, data=data, headers=headers, timeout=60)
-
-    # return None
 
 
 def getStructInfo(structure):

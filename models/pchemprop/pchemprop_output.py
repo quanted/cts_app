@@ -3,19 +3,20 @@ from django.views.decorators.http import require_POST
 import logging
 
 @require_POST
-def pchempropOutputPage(request):
+def pchempropOutputPage(request, metabolite=False):
 
-    logging.info("@@@ pchemprop output page @@@")
-    logging.info("@@@ request post: {} @@@".format(request.POST))
-
-    # return "test" 
     import pchemprop_model
-    pchemprop_obj = pchemprop_model.PChemProp("single")
+
+    # NOTE: Adding metabolite input for gathering p-chem properties
+    # for metabolites on the gentrans output page...
+
+    if metabolite:
+        pchemprop_obj = pchemprop_model.PChemProp('metabolite')
+    else:
+        pchemprop_obj = pchemprop_model.PChemProp('single')
 
     # Chemical from Chemical Editor
     pchemprop_obj.chem_struct = request.POST.get('chem_struct')
-
-    logging.info("@@@ {} @@@".format(dir(pchemprop_obj)))
 
     pchemprop_obj.smiles = request.POST.get('smiles')
     pchemprop_obj.name = request.POST.get('name')
@@ -46,8 +47,6 @@ def pchempropOutputPage(request):
     pchemprop_obj.kow_ph = request.POST.get('kow_ph')
     pchemprop_obj.koc = request.POST.get('koc')
 
-    logging.info("@@@ BEFORE fillCalcsandPropsDict @@@")
-
     pchemprop_obj.fillCalcsandPropsDict()
 
     # dataDict = {}
@@ -60,8 +59,6 @@ def pchempropOutputPage(request):
     #                    kowPh, koc)
 
     # pchemprop_obj = pchemprop_model.pchemprop(None)
-
-    logging.info("PCHEMPROP OBJECT: {}".format(pchemprop_obj))
 
     return pchemprop_obj
 
