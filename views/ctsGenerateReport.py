@@ -209,32 +209,87 @@ class CSV(object):
             metaboliteList = data_walks.buildTableValues(run_data['pdf_json'], headings, 3)  # List of dicts, which are node data
 
             # fileout = open("C:\\Users\\nickpope\\Desktop\\out.txt", "w")
-            # fileout.write(json.dumps(metaboliteList))
+            # fileout.write(json.dumps(run_data['pdf_json']))
             # fileout.close()
 
-            # TODO: organize metabolite pchem props by prop and calculator..
-            for heading in headings:
-                for metabolite in metaboliteList:
-                    # for heading in headings:
-                    for key, value in metabolite.items():
-                        if key == heading and key not in self.parent_info:
-                            # check for blank values..
-                            if value == None or value == '':
-                                self.csv_rows['header_row'].append(key)
-                                self.csv_rows['row_1'].append("")
-                            else:
-                                # move genkey to first item in row..
-                                if key == 'genKey':
-                                    self.csv_rows['header_row'].insert(0, key)
-                                    self.csv_rows['row_1'].insert(0, value)
-                                elif key != "ion_con":
-                                    self.csv_rows['header_row'].append(key)
-                                    self.csv_rows['row_1'].append(value)
+            metabolites_data = run_data['pdf_json']
+
+            # for prop in self.props:
+            #     for calc in self.calcs:
+            for metabolite in metabolites_data:
+
+                # add genkey..
+                self.csv_rows['header_row'].insert(0, "gen")
+                self.csv_rows['row_1'].insert(0, metabolite['genKey']) 
+
+                # add smiles..
+                self.csv_rows['header_row'].append("smiles")
+                self.csv_rows['row_1'].append(metabolite['smiles'])
+
+                for prop in self.props:
+                    for calc in self.calcs:
+
+                        for data_obj in metabolite['pchemprops']:
+
+                            # now for the metabolite pchem data..
+                            met_prop = data_obj['prop']
+                            met_calc = data_obj['calc']
+                            met_data = data_obj['data']
+
+                            if met_prop == prop and met_calc == calc:
+                                if met_prop != 'ion_con':
+                                    self.csv_rows['header_row'].append("{} ({})".format(met_prop, met_calc))
+                                    self.csv_rows['row_1'].append(met_data)
                                 else:
-                                    for pka_key, pka_vals in value.items():
-                                        for pka in pka_vals:
-                                            self.csv_rows['header_row'].append(pka_key)
+                                    for key, val in data_obj['data'].items():
+                                        i = 0
+                                        for pka in val:
+                                            self.csv_rows['header_row'].append("{}{} ({})".format(key, i, calc))
                                             self.csv_rows['row_1'].append(pka)
+                                            i+=1
+                            # for key, value in metabolite.items():
+                            #     if key == heading and key not in self.parent_info:
+                            #         # check for blank values..
+                            #         if value == None or value == '':
+                            #             self.csv_rows['header_row'].append(key)
+                            #             self.csv_rows['row_1'].append("")
+                            #         else:
+                            #             # move genkey to first item in row..
+                            #             if key == 'genKey':
+                            #                 self.csv_rows['header_row'].insert(0, key)
+                            #                 self.csv_rows['row_1'].insert(0, value)
+                            #             elif key != "ion_con":
+                            #                 self.csv_rows['header_row'].append(key)
+                            #                 self.csv_rows['row_1'].append(value)
+                            #             else:
+                            #                 for pka_key, pka_vals in value.items():
+                            #                     for pka in pka_vals:
+                            #                         self.csv_rows['header_row'].append(pka_key)
+                            #                         self.csv_rows['row_1'].append(pka)
+
+            # TODO: organize metabolite pchem props by prop and calculator..
+            # for heading in headings:
+            #     for metabolite in metaboliteList:
+            #         # for heading in headings:
+            #         for key, value in metabolite.items():
+            #             if key == heading and key not in self.parent_info:
+            #                 # check for blank values..
+            #                 if value == None or value == '':
+            #                     self.csv_rows['header_row'].append(key)
+            #                     self.csv_rows['row_1'].append("")
+            #                 else:
+            #                     # move genkey to first item in row..
+            #                     if key == 'genKey':
+            #                         self.csv_rows['header_row'].insert(0, key)
+            #                         self.csv_rows['row_1'].insert(0, value)
+            #                     elif key != "ion_con":
+            #                         self.csv_rows['header_row'].append(key)
+            #                         self.csv_rows['row_1'].append(value)
+            #                     else:
+            #                         for pka_key, pka_vals in value.items():
+            #                             for pka in pka_vals:
+            #                                 self.csv_rows['header_row'].append(pka_key)
+            #                                 self.csv_rows['row_1'].append(pka)
 
         writer.writerow(self.csv_rows['header_row'])
         writer.writerow(self.csv_rows['row_1'])

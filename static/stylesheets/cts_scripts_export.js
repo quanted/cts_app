@@ -119,10 +119,11 @@ function buildMetabolitesArray() {
     var nodeArray = [];
     for (var node in canvasNodes) {
         if (canvasNodes.hasOwnProperty(node)) {
-            var nodeItem = {
-                'image': canvasNodes[node]['name'],
-                'data': canvasNodes[node]['data']
-            };
+            // var nodeItem = {
+            //     'image': canvasNodes[node]['name'],
+            //     'data': canvasNodes[node]['data']
+            // };
+            var nodeItem = canvasNodes[node]['data']
             nodeArray.push(nodeItem);
         }
     }
