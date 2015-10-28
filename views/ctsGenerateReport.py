@@ -226,9 +226,9 @@ class CSV(object):
                 self.csv_rows['header_row'].append("smiles")
                 self.csv_rows['row_1'].append(metabolite['smiles'])
 
+                # below prop/calc loops for ordering row by prop..
                 for prop in self.props:
                     for calc in self.calcs:
-
                         for data_obj in metabolite['pchemprops']:
 
                             # now for the metabolite pchem data..
@@ -247,49 +247,6 @@ class CSV(object):
                                             self.csv_rows['header_row'].append("{}{} ({})".format(key, i, calc))
                                             self.csv_rows['row_1'].append(pka)
                                             i+=1
-                            # for key, value in metabolite.items():
-                            #     if key == heading and key not in self.parent_info:
-                            #         # check for blank values..
-                            #         if value == None or value == '':
-                            #             self.csv_rows['header_row'].append(key)
-                            #             self.csv_rows['row_1'].append("")
-                            #         else:
-                            #             # move genkey to first item in row..
-                            #             if key == 'genKey':
-                            #                 self.csv_rows['header_row'].insert(0, key)
-                            #                 self.csv_rows['row_1'].insert(0, value)
-                            #             elif key != "ion_con":
-                            #                 self.csv_rows['header_row'].append(key)
-                            #                 self.csv_rows['row_1'].append(value)
-                            #             else:
-                            #                 for pka_key, pka_vals in value.items():
-                            #                     for pka in pka_vals:
-                            #                         self.csv_rows['header_row'].append(pka_key)
-                            #                         self.csv_rows['row_1'].append(pka)
-
-            # TODO: organize metabolite pchem props by prop and calculator..
-            # for heading in headings:
-            #     for metabolite in metaboliteList:
-            #         # for heading in headings:
-            #         for key, value in metabolite.items():
-            #             if key == heading and key not in self.parent_info:
-            #                 # check for blank values..
-            #                 if value == None or value == '':
-            #                     self.csv_rows['header_row'].append(key)
-            #                     self.csv_rows['row_1'].append("")
-            #                 else:
-            #                     # move genkey to first item in row..
-            #                     if key == 'genKey':
-            #                         self.csv_rows['header_row'].insert(0, key)
-            #                         self.csv_rows['row_1'].insert(0, value)
-            #                     elif key != "ion_con":
-            #                         self.csv_rows['header_row'].append(key)
-            #                         self.csv_rows['row_1'].append(value)
-            #                     else:
-            #                         for pka_key, pka_vals in value.items():
-            #                             for pka in pka_vals:
-            #                                 self.csv_rows['header_row'].append(pka_key)
-            #                                 self.csv_rows['row_1'].append(pka)
 
         writer.writerow(self.csv_rows['header_row'])
         writer.writerow(self.csv_rows['row_1'])
@@ -304,9 +261,13 @@ def csvReceiver(request, model=''):
     """
     cache_key = "{}_json".format(model) # model-specific cache 
 
-    run_json = cache.get(cache_key) # todo: add error handling
-    cache.delete(cache_key)
-    run_data = json.loads(run_json)
+    try:
+        run_json = cache.get(cache_key) # todo: add error handling
+        cache.delete(cache_key)
+        run_data = json.loads(run_json)
+    except TypeError as te:
+        logging.info("CSV ERROR: {}".format(te))
+        return request
 
     if model == 'pchemprop':
         try:
