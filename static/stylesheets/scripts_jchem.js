@@ -91,7 +91,7 @@ function importMol(chemical) {
               marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
             }
             else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
-          });
+         //  });
 
          }
          else { displayErrorInTextbox("SMILES not valid.."); }

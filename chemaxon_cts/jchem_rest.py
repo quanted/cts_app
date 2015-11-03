@@ -149,7 +149,7 @@ def getChemSpecData(request):
 
 def getTransProducts(request):
     """
-	Makes request to metabolizer on cgi server
+	Makes request to metabolizer
 	"""
     url = Urls.metabolizerUrl
     data = json.dumps(request.POST)
@@ -302,6 +302,9 @@ def transform(request):
 
 def filterSMILES(request):
     """
+    cts ws call to jchem to perform various
+    smiles processing before being sent to
+    p-chem calculators
     """
     try:
         smiles = request.data.get('smiles')
@@ -358,11 +361,12 @@ def web_call(url, request, data):
 	and POST data. Returns an http response.
 	"""
     try:
-        response = requests.post(url, data=data, headers=headers, timeout=60)
+        response = requests.post(url, data=data, headers=headers, timeout=30)
         return response
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         logging.warning("error at web call: {} /error".format(e))
-        raise
+        raise e
+
 
 
 class DataStructures:

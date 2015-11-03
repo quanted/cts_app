@@ -214,6 +214,9 @@ class CSV(object):
 
             metabolites_data = run_data['pdf_json']
 
+            if not metabolites_data:
+                return HttpResponse("error building csv for metabolites..")
+
             # for prop in self.props:
             #     for calc in self.calcs:
             for metabolite in metabolites_data:
@@ -267,7 +270,7 @@ def csvReceiver(request, model=''):
         run_data = json.loads(run_json)
     except TypeError as te:
         logging.info("CSV ERROR: {}".format(te))
-        return request
+        return None
 
     if model == 'pchemprop':
         try:
