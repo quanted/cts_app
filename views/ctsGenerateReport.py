@@ -232,24 +232,25 @@ class CSV(object):
                 # below prop/calc loops for ordering row by prop..
                 for prop in self.props:
                     for calc in self.calcs:
-                        for data_obj in metabolite['pchemprops']:
+                        if 'pchemprops' in metabolite:
+                            for data_obj in metabolite['pchemprops']:
 
-                            # now for the metabolite pchem data..
-                            met_prop = data_obj['prop']
-                            met_calc = data_obj['calc']
-                            met_data = data_obj['data']
+                                # now for the metabolite pchem data..
+                                met_prop = data_obj['prop']
+                                met_calc = data_obj['calc']
+                                met_data = data_obj['data']
 
-                            if met_prop == prop and met_calc == calc:
-                                if met_prop != 'ion_con':
-                                    self.csv_rows['header_row'].append("{} ({})".format(met_prop, met_calc))
-                                    self.csv_rows['row_1'].append(met_data)
-                                else:
-                                    for key, val in data_obj['data'].items():
-                                        i = 0
-                                        for pka in val:
-                                            self.csv_rows['header_row'].append("{}{} ({})".format(key, i, calc))
-                                            self.csv_rows['row_1'].append(pka)
-                                            i+=1
+                                if met_prop == prop and met_calc == calc:
+                                    if met_prop != 'ion_con':
+                                        self.csv_rows['header_row'].append("{} ({})".format(met_prop, met_calc))
+                                        self.csv_rows['row_1'].append(met_data)
+                                    else:
+                                        for key, val in data_obj['data'].items():
+                                            i = 0
+                                            for pka in val:
+                                                self.csv_rows['header_row'].append("{}{} ({})".format(key, i, calc))
+                                                self.csv_rows['row_1'].append(pka)
+                                                i+=1
 
         writer.writerow(self.csv_rows['header_row'])
         writer.writerow(self.csv_rows['row_1'])
@@ -287,6 +288,7 @@ def csvReceiver(request, model=''):
             json_data = request.POST.get('pdf_json') # checkCalcsAndProps dict
             run_data.update({'pdf_json': json.loads(json_data)})
         except Exception as err:
+            logging.warning("!!! csv error: {} !!!".format(err))
             raise err
 
     csv_obj = CSV(model)
