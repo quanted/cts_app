@@ -84,14 +84,14 @@ function importMol(chemical) {
          if (processed_smiles_json['valid']) {
 
             getChemDetails(smiles, function (chemResults) {
-            if (chemResults != "Fail") {
-              data = chemResults.data[0];
-              // data['smiles'] = processed_smiles_json['processedsmiles'];
-              populateResultsTbl(data);
-              marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
-            }
-            else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
-         //  });
+              if (chemResults != "Fail") {
+                data = chemResults.data[0];
+                // data['smiles'] = processed_smiles_json['processedsmiles'];
+                populateResultsTbl(data);
+                marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
+              }
+              else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
+            });
 
          }
          else { displayErrorInTextbox("SMILES not valid.."); }
