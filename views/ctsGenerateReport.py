@@ -131,10 +131,7 @@ class CSV(object):
             raise KeyError("Model - {} - not accepted..".format(model))
         self.title = '' # workflow title
         self.time = '' # time of run
-        self.csv_rows = {
-            'header_row': [],
-            'row_1': [] # row_n keys for batch mode
-        } # list of ordered csv rows
+        self.csv_rows = [], # ordered list of list (header, row1, ...)
         self.parent_info = ['smiles', 'name', 'mass', 'formula'] # original user sructure
         self.header_row = [] # headers in order (per molecule)
         self.data_row = [] # data in order w/ headers
@@ -155,38 +152,42 @@ class CSV(object):
         writer.writerow([run_data['time']])
         writer.writerow([""])
 
+        # header_row = []
+        # self.csv_rows.append(header_row) # add header list to csv_rows list..
+        rows = [[], []] # initialized with header and first row..
+
         # write parent info first and in order..
         for prop in self.parent_info:
             for key, val in run_data.items():
                 if key == prop:
-                    self.csv_rows['header_row'].append(key)
-                    self.csv_rows['row_1'].append(val)
+                    rows[0].append(key)
+                    rows[1].append(val)
 
         if self.model == 'chemspec':
             for key, val in run_data.items():
                 if key not in self.parent_info:
                     if key == 'isoelectricPoint':
-                        self.csv_rows['header_row'].append(key)
-                        self.csv_rows['row_1'].append(val)
+                        rows[0].append(key)
+                        rows[1].append(val)
                     elif key == 'pka' or key == 'pkb':
                         i = 0 # pka counter
                         for item in val:
-                            self.csv_rows['header_row'].append(key + str(i))
-                            self.csv_rows['row_1'].append(item)
+                            rows[0].append(key + str(i))
+                            rows[1].append(item)
                             i+=1
                     elif key == 'pka-parent' or key == 'majorMicrospecies':
-                        self.csv_rows['header_row'].append(key + '-smiles')
-                        self.csv_rows['row_1'].append(val['smiles'])
+                        rows[0].append(key + '-smiles')
+                        rows[1].append(val['smiles'])
                     elif key == 'pka-micospecies':
                         for ms in val.items():
                             # each ms is a jchem_structure object
-                            self.csv_rows['header_row'].append(key + '-smiles')
-                            self.csv_rows['row_1'].append(val['smiles'])
+                            rows[0].append(key + '-smiles')
+                            rows[1].append(val['smiles'])
                     elif key == 'stereoisomers' or key == 'tautomers':
                         i = 0
                         for item in val:
-                            self.csv_rows['header_row'].append(item['key'] + str(i))
-                            self.csv_rows['row_1'].append(item['smiles'])
+                            rows[0].append(item['key'] + str(i))
+                            rows[1].append(item['smiles'])
                             i+=1
 
         elif self.model == 'pchemprop':
@@ -195,26 +196,25 @@ class CSV(object):
                     if prop in calc_props:
                         if prop == "ion_con":
                             for pka_key, pka_val in calc_props[prop].items():
-                                self.csv_rows['header_row'].append("{} ({})".format(pka_key, calc))
-                                self.csv_rows['row_1'].append(pka_val)
+                                rows[0].append("{} ({})".format(pka_key, calc))
+                                rows[1].append(pka_val)
                         else:   
-                            self.csv_rows['header_row'].append("{} ({})".format(prop, calc))
-                            self.csv_rows['row_1'].append(calc_props[prop])
+                            rows[0].append("{} ({})".format(prop, calc))
+                            rows[1].append(calc_props[prop])
+
 
         elif self.model == 'gentrans':
             # TODO: class this, e.g., Metabolizer (jchem_rest)
-            # headings = ['genKey', 'smiles', 'water_sol', 'ion_con', 'kow_no_ph', 'kow_wph', 'image']
-            headings = ['genKey', 'melting_point', 'boiling_point', 'water_sol', 'vapor_press',
-                        'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc']
-            metaboliteList = data_walks.buildTableValues(run_data['pdf_json'], headings, 3)  # List of dicts, which are node data
 
             # fileout = open("C:\\Users\\nickpope\\Desktop\\out.txt", "w")
             # fileout.write(json.dumps(run_data['pdf_json']))
             # fileout.close()
 
+            ###################################################################
             filein = open("C:\\Users\\nickpope\\Desktop\\out2.txt", "r")
             exjson = json.loads(filein.read())
             filein.close()
+            ###################################################################
 
             logging.info(">>> FILE CONTENT: {} <<<".format(exjson))
 
@@ -224,17 +224,25 @@ class CSV(object):
             if not metabolites_data:
                 return HttpResponse("error building csv for metabolites..")
 
-            # for prop in self.props:
-            #     for calc in self.calcs:
+            m = 1 # metabolite indexer
+            rows[0].insert(0, "gen") # insert generation header first
+            # metabolite per row...
             for metabolite in metabolites_data:
 
-                # add genkey..
-                self.csv_rows['header_row'].insert(0, "gen")
-                self.csv_rows['row_1'].insert(0, metabolite['genKey']) 
+                # add another row (list) to rows, prevent out of range errors (temp fix..)
+                if m >= len(rows):
+                    rows.append([])
 
-                # add smiles..
-                self.csv_rows['header_row'].append("smiles")
-                self.csv_rows['row_1'].append(metabolite['smiles'])
+                # # add genkey..
+                # rows[0].insert(0, "gen")
+                rows[m].insert(0, metabolite['genKey'])
+
+                # # add smiles..
+                # rows[0].append("smiles")
+                if m > 1:
+                    rows[m].append(metabolite['smiles'])
+                    # TODO: get name, mass, formula for each metabolite to remove below craziness..
+                    rows[m].extend(('', '', '')) # skipping name, mass, formula columns for metabolites
 
                 # below prop/calc loops for ordering row by prop..
                 for prop in self.props:
@@ -249,22 +257,21 @@ class CSV(object):
 
                                 if met_prop == prop and met_calc == calc:
                                     if met_prop != 'ion_con':
-                                        self.csv_rows['header_row'].append("{} ({})".format(met_prop, met_calc))
-                                        self.csv_rows['row_1'].append(met_data)
+                                        rows[0].append("{} ({})".format(met_prop, met_calc))
+                                        rows[m].append(met_data)
                                     else:
                                         for key, val in data_obj['data'].items():
                                             i = 0
                                             for pka in val:
-                                                self.csv_rows['header_row'].append("{}{} ({})".format(key, i, calc))
-                                                self.csv_rows['row_1'].append(pka)
+                                                rows[0].append("{}{} ({})".format(key, i, calc))
+                                                rows[m].append(pka)
                                                 i+=1
-
-        # write header and data row to csv response..
-        writer.writerow(self.csv_rows['header_row'])
-        writer.writerow(self.csv_rows['row_1']) # todo: account for 1+ data rows!!!
+                m+=1 # increment metabolite indexer
 
         # loop csv rows instead of hard-coded 'row_1' shenanigans..
-        
+        writer.writerow(rows[0]) # append header row to csv..
+        for row in rows[1:]:
+            writer.writerow(row)
 
         return response
 

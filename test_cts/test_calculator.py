@@ -22,7 +22,8 @@ class TestCalc(Calculator):
         # self.urlStruct = "/api/epiSuiteCalcs/{}"
         self.urlStruct = "/api/calculations/TEST/{}/{}" # method, property
 
-        self.methods = ['hierarchical']
+        # self.methods = ['hierarchical']
+        self.methods = ['fda']
         # map workflow parameters to test
         self.propMap = {
             'melting_point': {
@@ -48,7 +49,7 @@ class TestCalc(Calculator):
         post = self.getPostData(calc, prop)
         post['identifiers']['SMILES'] = structure # set smiles
         test_prop = self.propMap[prop]['urlKey'] # prop name TEST understands
-        url = self.baseUrl + self.urlStruct.format('fda', test_prop)
+        url = self.baseUrl + self.urlStruct.format('hierarchical', test_prop)
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
         except requests.exceptions.ConnectionError as ce:
