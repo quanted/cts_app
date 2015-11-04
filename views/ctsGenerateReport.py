@@ -205,21 +205,7 @@ class CSV(object):
 
         elif self.model == 'gentrans':
             # TODO: class this, e.g., Metabolizer (jchem_rest)
-
-            # fileout = open("C:\\Users\\nickpope\\Desktop\\out.txt", "w")
-            # fileout.write(json.dumps(run_data['pdf_json']))
-            # fileout.close()
-
-            ###################################################################
-            filein = open("C:\\Users\\nickpope\\Desktop\\out2.txt", "r")
-            exjson = json.loads(filein.read())
-            filein.close()
-            ###################################################################
-
-            logging.info(">>> FILE CONTENT: {} <<<".format(exjson))
-
-            # metabolites_data = run_data['pdf_json']
-            metabolites_data = exjson # hard coded metabolites json for now...
+            metabolites_data = run_data['pdf_json']
 
             if not metabolites_data:
                 return HttpResponse("error building csv for metabolites..")
