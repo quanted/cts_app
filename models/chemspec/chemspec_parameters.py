@@ -92,7 +92,7 @@ class CTS_Speciation_Pka(forms.Form):
 
 	pKa_decimals = forms.FloatField (
 						label='Number of decimals for pKa', 
-						initial=3,
+						initial=2,
 						min_value=1,
 						max_value=10,
 						# required=False,
