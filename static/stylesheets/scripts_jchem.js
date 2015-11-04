@@ -80,8 +80,8 @@ function importMol(chemical) {
       var smiles = smiles_result['structure'];
 
       // run smiles through validation/processing
-       isValidSMILES(smiles, function (processed_smiles_json) {
-         if (processed_smiles_json['valid']) {
+       // isValidSMILES(smiles, function (processed_smiles_json) {
+       //   if (processed_smiles_json['valid']) {
 
             getChemDetails(smiles, function (chemResults) {
               if (chemResults != "Fail") {
@@ -93,9 +93,9 @@ function importMol(chemical) {
               else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
             });
 
-         }
-         else { displayErrorInTextbox("SMILES not valid.."); }
-       });
+       //   }
+       //   else { displayErrorInTextbox("SMILES not valid.."); }
+       // });
 
     }
     else { displayErrorInTextbox("An error has occured retrieving smiles.."); }

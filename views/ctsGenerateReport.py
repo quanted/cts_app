@@ -204,7 +204,7 @@ class CSV(object):
         elif self.model == 'gentrans':
             # TODO: class this, e.g., Metabolizer (jchem_rest)
             # headings = ['genKey', 'smiles', 'water_sol', 'ion_con', 'kow_no_ph', 'kow_wph', 'image']
-            headings = ['genKey', 'smiles', 'melting_point', 'boiling_point', 'water_sol', 'vapor_press',
+            headings = ['genKey', 'melting_point', 'boiling_point', 'water_sol', 'vapor_press',
                         'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc']
             metaboliteList = data_walks.buildTableValues(run_data['pdf_json'], headings, 3)  # List of dicts, which are node data
 
@@ -212,7 +212,14 @@ class CSV(object):
             # fileout.write(json.dumps(run_data['pdf_json']))
             # fileout.close()
 
-            metabolites_data = run_data['pdf_json']
+            filein = open("C:\\Users\\nickpope\\Desktop\\out2.txt", "r")
+            exjson = json.loads(filein.read())
+            filein.close()
+
+            logging.info(">>> FILE CONTENT: {} <<<".format(exjson))
+
+            # metabolites_data = run_data['pdf_json']
+            metabolites_data = exjson # hard coded metabolites json for now...
 
             if not metabolites_data:
                 return HttpResponse("error building csv for metabolites..")
@@ -252,8 +259,12 @@ class CSV(object):
                                                 self.csv_rows['row_1'].append(pka)
                                                 i+=1
 
+        # write header and data row to csv response..
         writer.writerow(self.csv_rows['header_row'])
-        writer.writerow(self.csv_rows['row_1'])
+        writer.writerow(self.csv_rows['row_1']) # todo: account for 1+ data rows!!!
+
+        # loop csv rows instead of hard-coded 'row_1' shenanigans..
+        
 
         return response
 
