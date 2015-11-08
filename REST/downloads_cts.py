@@ -128,7 +128,7 @@ class CSV(object):
                 for calc in self.calcs:
                     # only add header if prop exist for given calc..
                     if prop in getCalcMapKeys(calc):
-                        if prop == 'ion_con':
+                        if prop == 'ion_con' and calc != 'sparc':
                             # build max pka and pkb columns..
                             for i in range (0, max(met_pkas)):
                                 col_header = "pKa{} ({})".format(i, calc) # e.g., pka1 (chemaxon)
