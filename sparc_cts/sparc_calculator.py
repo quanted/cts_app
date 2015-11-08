@@ -49,8 +49,8 @@ chemPropMap = {
 
 ########################## SPARC physical properties calculator interface ###################
 
-class SPARC_Calc(Calculator):
-    def __init__(self, smiles, pressure=760.0, meltingpoint=0.0, temperature=25.0):
+class SparcCalc(Calculator):
+    def __init__(self, smiles=None, pressure=760.0, meltingpoint=0.0, temperature=25.0):
 
         self.baseUrl = os.environ['CTS_SPARC_SERVER']
 
@@ -60,6 +60,14 @@ class SPARC_Calc(Calculator):
         self.pressure = pressure
         self.meltingPoint = meltingpoint
         self.temperature = temperature
+
+        self.propMap = {
+            "water_sol" : "SOLUBILITY",
+            "vapor_press" : "VAPOR_PRESSURE",
+            "henrys_law_con" : "HENRYS_CONSTANT",
+            "mol_diss" : "DIFFUSION",
+            "boiling_point": "BOILING_POINT"
+        }
 
     def get_sparc_query(self):
         query = dict()

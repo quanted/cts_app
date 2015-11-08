@@ -24,6 +24,12 @@ class JchemProperty(object):
         self.structure = ''  # cas, smiles, iupac, etc.
         self.postData = {}
         self.results = ''
+        self.propMap = {
+            'water_sol': [],
+            'ion_con': [], 
+            'kow_no_ph': [],
+            'kow_wph': []
+        }
 
     def setPostDataValue(self, propKey, propValue):
         """

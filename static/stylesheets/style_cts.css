@@ -1413,6 +1413,7 @@ th {
 
 #alignLibAndOptions table {
   display: inline-block;
+  margin-left: 8px;
 }
 
 .hideData {
@@ -1708,7 +1709,31 @@ for nodes on gentrans output */
 /* main workflow links div */
 div#l_menu {
   transition: all 1.2s ease;
+
 }
+#l_menu h3 {
+  background: #00d02f;
+}
+#l_menu a {
+  background: #ccf5d5;
+}
+#l_menu a:hover {
+  background: #b2f0c0;
+}
+#l_menu a:visited {
+  background: #ccf5d5;
+  color: #34322D;
+}
+
+/*
+.urbangreymenu a.aSelected {
+  display:block;
+  text-decoration:none;
+  color:#FFFFFF;
+  /*background-color:#356697;*/ /*original dark blue*/
+  /*background-color: #7993AE;
+  background-color: #9AB2CB;
+}*/
 
 /* metatolite info / p-Chem data div on gentrans output */
 #metaboliteInfo {

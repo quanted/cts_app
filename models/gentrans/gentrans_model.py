@@ -59,7 +59,8 @@ class gentrans(object):
             'structure': self.chem_struct,
             'generationLimit': self.gen_limit,
             'populationLimit': 0,
-            'likelyLimit': self.likely_limit,
+            # 'likelyLimit': self.likely_limit,
+            'likelyLimit': 0.001,
             'transformationLibraries': self.trans_libs,
             'excludeCondition': ""  # 'generateImages': False
         }

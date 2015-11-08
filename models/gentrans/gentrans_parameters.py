@@ -264,12 +264,12 @@ class cts_reaction_options(forms.Form):
 	# 				required=False,
 	# 			)
 
-	likely_limit = forms.FloatField (
-						label='Likelihood limit:',
-						initial=0.001,
-						min_value=0.001,
-						max_value=0.99,
-					)
+	# likely_limit = forms.FloatField (
+	# 					label='Likelihood limit:',
+	# 					initial=0.001,
+	# 					min_value=0.001,
+	# 					max_value=0.99,
+	# 				)
 
 	# add clean to force select option range
     # def clean_status(self):

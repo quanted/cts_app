@@ -6,7 +6,7 @@ import logging
 import os
 import requests
 import json
-from sparc_calculator import SPARC_Calc
+from sparc_calculator import SparcCalc
 
 
 
@@ -25,7 +25,7 @@ def request_manager(request):
             "props": props
         }
 
-        calcObj = SPARC_Calc(structure)
+        calcObj = SparcCalc(structure)
         returnedData = calcObj.makeDataRequest() # make call for data!
 
         # sparc makes one big call and returns all data in one large json packet
