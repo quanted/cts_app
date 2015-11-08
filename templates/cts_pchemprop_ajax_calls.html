@@ -89,7 +89,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                     else {
                         // blockUI code (getting pchemprops for multiple metabolites)
                         // variable to keep track of displaying to pchem table or not
-                        makeTheCall(calcPropData, node, false);
+                        makeTheCall(calcPropData, node, false); // get data for > 1 metabolite
                     }
 
                     //makeTheCall(url, calcPropData, node, plotDataToTable);
@@ -116,7 +116,8 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
             // console.log(this.retryLimit);
             if (data['calc'] == "sparc") {
                 // sparc returns all props in json
-                parseSPARCResponseToPchemTable(data, plotDataToTable)
+                // parseSPARCResponseToPchemTable(data, plotDataToTable)
+                parseSPARCResponseToPchemTable(data, node, plotDataToTable)
             }
             else {
                 parseResponseToPchemTable(data, node, false, plotDataToTable);
@@ -135,7 +136,7 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
 }
 
 
-function parseSPARCResponseToPchemTable(data, plotDataToTable) {
+function parseSPARCResponseToPchemTable(data, node, plotDataToTable) {
     var calc = data['calc']; // sparc
     var props = data['props']; // get sparc props list
     var sparc_results = data['data']['calculationResults'];
@@ -144,14 +145,14 @@ function parseSPARCResponseToPchemTable(data, plotDataToTable) {
         if (props.hasOwnProperty(prop)) {
             // var sparcPropName = sparcPropMap[props[prop]];
             console.log("current property: " + props[prop]);
-            getPropFromSPARCResults(data, props[prop], sparc_results, plotDataToTable);
+            getPropFromSPARCResults(data, node, props[prop], sparc_results, plotDataToTable);
         }
     }
     console.log("finished..");
 }
 
 
-function getPropFromSPARCResults(data, prop, sparc_results, plotDataToTable) {
+function getPropFromSPARCResults(data, node, prop, sparc_results, plotDataToTable) {
     var responseObj = {"calc": "sparc"}; // initial obj for parsing to table
     var sparcProp = sparcPropMap[prop]; // get sparc's name for prop
 
@@ -172,7 +173,7 @@ function getPropFromSPARCResults(data, prop, sparc_results, plotDataToTable) {
                 responseObj['prop'] = prop;
                 responseObj['data'] = propObj['result']; // prop result value
 
-                parseResponseToPchemTable(responseObj, null, false, true, plotDataToTable);
+                parseResponseToPchemTable(responseObj, node, false, true, plotDataToTable);
 
                 console.log("allegedly parsed to table...");
 
