@@ -5,8 +5,8 @@
     <h3 class="headerbar" id="workflow-header">{{ key|safe }}</h3>
         <ul>
             {% for valueKey, valueValue in value.items %}{% if forloop.last %}
-            <li><a href="/cts/{{ valueValue }}" id="{{ valueValue }}" class="fadeWorkflowMenu submenu_last">{{ valueKey|safe }}</a></li>{% else %}
-            <li><a href="/cts/{{ valueValue }}" id="{{ valueValue }}" class="fadeWorkflowMenu">{{ valueKey|safe }}</a></li>{% endif %}
+            <li><a href="/cts/{{ valueValue }}" id="{{ valueValue }}" class="fadeMenu submenu_last">{{ valueKey|safe }}</a></li>{% else %}
+            <li><a href="/cts/{{ valueValue }}" id="{{ valueValue }}" class="fadeMenu">{{ valueKey|safe }}</a></li>{% endif %}
             {% endfor %}
         </ul>
     {% endfor %}

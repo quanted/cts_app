@@ -80,7 +80,7 @@ class CTS_ChemCalcs_Props(forms.Form):
 				min_value=0,
 				max_value=14,
 			)
-	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient'))
+	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient (L/kg)'))
 
 
 class PchempropInp(CTS_ChemCalcs_Props):

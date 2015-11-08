@@ -1714,7 +1714,7 @@ div#l_menu {
 #l_menu h3 {
   background: #00d02f;
 }
-#l_menu a {
+/*#l_menu a {
   background: #ccf5d5;
 }
 #l_menu a:hover {
@@ -1723,7 +1723,7 @@ div#l_menu {
 #l_menu a:visited {
   background: #ccf5d5;
   color: #34322D;
-}
+}*/
 
 /*
 .urbangreymenu a.aSelected {
