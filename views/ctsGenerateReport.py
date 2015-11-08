@@ -136,7 +136,8 @@ def csvReceiver(request, model=''):
         run_data = json.loads(run_json)
     except TypeError as te:
         logging.info("CSV ERROR: {}".format(te))
-        return HttpResponse("A problem has been encountered downloading the CSV, press the back button, refresh the page, and try again")
+        raise te
+        # return HttpResponse("A problem has been encountered downloading the CSV, press the back button, refresh the page, and try again")
 
     if model == 'pchemprop':
         try:
