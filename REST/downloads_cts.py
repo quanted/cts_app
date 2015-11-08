@@ -182,13 +182,15 @@ class CSV(object):
                                 i = 0
                                 for pka in val:
                                     col_header = "{}{} ({})".format(key, i, calc)
-                                    header_index = rows['headers'].index(col_header) # get index of col_header
-                                    if header_index in rows[new_key]: rows[new_key][header_index] = pka
+                                    if col_header in rows['headers']:
+                                        header_index = rows['headers'].index(col_header) # get index of col_header
+                                        rows[new_key][header_index] = pka
                                     i+=1
                         else:
                             col_header = "{} ({})".format(prop, calc)
-                            header_index = rows['headers'].index(col_header)
-                            if header_index in rows[new_key]: rows[new_key][header_index] = data
+                            if col_header in rows['headers']: 
+                                header_index = rows['headers'].index(col_header)
+                                rows[new_key][header_index] = data
 
         # might have to add code to keep row order..
         writer.writerow(rows['headers'])
