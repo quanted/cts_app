@@ -126,9 +126,7 @@ def csvReceiver(request, model=''):
     """
     from REST.downloads_cts import CSV
 
-    cache_key = "{}_json".format(model) # model-specific cache 
-
-    logging.info(cache.get(cache_key))
+    cache_key = "{}_json".format(model) # model-specific cache
 
     try:
         run_json = cache.get(cache_key) # todo: add error handling
