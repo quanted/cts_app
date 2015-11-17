@@ -55,21 +55,12 @@ var Log = {
 
 };
 
-// $(document).ready(function() {
 //"wait" cursor during ajax events
 $(document).ajaxStart(function () {
-
-    if (callsTracker > 0) {
-        blockInterface(true);
-    }
-
+    if (callsTracker > 0) { blockInterface(true); }
     $('body').addClass('wait');
 }).ajaxComplete(function () {
-
-    if (callsTracker == 0) {
-        blockInterface(false);
-    }
-
+    if (callsTracker == 0) { blockInterface(false); }
     $('body').removeClass('wait');
 });
 
@@ -95,16 +86,15 @@ $('#gen-select').change(function() {
 $('#btn-pchem-getdata').click(function() {
     //Check  #gen-select-pchem value to determine how
     //many nodes to get pchemprops for:
-
     var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
-
     if (genLevel == 0) {
-        // get pchemprops only for selected metabolite:
-        getPchemData(currentNode);
+        getPchemData(currentNode); // pchemprops only for selected metabolite..
         return;
     }
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
+
+    var test = checkedCalcsAndProps;
 
     st.graph.eachNode(function(node) {
         // node must be within depth of parsedNodeList.length - 1
@@ -118,13 +108,6 @@ $('#btn-pchem-getdata').click(function() {
 });
 
 
-function convertToSMILES(chemical, callback) {
-  ajaxCall(getParamsObj("convertToSMILES", chemical), function(smilesResult) {
-    callback(smilesResult);
-  });
-}
-
-
 function toggleHeaders() {
     $(this).parent().nextUntil('tr.header').toggle();
 }
@@ -134,18 +117,12 @@ function addGenKey(jsonObj, json) {
     /* Adds genKey to node data. genKey is
      * the numbering scheme for metabolites that
      * identifies its depth and origin
-     * jsonObj - $jit.json object
-     * json - json string for spacetree
      * returns: list of tot num of nodes per depth*/
-
     var depthList = new Array(genMax + 2).join('0').split('').map(parseFloat);  // array of 0's size of genMax
     var numNodesPerDepth = new Array(genMax + 2).join('0').split('').map(parseFloat);
-
     jsonObj.eachLevel(json, 0, genMax, function(node, depth) {
-
         depthList[depth] += 1;
         numNodesPerDepth[depth] += 1;  // tracking total nodes/depth
-
         var key = "";
         if (depth == 0) { key = "1"; }
         else {
@@ -159,12 +136,9 @@ function addGenKey(jsonObj, json) {
             key = key.replace(/.\s*$/, '');  //cast thine trailing .'s aside
         }
         node.data.genKey = key;
-
     });
-
     return numNodesPerDepth;
-
- }
+}
 
 
 function init(){
@@ -309,12 +283,8 @@ function init(){
 
 
 function getSpaceTree() {
-    if (st !== null) {
-        return st;
-    }
-    else {
-        return null;
-    }
+    if (st !== null) { return st; }
+    else { return null; }
 }
 
 
@@ -329,7 +299,6 @@ function resizeCanvas(nodes) {
     // Increase size of containter divs as well:
     $('#center-cont, #cont').height(height);
 
-    // st.config.offsetY
 }
 
 
@@ -429,10 +398,10 @@ function addImageToMolInfo(node) {
 function buildMolInfoTable(molTable, node, data) {
     var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
-    //Clear existing table data:
+    //Clear existing table data..
     $(molTable).children().empty();
 
-     //Add molecular info to table:
+     //Add molecular info to table..
     $(molTable).prepend('<tr class="header"><th colspan="2">Molecular Information</th></tr>');
     for (key in data) {
         if ($.inArray(key, acceptedKeys) >= 0) {
@@ -446,7 +415,7 @@ function buildMolInfoTable(molTable, node, data) {
 }
 
 
-function tabDisplayLogic(event) {
+function tabDisplayLogic(event) {  
     //if menu bar is clicked, hide children!
     var target = $(event.target); //element that fired original click event
     if ($(target).hasClass('ui-tabs-nav')) {
@@ -465,20 +434,12 @@ function tabDisplayLogic(event) {
         
         var bothHid = 1; // 1 - both divs are hidden
         $(divs).each(function() {
-            if ($(this).is(':visible')) {
-                bothHid *= 0;
-            }
-            else {
-                bothHid *= 1;
-            }
+            if ($(this).is(':visible')) { bothHid *= 0; }
+            else { bothHid *= 1; }
         });
 
-        if (bothHid) {
-            $(selectedDiv).show();                
-        }
-        else {
-            $(divs).hide();
-        }
+        if (bothHid) { $(selectedDiv).show(); }
+        else { $(divs).hide(); }
 
     }
 }
@@ -509,20 +470,15 @@ function getPchemData(node) {
         $('.gentransError').show();
         return;
     }
-    else {
-        $('.gentransError').hide();
-    }
+    else { $('.gentransError').hide(); }
 
     makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {
-
         var kowPH = $('#id_kow_ph').val();
-
-        // make those calls (function from cts_pchemprop_ajax_calls.html):
+        // make p-chem calls (function from cts_pchemprop_ajax_calls.html)..
         startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node);
-
-        // make border dark blue (has pchemprop data):
+        // make border dark blue (has pchemprop data).. 
+        // TODO: only blue when data is actually downloaded
         $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node
-
     });
  
 }
@@ -605,9 +561,7 @@ function blockInterface(block) {
             fadeIn: 500
         });
     }
-    else {
-        $.unblockUI();
-    }
+    else { $.unblockUI(); }
 }
 
 
@@ -627,6 +581,4 @@ function jsonRepack(jsonobj) {
 
 <script type="text/javascript">
 init();
-// {#$('#metaboliteInfo').css('overflow-y', 'auto');#}
 </script>
-

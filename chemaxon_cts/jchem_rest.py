@@ -20,6 +20,8 @@ headers = { 'Content-Type': 'application/json' }
 
 class Urls:
     cts_jchem_server = os.environ['CTS_JCHEM_SERVER']
+    cts_efs_server = os.environ['CTS_EFS_SERVER']
+
     jchemBase = cts_jchem_server + '/webservices'
 
     # jchem ws urls:
@@ -29,7 +31,7 @@ class Urls:
     standardizerUrl = '/rest-v0/util/convert/standardizer'
 
     # homegrown metabolizer ws:
-    efsBase = cts_jchem_server + '/efsws/rest'
+    efsBase = cts_efs_server + '/efsws/rest'
     metabolizerUrl = efsBase + '/metabolizer'
     standardizerUrlEFS = efsBase + '/standardizer'
 

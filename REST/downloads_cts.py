@@ -103,12 +103,6 @@ class CSV(object):
             # TODO: class this, e.g., Metabolizer (jchem_rest)
             metabolites_data = run_data['pdf_json']
 
-            ###########################
-            # filein = open('C:\\Users\\nickpope\\Desktop\\outworks.txt', 'r')
-            # metabolites_data = json.loads(filein.read())
-            # filein.close()
-            ###########################
-
             if not metabolites_data:
                 return HttpResponse("error building csv for metabolites..")
 
