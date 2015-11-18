@@ -22,13 +22,10 @@ os.environ.update({
     'UBERTOOL_MONGO_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',
     'UBERTOOL_SECURE_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',   
     'UBERTOOL_REST_SERVER': 'http://172.20.100.15:7777',        # CGI Internal
-    # 'CTS_TEST_SERVER': 'http://pg.gl',                   # test rest server (intranet)
-    'CTS_TEST_SERVER': 'http://172.20.100.16:7080',
+    'CTS_TEST_SERVER': 'http://pg.gl',                   # test rest server (intranet)
     'CTS_JCHEM_SERVER': 'http://172.20.100.12',       # jchem rest server (internal)
-    'CTS_EFS_SERVER': 'http://172.20.100.12',
     # 'CTS_EPI_SERVER': 'http://172.20.100.16',         # test rest rserver (internal)
-    # 'CTS_EPI_SERVER': 'http://win.pg.gl',
-    'CTS_EPI_SERVER': 'http://172.20.100.16:8080',
+    'CTS_EPI_SERVER': 'http://win.pg.gl',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080/sparc-integration/rest/calc/multiProperty',         # SPARC rest server (external)
     'wkhtmltopdf': PROJECT_ROOT + '/wkhtmltopdf/linux/wkhtmltopdf',
     'PROJECT_PATH': PROJECT_ROOT,
@@ -46,16 +43,14 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = [
-    '134.67.114.1',
-#    'intranet.epa.gov/ubertool'
-    #'ord-uber-vm001',
-    #'ord-uber-vm001.'
-]
+ALLOWED_HOSTS = []
+if MACHINE_ID == "ord-uber-vm001":
+    ALLOWED_HOSTS.append('134.67.114.1')
+    ALLOWED_HOSTS.append('qedinternal.epa.gov')
+elif MACHINE_ID == "ord-uber-vm003":
+    ALLOWED_HOSTS.append('134.67.114.3')
+    ALLOWED_HOSTS.append('qed.epa.gov')
 
-ADMINS = (
-    ('Jon F.', 'funkswing@gmail.com')
-)
 
 APPEND_SLASH = True
 
@@ -118,17 +113,17 @@ TEST_RUNNER = 'testing.DatabaselessTestRunner'
 
 # CACHE Setup - required to run Django "sessions" without a database
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake'
-    }
-}
 # CACHES = {
 #     'default': {
-#         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#         'LOCATION': 'unique-snowflake'
 #     }
 # }
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
