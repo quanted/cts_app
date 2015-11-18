@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 import os, sys
+import socket
 import secret
 
+# Get machine IP address
+MACHINE_ID = socket.gethostname()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
