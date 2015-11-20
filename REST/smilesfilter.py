@@ -121,9 +121,11 @@ def transformSMILES(smiles):
 
 def parseSmilesByCalculator(structure, calculator):
     """
-    EPI Suite dependent SMILES filtering!
+    Calculator-dependent SMILES filtering!
     """
     from chemaxon_cts import jchem_rest
+
+    logging.info("Parsing SMILES by calculator..")
 
     #1. check structure mass..
     if calculator == 'epi' or calculator == 'test':
@@ -139,6 +141,6 @@ def parseSmilesByCalculator(structure, calculator):
             logging.warning("!!! Error in parseSmilesByCalculator() {} !!!".format(e))
             raise e
 
-    logging.info(">>> FILTERED SMILES: {}".format(filtered_smiles))
+    logging.info(">>> {} FILTERED SMILES: {} (final)..".format(calcultor, filtered_smiles))
 
     return filtered_smiles

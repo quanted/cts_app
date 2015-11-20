@@ -25,7 +25,8 @@ os.environ.update({
     # 'CTS_TEST_SERVER': 'http://pg.gl',                   # test rest server (intranet)
     'CTS_TEST_SERVER': 'http://172.20.100.16:7080',
     'CTS_JCHEM_SERVER': 'http://172.20.100.12',       # jchem rest server (internal)
-    'CTS_EFS_SERVER': 'http://172.20.100.12',
+    # 'CTS_EFS_SERVER': 'http://172.20.100.12',
+    'CTS_EFS_SERVER': 'http://ca-test-1.cloudapp.net',
     # 'CTS_EPI_SERVER': 'http://172.20.100.16',         # test rest rserver (internal)
     # 'CTS_EPI_SERVER': 'http://win.pg.gl',
     'CTS_EPI_SERVER': 'http://172.20.100.16:8080',

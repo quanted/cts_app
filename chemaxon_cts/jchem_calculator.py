@@ -120,8 +120,8 @@ class Pka(JchemProperty):
             "temperature": 298.0,
             "micro": False,
             "considerTautomerization": True,
-            "pKaLowerLimit": -20.0,
-            "pKaUpperLimit": 10.0,
+            "pKaLowerLimit": 0.0,
+            "pKaUpperLimit": 14.0,
             "prefix": "DYNAMIC"
         }
 

@@ -310,7 +310,6 @@ def filterSMILES(request):
     """
     try:
         smiles = request.data.get('smiles')
-        logging.info("")
     except Exception as e:
         logging.info("exception at transformSMILES: {}".format(e))
         return
