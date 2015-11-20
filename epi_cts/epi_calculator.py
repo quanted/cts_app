@@ -75,9 +75,9 @@ class EpiCalc(Calculator):
         post = self.getPostData(calc, prop)
 
         # run structure through epi suite smiles filter..
-        logging.info("filtering smiles for epi suite...")
+        # logging.info("filtering smiles for epi suite...")
         # structure = smilesFilter(structure) # make sure mass is < 1500g/mol
-        structure = smilesfilter.parseSmilesByCalcultor(structure, calc)
+        # structure = smilesfilter.parseSmilesByCalcultor(structure, calc)
 
         post['identifiers']['SMILES'] = structure # set smiles
         # post['smiles'] = structure
