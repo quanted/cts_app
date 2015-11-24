@@ -1194,10 +1194,10 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
   background-color: #9AB2CB;
 }
 .tabUnsel {
-  color: #1F262A;
+  color: #4289AA;
 }
 .tabSel {
-  color: #4289AA;
+  color: #1F262A;
 }
 
 /* Tables */
@@ -1413,6 +1413,7 @@ th {
 
 #alignLibAndOptions table {
   display: inline-block;
+  margin-left: 8px;
 }
 
 .hideData {
@@ -1696,11 +1697,45 @@ for nodes on gentrans output */
 
 /* highlights checkboxes on chemical speciation tab */
 .brightBorders {
-  box-shadow: 0px 0px 10px 2px #4289AA;
+  box-shadow: 0px 0px 15px 2px #4289AA;
+  /*border-radius: 10px;*/
 }
 
-/* metatolite info / p-Chem data div on gentrans output */
+.darkBorders {
+  box-shadow: 0px 0px 15px 2px #356697;
+  /*border-radius: 10px;*/
+}
 
+/* main workflow links div */
+div#l_menu {
+  transition: all 1.2s ease;
+
+}
+#l_menu h3 {
+  background: #00d02f;
+}
+/*#l_menu a {
+  background: #ccf5d5;
+}
+#l_menu a:hover {
+  background: #b2f0c0;
+}
+#l_menu a:visited {
+  background: #ccf5d5;
+  color: #34322D;
+}*/
+
+/*
+.urbangreymenu a.aSelected {
+  display:block;
+  text-decoration:none;
+  color:#FFFFFF;
+  /*background-color:#356697;*/ /*original dark blue*/
+  /*background-color: #7993AE;
+  background-color: #9AB2CB;
+}*/
+
+/* metatolite info / p-Chem data div on gentrans output */
 #metaboliteInfo {
   font-family: 'Open Sans', sans-serif;
   border-radius: 4px;
@@ -1787,3 +1822,20 @@ div.pka-wrapper {
     box-shadow: rgba(0,255,255,0.5);
 }
 
+/* parsley field errors list */
+.parsley-errors-list li {
+  color: #FF3232;
+  
+}
+
+/* gentrans inputs rework */
+.gentrans-radio-group {
+  /*display: inline-block;*/
+}
+
+#reactsim-libs input {
+  width: 50px;
+}
+#reactsim-libs {
+  border: black 1px solid;
+}

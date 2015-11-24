@@ -1,19 +1,52 @@
 $( document ).ready(function() {
 
+	// if errors on one tab but not another, go to tab
+	// that has errors displayed
+	var error_list = $('ul.errorlist');
+	if ($(error_list).length > 0) {
+		var closest_table = $(error_list).closest('table.input_table');
+		if ($(closest_table).hasClass('tab_Speciation')) {
+			// display tab_Speciation tab:
+			$('.tab_Chemical').hide();
+			$('.tab_Speciation').show();
+			//highlight appropriate tab:
+			$('li.Chemical').removeClass('tabSel').addClass('tabUnsel');
+			$('li.Speciation').removeClass('tabUnsel').addClass('tabSel');
+			//display proper buttons:
+			$('.next, #metaDataToggle, #metaDataText').hide();
+			$(".back, .submit, #resetbutton").show();
+		}
+	}
+
+
 	//++++++++++ From scripts_inputs.js in ubertool_eco ++++++++++++
 	//BlockUI on Form Submit
 	$("input[value='Submit']").click(function (e) {
 
 		e.preventDefault();
 
-        $('.errorlist').remove();
+		// implement field validation for checked tables:
+		var tables_to_validate = $('table input:checkbox:checked').closest('table');
+		var input_fields = $(tables_to_validate).find('input').not('input:checkbox');
 
-		$.blockUI({
-		  css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "60px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
-		  message: '<h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
-		  fadeIn:  500
-		});
-		setTimeout(function() {$('form').submit();}, 500);
+		$('input').not('checkbox').removeAttr('data-parsley-group'); // remove from all fields
+		$(input_fields).attr('data-parsley-group', 'validate'); // add group name to inputs
+
+		$('form').parsley().validate("validate"); // todo: figure out why it's still validating the whole form
+		var valid = $('form').parsley().isValid();
+
+        if (valid) {
+        	$.blockUI({
+			  css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "60px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
+			  message: '<h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
+			  fadeIn:  500
+			});
+			setTimeout(function() {$('form').submit();}, 500);
+        }
+        else {
+        	return;
+        }
+		
 	});
 
 	$('#clearbutton').click(function(){
@@ -23,7 +56,7 @@ $( document ).ready(function() {
 		//tab classes: [Chemical, Speciation] and [tabSel, tabUnsel]
 		//divs have classes: tab_Chemical or tab_Speciation
 
-		$('input:visible, textarea:visible').each(function() {
+		$('input:visible, textarea:visible').each(function () {
 			switch(this.type) {
 				case 'text':
 					$(this).val('');
@@ -88,7 +121,17 @@ function uberNavTabs( modelTabs, subTabs ) {
 	// $('.tabUnsel').hide();
 
 	// Click handler
-	$('.input_nav ul li').click(function() {
+	$('.input_nav ul li').not('#clearbutton').click(function() {
+
+		// don't validate fields if hitting "clear" button
+		// var test = $(this);
+
+		var form = $('form');
+    	form.parsley().validate(); // validate form
+
+		// validate fields before tabbing
+		if (!form.parsley().isValid()) { return; } // return if form not valid
+
 		// Check if "li" element has class (ignores the input buttons)
 		if ($(this).attr('class')) {
 			var testClass = $(this).attr("class").split(' ')[0];
@@ -142,6 +185,8 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 	$('.next').click(function () {
 
+        if (!validFields()) { return; }
+
 		window.scroll(0,0); //scroll to top
 
 		var tab = $(".tab:visible");
@@ -173,6 +218,8 @@ function uberNavTabs( modelTabs, subTabs ) {
 
 	$('.back').click(function () {
 
+		if (!validFields()) { return; }
+
 		window.scroll(0, 0); //scroll to top
 
 		if (curr_ind > 0) {
@@ -198,7 +245,6 @@ function uberNavTabs( modelTabs, subTabs ) {
 	});
 
     // if submit is enabled, make it glow for the slow
-
     $('input[type=submit]').change(function() {
         if ($(this).prop('disabled', false)) {
             $(this).addClass('brightBorders');
@@ -208,20 +254,12 @@ function uberNavTabs( modelTabs, subTabs ) {
         }
     });
 
-    //mouseover speciation table
-    //$('table.tab_Speciation').hover(
-    //    function() {
-    //        //mouseenter
-    //        $(this).removeClass('darken');
-    //        $(this).find('input[type=checkbox]').addClass('brightBorders');
-    //    },
-    //    function() {
-    //        //mouseleave
-    //        var checked = $(this).find('input[type=checkbox]').is(':checked');
-    //        if (!checked) {
-    //            $(this).addClass('darken');
-    //        }
-    //        $(this).find('input[type=checkbox]').removeClass('brightBorders');
-    //    }
-    //);
+}
+
+
+function validFields() {
+	// validate fields w/ parsely
+    var form = $('form');
+    form.parsley().validate(); // validate form
+    return form.parsley().isValid(); // check if form is valid
 }

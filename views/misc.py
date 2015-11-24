@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 import importlib
 import linksLeft
 import logging
+import os
 
 
 #######################################################################################
@@ -23,10 +24,8 @@ def fileNotFound(request, model=None):
     html = html + render_to_string('04ubertext_end.html', {})
     html = html + render_to_string('05cts_ubertext_links_right.html', {})
     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
-
     response = HttpResponse()
     response.write(html)
-
     return response
 
 def requestTimeout(request):
@@ -70,7 +69,7 @@ def displayPDF(request, reactionLib=None):
         return
 
     html = render_to_string('01cts_uberheader.html')
-    html += render_to_string('02cts_uberintroblock_nomodellinks.html', {'title2':'File not found'})
+    html += render_to_string('02cts_uberintroblock_nomodellinks.html')
     html += linksLeft.linksLeft()
     html += render_to_string('04ubertext_start.html', {
             'model_attributes': title,
@@ -85,6 +84,88 @@ def displayPDF(request, reactionLib=None):
     response.write(html)
 
     return response
+
+
+def downloadUserGuide(request):
+    
+    text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'views/main_text.txt'),'r')
+    xx = text_file2.read()
+
+    html = render_to_string('01cts_uberheader.html', {})
+    html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {})
+    html = html + linksLeft.linksLeft()
+    html = html + render_to_string('04ubertext_start_index.html', {
+            'text_paragraph':xx
+            })
+    html += """
+    <embed src="/static/docs/CTS_USER_Guide_weber_9-14-15.docx">
+    """
+    html = html + render_to_string('04ubertext_end.html',{})
+    html = html + render_to_string('05cts_ubertext_links_right.html', {})
+    html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
+    response = HttpResponse()
+    response.write(html)
+    return response
+
+
+def moduleDescriptions(request, module=None):
+
+    logging.info("MODULE: " + module)
+
+    html = render_to_string('01cts_uberheader.html', {'title': 'Error'})
+    html += render_to_string('02cts_uberintroblock_nomodellinks.html', {'title2':'File not found'})
+    html += linksLeft.linksLeft()
+
+    module_text = ""
+    if module == 'chemedit-description':
+        module_text = chemeditDescription()
+    elif module == 'pchemprop-description':
+        module_text = pchempropDescription()
+    elif module == 'reactsim-description':
+        module_text = reactsimDescription()
+    # body of page:
+    html += render_to_string('04ubertext_start.html', {
+                'model_attributes': "",
+                'text_paragraph': module_text
+            })
+
+    # html = html + render_to_string('04ubertext_start.html', {
+    #         'model_attributes': 'This page is still under maintenance',
+    #         'text_paragraph': ""})
+    # html = html + """ <img src="/static/images/404error.png" width="300" height="300">"""
+    # html = html + """<img src="/static/images/fist-with-hammer.jpg" style="display:block; margin:auto;">"""
+
+    html += render_to_string('04ubertext_end.html', {})
+    html += render_to_string('05cts_ubertext_links_right.html', {})
+    html += render_to_string('06cts_uberfooter.html', {'links': ''})
+
+    response = HttpResponse()
+    response.write(html)
+
+    return response
+
+
+def chemeditDescription():
+        html = """
+        <p><b>Chemical Editor (CE):</b> Provides options for chemical entry, 
+        as well as the chemical speciation of the parent chemical.</p>
+        """
+        return html
+
+def pchempropDescription():
+    html = """
+    <p><b>Physicochemical Properties Calculator (PPC):</b> Calculates p-chem 
+    properties for the parent chemical and predicted transformation products based on 
+    the executions of multiple p-chem calculators .</p>
+    """
+    return html
+
+def reactsimDescription():
+    html = """
+    <p><b>Reaction Pathway Simulator (RPS):</b> Generates potential transformation 
+    products based on user-specified reaction conditions.</p>
+    """
+    return html
 
 
 #######################################################################################

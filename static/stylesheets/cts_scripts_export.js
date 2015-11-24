@@ -2,116 +2,84 @@ var doneDiv = document.getElementById("popup");
 
 $(document).ready(function () {
 
-	function parseOutput() {
+	function parseOutput(file_type) {
 		
-		//var jq_html = $('<div />').append($("div.articles_output").children('H2[class="model_header"], table[class*=out_], div[class*=out_], H3[class*=out_], H4[class*=out_]:not(div#chart1,table:hidden)').clone()).html()
+        var elements, jq_html, imgData_json, n_plot;
+        var workflow = getWorkflow(); // get current workflow name
+        var options = { x_offset : 30, y_offset : 30 }; // jqplotToImage options
+        var imgData = []; // jqplot images
+        var jsonData = ""; // json data string (originally intended for metabolites)
 
-        var path = window.location.href;
-        var elements;
+        elements = collectDOM(workflow); // get relevant dom objects
 
-        $('table.getpdf').html("");
-
-        var options = {
-			x_offset : 30,
-			y_offset : 30
-		};
-        var imgData = [];
-        var jsonData = "";
-
-        if (path.indexOf("chemspec") > -1) {
-            elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
-            elements = elements.add('table#inputsTable'); // user inputs
-            elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
-
-            var parentTitle = $('table#msMain td:first h4');
-            var parentImage = $('#parent_div img'); // parent species
-            var parentTable = $('#parent_div table');
-
-            elements = elements.add(parentTitle).add(parentImage).add(parentTable);
-
-            var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
-            elements = elements.add(ms);
-
-            var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
-            elements = elements.add(majorMS);
-
-            var taut = $('h4#taut, p.taut-percent, #taut_div img, #taut_div table');
-            elements = elements.add(taut);
-
-            var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
-            elements = elements.add(stereo);
-
-            try {
-                imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
-                imgData.push($('#isoelectric-point').jqplotToImageStr(options));
-            }
-            catch(e) {
-                console.log(e);
-            }
-        }
-        else if (path.indexOf("gentrans") > -1) {
-            elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
-            elements = elements.add('table#inputsTable'); // user inputs
-            elements = elements.add('h3#reactionPathways');
-            var canvasNodes = getSpaceTree().graph.nodes;
-            var nodeArray = [];
-            for (var node in canvasNodes) {
-                if (canvasNodes.hasOwnProperty(node)) {
-                    var nodeItem = {
-                        'image': canvasNodes[node]['name'],
-                        'data': canvasNodes[node]['data']
-                    };
-                    nodeArray.push(nodeItem);
-                }
-            }
-            jsonData = JSON.stringify(nodeArray);  // getSpaceTree() from cts_gentrans_tree.html
-            //jsonData = JSON.stringify(getSpaceTree().json);  // getSpaceTree() from cts_gentrans_tree.html
-        }
-        else {
-            elements = $('div.articles_output').children().not(':hidden, div#export_menu');
+        if (file_type == "pdf" || file_type == "html") {
+       		if (workflow == "chemspec") {
+	            try {
+	                imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
+	                imgData.push($('#isoelectric-point').jqplotToImageStr(options));
+	            }
+	            catch(e) { console.log(e); }
+	        }
+	        else if (workflow == "gentrans") {
+	            var nodeArray = buildMetabolitesArray();
+	            jsonData = JSON.stringify(nodeArray); // spacetree data (cts_gentrans_tree.html)
+	        }
+			jq_html = $('<div />').append($(elements).clone()).html();
+			var n_plot_1 = $('#microspecies-distribution').size();
+			var n_plot_2 = $('#isoelectric-point').size();
+			n_plot = n_plot_1 + n_plot_2;
+			imgData_json = JSON.stringify(imgData, null, '\t');
         }
 
-		var jq_html = $('<div />').append($(elements).clone()).html();
+        else if (file_type == "csv") {
+        	var json_obj = {};
+        	if (workflow == "pchemprop") {
+        		// todo: loop props, then calcs so the csv can be ordered by props
+        		for (var calc in checkedCalcsAndProps) {
+        			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
-		var n_plot_1 = $('#microspecies-distribution').size();
-		var n_plot_2 = $('#isoelectric-point').size();
-		var n_plot = n_plot_1 + n_plot_2;
+        				json_obj[calc] = {};
 
-		console.log(n_plot);
+        				for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+        					// looping props of calc..
+        					var calc_prop = checkedCalcsAndProps[calc][i];
+							var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
+							if (calc_prop == "ion_con") {
+								data = pickOutPka(data);
+							}
+							if (data != null) {
+								json_obj[calc][calc_prop] = data;
+							}
+        				}
+        			}
+        		}
+        	}
+        	else if (workflow == "gentrans") {
+        		json_obj = buildMetabolitesArray();
+        	}
+        	console.log(json_obj);
+        	jsonData = JSON.stringify(json_obj); // sends to ctsGenerateReport w/ key pdf_json
+        }
 
-		var imgData_json = JSON.stringify(imgData, null, '\t');
-		// console.log(imgData_json);
-	
-		$('<tr style="display:none"><td><input type="hidden" name="pdf_t"></td></tr>')
-			.appendTo('.getpdf')
-			.find('input')
-			.val(jq_html);
+        else { return; }
 
-		$('<tr style="display:none"><td><input type="hidden" name="pdf_nop"></td></tr>')
-			.appendTo('.getpdf')
-			.find('input')
-			.val(n_plot);
-
-		$('<tr style="display:none"><td><input type="hidden" name="pdf_p"></td></tr>')
-			.appendTo('.getpdf')
-			.find('input')
-			.val(imgData_json);
-
-        $('<tr style="display:none"><td><input type="hidden" name="pdf_json"></td></tr>')
-			.appendTo('.getpdf')
-			.find('input')
-			.val(jsonData); // spacetree data
+        appendToRequestTable(jq_html, n_plot, imgData_json, jsonData); // append elements to request table
 
 	}
 
 	$('#pdfExport').click(function () {
-		parseOutput();
+		parseOutput('pdf');
 		$('form').attr({'action': 'pdf', 'method': 'POST'}).submit();
 	});
 
 	$('#htmlExport').click(function () {
-		parseOutput();
+		parseOutput('html');
 		$('form').attr({'action': 'html', 'method': 'POST'}).submit();
+	});
+
+	$('#csvExport').click(function () {
+        parseOutput('csv');
+       	$('form').attr({'action': 'csv', 'method': 'POST'}).submit(); 
 	});
 
 
@@ -133,4 +101,120 @@ $(document).ready(function () {
 		});
 	});
 
+	$('#fadeExport_csv').append('<span class="hover"></span>').each(function () {
+		var $span = $('> span.hover', this).css('opacity', 0);
+		$(this).hover(function () {
+			$span.stop().fadeTo(500, 1);
+		}, function () {
+			$span.stop().fadeTo(500, 0);
+		});
+	});
+
 });
+
+
+function buildMetabolitesArray() {
+	// calls cts_gentrans_tree function getSpaceTree()
+	var canvasNodes = getSpaceTree().graph.nodes;
+    var nodeArray = [];
+    for (var node in canvasNodes) {
+        if (canvasNodes.hasOwnProperty(node)) {
+            // var nodeItem = {
+            //     'image': canvasNodes[node]['name'],
+            //     'data': canvasNodes[node]['data']
+            // };
+            var nodeItem = canvasNodes[node]['data']
+            nodeArray.push(nodeItem);
+        }
+    }
+    return nodeArray;
+}
+
+
+function appendToRequestTable(jq_html, n_plot, imgData_json, jsonData) {
+	
+	var test = $('table.getpdf');
+
+	$('table.getpdf').html("");
+	
+	$('<tr style="display:none"><td><input type="hidden" name="pdf_t"></td></tr>')
+		.appendTo('.getpdf')
+		.find('input')
+		.val(jq_html);
+
+	$('<tr style="display:none"><td><input type="hidden" name="pdf_nop"></td></tr>')
+		.appendTo('.getpdf')
+		.find('input')
+		.val(n_plot);
+
+	$('<tr style="display:none"><td><input type="hidden" name="pdf_p"></td></tr>')
+		.appendTo('.getpdf')
+		.find('input')
+		.val(imgData_json);
+
+    $('<tr style="display:none"><td><input type="hidden" name="pdf_json"></td></tr>')
+		.appendTo('.getpdf')
+		.find('input')
+		.val(jsonData);
+}
+
+
+function collectDOM(workflow) {
+	switch(workflow) {
+		case "chemspec":
+			elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
+	        elements = elements.add('table#inputsTable'); // user inputs
+	        elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
+	        var parentTitle = $('table#msMain td:first h4');
+	        var parentImage = $('#parent_div img'); // parent species
+	        var parentTable = $('#parent_div table');
+	        elements = elements.add(parentTitle).add(parentImage).add(parentTable);
+	        var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
+	        elements = elements.add(ms);
+	        var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
+	        elements = elements.add(majorMS);
+	        var taut = $('h4#taut, p.taut-percent, #taut_div img, #taut_div table');
+	        elements = elements.add(taut);
+	        var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
+	        elements = elements.add(stereo);
+	        return elements;
+	    case "pchemprop":
+	    	elements = $('div.articles_output').children().not(':hidden, div#export_menu');
+	    	return elements;
+	   	case "gentrans":
+	   		elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
+	        elements = elements.add('table#inputsTable'); // user inputs
+	        elements = elements.add('h3#reactionPathways');
+	        return elements;
+	    default:
+	    	elements = null;
+	    	return elements;
+	}
+}
+
+
+function getWorkflow() {
+	var path = window.location.href;
+	if (path.indexOf("chemspec") > -1) {
+		return "chemspec";
+	}
+	else if (path.indexOf("pchemprop") > -1) {
+		return "pchemprop";
+	}
+	else if (path.indexOf("gentrans") > -1) {
+		return "gentrans";		
+	}
+	else { return null; }
+}
+
+
+function pickOutPka(html_string) {
+	var pka_obj = {};
+	var pkas = $.parseHTML(html_string);
+	var pka_string = "";
+	$(pkas).each(function () {
+		var key_val_array = $(this).text().split(': '); // "pka0: 1.23"
+		pka_obj[key_val_array[0]] = key_val_array[1];
+	});
+	return pka_obj;
+}

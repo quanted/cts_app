@@ -14,7 +14,7 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
     html = html + render_to_string('cts-jquery.html', {})
     html = html + render_to_string('04uberinput_start_tabbed.html', {
             'model': model,
-            'model_attributes': header+' Inputs'
+            'model_attributes': header
     })
 
     html = html + render_to_string('04uberinput_tabbed_nav.html', {
@@ -26,7 +26,10 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
             })
     
     # html = html + str(chemspec_parameters.ChemspecInp(formData))
+
     html = html + str(chemspec_parameters.form(formData)) # Loads the Chemical Speciation tables to the page
+
+    # html = html + render_to_string('cts_inputs_validation.html', {})
 
     html = html + render_to_string('cts.html', {}) # Builds marvin js and results table 
 

@@ -6,6 +6,8 @@ from django import forms
 from django.template import Context, Template
 from django.utils.safestring import mark_safe
 from models.forms import validation
+from parsley.decorators import parsleyfy
+from django.template.loader import render_to_string
 
 
 # Horizontally-aligned radio buttons template
@@ -17,20 +19,6 @@ def tmpl_respirationTable():
 	<td id="{{name}}">
 	{% for choice in form.respiration %}
 		{{ choice }} <br>
-	{% endfor %}
-	</td>
-
-	<td id="aerobic_picks">
-	<b>Aerobic</b> <br>
-	{%for choice in form.aerobic %}
-		{{choice}} <br>
-	{% endfor %}
-	</td>
-
-	<td id="anaerobic_picks">
-	<b>Anaerobic</b> <br>
-	{%for choice in form.anaerobic %}
-		{{choice}} <br>
 	{% endfor %}
 	</td>
 
@@ -133,17 +121,19 @@ def tmpl_oecdGuidelines():
 	return tmpl_oecdGuidelines
 
 
-# tmpl_horizontalRadios = Template(tmpl_horizontalRadios())
 tmpl_reactionSysCTS = Template(tmpl_reactionSysCTS())
 tmpl_respirationTable = Template(tmpl_respirationTable())
 tmpl_oecdGuidelines = Template(tmpl_oecdGuidelines())
 
+
 # Method(s) called from *_inputs.py
 def form(formData):
 
-	html = '<div class="input_table tab tab_ReactionPathSim" style="display:none">'
+	html = """
+	<div class="input_table tab tab_ReactionPathSim" style="display:none">
+	"""
 
-	form_cts_reaction_paths = cts_reaction_paths(formData)
+	form_cts_reaction_paths = cts_reaction_paths(formData)	
 	html += tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_paths)))
 
 	form_oecd_guidelines = cts_oecd_guidelines(formData)
@@ -156,16 +146,8 @@ def form(formData):
 	<tr><th colspan="3"> Select a respiration type </th></tr>
 	<tr>
 	"""
-
 	form_cts_respiration = cts_respiration(formData)
 	html += tmpl_respirationTable.render(Context(dict(form=form_cts_respiration, header=mark_safe("Respiration"))))
-
-	# form_cts_aerobic = cts_aerobic()
-	# html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_aerobic, header=mark_safe("Aerobic"))))
-
-	# form_cts_anaerobic = cts_anaerobic()
-	# html = html + tmpl_respirationTable.render(Context(dict(form=form_cts_anaerobic, header=mark_safe("Anaerobic"))))
-
 	html += '</tr></table>'
 
 	# html = html + '<table id="cts_reaction_options" class="tbl_wrap"><tr><td>' # table wrapper for react libs and options 
@@ -184,6 +166,14 @@ def form(formData):
 	</div>
 	"""
 
+	# html = render_to_string('cts_gentrans_inputs.html', {
+	# 							'reaction_paths': cts_reaction_paths(formData),
+	# 							'reaction_sys': cts_reaction_sys(formData),
+	# 							'respiration': cts_respiration(formData),
+	# 							'reaction_libs': cts_reaction_libs(formData),
+	# 							'reaction_options': cts_reaction_options(formData)
+	# 						})
+
 	return html
 
 
@@ -197,8 +187,8 @@ gen_limit_max = gen_limit_CHOICES[-1][1]  # not used as field, but referenced in
 pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'),
                      ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'))  # population limit
 
-aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
-anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))
+# aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
+# anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))
 
 oecd_guidelines_CHOICES = (('0', 'Fate, Transport, and Transformation (Series 835)'), ('1', 'Health Effects (Series 870)'))
 ftt_CHOICES = (('0', 'Make a selection'), ('1', 'Laboratory Abiotic Transformation Guidelines'), ('2', 'Transformation in Water and Soil Test Guidelines'), ('3', 'Transformation Chemical-Specific Test Guidelines'))
@@ -209,6 +199,7 @@ specialStudies_CHOICES = [('0', 'Metabolism and Pharmacokinetics (870.7485)')]
 
 
 # Reaction Pathways
+@parsleyfy
 class cts_reaction_paths(forms.Form):
 
 	reaction_paths = forms.ChoiceField(
@@ -219,6 +210,7 @@ class cts_reaction_paths(forms.Form):
 					required=False)
 
 # Reaction System
+@parsleyfy
 class cts_reaction_sys(forms.Form):
 
 	reaction_system = forms.ChoiceField(
@@ -227,24 +219,26 @@ class cts_reaction_sys(forms.Form):
 					required=False)
 
 # Respiration
+@parsleyfy
 class cts_respiration(forms.Form):
 
 	respiration = forms.ChoiceField(
 				choices=respiration_CHOICES,
 				required=False)
 
-	aerobic = forms.ChoiceField(
-				choices=aerobic_CHOICES,
-				widget=forms.RadioSelect(),
-				required=False)
+	# aerobic = forms.ChoiceField(
+	# 			choices=aerobic_CHOICES,
+	# 			widget=forms.RadioSelect(),
+	# 			required=False)
 
-	anaerobic = forms.ChoiceField(
-				choices=anaerobic_CHOICES,
-				widget=forms.RadioSelect(),
-				required=False)
+	# anaerobic = forms.ChoiceField(
+	# 			choices=anaerobic_CHOICES,
+	# 			widget=forms.RadioSelect(),
+	# 			required=False)
 
 
 # Reaction Libraries
+@parsleyfy
 class cts_reaction_libs(forms.Form):
 	abiotic_hydrolysis = forms.BooleanField(required=False, label='Abiotic Hydrolysis')
 	aerobic_biodegrad = forms.BooleanField(required=False, label='Aerobic Biodegradation')
@@ -255,27 +249,27 @@ class cts_reaction_libs(forms.Form):
 
 
 # Reaction Options (e.g., generation limit, likely limit, etc.)
+@parsleyfy
 class cts_reaction_options(forms.Form):
 
 	gen_limit = forms.ChoiceField (
 					choices=gen_limit_CHOICES,
-					label='Generation Limit:',
+					label='Number of generations:',
 					required=False
-				)
+				)	
 
-	pop_limit = forms.ChoiceField (
-					choices=pop_limit_CHOICES,
-					label='Population Limit:',
-					required=False,
-				)
+	# pop_limit = forms.ChoiceField (
+	# 				choices=pop_limit_CHOICES,
+	# 				label='Population Limit:',
+	# 				required=False,
+	# 			)
 
-	likely_limit = forms.FloatField (
-						label='Likely Limit:',
-						initial=0.001,
-						min_value=0.001,
-						max_value=0.99,
-						required=False,
-					)
+	# likely_limit = forms.FloatField (
+	# 					label='Likelihood limit:',
+	# 					initial=0.001,
+	# 					min_value=0.001,
+	# 					max_value=0.99,
+	# 				)
 
 	# add clean to force select option range
     # def clean_status(self):
@@ -283,6 +277,7 @@ class cts_reaction_options(forms.Form):
 
 
 # OECD Guidelines Selection
+@parsleyfy
 class cts_oecd_guidelines(forms.Form):
 
 	# Main Selection Branch

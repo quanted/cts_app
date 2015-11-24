@@ -7,78 +7,11 @@ import json
 import logging
 import os
 from REST.calculator import Calculator
+from REST.smilesfilter import max_weight
+from REST import smilesfilter
 # import jchem_rest
 
 headers = {'Content-Type': 'application/json'}
-
-
-# class Calculator(object):
-#     """
-# 	Skeleton class for calculators
-# 	NOTE: molID is recycled, always uses "7"
-# 	"""
-#
-#     def __init__(self):
-#         self.name = ''
-#         self.propMap = {}  # expecting list
-#         # self.baseUrl = 'http://134.67.114.6'
-#         self.baseUrl = None
-#         self.urlStruct = ''
-#         self.results = ''
-#
-#     # self.postData =
-#
-#     @classmethod
-#     def getCalcObject(self, calc):
-#         return EpiCalc()
-#
-#
-#     def getUrl(self, prop):
-#         if prop in self.propMap:
-#             calcProp = self.propMap[prop]['urlKey']
-#             return self.urlStruct.format(calcProp)
-#         else:
-#             return "Error: url key not found"
-#
-#     def getPropKey(self, prop):
-#         if prop in self.propMap:
-#             return self.propMap[prop]['propKey']
-#         else:
-#             return "Error: prop not found"
-#
-#     def getResultKey(self, prop):
-#         if prop in self.propMap:
-#             return self.propMap[prop]['resultKey']
-#         else:
-#             return "Error: result key not found"
-#
-    # def getPostData(self, calc, prop, method=None):
-    #     postData = {"smiles": ""}
-    #     if calc == 'epi':
-    #         return postData
-    #     else:
-    #         return "error!"
-
-    # def makeDataRequest(self, structure, calc, prop, method=None):
-    #     post = self.getPostData(calc, prop)
-    #     # post['molecule']['canonicalSmiles'] = structure
-    #     post['smiles'] = structure
-    #     url = self.baseUrl + self.getUrl(prop)
-    #
-    #     logging.info("url: {}".format(url))
-    #
-    #     try:
-    #         response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
-    #     except requests.exceptions.ConnectionError as ce:
-    #         logging.info("connection exception: {}".format(ce))
-    #         return None
-    #     except requests.exceptions.Timeout as te:
-    #         logging.info("timeout exception: {}".format(te))
-    #         return None
-    #     else:
-    #         self.results = json.loads(response.content)
-    #         return self.results
-
 
 
 class EpiCalc(Calculator):
@@ -127,28 +60,74 @@ class EpiCalc(Calculator):
                 'propKey': '',
                 'resultKey': 'logKowEstimate'
             },
+            'koc': {
+                'urlKey': 'soilAdsorptionCoefKoc',
+                'propKey': '',
+                'resultKey': 'soilAdsorptionCoefKoc'
+            }
         }
 
     def getPostData(self, calc, prop, method=None):
-        return {"smiles": ""}
+        # return {"smiles": ""}
+        return {"identifiers":{"SMILES": ""}}
 
     def makeDataRequest(self, structure, calc, prop, method=None):
         post = self.getPostData(calc, prop)
-        # post['molecule']['canonicalSmiles'] = structure
-        post['smiles'] = structure
-        url = self.baseUrl + self.getUrl(prop)
 
-        logging.info("url: {}".format(url))
+        # run structure through epi suite smiles filter..
+        # logging.info("filtering smiles for epi suite...")
+        # structure = smilesFilter(structure) # make sure mass is < 1500g/mol
+        # structure = smilesfilter.parseSmilesByCalcultor(structure, calc)
+
+        post['identifiers']['SMILES'] = structure # set smiles
+        # post['smiles'] = structure
+
+        url = self.baseUrl + self.getUrl(prop)
 
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
         except requests.exceptions.ConnectionError as ce:
             logging.info("connection exception: {}".format(ce))
-            return None
+            raise 
         except requests.exceptions.Timeout as te:
             logging.info("timeout exception: {}".format(te))
-            return None
+            raise 
         else:
-            self.results = json.loads(response.content)
-            return self.results
+            self.results = response
+            return response
 
+# def smilesFilter(structure):
+#         """
+#         EPI Suite dependent SMILES filtering!
+#         """
+#         from chemaxon_cts import jchem_rest
+
+#         request = requests.Request()
+#         request.data = { 'smiles': structure }
+
+#         response = jchem_rest.getMass(request) # get mass from jchem ws
+#         json_obj = json.loads(response.content)
+
+#         # 1. check mass..
+#         struct_mass = json_obj['data'][0]['mass']
+#         if struct_mass > max_weight or struct_mass < 0:
+#             raise Exception("chemical mass exceeds limit..")
+
+#         # 2. now clear stereos from structure..
+#         response = jchem_rest.clearStereo(request)
+#         request.data = { 'chemical': response.content } # structure in mrv format
+
+#         response = jchem_rest.convertToSMILES(request) # mrv >> smiles
+#         filtered_smiles = json.loads(response.content)['structure'] # get stereoless structure
+
+#         # 3. transform [N+](=O)[O-] >> N(=O)=O..
+#         request.data = { 'smiles': filtered_smiles }
+#         response = jchem_rest.transform(request)
+
+#         request.data = { 'chemical': filtered_smiles }
+#         response = jchem_rest.convertToSMILES(request)
+#         filtered_smiles = json.loads(response.content)['structure']
+
+#         logging.info(">>> EPI SUITE FILTERED SMILES: {}".format(filtered_smiles))
+
+#         return filtered_smiles

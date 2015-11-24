@@ -3,11 +3,12 @@ import requests
 import jchem_rest as jrest
 import logging
 import json
-from jchem_rest import JchemProperty as jp
+from jchem_calculator import JchemProperty as jp
 
 
 # TODO: get these from the to-be-modified jchem_rest class..
-services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'mrvToSmiles', 'getTransProducts', 'getPchemProps']
+services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMILES',
+				'getTransProducts', 'getPchemProps', 'getPchemPropDict']
 
 
 def request_manager(request):
@@ -23,69 +24,45 @@ def request_manager(request):
 	"""
 
 	try:
-		service = getRequestService(request)
-		chemical = getRequestChemical(request)
-		prop = getRequestProperty(request)
+		service = getRequestParam(request, 'service')
+		chemical = getRequestParam(request, 'chemical')
+		prop = getRequestParam(request, 'prop')
+
 		if prop == 'kow_wph':
 			ph = getRequestPh(request)
+			logging.info("KOW PH: {}".format(ph))
 		else:
 			ph = None
-		response = sendRequestToWebService(service, chemical, prop, ph)
+
+		if service == 'getPchemPropDict':
+			logging.info("IN HERE!!")
+			response = jrest.getpchemprops(request)
+		else:
+			response = sendRequestToWebService(service, chemical, prop, ph)
+
+		logging.info("REPONSE: {}".format(response))
+
 		return HttpResponse(response)
+
 	except Exception as e:
-		logging.warning("error occured in jchem_traffic_cop: {}".format(e))
-		return HttpResponse(json.dumps({"error": "request error", "calc": "chemaxon", "prop": prop}))
+		logging.warning("error occured in request_manager: {}".format(e))
+		raise HttpResponse(e)
 
 
-def getRequestService(request):
+def getRequestParam(request, key):
 	"""
-	Picks out service name from request
+	Picks out a key:value from request POST
 	"""
 	try:
-		service = request.POST.get('service')
+		value = request.POST.get(key)
 	except AttributeError as ae:
 		logging.warning("attribute error -- {}".format(ae))
 		raise
 	except KeyError as ke:
-		logging.warning("error: request as no key 'service' -- {}".format(ke))
+		logging.warning("error: request has no key 'service' -- {}".format(ke))
 		raise
 	else:
-		if service in services:
-			return service
-		else:
-			raise KeyError("error: service {} is not recognized".format(service))
-
-
-def getRequestChemical(request):
-	"""
-	Picks out chemical from request
-	"""
-	try:
-		chemical = request.POST.get('chemical')
-	except AttributeError as ae:
-		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
-		raise
-	except KeyError as ke:
-		logging.warning("error: request as no key 'chemical' -- {}".format(ke))
-		raise
-	else:
-		return chemical
-
-
-def getRequestProperty(request):
-	"""
-	Picks out property from request
-	"""
-	try:
-		prop = request.POST.get('prop')
-	except AttributeError as ae:
-		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
-		raise
-	except KeyError as ke:
-		logging.warning("error: request has no key 'prop' -- {}".format(ke))
-		raise
-	else:
-		return prop
+		return value
 
 
 def getRequestPh(request):
@@ -115,14 +92,19 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None):
 		response = jrest.getChemSpecData(request).content
 	elif service == 'smilesToImage':
 		response = jrest.smilesToImage(request).content
-	elif service == 'mrvToSmiles':
-		response = jrest.mrvToSmiles(request).content
+	elif service == 'convertToSMILES':
+		response = jrest.convertToSMILES(request).content
 	elif service == 'getPchemProps':
 		response = getJchemPropData(chemical, prop, phForLogD)
 	return response
 
 
 def getJchemPropData(chemical, prop, phForLogD=None):
+
+	logging.info("###### getting jchem props!")
+	logging.info("###### prop: {}".format(prop))
+	logging.info("###### chemical: {}".format(chemical))
+
 	result = ""
 	if prop == 'water_sol':
 		propObj = jp.getPropObject('solubility')
@@ -142,5 +124,8 @@ def getJchemPropData(chemical, prop, phForLogD=None):
 		result = propObj.getLogD(phForLogD)
 	else:
 		result = None
+
+	logging.info("###### data: {}".format(result))
+
 	resultDict = json.dumps({"calc": "chemaxon", "prop": prop, "data": result})
 	return resultDict

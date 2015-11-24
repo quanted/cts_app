@@ -10,6 +10,12 @@ var chemspecDefaults = {
     "stereoisomers_maxNoOfStructures": 100
 };
 
+// ordered list of inputs:
+var chemspec_params = ["pKa_decimals", "pKa_pH_lower", "pKa_pH_upper", "pKa_pH_increment",
+                        "pH_microspecies", "isoelectricPoint_pH_increment", "tautomer_maxNoOfStructures",
+                        "tautomer_pH", "stereoisomers_maxNoOfStructures"]
+
+
 $(document).ready(function() {
 
     uberNavTabs(
@@ -27,6 +33,8 @@ $(document).ready(function() {
     	$('#chemEditLookup').show();
     	// $('#chemEditDraw').hide();
     });
+
+    $('#resetbutton').parent('li').show(); // only workflow with defaults button
 
     //var isAllChecked_ChemCalcs = 1;
 

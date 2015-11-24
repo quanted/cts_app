@@ -28,9 +28,7 @@ def request_manager(request):
     prop = request.POST.get("prop")
     structure = request.POST.get("chemical")
 
-    logging.info("{}".format(calc))
-    logging.info("{}".format(prop))
-    logging.info("{}".format(structure))
+    logging.info("structure: {}".format(structure))
 
     postData = {
       "calc": calc,
@@ -40,10 +38,10 @@ def request_manager(request):
     # get data through epi_calculator:
     # calcObj = cmap.getCalcObject(calc) # get calculator object
     calcObj = EpiCalc()
-    returnedData = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
-    # logging.info("DATA: {}".format(returnedData))
 
-    postData.update({"data": returnedData}) # add that data
+    response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
+
+    postData.update({"data": json.loads(response.content)}) # add that data
 
     logging.info("DATA: {}".format(postData))
 

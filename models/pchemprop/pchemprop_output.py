@@ -3,17 +3,28 @@ from django.views.decorators.http import require_POST
 import logging
 
 @require_POST
-def pchempropOutputPage(request):
-    # return "test" 
+def pchempropOutputPage(request, metabolite=False):
+
     import pchemprop_model
-    pchemprop_obj = pchemprop_model.PChemProp("single")
+
+    # NOTE: Adding metabolite input for gathering p-chem properties
+    # for metabolites on the gentrans output page...
+
+    if metabolite:
+        pchemprop_obj = pchemprop_model.PChemProp('metabolite')
+    else:
+        pchemprop_obj = pchemprop_model.PChemProp('single')
+
     # Chemical from Chemical Editor
     pchemprop_obj.chem_struct = request.POST.get('chem_struct')
+
     pchemprop_obj.smiles = request.POST.get('smiles')
     pchemprop_obj.name = request.POST.get('name')
     pchemprop_obj.formula = request.POST.get('formula')
     pchemprop_obj.mass = request.POST.get('mass')
     pchemprop_obj.mass += " g/mol"
+
+
 
     # Pchem Properties Column Checkboxes
     pchemprop_obj.chemaxon = request.POST.get('chemaxon')
@@ -33,8 +44,9 @@ def pchempropOutputPage(request):
     pchemprop_obj.henrys_law_con = request.POST.get('henrys_law_con')
     pchemprop_obj.kow_no_ph = request.POST.get('kow_no_ph')
     pchemprop_obj.kow_wph = request.POST.get('kow_wph')
-    pchemprop_obj.kowPh = request.POST.get('kow_ph')
+    pchemprop_obj.kow_ph = request.POST.get('kow_ph')
     pchemprop_obj.koc = request.POST.get('koc')
+
     pchemprop_obj.fillCalcsandPropsDict()
 
     # dataDict = {}

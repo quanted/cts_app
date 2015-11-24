@@ -7,6 +7,9 @@ import logging
 from django.http import HttpRequest
 import data_walks
 from gentrans_parameters import gen_limit_max as gen_max
+import datetime
+from django.core.cache import cache
+import json
 
 
 class gentrans(object):
@@ -56,7 +59,8 @@ class gentrans(object):
             'structure': self.chem_struct,
             'generationLimit': self.gen_limit,
             'populationLimit': 0,
-            'likelyLimit': self.likely_limit,
+            # 'likelyLimit': self.likely_limit,
+            'likelyLimit': 0.001,
             'transformationLibraries': self.trans_libs,
             'excludeCondition': ""  # 'generateImages': False
         }
@@ -74,10 +78,17 @@ class gentrans(object):
         data_walks.metID = 0
         self.results = data_walks.recursive(response.content)
 
-        # logging.info("{} ###".format(self.results))
-
-        # fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-        # fileout.write(self.results)
-        # fileout.close()
-
         self.rawData = response.content
+
+        # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING ++++++++++++++
+        run_data = {
+            'title': "Transformation Products Output",
+            'jid': self.jid,
+            'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
+            'chem_struct': self.chem_struct,
+            'smiles': self.smiles,
+            'name': self.name,
+            'formula': self.formula,
+            'mass': self.mass
+        }
+        cache.set('gentrans_json', json.dumps(run_data), None) # must manually clear after use

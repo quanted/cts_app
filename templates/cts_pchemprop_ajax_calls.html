@@ -1,10 +1,34 @@
 <script type="text/javascript">
 
+var kowPH; // pH for logD
+var smiles, name, mass, formula, time;
+
+var sparcPropMap = {
+    "water_sol" : "SOLUBILITY",
+    "vapor_press" : "VAPOR_PRESSURE",
+    "mol_diss" : "WATER_DIFFUSION",
+    "ion_con": "FULL_SPECIATION",
+    "henrys_law_con" : "HENRYS_CONSTANT",
+    "kow_no_ph" : "DISTRIBUTION",
+    "kow_wph" : "LOGD",
+    "boiling_point": "BOILING_POINT"
+};
+
+
+var checkedCalcsAndProps; // format --> {'calc': ['checked_prop', ..], ..}
+
 $(document).ready(function() {
 
-    var checkedCalcsAndProps = {{checkedCalcsAndProps}};
+    checkedCalcsAndProps = {{checkedCalcsAndProps}};
     var structure = "{{structure}}";
-    var kowPH = {{kow_ph}};
+    kowPH = "{{kow_ph}}";
+    smiles = "{{structure}}";
+    name = "{{name}}";
+    mass = "{{mass}}";
+    formula = "{{formula}}";
+    time = "{{time}}";
+
+    sparcPropMap['kow_ph'] = kowPH;
 
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null);
 
@@ -14,7 +38,7 @@ $(document).ready(function() {
 function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node) {
     
     var ws = ""; // web service to direct to (jchem or test et al.)
-    var calcPropData;
+    var calcPropData = {};
     if (checkedCalcsAndProps == null) {
         return;
     } 
@@ -22,43 +46,55 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     for (var calc in checkedCalcsAndProps) {
         if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
-            for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+            if ( calc == "sparc" ) {
+                // send all properties to back
 
-                var prop = checkedCalcsAndProps[calc][i];
-                var calcPropData = {"chemical": structure, "calc": calc, "prop": prop};
-
-                if (calc == "chemaxon") {
-                    calcPropData.ws = "jchem";
-                    calcPropData.service = "getPchemProps";
-                    if (prop == "kow_wph") {
-                        calcPropData.ph = kowPH;
+                var props_list = [];
+                for (var index in checkedCalcsAndProps["sparc"]) {
+                    if (checkedCalcsAndProps["sparc"].hasOwnProperty(index)) {
+                        props_list.push(checkedCalcsAndProps["sparc"][index]);
                     }
                 }
-                else if ( calc == "epi")
-                    calcPropData.ws = "epi";
 
-                else if ( calc == "sparc")
-                    calcPropData.ws = "sparc";
-                else
-                    calcPropData.ws = null;
+                var post_data = {"chemical": structure, "calc": calc, "props": props_list};
+                post_data.ws = "sparc";
+                makeTheCall(post_data, node, true);
+            }
+            else {
+                // loops through calculator's properties
+                for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
 
+                    var prop = checkedCalcsAndProps[calc][i];
+                    calcPropData = {"chemical": structure, "calc": calc, "prop": prop};
 
-                var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
-                var workflowPath = window.location.href;
+                    if (calc == "chemaxon") {
+                        calcPropData.ws = "jchem";
+                        calcPropData.service = "getPchemProps";
+                        if (prop == "kow_wph") {
+                            calcPropData.ph = kowPH;
+                        }
+                    }
+                    else if (calc == "epi" || calc == "test") {
+                        calcPropData.ws = calc;
+                    }
 
-                if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
-                    var tblCell = $('.' + calc + '.' + prop);
-                    $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
-                    makeTheCall(calcPropData, node, true);
+                    var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
+                    var workflowPath = window.location.href;
+
+                    if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
+                        var tblCell = $('.' + calc + '.' + prop);
+                        $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                        makeTheCall(calcPropData, node, true);
+                    }
+                    else {
+                        // blockUI code (getting pchemprops for multiple metabolites)
+                        // variable to keep track of displaying to pchem table or not
+                        makeTheCall(calcPropData, node, false); // get data for > 1 metabolite
+                    }
+
+                    //makeTheCall(url, calcPropData, node, plotDataToTable);
+
                 }
-                else {
-                    // blockUI code (getting pchemprops for multiple metabolites)
-                    // variable to keep track of displaying to pchem table or not
-                    makeTheCall(calcPropData, node, false);
-                }
-
-                //makeTheCall(url, calcPropData, node, plotDataToTable);
-
             }
         }
     }
@@ -72,13 +108,20 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
         type: "POST",
         dataType: "json",
         data: calcPropData,
-        timeout: 30000,
+        timeout: 20000,
         // tryCount: 0,
         // retryLimit: 3,
         success: function(data) {
             // console.log(this.tryCount);
             // console.log(this.retryLimit);
-            parseResponseToPchemTable(data, node, false, plotDataToTable);
+            if (data['calc'] == "sparc") {
+                // sparc returns all props in json
+                // parseSPARCResponseToPchemTable(data, plotDataToTable)
+                parseSPARCResponseToPchemTable(data, node, plotDataToTable)
+            }
+            else {
+                parseResponseToPchemTable(data, node, false, plotDataToTable);
+            }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(errorThrown);
@@ -90,6 +133,53 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
             parseResponseToPchemTable(error, null, false, plotDataToTable);
         }
     });
+}
+
+
+function parseSPARCResponseToPchemTable(data, node, plotDataToTable) {
+    var calc = data['calc']; // sparc
+    var props = data['props']; // get sparc props list
+    var sparc_results = data['data']['calculationResults'];
+    console.log("parsing sparc data...");
+    for (prop in props) {
+        if (props.hasOwnProperty(prop)) {
+            // var sparcPropName = sparcPropMap[props[prop]];
+            console.log("current property: " + props[prop]);
+            getPropFromSPARCResults(data, node, props[prop], sparc_results, plotDataToTable);
+        }
+    }
+    console.log("finished..");
+}
+
+
+function getPropFromSPARCResults(data, node, prop, sparc_results, plotDataToTable) {
+    var responseObj = {"calc": "sparc"}; // initial obj for parsing to table
+    var sparcProp = sparcPropMap[prop]; // get sparc's name for prop
+
+    console.log("parsing sparc results for property...");
+    console.log("sparc property: " + sparcProp);
+
+    for (index in sparc_results) {
+        if (sparc_results.hasOwnProperty(index)) {
+            var propObj = sparc_results[index]; // property object
+
+            console.log("sparc property: ");
+            console.log(propObj);
+
+            if (propObj['type'] == sparcProp) {
+
+                console.log("requested property found in sparc results...parsing to table...");
+
+                responseObj['prop'] = prop;
+                responseObj['data'] = propObj['result']; // prop result value
+
+                parseResponseToPchemTable(responseObj, node, false, true, plotDataToTable);
+
+                console.log("allegedly parsed to table...");
+
+            }
+        }
+    }
 }
 
 
@@ -107,21 +197,35 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
 
     var data;
     if (response.hasOwnProperty('data')) {
-        if ((calc != "chemaxon") && (calc != "sparc")) {
-            if (response['data'] == null) {
-                data = "error";
+        // if ((calc != "chemaxon") && (calc != "sparc")) {
+        if (calc == "test") {
+            // var test = response['data']['properties'].keys().length;
+            if (response['data']['properties'] === "undefined") {
+                data = "calc returned nothing";
                 console.log("data has null value");
             }
             else if (response['data'].hasOwnProperty('error')) {
-                data = "error";
+                data = "calc error";
                 console.log(response['data']['error']);
             }
             else {
-//{#                data = response['data']['value'];#}
-                data = response['data']['val'];
+                // data = response['data']['val'];
+                // var data_key = Object.keys(response['data']['properties']);
+                data = response['data'];
             }
         }
-        else{
+        else if (calc == "epi") {
+            // data = response['val']; // the old way
+            var test = Object.keys(response['data']['properties']).length;
+            if (Object.keys(response['data']['properties']).length > 0) {
+                var data_key = Object.keys(response['data']['properties'])[0];
+                data = response['data']['properties'][data_key];
+            }
+            else {
+                data = "calc error";
+            }
+        }
+        else {
             data = response['data'];
         }
     }
@@ -145,10 +249,6 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 $('.' + calc + '.' + prop).html(organizeData(data, prop)); //add data to table
             }
 
-            // only add html to table for node's table:
-            //if (node.id == currentNode.id) {
-            //    $('.' + calc + '.' + prop).html(organizeData(data)); //add data to table
-            //}
         }
     }
 }
@@ -159,7 +259,7 @@ function organizeData(data, prop) {
     // more than a single value
 
     if (typeof data === "number") {
-        if (prop == "water_sol" || prop == "vapor_press") {
+        if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss" || prop == "henrys_law_con") {
             return data.toExponential(3);
         }
         else {

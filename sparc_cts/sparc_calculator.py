@@ -6,6 +6,7 @@ import logging
 import requests
 import os
 from enum import Enum
+import math
 
 from REST.calculator import Calculator
 from REST.calculator import CTSChemicalProperties
@@ -42,13 +43,14 @@ chemPropMap = {
     "water_sol" : "SOLUBILITY",
     "vapor_press" : "VAPOR_PRESSURE",
     "henrys_law_con" : "HENRYS_CONSTANT",
-    "mol_diss" : "DIFFUSION"
+    "mol_diss" : "DIFFUSION",
+    "boiling_point": "BOILING_POINT"
 }
 
 ########################## SPARC physical properties calculator interface ###################
 
-class SPARC_Calc(Calculator):
-    def __init__(self, smiles, pressure=760.0, meltingpoint=0.0, temperature=25.0):
+class SparcCalc(Calculator):
+    def __init__(self, smiles=None, pressure=760.0, meltingpoint=0.0, temperature=25.0):
 
         self.baseUrl = os.environ['CTS_SPARC_SERVER']
 
@@ -58,6 +60,14 @@ class SPARC_Calc(Calculator):
         self.pressure = pressure
         self.meltingPoint = meltingpoint
         self.temperature = temperature
+
+        self.propMap = {
+            "water_sol" : "SOLUBILITY",
+            "vapor_press" : "VAPOR_PRESSURE",
+            "henrys_law_con" : "HENRYS_CONSTANT",
+            "mol_diss" : "DIFFUSION",
+            "boiling_point": "BOILING_POINT"
+        }
 
     def get_sparc_query(self):
         query = dict()
@@ -77,8 +87,12 @@ class SPARC_Calc(Calculator):
 
     def get_calculations(self):
 
+        ############
+        # is it this get_caculations, or the global one that's actually being used??
+
         calculations = list()
-        calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm"))
+        calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm")) ##############
+        # calculations.append(get_calculation("VAPOR_PRESSURE", "mmHg")) # attempt to fix unit mismatch
         calculations.append(get_calculation("BOILING_POINT", "degreesC"))
 
         calculations.append(get_calculation("DIFFUSION", "NO_UNITS"))
@@ -91,11 +105,13 @@ class SPARC_Calc(Calculator):
 
         calculations.append(get_calculation("INDEX_OF_REFRACTION", "dummy"))
 
-        calcHC = get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
+        calcHC = get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter") ###############
+        # calcHC = get_calculation("HENRYS_CONSTANT", "atmmCubedPerMole") # attempt to fix unit mismatch
         calcHC["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcHC)
 
-        calcSol = get_calculation("SOLUBILITY", "logMolefrac")
+        calcSol = get_calculation("SOLUBILITY", "logMolefrac") ###########
+        # calcSol = get_calculation("SOLUBILITY", "mgPerLiter") # attempt to fix unit mismatch
         calcSol["solvents"].append(get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcSol)
 
@@ -147,31 +163,63 @@ class SPARC_Calc(Calculator):
             return None
         else:
             self.results = json.loads(response.content)
+
+            performUnitConversions(self.results)
+
             return self.results
 
 
-    def getPropertyValue(self, property):
+    def getPropertyValue(self, prop):
         result = ""
 
         if self.results == None:
             return None
 
-        if property in chemPropMap:
-            sparcProp = chemPropMap[property]
+        if prop in chemPropMap.keys():
+            sparcProp = chemPropMap[prop] # get key sparc understands
         else:
             return None
 
-        calcResults = self.results["calculationResults"]
-        for calc in calcResults:
-            if calc["type"] == sparcProp:
-                return calc["result"]
+        calcResults = self.results["calculationResults"] # list of prop results
+        for prop in calcResults:
+            if prop["type"] == sparcProp:
+                return prop["result"] # return prop value
 
         return None
 
 
+    def performUnitConversions(self, results_dict):
+        """
+        loops through sparc results, making any 
+        necessary conversions
+        """
+        prop_data = results_dict['calculationResults']
+        for prop in prop_data:
+            if prop['type'] == 'VAPOR_PRESSURE':
+                prop['result'] = 760.0 * math.exp(prop['result']) # log(Atm) --> mmHg
+            elif prop['type'] == 'HENRYS_CONSTANT':
+                prop['result'] = math.exp(prop['result']) / 1000.0 # log(atm-L/mol) --> atm-m3/mol
+            elif prop['type'] == 'SOLUBILITY':
+                prop['result'] = math.exp(prop['result']) # ???????? log(molefrac) --> mg/L ????????
+
 
 
 #  -----------------------End Class SPARC_Calculator----------------------------
+
+def performUnitConversions(results_dict):
+        """
+        loops through sparc results, making any 
+        necessary conversions
+        """
+        prop_data = results_dict['calculationResults']
+        for prop in prop_data:
+            if prop['type'] == 'VAPOR_PRESSURE':
+                prop['result'] = 760.0 * math.exp(prop['result']) # log(Atm) --> mmHg
+            elif prop['type'] == 'HENRYS_CONSTANT':
+                prop['result'] = math.exp(prop['result']) / 1000.0 # log(atm-L/mol) --> atm-m3/mol
+            # elif prop['type'] == 'SOLUBILITY':
+            #     prop['result'] = math.exp(prop['result']) # ???????? log(molefrac) --> mg/L ????????
+
 
 def get_calculation(type=None, units=None, pressure=760.0, meltingpoint=0.0, temperature=25.0):
     calc = dict()
@@ -201,6 +249,11 @@ def get_calculations(pressure=760.0, meltingPoint=0.0, temperature=25.0):
     t = temperature
 
     calculations = list()
+
+    # trying to add logD and ionization constant to sparc...
+    # calculations.append(get_calculation("LOGD", "NO_UNITS", p, m, t)) # kow_wPh
+    # calculations.append(get_calculation("FULL_SPECIATION", "NO_UNITS", p, m, t)) # ion_con
+
     calculations.append(get_calculation("VAPOR_PRESSURE", "logAtm", p, m, t))
     calculations.append(get_calculation("BOILING_POINT", "degreesC", p, m, t))
 
@@ -258,58 +311,6 @@ def parse_sparc_result(sparc_result):
     except ValueError, e:
         print "Parse error"
         return False
-
-
-
-# class Calculations(object):
-#     def __init__(self):
-#         self.calculations = list()
-#
-#         calc1 = Calculation("VAPOR_PRESSURE", "logAtm")
-#         self.calculations.append(calc1)
-#
-#         calc2 = Calculation("BOILING_POINT", "degreesC")
-#         self.calculations.append(calc2)
-#
-#         calc3 = Calculation("DIFFUSION", "NO_UNITS")
-#         self.calculations.append(calc3)
-#
-#         calc4 = Calculation("VOLUME", "cmCubedPerMole")
-#         self.calculations.append(calc4)
-#
-#         calc5 = Calculation("DENSITY", "gPercmCubed")
-#         self.calculations.append(calc5)
-#
-#         calc6 = Calculation("POLARIZABLITY", "angCubedPerMolecule")
-#         self.calculations.append(calc6)
-#
-#         calc7 = Calculation("INDEX_OF_REFRACTION", "dummy")
-#         self.calculations.append(calc7)
-#
-#         calc8 = Calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
-#         solvent8 = Solvent("OCCCCCCCC", "octanol")
-#         calc8.solvents.append(solvent8)
-#         self.calculations.append(calc8)
-#
-#         calc9 = Calculation("SOLUBILITY", "logMolefrac")
-#         solvent9 = Solvent("OCCCCCCCC", "octanol")
-#         calc9.solvents.append(solvent9)
-#         self.calculations.append(calc9)
-#
-#         calc10 = Calculation("ACTIVITY", "dummy")
-#         solvent10 = Solvent("OCCCCCCCC", "octanol")
-#         calc10.solvents.append(solvent10)
-#         self.calculations.append(calc10)
-#
-#         calc11 = Calculation("ELECTRON_AFFINITY", "dummy")
-#         self.calculations.append(calc11)
-#
-#         calc12 = Calculation("DISTRIBUTION", "NO_UNITS")
-#         solvent12 = Solvent("O", "water")
-#         calc12.solvents.append(solvent12)
-#         solvent12b = Solvent("OCCCCCCCC", "octanol")
-#         calc12.solvents.append(solvent12b)
-#         self.calculations.append(calc12)
 
     def get_calculation(self):
         return self.calculations
@@ -391,11 +392,3 @@ class SPARCResult(object):
         self.pressure = self.results["pressure"]
         self.molWeight = self.results["molWeight"]
         self.calculationResults = self.results["calculationResults"]
-
-
-
-
-
-
-
-

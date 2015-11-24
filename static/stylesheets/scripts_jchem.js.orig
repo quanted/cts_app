@@ -5,7 +5,7 @@ var marvinSketcherInstance;
 var Urls = {
 
   getChemDetails : "/jchem-cts/ws/getChemDetails/",
-  mrvToSmiles : "/jchem-cts/ws/mrvToSmiles/",
+  convertToSMILES : "/jchem-cts/ws/convertToSMILES/",
   getChemSpecData : "/jchem-cts/ws/getChemSpecData/",
   standarizer : "/jchem-cts/ws/standardizer/"
 
@@ -104,7 +104,7 @@ function importMolFromCanvas() {
 
     var params = new Object();
     // params.url = "test";
-    params.url = Urls.mrvToSmiles;
+    params.url = Urls.convertToSMILES;
     params.type = "POST";
     params.contentType = "application/json";
     params.dataType = "json";
@@ -154,9 +154,9 @@ function callStandardizer(chemical) {
 
 
 function callMrvToSmiles(chemical) {
-  //Forms request to call mrvToSmiles:
+  //Forms request to call convertToSMILES:
   var params = new Object();
-  params.url = Urls.mrvToSmiles;
+  params.url = Urls.convertToSMILES;
   params.type = "POST";
   params.contentType = "application/json";
   params.dataType = "json";

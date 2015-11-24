@@ -38,8 +38,6 @@ var callsTracker = 0; //tracks calls for p-chem requets; used for blocking ui
   useGradients = nativeCanvasSupport;
   animate = !(iStuff || !nativeCanvasSupport);
 
-{#  $('table#pchemprop_table').removeAttr('style').css('display', 'table');#}
-
     json = "";
     nodeList = null;
     st = null;
@@ -57,21 +55,12 @@ var Log = {
 
 };
 
-// $(document).ready(function() {
 //"wait" cursor during ajax events
 $(document).ajaxStart(function () {
-
-    if (callsTracker > 0) {
-        blockInterface(true);
-    }
-
+    if (callsTracker > 0) { blockInterface(true); }
     $('body').addClass('wait');
 }).ajaxComplete(function () {
-
-    if (callsTracker == 0) {
-        blockInterface(false);
-    }
-
+    if (callsTracker == 0) { blockInterface(false); }
     $('body').removeClass('wait');
 });
 
@@ -97,16 +86,15 @@ $('#gen-select').change(function() {
 $('#btn-pchem-getdata').click(function() {
     //Check  #gen-select-pchem value to determine how
     //many nodes to get pchemprops for:
-
     var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
-
     if (genLevel == 0) {
-        // get pchemprops only for selected metabolite:
-        getPchemData(currentNode);
+        getPchemData(currentNode); // pchemprops only for selected metabolite..
         return;
     }
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
+
+    var test = checkedCalcsAndProps;
 
     st.graph.eachNode(function(node) {
         // node must be within depth of parsedNodeList.length - 1
@@ -120,13 +108,6 @@ $('#btn-pchem-getdata').click(function() {
 });
 
 
-function mrvToSmiles(chemical, callback) {
-  ajaxCall(getParamsObj("mrvToSmiles", chemical), function(smilesResult) {
-    callback(smilesResult);
-  });
-}
-
-
 function toggleHeaders() {
     $(this).parent().nextUntil('tr.header').toggle();
 }
@@ -136,18 +117,12 @@ function addGenKey(jsonObj, json) {
     /* Adds genKey to node data. genKey is
      * the numbering scheme for metabolites that
      * identifies its depth and origin
-     * jsonObj - $jit.json object
-     * json - json string for spacetree
      * returns: list of tot num of nodes per depth*/
-
     var depthList = new Array(genMax + 2).join('0').split('').map(parseFloat);  // array of 0's size of genMax
     var numNodesPerDepth = new Array(genMax + 2).join('0').split('').map(parseFloat);
-
     jsonObj.eachLevel(json, 0, genMax, function(node, depth) {
-
         depthList[depth] += 1;
         numNodesPerDepth[depth] += 1;  // tracking total nodes/depth
-
         var key = "";
         if (depth == 0) { key = "1"; }
         else {
@@ -161,12 +136,9 @@ function addGenKey(jsonObj, json) {
             key = key.replace(/.\s*$/, '');  //cast thine trailing .'s aside
         }
         node.data.genKey = key;
-
     });
-
     return numNodesPerDepth;
-
- }
+}
 
 
 function init(){
@@ -311,12 +283,8 @@ function init(){
 
 
 function getSpaceTree() {
-    if (st !== null) {
-        return st;
-    }
-    else {
-        return null;
-    }
+    if (st !== null) { return st; }
+    else { return null; }
 }
 
 
@@ -331,7 +299,6 @@ function resizeCanvas(nodes) {
     // Increase size of containter divs as well:
     $('#center-cont, #cont').height(height);
 
-    // st.config.offsetY
 }
 
 
@@ -369,12 +336,6 @@ function getMolecularInfo(node) {
 
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
-
-
-{#    if ($(molInfo).has('p').length > 0) {#}
-{#        $(this).children('p').remove(); //remove initial paragraph#}
-{#    }#}
-
     // only add node image if a different node has been clicked:
     if (!currentNode || node.id != currentNode.id) {
         molInfo.children('.nodeWrapDiv').empty();  // empty existing contents
@@ -398,14 +359,14 @@ function getMolecularInfo(node) {
         $(molInfoTable).show();  // show molecular info
     }
     else {
-        // add mol info to node.data.molecularInfo:
+        // add mol info to node.data.molecularInfo (from scripts_jchem.js):
         getChemDetails(node.data.smiles, function(chemResults) {
             var data = chemResults.data[0];
             node.data.molecularInfo = data;  // add mol info to node data
             buildMolInfoTable(molInfoTable, node, data);  // build mol info table
 
             $("#" + node.id).children('img').addClass("selectedMetabolite");  // highlight node
-{#            $(molInfo).children(molInfoDiv).show();#}
+
             var molInfoHeader = $(molInfo).siblings('h3')[0];
             if ($(molInfoHeader).hasClass('collapse-close')) {
                 $(molInfoHeader).removeClass('collapse-close').addClass('collapse-open');
@@ -437,10 +398,10 @@ function addImageToMolInfo(node) {
 function buildMolInfoTable(molTable, node, data) {
     var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
 
-    //Clear existing table data:
+    //Clear existing table data..
     $(molTable).children().empty();
 
-     //Add molecular info to table:
+     //Add molecular info to table..
     $(molTable).prepend('<tr class="header"><th colspan="2">Molecular Information</th></tr>');
     for (key in data) {
         if ($.inArray(key, acceptedKeys) >= 0) {
@@ -454,7 +415,7 @@ function buildMolInfoTable(molTable, node, data) {
 }
 
 
-function tabDisplayLogic(event) {
+function tabDisplayLogic(event) {  
     //if menu bar is clicked, hide children!
     var target = $(event.target); //element that fired original click event
     if ($(target).hasClass('ui-tabs-nav')) {
@@ -473,20 +434,12 @@ function tabDisplayLogic(event) {
         
         var bothHid = 1; // 1 - both divs are hidden
         $(divs).each(function() {
-            if ($(this).is(':visible')) {
-                bothHid *= 0;
-            }
-            else {
-                bothHid *= 1;
-            }
+            if ($(this).is(':visible')) { bothHid *= 0; }
+            else { bothHid *= 1; }
         });
 
-        if (bothHid) {
-            $(selectedDiv).show();                
-        }
-        else {
-            $(divs).hide();
-        }
+        if (bothHid) { $(selectedDiv).show(); }
+        else { $(divs).hide(); }
 
     }
 }
@@ -494,16 +447,17 @@ function tabDisplayLogic(event) {
 
 function getPchemData(node) {
 
-    //TODO: Check if metabolite already has pchem data before making call ***********************
+    //TODO: Check if metabolite already has pchem data before making call *******
 
     if (!node) {
         $('.gentransError').show();
         return;
     }
 
-    var params = {"data":{}}; //POST data for pchemprops_model call
-
+    var smiles = node.data['smiles'];
+    var params = buildPostObject(smiles, "getPchemPropDict");
     var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call
+    
     for (var i in acceptedKeys) {
         var key = acceptedKeys[i];
         params["data"][key] = null; // values are irrelevant (only need smiles)
@@ -516,49 +470,53 @@ function getPchemData(node) {
         $('.gentransError').show();
         return;
     }
-    else {
-        $('.gentransError').hide();
-    }
+    else { $('.gentransError').hide(); }
 
-    var allCheckBoxes = $('#pchemprop_table input:checkbox');
-
-    $(allCheckBoxes).each(function() {
-        params["data"][this.name] = this.checked;
-    });
-
-    params["data"]["chem_struct"] = node.data['smiles'];
-    params["url"] = "/jchem-cts/ws/getpchemprops/"; //calls pchemprop model
-{#    params["url"] = "/cts/portal";#}
-    params["type"] = "POST";
-    // params["contentType"] = "application/json";
-    params["dataType"] = "json";
-
-    makeAjaxCall(node, params, function(node, pchemResults) {
-
-        // var chemaxonData = pchemResults["chemaxonResults"];
-        var checkedCalcsAndProps = pchemResults["checkedCalcsAndProps"];
+    makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {
         var kowPH = $('#id_kow_ph').val();
-
-        // make those calls (function from cts_pchemprop_ajax_calls.html):
-        // startPchemPropDataCollection(currentNode.data['smiles'], checkedCalcsAndProps, kowPH, currentNode);
+        // make p-chem calls (function from cts_pchemprop_ajax_calls.html)..
         startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node);
-
-        // make border dark blue (has pchemprop data):
+        // make border dark blue (has pchemprop data).. 
+        // TODO: only blue when data is actually downloaded
         $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node
-
     });
  
 }
 
 
-function getChemDetailsObj(chemical) {
-  var params = new Object();
-  params.url = "/jchem-cts/ws/getChemDetails/";
-  params.type = "POST";
-  params.contentType = "application/json";
-  params.dataType = "json";
-  params.data = { "chemical" : chemical };
-  return params;
+function buildPostObject(smiles, service) {
+    var params = new Object();
+    params.url = "/cts/portal";
+    params.type = "POST";
+    params.contentType = "application/json";
+    params.dataType = "json";
+    params.data = { 
+        "chemical" : smiles,
+        "ws": "jchem",
+        "service": service,
+    };
+    var allCheckBoxes = $('#pchemprop_table input:checkbox');
+    $(allCheckBoxes).each(function() {
+        params["data"][this.name] = this.checked;
+    });
+    params["data"]["chem_struct"] = smiles
+    // params["data"]["chem_struct"] = node.data['smiles'];
+    return params;
+}
+
+
+function getPchemDataObj(chemical) {
+    var params = new Object();
+    params.url = "/cts/portal";
+    params.type = "POST";
+    params.contentType = "application/json";
+    params.dataType = "json";
+    params.data = { 
+        "chemical" : chemical,
+        "ws": "jchem",
+        "service": "getPchemProps"
+    };
+    return params;
 }
 
 
@@ -603,9 +561,7 @@ function blockInterface(block) {
             fadeIn: 500
         });
     }
-    else {
-        $.unblockUI();
-    }
+    else { $.unblockUI(); }
 }
 
 
@@ -625,6 +581,4 @@ function jsonRepack(jsonobj) {
 
 <script type="text/javascript">
 init();
-{#$('#metaboliteInfo').css('overflow-y', 'auto');#}
 </script>
-

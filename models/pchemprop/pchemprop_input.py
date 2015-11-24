@@ -18,7 +18,7 @@ def pchempropInputPage(request, model='', header='P-Chem Properties', formData=N
 
     html = html + render_to_string('04uberinput_start_tabbed.html', {
             'model': model,
-            'model_attributes': header+' Inputs'
+            'model_attributes': header
     })
 
     html = html + render_to_string('04uberinput_tabbed_nav.html', {

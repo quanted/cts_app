@@ -13,6 +13,7 @@ from django.template.defaultfilters import stringfilter
 from django.core import validators
 from models.forms import validation
 from filters.templatetags import color_table
+from parsley.decorators import parsleyfy
 
 
 # Define Custom Templates
@@ -58,11 +59,10 @@ tmpl_ChemCalcsCTS = Template(tmpl_ChemCalcsCTS())
 def form(formData):
 	form_cts_ChemCalcs_props = CTS_ChemCalcs_Props(formData)
 	html = tmpl_ChemCalcsCTS.render(Context(dict(form=form_cts_ChemCalcs_props)))
-	# form_cts_Transform = cts_Transform()
-	# html = html + tmpl_TransformCTS.render(Context(dict(form=form_cts_Transform)))
-
 	return html
 
+
+@parsleyfy
 class CTS_ChemCalcs_Props(forms.Form):
 	melting_point = forms.BooleanField(required=False, label=mark_safe('Melting Point (&degC)'))
 	boiling_point = forms.BooleanField(required=False, label=mark_safe('Boiling Point (&degC)'))
@@ -74,33 +74,13 @@ class CTS_ChemCalcs_Props(forms.Form):
 	kow_no_ph = forms.BooleanField(required=False, label=mark_safe("Octanol/Water Partition Coefficient"))
 	kow_wph = forms.BooleanField(required=False, label=mark_safe('Octanol/Water Partition Coefficient'))
 	kow_ph = forms.FloatField (
-				required=False, 
 				label='at pH:',
 				widget=forms.NumberInput(attrs={'class':'numberInput'}),
 				initial=7.4,
 				min_value=0,
-				max_value=14
+				max_value=14,
 			)
-	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient'))
-
-
-	def clean(self):
-		"""
-		For validating conditional and dependent fields
-		"""
-
-		# +++ Django 1.6 Way +++
-		cleanedData = super(CTS_ChemCalcs_Props, self).clean()
-
-		kowph = cleanedData.get('kow_ph')
-		kowphChkbox = cleanedData.get('kow_wph') # True/False
-
-		# only require kow_ph if id_kow_wph chkbox is checked
-		if kowphChkbox and not kowph:
-			self._errors['kow_ph'] = self.error_class(["Enter a pH"])
-			del cleanedData['kow_ph']
-
-		return cleanedData
+	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient (L/kg)'))
 
 
 class PchempropInp(CTS_ChemCalcs_Props):

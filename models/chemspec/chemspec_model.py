@@ -8,11 +8,13 @@ import requests
 import chemspec_parameters  # Chemical Speciation parameters
 # from REST import rest_funcs
 from chemaxon_cts import jchem_rest
-from chemaxon_cts.jchem_rest import JchemProperty as JProp
+from chemaxon_cts.jchem_calculator import JchemProperty as JProp
 import logging
 # from django.http import HttpRequest
 import chemspec_tables
 from models.gentrans import data_walks
+from django.core.cache import cache
+import datetime
 
 
 class chemspec(object):
@@ -95,26 +97,45 @@ class chemspec(object):
             'stereoisomers': stereoObj
         }
 
+
+
+        # NEW STUFF STARTS HERE (CSV, CACHING, MOSTLY-BACKEND, LESS FRONT) ++++++++++++++++
+
+        run_data = {
+            'title': "Chemical Speciation Output",
+            'jid': self.jid,
+            'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
+            'chem_struct': self.chem_struct,
+            'smiles': self.smiles,
+            'name': self.name,
+            'formula': self.formula,
+            'mass': self.mass
+        }
+
+        # builds chemspec output json obj for ctsGenerateReport.py
         self.jchemDictResults = {}
         for key, value in self.jchemPropObjects.items():
             if value:
-                self.jchemDictResults.update({key: None})
                 if key == 'pKa':
-                    self.jchemDictResults[key] = {
-                        'pKa': pkaObj.getMostAcidicPka(),
-                        'pKb': pkaObj.getMostBasicPka(),
-                        'parent': pkaObj.getParent(),
-                        'microspecies': pkaObj.getMicrospecies(),
-                        'chartData': pkaObj.getChartData()
-                    }
+                    self.jchemDictResults.update({
+                        'pka': pkaObj.getMostAcidicPka(),
+                        'pkb': pkaObj.getMostBasicPka(),
+                        'pka-parent': pkaObj.getParent(),
+                        'pka-microspecies': pkaObj.getMicrospecies()
+                        # 'chartData': pkaObj.getChartData()
+                    })
                 elif key == 'majorMicrospecies':
-                    self.jchemDictResults[key] = majorMsObj.getMajorMicrospecies()
+                    self.jchemDictResults.update({key: majorMsObj.getMajorMicrospecies()})
                 elif key == 'isoelectricPoint':
-                    self.jchemDictResults[key] = {
-                        'isoelectricPoint': isoPtObj.getIsoelectricPoint(),
-                        'chartData': isoPtObj.getIsoPtChartData()
-                    }
+                    self.jchemDictResults.update({
+                        'isoelectricPoint': isoPtObj.getIsoelectricPoint()
+                        # 'chartData': isoPtObj.getIsoPtChartData()
+                    })
                 elif key == 'tautomerization':
-                    self.jchemDictResults[key] = tautObj.getTautomers()
+                    self.jchemDictResults.update({'tautomers': tautObj.getTautomers()})
                 elif key == 'stereoisomers':
-                    self.jchemDictResults[key] = stereoObj.getStereoisomers()
+                    self.jchemDictResults.update({key: stereoObj.getStereoisomers()})
+
+        run_data.update(self.jchemDictResults)
+        # cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
+        cache.set('chemspec_json', json.dumps(run_data), None) # must manually clear after use

@@ -506,7 +506,7 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: 0 0;
 }
 #fadeExport_pdf * {
@@ -516,14 +516,14 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: 0 -38px;
 }
 #fadeExport_html {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: -34px 0;
 }
 #fadeExport_html * {
@@ -533,26 +533,26 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: -34px -38px;
 }
-/*#fadeExport_doc {
+#fadeExport_csv {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: -68px 0;
 }
-#fadeExport_doc * {
+#fadeExport_csv * {
   display: none;
 }
-#fadeExport_doc span.hover {
+#fadeExport_csv span.hover {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/static/images/export/export_sprite_small_hort.gif) no-repeat;
+  background: url(/static/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: -68px -38px;
-}*/
+}
 .popup {
   background-color: #F9FBF6;
   margin: auto;

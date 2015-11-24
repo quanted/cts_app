@@ -2,11 +2,9 @@
 .. module:: chemspec_tables
    :synopsis: A useful module indeed.
 """
+__author__ = 'np'
 
-# import numpy
 from django.template import Context, Template, defaultfilters
-# from django.utils.safestring import mark_safe
-# import logging
 import time
 import datetime
 from django.template.loader import render_to_string
@@ -17,7 +15,7 @@ from django.utils.safestring import mark_safe
 from models.gentrans import data_walks
 
 
-# image sizes:
+# image sizes for jchem ws structures:
 lgWidth = 250
 mdWidth = 125 
 smWidth = 75
@@ -36,26 +34,27 @@ def getdjtemplate():
     """
     return dj_template
 
-
 def getInputTemplate():
     input_template = """
     <th colspan="2" class="alignLeft">{{heading}}</th>
-    {% for label, value in data.items %}
-        <tr>
-        <td>{{label}}</td> <td>{{value|default:"none"}}</td>
-        </tr>
+    {% for keyval in data %}
+        {% for label, value in keyval.items %}
+            <tr>
+            <td>{{label}}</td> <td>{{value|default:"none"}}</td>
+            </tr>
+        {% endfor %}
     {% endfor %}
     """
     return input_template
 
 
 def getMolTblData(chemspec_obj):
-    data = {
-        'SMILES': chemspec_obj.smiles, 
-        'IUPAC': chemspec_obj.name, 
-        'Formula': chemspec_obj.formula, 
-        'Mass': chemspec_obj.mass
-    }
+    data = [
+        {'SMILES': chemspec_obj.smiles}, 
+        {'IUPAC': chemspec_obj.name}, 
+        {'Formula': chemspec_obj.formula}, 
+        {'Mass': chemspec_obj.mass}
+    ]
     return data
 
 
@@ -68,31 +67,31 @@ def getIsoPtData(chemspec_obj):
 
 # Ionization Constants (pKa) Parameters Data
 def getPkaInputs(chemspec_obj):
-    data = {
-        'Number of Decimals': chemspec_obj.pKa_decimals, 
-        'pH Lower Limit': chemspec_obj.pKa_pH_lower, 
-        'pH Upper Limit': chemspec_obj.pKa_pH_upper,  
-        'pH Step Size': chemspec_obj.pKa_pH_increment,
-        'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies,
-        'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment
-    }
+    data = [
+        {'Number of Decimals for pKa': chemspec_obj.pKa_decimals},
+        {'pH Lower Limit': chemspec_obj.pKa_pH_lower}, 
+        {'pH Upper Limit': chemspec_obj.pKa_pH_upper},  
+        {'pH Step Size': chemspec_obj.pKa_pH_increment},
+        {'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies},
+        {'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment}
+    ]
     return data
 
 
 # Dominate Tautomer Distribution Data
 def getTautData(chemspec_obj):
-    data = {
-        'Maximum Number of Structures': chemspec_obj.tautomer_maxNoOfStructures, 
-        'at pH': chemspec_obj.tautomer_pH
-    }
+    data = [
+        {'Maximum Number of Structures': chemspec_obj.tautomer_maxNoOfStructures}, 
+        {'at pH': chemspec_obj.tautomer_pH}
+    ]
     return data
 
 
 # Stereoisomers Data
 def getStereoData(chemspec_obj):
-    data = {
-        'Maximum Number of Structures': chemspec_obj.stereoisomers_maxNoOfStructures
-    }
+    data = [
+        {'Maximum Number of Structures': chemspec_obj.stereoisomers_maxNoOfStructures}
+    ]
     return data
 
 
@@ -262,16 +261,16 @@ def getPkaResults(chemspec_obj):
     <H4 class="out_1 collapsible" id="pka"><span></span>pKa</H4>
     <div class="out_">
     """
-    # acidic/basic pKa values:
-    pka = chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()
-    pkb = chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
-    roundedPka, roundedPkb = [], []
-    for val in pka:
-        roundedPka.append(round(val, chemspec_obj.pKa_decimals))
-    for val in pkb:
-        roundedPkb.append(round(val, chemspec_obj.pKa_decimals))
 
     try:
+        # acidic/basic pKa values:
+        pka = chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()
+        pkb = chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
+        roundedPka, roundedPkb = [], []
+        for val in pka:
+            roundedPka.append(round(val, chemspec_obj.pKa_decimals))
+        for val in pkb:
+            roundedPkb.append(round(val, chemspec_obj.pKa_decimals))
         pkaValues = {
             'Acidic pKa Value(s)': roundedPka,
             'Basic pKa Value(s)': roundedPkb
@@ -320,18 +319,27 @@ def getStereoisomersResults(chemspec_obj):
 
     html = """
     <H4 class="out_1 collapsible" id="stereo"><span></span>Stereoisomers ({})</H4>
-    <div class="out_ shiftRight">""".format(len(stereoList))
+    """.format(len(stereoList))
 
-    html += '<dl style="display:inline-block">'
-    for item in stereoList:
-        html += '<dd style="float:left;">'
-        html += wrap_molecule(item, None, mdWidth, scale)
-        html += '</dd>'
-    html += "</dl>"
+    if stereoList:
+        html += """
+        <div class="out_ shiftRight">""".format(len(stereoList))
+        
+        html += '<dl style="display:inline-block">'
+        for item in stereoList:
+            html += '<dd style="float:left;">'
+            html += wrap_molecule(item, None, mdWidth, scale)
+            html += '</dd>'
+        html += "</dl>"
 
-    html += """
-    </div>
-    """
+        html += """
+        </div>
+        """
+    else:
+        html += """
+        <p>Couldn't retrieve stereoisomer(s)..</p>
+        """
+
     return html
 
 
@@ -347,27 +355,29 @@ def getTautomerResults(chemspec_obj):
 
     html = """
     <H4 class="out_1 collapsible" id="taut"><span></span>Tautomerization</H4>
-    <div class="out_ shiftRight">
     """
 
-    # try:
-    html += '<dl style="display:inline-block">'
-    for item in tautStructs:
-        html += '<dd style="float:left;">'
-        if item and 'dist' in item:
-            html += '<p class="taut-percent" style="margin:0;">Percent Dist: {}%'.format(item['dist']) + "</p>"
-            html += wrap_molecule(item, None, mdWidth, scale)
-        else:
-            html += "No tautomers"
-        html += '</dd>'
-    html += "</dl>"
-    # except TypeError:
-        # logging.info("no tautomers..")
-        # html += 'no tautomers'
-    # finally:
-    html += """
-    </div>
-    """
+    if tautStructs:
+        html += """
+        <div class="out_ shiftRight">
+        """
+        html += '<dl style="display:inline-block">'
+        for item in tautStructs:
+            html += '<dd style="float:left;">'
+            if item and 'dist' in item:
+                html += '<p class="taut-percent" style="margin:0;">Percent Dist: {}%'.format(item['dist']) + "</p>"
+                html += wrap_molecule(item, None, mdWidth, scale)
+            else:
+                html += "No tautomers"
+            html += '</dd>'
+        html += """
+                </dl>
+        </div>
+        """
+    else:
+        html += """
+        <p>Couldn't retrieve tautomer(s)..</p>
+        """
     return html
 
 
@@ -380,13 +390,13 @@ def wrap_molecule(propDict, height, width, scale):
     Outputs: name, iupac, forumula, mass data wrapped in table with image and name
     """
 
+    if not propDict:
+        return "<p>could not retrieve molecule image</p>"
+
     key = None
     if 'key' in propDict:
         key = propDict['key']
 
-    # image = propDict['image']
-    # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], 114, 100, key)) # displayed image
-    # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], height, width, key)) # displayed image
     image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
@@ -401,10 +411,6 @@ def wrap_molecule(propDict, height, width, scale):
         "smiles": smiles
     }
 
-    # html = '<table class="' + defaultfilters.slugify(infoDict['iupac']) +' wrapped_molecule">'
-    # # html += '<tr><td align="center">' + infoDict['iupac'] + '</td></tr>'
-    # html += '<tr><td align="center">' + infoDict['image'] + '</td></tr></table>'
-
     html = """
     <div class="chemspec_molecule nopdf">
     """
@@ -413,7 +419,6 @@ def wrap_molecule(propDict, height, width, scale):
     </div>
     """
     wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key, 'Molecular Information') # popup table image
-    # html += '<div class="tooltiptext ' + iupac + '">' + wrappedDict['html'] + '</div>'
     html += '<div class="tooltiptext ' + iupac + '">'
     html += wrappedDict['html']
     html += '</div>'

@@ -12,6 +12,10 @@ import pdfkit
 import logging
 from models.gentrans import data_walks
 from models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
+from chemaxon_cts.jchem_rest import gen_jid
+import csv
+from django.core.cache import cache
+
 
 
 def parsePOST(request):
@@ -70,109 +74,86 @@ def parsePOST(request):
 
             </style>
             """
-
     input_str = input_css + final_str
 
     return input_str
 
-def link_callback(uri, rel):
-    """
-    Convert HTML URIs to absolute system paths for xhtml2pdf to access those resoures
-    """
-    # use short variable names
-    sUrl = settings.STATIC_URL      # Typically /static/
-    sRoot = os.path.join(settings.PROJECT_ROOT, 'static')    # Typically /home/userX/project_static/
 
-    if uri.startswith(sUrl):
-        path = os.path.join(sRoot, uri.replace(sUrl, ""))
-
-    # make sure that file exists
-    if not os.path.isfile(path):
-            raise Exception(
-                    # 'media URI must start with %s or %s' % \
-                    # (sUrl, mUrl))
-                    'media URI must start with %s' % \
-                    (sUrl))
-    return path
-
-
-# @require_POST
-# @require_GET
+@require_POST
 def pdfReceiver(request, model=''):
     """
     PDF Generation Receiver function.
-    Sends POST data as string to xhtml2pdf library for processing
+    Sends POST data as string to pdfkit library for processing
     """
-    from xhtml2pdf import pisa
-
-
-    # Open description txt
-    # text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
-    # description = text_description.read()
-    description = ''
-
-    # Open algorithm txt
-    #text_algorithm = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_algorithm.txt'),'r')
-    #algorithms = text_algorithm.read()
-
-    input_str = description
+    input_str = ''
     input_str += parsePOST(request)
-
-    # fileout = open('C:\\Documents and Settings\\npope\\Desktop\\out.txt', 'w')
-    # fileout.write(input_str)
-    # fileout.close()
-
-    #input_str = input_str + algorithms         # PILlow has bug where transparent PNGs don't render correctly (black background)
-
     packet = StringIO.StringIO(input_str) #write to memory
-    # pisa.CreatePDF(input_str, dest=packet, link_callback=link_callback)  # the old way
-
     config = pdfkit.configuration(wkhtmltopdf=os.environ['wkhtmltopdf'])
-
+    # landscape only for metabolites output:
     if 'pdf_json' in request.POST and request.POST['pdf_json']:
-        options = {'orientation': 'Landscape'}  # landscape only for metabolites output
+        options = {'orientation': 'Landscape'}
     else:
         options = {'orientation': 'Portrait'}
-
     pdf = pdfkit.from_string(input_str, False, configuration=config, options=options)
-
-    # Create timestamp
-    ts = datetime.datetime.now(pytz.UTC)
-    localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
-    jid = localDatetime.strftime('%Y%m%d%H%M')
-
+    jid = gen_jid() # create timestamp
     response = HttpResponse(pdf, content_type='application/pdf')
-    # response = HttpResponse(packet.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
-
     # packet.truncate(0)  # clear from memory?
     packet.close()  # todo: figure out why this doesn't solve the 'caching problem'
-
     return response
 
 
 @require_POST
 def htmlReceiver(request, model=''):
-
-    # text_description = open(os.path.join(os.environ['PROJECT_PATH'], 'models/'+model+'/'+model+'_text.txt'),'r')
-    # description = text_description.read()
-
-    description = ""
-
-    input_str = description
+    """
+    Save output as HTML
+    """
+    input_str = ''
     input_str += parsePOST(request)
-
     packet = StringIO.StringIO(input_str)  # write to memory
-
-    # Create timestamp
-    ts = datetime.datetime.now(pytz.UTC)
-    localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
-    jid = localDatetime.strftime('%Y%m%d%H%M')
-
+    jid = gen_jid() # create timestamp
     response = HttpResponse(packet.getvalue(), content_type='application/html')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.html'
-
     # packet.truncate(0)  # clear from memory?
     packet.close()
-
     return response
+
+
+@require_POST
+def csvReceiver(request, model=''):
+    """
+    Save output as CSV
+    """
+    from REST.downloads_cts import CSV
+
+    cache_key = "{}_json".format(model) # model-specific cache
+
+    try:
+        run_json = cache.get(cache_key) # todo: add error handling
+        cache.delete(cache_key)
+        run_data = json.loads(run_json)
+    except TypeError as te:
+        logging.info("CSV ERROR: {}".format(te))
+        raise te
+        # return HttpResponse("A problem has been encountered downloading the CSV, press the back button, refresh the page, and try again")
+
+    if model == 'pchemprop':
+        try:
+            json_data = request.POST.get('pdf_json') # checkCalcsAndProps dict
+            run_data.update(json.loads(json_data))
+        except Exception as err:
+            raise err
+
+    elif model == 'gentrans':
+
+        logging.info(cache.get('pchemprop_json'))
+
+        try:
+            json_data = request.POST.get('pdf_json') # checkCalcsAndProps dict
+            run_data.update({'pdf_json': json.loads(json_data)})
+        except Exception as err:
+            logging.warning("!!! csv error: {} !!!".format(err))
+            raise err
+
+    csv_obj = CSV(model)
+    return csv_obj.parseToCSV(run_data)

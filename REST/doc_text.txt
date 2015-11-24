@@ -25,9 +25,9 @@
 
 <br>
 
-<h3> mrvToSmiles </h3>
+<h3> convertToSMILES </h3>
 <p> Gets SMILES for chemical drawn in MarvinJS </p>
-<p> url: /jchem-cts/ws/mrvToSmiles/ </p>
+<p> url: /jchem-cts/ws/convertToSMILES/ </p>
 <u>post data</u>
 <table>
 <tr>
