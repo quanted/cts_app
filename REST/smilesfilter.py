@@ -18,9 +18,9 @@ def is_valid_smiles(smiles):
                         "[Sc]","[Si]","[Si+","[SiH]","[Sn]","[W]"}
 
     return_val = {
-            "valid" : False,
-            "smiles": smiles,
-            "processedsmiles" : ""
+        "valid" : False,
+        "smiles": smiles,
+        "processedsmiles" : ""
     }
 
     if any(x in smiles for x in excludestring):

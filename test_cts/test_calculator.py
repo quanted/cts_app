@@ -51,7 +51,7 @@ class TestCalc(Calculator):
         test_prop = self.propMap[prop]['urlKey'] # prop name TEST understands
         url = self.baseUrl + self.urlStruct.format('hierarchical', test_prop)
         try:
-            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
+            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=60)
         except requests.exceptions.ConnectionError as ce:
             logging.info("connection exception: {}".format(ce))
             return None

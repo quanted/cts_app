@@ -18,7 +18,7 @@ var sparcPropMap = {
 var checkedCalcsAndProps; // format --> {'calc': ['checked_prop', ..], ..}
 
 $(document).ready(function() {
-
+    //some global and local variable delcarations..
     checkedCalcsAndProps = {{checkedCalcsAndProps}};
     var structure = "{{structure}}";
     kowPH = "{{kow_ph}}";
@@ -27,75 +27,53 @@ $(document).ready(function() {
     mass = "{{mass}}";
     formula = "{{formula}}";
     time = "{{time}}";
-
     sparcPropMap['kow_ph'] = kowPH;
-
-    startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null);
-
+    var test_results = {{ test_results }};
+    parseTESTResultsToTable(test_results); // load already-collected TEST data into table
+    startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null); // get pchem data
 });
 
 
 function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node) {
     
-    var ws = ""; // web service to direct to (jchem or test et al.)
-    var calcPropData = {};
-    if (checkedCalcsAndProps == null) {
-        return;
-    } 
+    if (checkedCalcsAndProps == null) { return; }
+
+    var sparc_props_list = [];
+    var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
+    var workflowPath = window.location.href; // check if pchem or trans products workflow..
 
     for (var calc in checkedCalcsAndProps) {
         if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
-            if ( calc == "sparc" ) {
-                // send all properties to back
+            var sparc_post_data = { "chemical": structure, "calc": calc, "props": sparc_props_list };
+            var post_data = { "chemical": structure, "calc": calc };
 
-                var props_list = [];
-                for (var index in checkedCalcsAndProps["sparc"]) {
-                    if (checkedCalcsAndProps["sparc"].hasOwnProperty(index)) {
-                        props_list.push(checkedCalcsAndProps["sparc"][index]);
-                    }
-                }
-
-                var post_data = {"chemical": structure, "calc": calc, "props": props_list};
-                post_data.ws = "sparc";
-                makeTheCall(post_data, node, true);
+            // add webservice key..
+            if (calc == "chemaxon") { 
+                post_data.ws = "jchem";
+                post_data.service = "getPchemProps";
             }
-            else {
-                // loops through calculator's properties
-                for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+            else { post_data.ws = calc; }
 
-                    var prop = checkedCalcsAndProps[calc][i];
-                    calcPropData = {"chemical": structure, "calc": calc, "prop": prop};
-
-                    if (calc == "chemaxon") {
-                        calcPropData.ws = "jchem";
-                        calcPropData.service = "getPchemProps";
-                        if (prop == "kow_wph") {
-                            calcPropData.ph = kowPH;
-                        }
-                    }
-                    else if (calc == "epi" || calc == "test") {
-                        calcPropData.ws = calc;
-                    }
-
-                    var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
-                    var workflowPath = window.location.href;
-
+            for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+                var prop = checkedCalcsAndProps[calc][i]; // p-chem property
+                var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
+                if (calc == "sparc") {
+                    sparc_props_list.push(prop); // build prop list for one call to sparc..
+                    $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                }
+                else if (calc == "chemaxon" || calc == "epi") {
+                    post_data['prop'] = prop;
+                    if (prop == "kow_wph") { post_data.ph = kowPH; }
                     if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
-                        var tblCell = $('.' + calc + '.' + prop);
                         $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
-                        makeTheCall(calcPropData, node, true);
+                        makeTheCall(post_data, node, true);
                     }
-                    else {
-                        // blockUI code (getting pchemprops for multiple metabolites)
-                        // variable to keep track of displaying to pchem table or not
-                        makeTheCall(calcPropData, node, false); // get data for > 1 metabolite
-                    }
-
-                    //makeTheCall(url, calcPropData, node, plotDataToTable);
-
+                    else { makeTheCall(post_data, node, false); } // pchem for metabolites, no spinners..
                 }
             }
+            // make sparc call after all props are gathered into list..
+            if (calc == "sparc") { makeTheCall(sparc_post_data, node, true); }
         }
     }
 
@@ -109,17 +87,11 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
         dataType: "json",
         data: calcPropData,
         timeout: 20000,
-        // tryCount: 0,
-        // retryLimit: 3,
         success: function(data) {
-            // console.log(this.tryCount);
-            // console.log(this.retryLimit);
-            if (data['calc'] == "sparc") {
-                // sparc returns all props in json
-                // parseSPARCResponseToPchemTable(data, plotDataToTable)
-                parseSPARCResponseToPchemTable(data, node, plotDataToTable)
+            if (data['calc'] == "sparc") { 
+                parseSPARCResponseToPchemTable(data, node, plotDataToTable);
             }
-            else {
+            else { 
                 parseResponseToPchemTable(data, node, false, plotDataToTable);
             }
         },
@@ -133,6 +105,17 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
             parseResponseToPchemTable(error, null, false, plotDataToTable);
         }
     });
+}
+
+
+function parseTESTResultsToTable(test_results) {
+    console.log("looping TEST results..");
+    for (result in test_results) {
+        if (test_results.hasOwnProperty(result)) {
+            console.log(test_results[result]);
+            parseResponseToPchemTable(test_results[result], null, false, null);
+        }
+    }
 }
 
 

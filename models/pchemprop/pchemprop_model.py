@@ -9,10 +9,13 @@ import logging
 # Need these if want to do data crunching on back end
 # from REST.epi_calculator import Calculator as calc
 from chemaxon_cts.jchem_calculator import JchemProperty as jp
-from requests_futures.sessions import FuturesSession
+# from requests_futures.sessions import FuturesSession
 from django.core.cache import cache
 import datetime
 import json
+from test_cts import views as test_views
+from requests import Request
+from django.http import HttpRequest
 
 
 n = 3  # number of decimal places to round values
@@ -121,6 +124,16 @@ class PChemProp(object):
                             propList.append(propKey)
                 self.checkedCalcsAndPropsDict.update({calcKey: propList})
 
+        ### Make sequential calls to TEST here!!! #######################
+        self.test_results = []
+        if 'test' in self.checkedCalcsAndPropsDict:
+            for prop in self.checkedCalcsAndPropsDict['test']:
+                request = HttpRequest()
+                request.POST = { "calc":"test", "prop":prop, "chemical":self.chem_struct }
+                response = test_views.request_manager(request) # make request to TEST
+                response_json = json.loads(response.content)
+                self.test_results.append(response_json)
+        #################################################################
 
         # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING +++++
         run_data = {
@@ -134,7 +147,7 @@ class PChemProp(object):
             'mass': self.mass
         }
 
-        logging.info("------------ RUN: {}".format(self.run_type))
+        logging.info("--- RUN: {} ---".format(self.run_type))
 
         # cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
         if self.run_type != 'metabolite':

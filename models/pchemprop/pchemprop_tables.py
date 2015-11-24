@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import logging
 import pchemprop_parameters
+import json
 
 
 
@@ -99,7 +100,8 @@ def output_pchem_table(pchemprop_obj):
                                     "name": mark_safe(pchemprop_obj.name),
                                     "mass": pchemprop_obj.mass,
                                     "formula": pchemprop_obj.formula,
-                                    "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict)
+                                    "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
+                                    "test_results": mark_safe(json.dumps(pchemprop_obj.test_results))
                             })
     html += """
     </div>
