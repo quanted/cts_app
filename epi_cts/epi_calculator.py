@@ -68,21 +68,17 @@ class EpiCalc(Calculator):
         }
 
     def getPostData(self, calc, prop, method=None):
-        # return {"smiles": ""}
-        return {"identifiers":{"SMILES": ""}}
+        return {"smiles": ""}
+        # return {"identifiers":{"SMILES": ""}}
 
     def makeDataRequest(self, structure, calc, prop, method=None):
         post = self.getPostData(calc, prop)
-
-        # run structure through epi suite smiles filter..
-        # logging.info("filtering smiles for epi suite...")
-        # structure = smilesFilter(structure) # make sure mass is < 1500g/mol
-        # structure = smilesfilter.parseSmilesByCalcultor(structure, calc)
-
-        post['identifiers']['SMILES'] = structure # set smiles
-        # post['smiles'] = structure
+        # post['identifiers']['SMILES'] = structure # set smiles
+        post['smiles'] = structure
 
         url = self.baseUrl + self.getUrl(prop)
+
+        logging.info("URL: {}".format(url))
 
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
