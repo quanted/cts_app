@@ -28,19 +28,24 @@ def request_manager(request):
 		chemical = getRequestParam(request, 'chemical')
 		prop = getRequestParam(request, 'prop')
 
+		if 'method' in request.POST: 
+			method = getRequestParam(request, 'method')
+		else:
+			logging.info("no method specified..")
+			method = None
+
 		if prop == 'kow_wph':
-			ph = getRequestPh(request)
+			ph = getRequestParam(request, 'ph')
 			logging.info("KOW PH: {}".format(ph))
 		else:
 			ph = None
 
 		if service == 'getPchemPropDict':
-			logging.info("IN HERE!!")
 			response = jrest.getpchemprops(request)
 		else:
-			response = sendRequestToWebService(service, chemical, prop, ph)
+			response = sendRequestToWebService(service, chemical, prop, ph, method)
 
-		logging.info("REPONSE: {}".format(response))
+		logging.info("Jchem REPONSE: {}".format(response))
 
 		return HttpResponse(response)
 
@@ -65,23 +70,23 @@ def getRequestParam(request, key):
 		return value
 
 
-def getRequestPh(request):
-	"""
-	Picks out kow pH from request
-	"""
-	try:
-		ph = request.POST.get('ph')
-	except AttributeError as ae:
-		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
-		raise
-	except KeyError as ke:
-		logging.info("error: request has no key 'ph' -- {}".format(ke))
-		pass
-	else:
-		return ph
+# def getRequestPh(request):
+# 	"""
+# 	Picks out kow pH from request
+# 	"""
+# 	try:
+# 		ph = request.POST.get('ph')
+# 	except AttributeError as ae:
+# 		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
+# 		raise
+# 	except KeyError as ke:
+# 		logging.info("error: request has no key 'ph' -- {}".format(ke))
+# 		pass
+# 	else:
+# 		return ph
 
 
-def sendRequestToWebService(service, chemical, prop, phForLogD=None):
+def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None):
 	"""
 	Makes call to jchem rest service
 	"""
@@ -95,15 +100,17 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None):
 	elif service == 'convertToSMILES':
 		response = jrest.convertToSMILES(request).content
 	elif service == 'getPchemProps':
-		response = getJchemPropData(chemical, prop, phForLogD)
+		response = getJchemPropData(chemical, prop, phForLogD, method)
 	return response
 
 
-def getJchemPropData(chemical, prop, phForLogD=None):
+def getJchemPropData(chemical, prop, phForLogD=None, method=None):
 
-	logging.info("###### getting jchem props!")
-	logging.info("###### prop: {}".format(prop))
-	logging.info("###### chemical: {}".format(chemical))
+	logging.info("> prop: {}".format(prop))
+	logging.info("> chemical: {}".format(chemical))
+	logging.info("> method: {}".format(method))
+
+	resultDict = {"calc": "chemaxon", "prop": prop}
 
 	result = ""
 	if prop == 'water_sol':
@@ -116,16 +123,20 @@ def getJchemPropData(chemical, prop, phForLogD=None):
 		result = {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}
 	elif prop == 'kow_no_ph':
 		propObj = jp.getPropObject('logP')
-		propObj.makeDataRequest(chemical)
+		propObj.makeDataRequest(chemical, method)
 		result = propObj.getLogP()
 	elif prop == 'kow_wph':
 		propObj = jp.getPropObject('logD')
-		propObj.makeDataRequest(chemical)
+		propObj.makeDataRequest(chemical, method)
 		result = propObj.getLogD(phForLogD)
 	else:
 		result = None
 
-	logging.info("###### data: {}".format(result))
+	# ADD METHOD KEY:VALUE IF LOGD OR LOGP...
+	resultDict['data'] = result
+	if method: resultDict['method'] = method
 
-	resultDict = json.dumps({"calc": "chemaxon", "prop": prop, "data": result})
-	return resultDict
+	result_json = json.dumps(resultDict)
+
+	# resultDict = json.dumps({"calc": "chemaxon", "prop": prop, "data": result})
+	return result_json

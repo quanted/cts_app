@@ -14,6 +14,8 @@ var sparcPropMap = {
     "boiling_point": "BOILING_POINT"
 };
 
+var jchem_methods = ['KLOP', 'PHYS', 'VG'];
+
 
 var checkedCalcsAndProps; // format --> {'calc': ['checked_prop', ..], ..}
 
@@ -28,8 +30,10 @@ $(document).ready(function() {
     formula = "{{formula}}";
     time = "{{time}}";
     sparcPropMap['kow_ph'] = kowPH;
-    var test_results = {{ test_results }};
-    parseTESTResultsToTable(test_results); // load already-collected TEST data into table
+    var test_results = {{ test_results | default:"none" }};
+    if (test_results == "none") {
+        parseTESTResultsToTable(test_results); // load already-collected TEST data into table
+    }
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null); // get pchem data
 });
 
@@ -56,20 +60,36 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
             else { post_data.ws = calc; }
 
             for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
-                var prop = checkedCalcsAndProps[calc][i]; // p-chem property
+                var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
                 var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
                 if (calc == "sparc") {
                     sparc_props_list.push(prop); // build prop list for one call to sparc..
                     $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
                 }
-                else if (calc == "chemaxon" || calc == "epi") {
+                else if (calc == "epi") {
                     post_data['prop'] = prop;
                     if (prop == "kow_wph") { post_data.ph = kowPH; }
                     if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
                         $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
-                        makeTheCall(post_data, node, true);
+                        makeTheCall(post_data, node, true); // pchemprop workflow
                     }
                     else { makeTheCall(post_data, node, false); } // pchem for metabolites, no spinners..
+                }
+                else if (calc == "chemaxon") {
+                    post_data['prop'] = prop; // add property to post data..
+                    if (prop == "kow_wph") { post_data.ph = kowPH; } // add ph to post data if logD..
+                    // Get data for all 3 methods if chemaxon prop is logD or logP..
+                    if (prop == "kow_wph" || prop == "kow_no_ph") {
+                        for (var method in jchem_methods) {
+                            $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                            post_data['method'] = jchem_methods[method];
+                            makeTheCall(post_data, node, true); // pchemprop workflow..
+                        }
+                    }
+                    else {
+                        $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                        makeTheCall(post_data, node, true); // pchemprop workflow
+                    }
                 }
             }
             // make sparc call after all props are gathered into list..
@@ -192,13 +212,14 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 console.log(response['data']['error']);
             }
             else {
+                // the new way..
                 // data = response['data']['val'];
                 // var data_key = Object.keys(response['data']['properties']);
-                data = response['data'];
+                data = response['data']; // the old way..
             }
         }
         else if (calc == "epi") {
-            data = response['data']['val']; // the old way
+            data = response['data']['val']; // the old way..
             // the new way..
             // var test = Object.keys(response['data']['properties']).length;
             // if (Object.keys(response['data']['properties']).length > 0) {
@@ -209,15 +230,33 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
             //     data = "calc error";
             // }
         }
+        // else if (calc == "chemaxon" && (prop == "kow_no_ph" || prop == "kow_wph")) {
+        //     // Add data to same cell with method as label..
+
+        // }
         else {
             data = response['data'];
         }
     }
 
+    // This section deals with putting data onto the table..
     var workflowUrl = window.location.href;
+
+    var table_cell = $('.' + calc + '.' + prop); // table cell for calc's prop..
+
     if (workflowUrl.indexOf("pchem") > -1) {
-        // at the pchemprop workflow, simply display data:
-        $('.' + calc + '.' + prop).html(organizeData(data, prop)); //add data to table
+        // at the pchemprop workflow, simply display data..
+        if (calc == "chemaxon" && (prop == "kow_no_ph" || prop == "kow_wph")) {
+            var method = response['method']; // assuming method exist..
+            var has_spinner = $(table_cell).children('img#spinner').length;
+            if (has_spinner > 0) {
+                $(table_cell).html(""); // remove spinner from cell..
+            }
+            $(table_cell).append(organizeData(calc, prop, data) + "(" + method + ")<br>"); // add data to table..
+        }
+        else {
+            $(table_cell).html(organizeData(calc, prop, data)); // add data to table..
+        }
     }
     else {
         if (node !== 'undefined' && node != null) {
@@ -230,7 +269,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
             }
 
             if (plotDataToTable && currentNode) {
-                $('.' + calc + '.' + prop).html(organizeData(data, prop)); //add data to table
+                $(table_cell).html(organizeData(calc, prop, data)); //add data to table
             }
 
         }
@@ -238,7 +277,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
 }
 
 
-function organizeData(data, prop) {
+function organizeData(calc, prop, data) {
     // organizes data, namely if it's
     // more than a single value
 
@@ -255,6 +294,7 @@ function organizeData(data, prop) {
         return data;
     }
 
+    // For multiple pKa values in a cell..
     var parsedData = "";
     for (item in data) {
         if (data.hasOwnProperty(item) && data[item] != null) {

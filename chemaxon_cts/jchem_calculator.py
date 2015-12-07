@@ -58,7 +58,7 @@ class JchemProperty(object):
             logging.warning("error occured: {}".format(e))
             return None
 
-    def makeDataRequest(self, structure):
+    def makeDataRequest(self, structure, method=None):
         url = self.baseUrl + self.url
         self.postData.update({
             "result-display": {
@@ -72,6 +72,10 @@ class JchemProperty(object):
             "structure": structure,
             "parameters": self.postData
         }
+        logging.info("is it getting here???")
+        if method:
+            postData['parameters']['method'] = method
+            logging.info("making a data request !!!!!!!!!!!!")
         try:
             response = requests.post(url, data=json.dumps(postData), headers=headers, timeout=60)
             self.results = json.loads(response.content)
@@ -105,7 +109,7 @@ class JchemProperty(object):
         elif prop == 'logD':
             return LogD()
         else:
-            raise ValueError("property object request does not exist")
+            raise ValueError("Error initializing jchem property class..")
 
 
 class Pka(JchemProperty):
@@ -365,8 +369,16 @@ class LogP(JchemProperty):
         JchemProperty.__init__(self)
         self.name = 'logP'
         self.url = '/webservices/rest-v0/util/calculate/logP'
+        self.methods = ['KLOP', 'VG', 'PHYS', 'WEIGHTED']
+        # logging.info("METHOD: {}".format(method))
+        # if not method:
+        #     logging.info("using WEIGHTED method for logP..")
+        #     method = self.methods[3]
+        # if not (method in self.methods): 
+        #     key_err = "method {} not recognized as a method for logP ({}).."
+        #     logging.warning(key_err.format(method, self.methods))
+        #     raise KeyError(key_err.format(method, self.methods))
         self.postData = {
-            "method": "WEIGHTED",
             "wVG": 1.0,
             "wKLOP": 1.0,
             "wPHYS": 1.0,
@@ -391,11 +403,19 @@ class LogD(JchemProperty):
         JchemProperty.__init__(self)
         self.name = 'logD'
         self.url = '/webservices/rest-v0/util/calculate/logD'
+        self.methods = ['KLOP', 'VG', 'PHYS', 'WEIGHTED']
+        # if not method:
+        #     # default to WEIGHTED..
+        #     logging.info("using WEIGHTED method for logD..")
+        #     method = self.methods[3]
+        # if not (method in self.methods): 
+        #     key_err = "method {} not recognized as a method for logD ({}).."
+        #     logging.warning(key_err.format(method, self.methods))
+        #     raise KeyError(key_err.format(method, self.methods))
         self.postData = {
             "pHLower": 0.0,
             "pHUpper": 14.0,
             "pHStep": 0.1,
-            "method": "WEIGHTED",
             "wVG": 1.0,
             "wKLOP": 1.0,
             "wPHYS": 1.0,
