@@ -114,8 +114,11 @@ class CSV(object):
                 if 'pchemprops' in metabolite:
                     for data_obj in metabolite['pchemprops']:
                         if data_obj['prop'] == 'ion_con':
-                            met_pkas.append(len(data_obj['data']['pKa']))
-                            met_pkbs.append(len(data_obj['data']['pKb']))
+                            try:
+                                met_pkas.append(len(data_obj['data']['pKa']))
+                                met_pkbs.append(len(data_obj['data']['pKb']))
+                            except TypeError as err:
+                                pass # pKa and/or pKb is None, ignore..
 
             # build csv columns.. TODO: only build columns with props and calcs that are available!
             for prop in self.props:
