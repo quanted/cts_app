@@ -15,6 +15,9 @@ import secret
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+# Boolean for if it's on Nick's local machine or not..
+NICK_LOCAL = False
+
 # Define ENVIRONMENTAL VARIABLES for project (replaces the app.yaml)
 os.environ.update({
     # 'UBERTOOL_BATCH_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com/',
