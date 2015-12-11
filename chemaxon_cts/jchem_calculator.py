@@ -41,7 +41,7 @@ class JchemProperty(object):
             logging.warning("key {} does not exist".format(propKey))
             raise
         except Exception as e:
-            logging.warning("error occured: {}".format(e))
+            logging.warning("error occurred: {}".format(e))
             return None
 
     def setPostDataValues(self, multiKeyValueDict):
@@ -55,7 +55,7 @@ class JchemProperty(object):
             logging.warning("key {} does not exist".format(key))
             return None
         except Exception as e:
-            logging.warning("error occured: {}".format(e))
+            logging.warning("error occurred: {}".format(e))
             return None
 
     def makeDataRequest(self, structure, method=None):

@@ -31,7 +31,7 @@ $(document).ready(function() {
     time = "{{time}}";
     sparcPropMap['kow_ph'] = kowPH;
     var test_results = {{ test_results | default:"none" }};
-    if (test_results == "none") {
+    if (test_results != "none") {
         parseTESTResultsToTable(test_results); // load already-collected TEST data into table
     }
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null); // get pchem data
@@ -213,27 +213,23 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
             }
             else {
                 // the new way..
-                // data = response['data']['val'];
-                // var data_key = Object.keys(response['data']['properties']);
-                data = response['data']; // the old way..
+                data = response['data']['val'];
+                var data_key = Object.keys(response['data']['properties']);
+                // data = response['data']; // the old way..
             }
         }
         else if (calc == "epi") {
-            data = response['data']['val']; // the old way..
+            // data = response['data']['val']; // the old way..
             // the new way..
-            // var test = Object.keys(response['data']['properties']).length;
-            // if (Object.keys(response['data']['properties']).length > 0) {
-            //     var data_key = Object.keys(response['data']['properties'])[0];
-            //     data = response['data']['properties'][data_key];
-            // }
-            // else {
-            //     data = "calc error";
-            // }
+            var test = Object.keys(response['data']['properties']).length;
+            if (Object.keys(response['data']['properties']).length > 0) {
+                var data_key = Object.keys(response['data']['properties'])[0];
+                data = response['data']['properties'][data_key];
+            }
+            else {
+                data = "calc error";
+            }
         }
-        // else if (calc == "chemaxon" && (prop == "kow_no_ph" || prop == "kow_wph")) {
-        //     // Add data to same cell with method as label..
-
-        // }
         else {
             data = response['data'];
         }
@@ -252,7 +248,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
             if (has_spinner > 0) {
                 $(table_cell).html(""); // remove spinner from cell..
             }
-            $(table_cell).append(organizeData(calc, prop, data) + "(" + method + ")<br>"); // add data to table..
+            $(table_cell).append(organizeData(calc, prop, data) + " (" + method + ")<br>"); // add data to table..
         }
         else {
             $(table_cell).html(organizeData(calc, prop, data)); // add data to table..

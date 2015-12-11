@@ -48,7 +48,7 @@ def request_manager(request):
     return HttpResponse(json.dumps(postData), content_type='application/json')
 
   except requests.HTTPError as e:
-    logging.warning("HTTP Error occured: {}".format(e))
+    logging.warning("HTTP Error occurred: {}".format(e))
     return HttpResponse(EPI_URL+e.msg, status=e.code, content_type='text/plain')
 
   except ValueError as ve:
@@ -57,6 +57,6 @@ def request_manager(request):
     return HttpResponse(json.dumps(postData), content_type='application/json')
 
   except requests.exceptions.ConnectionError as ce:
-    logging.warning("Connection error occured: {}".format(ce))
+    logging.warning("Connection error occurred: {}".format(ce))
     postData.update({"error": "connection error"})
     return HttpResponse(json.dumps(postData), content_type='application/json')

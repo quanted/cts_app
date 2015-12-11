@@ -68,13 +68,13 @@ class EpiCalc(Calculator):
         }
 
     def getPostData(self, calc, prop, method=None):
-        return {"smiles": ""}
-        # return {"identifiers":{"SMILES": ""}}
+        # return {"smiles": ""} # the old way..
+        return {"identifiers":{"SMILES": ""}} # the new way..
 
     def makeDataRequest(self, structure, calc, prop, method=None):
         post = self.getPostData(calc, prop)
-        # post['identifiers']['SMILES'] = structure # set smiles
-        post['smiles'] = structure
+        post['identifiers']['SMILES'] = structure # set smiles, the new way..
+        # post['smiles'] = structure // the old way..
 
         url = self.baseUrl + self.getUrl(prop)
 

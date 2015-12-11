@@ -1,7 +1,5 @@
 var marvinSketcherInstance;
-var jchemGatewayUrl = "/jchem-cts/ws/traffic-cop/";
 var portalUrl = "/cts/portal";
-
 
 $(document).ready(function handleDocumentReady (e) {
 
@@ -78,27 +76,25 @@ function importMol(chemical) {
   convertToSMILES(chemical, function(smiles_result) {
     if (smiles_result != "Fail") {
       var smiles = smiles_result['structure'];
-
-      // run smiles through validation/processing
+      // run smiles through validation/processing..
+      // returns 'smiles', 'processsmiles', and 'valid' key:values..
        isValidSMILES(smiles, function (processed_smiles_json) {
          if (processed_smiles_json['valid']) {
-
-            getChemDetails(smiles, function (chemResults) {
+            // get chemical info of processed smiles..
+            getChemDetails(processed_smiles_json['processedsmiles'], function (chemResults) {
               if (chemResults != "Fail") {
                 data = chemResults.data[0];
                 // data['smiles'] = processed_smiles_json['processedsmiles'];
                 populateResultsTbl(data);
                 marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
               }
-              else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
+              else { displayErrorInTextbox("An error occurred retrieving chemical information.."); }
             });
-
          }
          else { displayErrorInTextbox("SMILES not valid.."); }
        });
-
     }
-    else { displayErrorInTextbox("An error has occured retrieving smiles.."); }
+    else { displayErrorInTextbox("An error has occurred retrieving smiles.."); }
   });
 
 }
@@ -115,15 +111,21 @@ function importMolFromCanvas() {
     convertToSMILES(mrvChemical, function(smiles_result) {
       if (smiles_result != "Fail") {
         var smiles = smiles_result['structure'];
-        getChemDetails(smiles, function(chemResults) {
-          if (chemResults != "Fail") {
-            data = chemResults.data[0];
-            populateResultsTbl(data);
+        isValidSMILES(smiles, function (processed_smiles_json) {
+          if (processed_smiles_json['valid']) {
+            var processed_smiles = processed_smiles_json['processedsmiles'];
+            getChemDetails(processed_smiles, function(chemResults) {
+              if (chemResults != "Fail") {
+                data = chemResults.data[0];
+                populateResultsTbl(data);
+              }
+              else { displayErrorInTextbox("An error occurred retrieving chemical information.."); }
+            });
           }
-          else { displayErrorInTextbox("An error occured retrieving chemical information.."); }
+          else { displayErrorInTextbox("Error validating SMILES.."); }
         });
       }
-      else { displayErrorInTextbox("An error has occured retrieving smiles.."); }
+      else { displayErrorInTextbox("An error has occurred retrieving smiles.."); }
     });
   });
 }

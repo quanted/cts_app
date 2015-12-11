@@ -50,7 +50,7 @@ def request_manager(request):
 		return HttpResponse(response)
 
 	except Exception as e:
-		logging.warning("error occured in request_manager: {}".format(e))
+		logging.warning("error occurred in request_manager: {}".format(e))
 		raise HttpResponse(e)
 
 
