@@ -32,13 +32,15 @@ $(document).ready(function() {
     sparcPropMap['kow_ph'] = kowPH;
     var test_results = {{ test_results | default:"none" }};
     if (test_results != "none") {
-        parseTESTResultsToTable(test_results); // load already-collected TEST data into table
+        parseTESTResultsToTable(test_results); // load already-collected TEST data into table..
     }
-    startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null); // get pchem data
+    startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null); // get pchem data..
 });
 
 
 function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node) {
+
+    console.log(structure);
     
     if (checkedCalcsAndProps == null) { return; }
 
@@ -122,7 +124,12 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
                 "calc": calcPropData['calc'],
                 "prop": calcPropData['prop']
             };
-            parseResponseToPchemTable(error, null, false, plotDataToTable);
+            if (data['calc'] == "sparc") { 
+                parseSPARCResponseToPchemTable(error, node, plotDataToTable);
+            }
+            else { 
+                parseResponseToPchemTable(error, node, false, plotDataToTable);
+            }
         }
     });
 }
