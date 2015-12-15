@@ -27,7 +27,7 @@ os.environ.update({
     # 'UBERTOOL_REST_SERVER': 'http://54.83.18.251:80',
     # 'CTS_TEST_SERVER': 'http://pg.gl', # test rest server (internal)
     'CTS_TEST_SERVER': 'http://134.67.114.6:8080',
-    'CTS_EPI_SERVER': 'http://134.67.114.6:8080',
+    'CTS_EPI_SERVER': 'http://134.67.114.6:7080',
     'CTS_JCHEM_SERVER': 'http://134.67.114.2',
     'CTS_EFS_SERVER': 'http://134.67.114.2',
     # 'CTS_JCHEM_SERVER': 'http://localhost:8080',
