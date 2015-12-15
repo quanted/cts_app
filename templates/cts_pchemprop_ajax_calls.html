@@ -31,7 +31,7 @@ $(document).ready(function() {
     time = "{{time}}";
     sparcPropMap['kow_ph'] = kowPH;
     var test_results = {{ test_results | default:"none" }};
-    if (test_results != "none") {
+    if (test_results !== "none") {
         parseTESTResultsToTable(test_results); // load already-collected TEST data into table..
     }
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null); // get pchem data..
