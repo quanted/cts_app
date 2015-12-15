@@ -220,9 +220,9 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
             }
             else {
                 // the new way..
-                data = response['data']['val'];
-                var data_key = Object.keys(response['data']['properties']);
-                // data = response['data']; // the old way..
+                // data = response['data']['val'];
+                // var data_key = Object.keys(response['data']['properties']);
+                data = response['data']; // the old way..
             }
         }
         else if (calc == "epi") {
