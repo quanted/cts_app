@@ -59,6 +59,9 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 post_data.ws = "jchem";
                 post_data.service = "getPchemProps";
             }
+            else if (calc == "sparc") {
+                sparc_post_data.ws = "sparc";
+            }
             else { post_data.ws = calc; }
 
             for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
