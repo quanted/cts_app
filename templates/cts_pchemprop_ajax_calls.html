@@ -31,7 +31,7 @@ $(document).ready(function() {
     time = "{{time}}";
     sparcPropMap['kow_ph'] = kowPH;
     var test_results = {{ test_results }};
-    if (test_results.length > 1) {
+    if (test_results.length > 0) {
         parseTESTResultsToTable(test_results); // load already-collected TEST data into table..
     }
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null); // get pchem data..
@@ -80,6 +80,22 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                     }
                     else { makeTheCall(post_data, node, false); } // pchem for metabolites, no spinners..
                 }
+
+                // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                // adding TEST condition here for metabolites async data collection...
+                // this is temporary since async calls aren't the best for TEST..
+                else if (calc == "test") {
+                    post_data['prop'] = prop;
+                    if (prop == "kow_wph") { post_data.ph = kowPH; }
+                    if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
+                        $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                        makeTheCall(post_data, node, true); // pchemprop workflow
+                    }
+                    else { makeTheCall(post_data, node, false); } // pchem for metabolites, no spinners..   
+                }
+                // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
                 else if (calc == "chemaxon") {
                     post_data['prop'] = prop; // add property to post data..
                     if (prop == "kow_wph") { post_data.ph = kowPH; } // add ph to post data if logD..

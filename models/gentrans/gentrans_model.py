@@ -78,6 +78,9 @@ class gentrans(object):
         data_walks.metID = 0
         self.results = data_walks.recursive(response.content)
 
+        # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
+        self.test_results = []
+
         self.rawData = response.content
 
         # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING ++++++++++++++

@@ -22,7 +22,7 @@ n = 3  # number of decimal places to round values
 
 
 class PChemProp(object):
-    def __init__(self, run_type='single', chem_struct=None, smiles=None, name=None, formula=None, mass=None,
+    def __init__(self, run_type, chem_struct=None, smiles=None, name=None, formula=None, mass=None,
                  chemaxon=None, epi=None,
                  test=None, sparc=None, measured=None, melting_point=None, boiling_point=None, water_sol=None,
                  vapor_press=None, mol_diss=None, ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None,
@@ -151,4 +151,4 @@ class PChemProp(object):
 
         # cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
         if self.run_type != 'metabolite':
-            cache.set('pchemprop_json', json.dumps(run_data), None) # must manually clear after use
+            cache.set('pchemprop_json', json.dumps(run_data), 300) # must manually clear after use

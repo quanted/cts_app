@@ -202,7 +202,8 @@ def table_metabolites(gentrans_obj):
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "kow_ph": "null",
                                     "structure": "null",
-                                    "checkedCalcsAndProps": "null"})
+                                    "checkedCalcsAndProps": "null",
+                                    "test_results": gentrans_obj.test_results})
     html += """
     </div>
     """

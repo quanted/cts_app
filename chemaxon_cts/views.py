@@ -41,7 +41,8 @@ def request_manager(request):
 			ph = None
 
 		if service == 'getPchemPropDict':
-			response = jrest.getpchemprops(request)
+			logging.info("getting p-chem list..."); # TODO: do this on the front end instead of calling server!
+			response = jrest.getpchemprops(request) # gets pchemprop_model object..
 		else:
 			response = sendRequestToWebService(service, chemical, prop, ph, method)
 

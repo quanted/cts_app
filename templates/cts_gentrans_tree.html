@@ -22,6 +22,29 @@ var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
 var nodeWidth = 100; //default node width (image)
 var callsTracker = 0; //tracks calls for p-chem requets; used for blocking ui
+
+var checkedPropsList = [
+    "melting_point",
+    "boiling_point",
+    "water_sol",
+    "vapor_press",
+    "mol_diss",
+    "ion_con",
+    "henrys_law_con",
+    "kow_no_ph",
+    "kow_wph",
+    "kow_ph",
+    "koc"
+]
+
+var calcluatorsList = [
+    "chemaxon",
+    "epi",
+    "test",
+    "sparc"
+    // "measured": measured
+]
+
 // ################################################
 
 (function() {
@@ -535,7 +558,7 @@ function makeAjaxCall(node, params, callback) {
       error: function(jqXHR, textStatus, errorThrown) {
         callback("Fail");
       },
-      timeout: 5000
+      timeout: 10000
     });
 }
 
@@ -567,6 +590,44 @@ function blockInterface(block) {
 
 function jsonRepack(jsonobj) {
   return JSON.parse(JSON.stringify(jsonobj));
+}
+
+
+function getpchemprops() {
+// # dict with keys of checked calculators and values of
+// # checked properties that are also available for said calculators
+// # format: { key: "calculator name", value: [checked property ids] }
+// self.checkedCalcsAndPropsDict = {}
+// for calcKey, calcValue in self.calcluatorsDict.items():
+//     if calcValue == 'true' or calcValue == 'on':
+//         # get checked parameters that are available for calculator
+//         propList = []
+//         for propKey, propValue in self.checkedPropsDict.items():
+//             # find checked properties
+//             if propValue == 'on' or propValue == 'true':
+//                 # check if property is available for calculator:
+//                 if pchemprop_parameters.pchempropAvailable(calcKey, propKey):
+//                     propList.append(propKey)
+//         self.checkedCalcsAndPropsDict.update({calcKey: propList})
+
+    // loop calculators:
+    // for (var i = 0; i < calcluatorsDict.length; i++) {
+    //     // check if calc is checked:
+    //     var calc = calcluatorsDict[i]; // get calculator name..
+    //     var calc_checked = $('input[name="' + calc + '"]').val();
+    //     if (calc_checked) {
+    //         // loop properties if calc is checked:
+    //         for (var j = 0; j < checkedPropsList.length; j++) {
+    //             var prop = checkedPropsList[j];
+    //             var prop_checked = $('input[name="' + prop + '"]').val();
+    //             if (prop_checked) {
+                    
+    //             }
+    //         }
+    //     }
+    // }
+    
+
 }
 
 </script>
