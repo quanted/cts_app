@@ -265,16 +265,22 @@ def clearStereo(request):
     except Exception as e:
         logging.info("Exception retrieving mass from jchem: {}".format(e))
         raise
+    # post_data = {
+    #     "structure": smiles,
+    #     "filterChain": [{
+    #         "filter": "standardizer",
+    #         "parameters": {
+    #             "standardizerDefinition": "clearstereo"
+    #         }
+    #     }]
+    # }
     post_data = {
         "structure": smiles,
-        "filterChain": [{
-            "filter": "standardizer",
-            "parameters": {
-                "standardizerDefinition": "clearstereo"
-            }
-        }]
+        "actions": [
+            "clearStereo"
+        ]
     }
-    url = Urls.jchemBase + Urls.standardizerUrl
+    url = Urls.standardizerUrlEFS
     results = web_call(url, request, json.dumps(post_data))
     return results
 
@@ -288,16 +294,24 @@ def transform(request):
     except Exception as e:
         logging.info("Exception retrieving mass from jchem: {}".format(e))
         raise
+    # post_data = {
+    #     "structure": smiles,
+    #     "filterChain": [{
+    #         "filter": "standardizer",
+    #         "parameters": {
+    #             "standardizerDefinition": "[N+](=O)[O-]>>N(=O)=O"
+    #         }
+    #     }]
+    # }
     post_data = {
         "structure": smiles,
-        "filterChain": [{
-            "filter": "standardizer",
-            "parameters": {
-                "standardizerDefinition": "[N+](=O)[O-]>>N(=O)=O"
-            }
-        }]
+        "actions": [
+            "transform"
+        ]
     }
-    url = Urls.jchemBase + Urls.standardizerUrl
+
+    # url = Urls.jchemBase + Urls.standardizerUrl
+    url = Urls.standardizerUrlEFS
     results = web_call(url, request, json.dumps(post_data))
     return results
 

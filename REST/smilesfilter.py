@@ -62,8 +62,13 @@ def checkMass(smiles):
     returns true is smiles mass is less
     than 1500 g/mol
     """
-    request = requests.Request()
-    request.data = { 'smiles': structure }
+
+    logging.info("inside check mass function..")
+
+    request = requests.Request(data = { 'smiles': smiles })
+    # request.data = { 'smiles': structure }
+
+    logging.info("checking mass..")
 
     try:
         response = jchem_rest.getMass(request) # get mass from jchem ws
@@ -71,8 +76,13 @@ def checkMass(smiles):
     except Exception as e:
         logging.warning("!!! Error in checkMass() {} !!!".format(e))
         raise e
+
+    logging.info("mass response data: {}".format(response.content))
     
     struct_mass = json_obj['data'][0]['mass']
+
+    logging.info("structure's mass: {}".format(struct_mass))
+
     if struct_mass < 1500  and struct_mass > 0:
         return True
     else:
@@ -83,19 +93,13 @@ def clearStereos(smiles):
     """
     clears stereoisomers from smiles
     """
-    request = requests.Request()
-    request.data = { 'smiles': structure }
-
+    request = requests.Request(data={'smiles':smiles})
     try:
         response = jchem_rest.clearStereo(request)
-        request.data = { 'chemical': response.content } # structure in mrv format
-
-        response = jchem_rest.convertToSMILES(request) # mrv >> smiles
-        filtered_smiles = json.loads(response.content)['structure'] # get stereoless structure
+        filtered_smiles = json.loads(response.content)['results'] # get stereoless structure
     except Exception as e:
         logging.warning("!!! Error in clearStereos() {} !!!".format(e))
         raise e
-
     return filtered_smiles
 
 
@@ -103,19 +107,14 @@ def transformSMILES(smiles):
     """
     [N+](=O)[O-] >> N(=O)=O
     """
-    request = requests.Request()
-    request.data = { 'smiles': filtered_smiles }
-
+    request = requests.Request(data={'smiles':smiles})
     try:
         response = jchem_rest.transform(request)
-
-        request.data = { 'chemical': filtered_smiles }
-        response = jchem_rest.convertToSMILES(request)
-        filtered_smiles = json.loads(response.content)['structure']
+        logging.info("transform response: {}".format(response.content))
+        filtered_smiles = json.loads(response.content)['results']
     except Exception as e:
         logging.warning("!!! Error in transformSMILES() {} !!!".format(e))
         raise e
-
     return filtered_smiles
 
 
@@ -126,21 +125,31 @@ def parseSmilesByCalculator(structure, calculator):
     from chemaxon_cts import jchem_rest
 
     logging.info("Parsing SMILES by calculator..")
+    filtered_smiles = '' # do i need to initialize up here???
 
     #1. check structure mass..
     if calculator == 'epi' or calculator == 'test':
+        logging.info("checking mass for: {}...".format(structure))
         if not checkMass(structure):
+            logging.info("Structure too large, must be < 1500 g/mol..")
             raise "Structure too large, must be < 1500 g/mol.."
 
     #2-3. clear stereos from structure, transform [N+](=O)[O-] >> N(=O)=O..
     if calculator == 'epi' or calculator == 'sparc':
+
+        logging.info("clearing stereoisomers from smiles..")
+
         try:
+            # clear stereoisomers:
             filtered_smiles = clearStereos(structure)
-            filtered_smiles = transformSMILES(structure)
+            logging.info("stereos cleared: {}".format(filtered_smiles))
+
+            # transform structure:
+            filtered_smiles = str(filtered_smiles[-1])
+            filtered_smiles = str(transformSMILES(filtered_smiles)[-1])
+            logging.info("structure transformed..")
         except Exception as e:
             logging.warning("!!! Error in parseSmilesByCalculator() {} !!!".format(e))
             raise e
-
-    logging.info(">>> {} FILTERED SMILES: {} (final)..".format(calcultor, filtered_smiles))
 
     return filtered_smiles

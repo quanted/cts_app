@@ -7,7 +7,7 @@ import os
 import requests
 import json
 from epi_calculator import EpiCalc
-
+from REST.smilesfilter import parseSmilesByCalculator
 
 
 def request_manager(request):
@@ -35,12 +35,23 @@ def request_manager(request):
       "prop": prop
     }
 
+
+    # ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
+    filtered_smiles = parseSmilesByCalculator(structure, "epi") # call smilesfilter
+
+    logging.info("EPI receiving SMILES: {}".format(filtered_smiles))
+
+    if '[' in filtered_smiles or ']' in filtered_smiles:
+      logging.warning("EPI ignoring request due to brackets in SMILES..")
+      postData.update({'error': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+]"})
+      return HttpResponse(json.dumps(postData), content_type='application/json')
+
+    logging.info("EPI Filtered SMILES: {}".format(filtered_smiles))
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     # get data through epi_calculator:
-    # calcObj = cmap.getCalcObject(calc) # get calculator object
     calcObj = EpiCalc()
-
     response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
-
     postData.update({"data": json.loads(response.content)}) # add that data
 
     logging.info("DATA: {}".format(postData))
