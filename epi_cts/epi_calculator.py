@@ -1,7 +1,3 @@
-###########################################################
-# Herein lies the map to the various calculators' queries #
-###########################################################
-
 import requests
 import json
 import logging

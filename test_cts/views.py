@@ -7,7 +7,7 @@ import os
 import requests
 import json
 from test_calculator import TestCalc
-
+from REST.smilesfilter import parseSmilesByCalculator
 
 
 def request_manager(request):
@@ -32,6 +32,20 @@ def request_manager(request):
       "calc": calc,
       "prop": prop
     }
+
+    # filter smiles before sending to TEST:
+    # ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
+    filtered_smiles = parseSmilesByCalculator(structure, "test") # call smilesfilter
+
+    logging.info("TEST receiving SMILES: {}".format(filtered_smiles))
+
+    # if '[' in filtered_smiles or ']' in filtered_smiles:
+    #   logging.warning("TEST ignoring request due to brackets in SMILES..")
+    #   postData.update({'error': "TEST Suite cannot process charged species or metals (e.g., [S+], [c+])"})
+    #   return HttpResponse(json.dumps(postData), content_type='application/json')
+
+    logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
     calcObj = TestCalc()

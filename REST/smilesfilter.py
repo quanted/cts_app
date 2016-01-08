@@ -49,7 +49,7 @@ def filterSMILES(smiles):
     logging.info("FILTER RESPONSE: {}".format(response.content))
 
     try:
-        filtered_smiles = json.loads(response.content)['results'][0] # picks out smiles from efs???
+        filtered_smiles = json.loads(response.content)['results'][-1] # picks out smiles from efs???
         logging.info("NEW SMILES: {}".format(filtered_smiles))
         return filtered_smiles
     except Exception as e:
@@ -66,7 +66,6 @@ def checkMass(smiles):
     logging.info("inside check mass function..")
 
     request = requests.Request(data = { 'smiles': smiles })
-    # request.data = { 'smiles': structure }
 
     logging.info("checking mass..")
 
@@ -125,10 +124,11 @@ def parseSmilesByCalculator(structure, calculator):
     from chemaxon_cts import jchem_rest
 
     logging.info("Parsing SMILES by calculator..")
-    filtered_smiles = '' # do i need to initialize up here???
+    filtered_smiles = structure
 
     #1. check structure mass..
-    if calculator == 'epi' or calculator == 'test':
+    # if calculator == 'epi' or calculator == 'test':
+    if calculator != 'chemaxon':
         logging.info("checking mass for: {}...".format(structure))
         if not checkMass(structure):
             logging.info("Structure too large, must be < 1500 g/mol..")
