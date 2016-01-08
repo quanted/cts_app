@@ -244,15 +244,15 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
             }
         }
         else if (calc == "epi") {
-            data = response['data']['val']; // the old way..
-            // the new way..
-            // if (Object.keys(response['data']['properties']).length > 0) {
-            //     var data_key = Object.keys(response['data']['properties'])[0];
-            //     data = response['data']['properties'][data_key];
-            // }
-            // else {
-            //     data = "calc error";
-            // }
+            // data = response['data']['val']; // the old way..
+            // the new way:
+            if (Object.keys(response['data']['properties']).length > 0) {
+                var data_key = Object.keys(response['data']['properties'])[0];
+                data = response['data']['properties'][data_key];
+            }
+            else {
+                data = "calc error";
+            }
         }
         else {
             data = response['data'];
