@@ -422,7 +422,7 @@ function getMolecularInfo(node) {
         // loop pchemprops calling parseResponseToPchemTable() (cts_pchemprop_ajax_calls)
         for (var i = 0; i < node.data.pchemprops.length; i++) {
             var response = node.data.pchemprops[i];  // "response" data
-            response['data'].val = response['data'];
+            if (response['data'] != null) { response['data'].val = response['data']; }
             currentNode = node;  // will only display data for currentNode
             parseResponseToPchemTable(response, node, true, true);
         }
