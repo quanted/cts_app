@@ -44,7 +44,6 @@ var calcluatorsList = [
     "sparc"
     // "measured": measured
 ];
-
 // ################################################
 
 (function() {
@@ -117,8 +116,6 @@ $('#btn-pchem-getdata').click(function() {
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
 
-    var test = checkedCalcsAndProps;
-
     st.graph.eachNode(function(node) {
         // node must be within depth of parsedNodeList.length - 1
         if (node._depth < parsedNodeList.length) {
@@ -128,6 +125,23 @@ $('#btn-pchem-getdata').click(function() {
         }
     });
 
+});
+
+
+// Right-click mol info image >> focus page on metabolite in tree:
+// TODO: Doesn't always focus right on node like it should :(
+$('#mol-info-wrapper').on('mousedown', 'img.metabolite', function (e) {
+    if (e.which == 3) {
+        var nodePos = Math.abs(currentNode.pos.y); // scroll to height of selected metabolite, convert to int
+        var treePos = $('#cont').offset().top;
+        var scrollPos = nodePos + treePos;
+        $(window).scrollTop(scrollPos);
+    }
+});
+
+// Prevent right-click menu if clicked on mol info or spacetree div:
+$('#mol-info-wrapper, #cont').on('contextmenu', function (e) {
+    return false;
 });
 
 
@@ -345,6 +359,8 @@ function getMolecularInfo(node) {
     //pchemprops if node has any
 
     if (currentNode === node) {
+        var scrollPos = $(molInfoDiv).offset().top;
+        $(window).scrollTop(scrollPos);
         return;  // do nothing if selecting already-selected node
     }
 
@@ -355,7 +371,7 @@ function getMolecularInfo(node) {
     }
 
     // Clear existing pchemprop table for new data:
-    clearPchemData(); // from scripts_pchemprop
+    clearPchemData(); // from scripts_pchemprop..
 
     $('.node').children().removeClass("selectedMetabolite"); //unhighlight nodes
 
@@ -377,9 +393,7 @@ function getMolecularInfo(node) {
         var molInfoHeader = $(molInfo).siblings('h3')[0];
         if ($(molInfoHeader).hasClass('collapse-close')) {
                 $(molInfoHeader).removeClass('collapse-close').addClass('collapse-open');
-                $(molInfo).show();
         }
-        $(molInfoTable).show();  // show molecular info
     }
     else {
         // add mol info to node.data.molecularInfo (from scripts_jchem.js):
@@ -393,16 +407,22 @@ function getMolecularInfo(node) {
             var molInfoHeader = $(molInfo).siblings('h3')[0];
             if ($(molInfoHeader).hasClass('collapse-close')) {
                 $(molInfoHeader).removeClass('collapse-close').addClass('collapse-open');
-                $(molInfo).show();
             }
         });
     }
+
+    // Scroll to mol info molecule image upon right-clicked metabolite event:
+    $(molInfo).show(300, function () {
+        var scrollPos = $(molInfoDiv).offset().top;
+        $(window).scrollTop(scrollPos);
+    });
 
     // Check node for pchem properties, display if node has any:
     if (node.data.hasOwnProperty("pchemprops")) {
         // loop pchemprops calling parseResponseToPchemTable() (cts_pchemprop_ajax_calls)
         for (var i = 0; i < node.data.pchemprops.length; i++) {
             var response = node.data.pchemprops[i];  // "response" data
+            response['data'].val = response['data'];
             currentNode = node;  // will only display data for currentNode
             parseResponseToPchemTable(response, node, true, true);
         }
@@ -591,44 +611,6 @@ function blockInterface(block) {
 function jsonRepack(jsonobj) {
   return JSON.parse(JSON.stringify(jsonobj));
 }
-
-
-// function getpchemprops() {
-// # dict with keys of checked calculators and values of
-// # checked properties that are also available for said calculators
-// # format: { key: "calculator name", value: [checked property ids] }
-// self.checkedCalcsAndPropsDict = {}
-// for calcKey, calcValue in self.calcluatorsDict.items():
-//     if calcValue == 'true' or calcValue == 'on':
-//         # get checked parameters that are available for calculator
-//         propList = []
-//         for propKey, propValue in self.checkedPropsDict.items():
-//             # find checked properties
-//             if propValue == 'on' or propValue == 'true':
-//                 # check if property is available for calculator:
-//                 if pchemprop_parameters.pchempropAvailable(calcKey, propKey):
-//                     propList.append(propKey)
-//         self.checkedCalcsAndPropsDict.update({calcKey: propList})
-
-    // loop calculators:
-    // for (var i = 0; i < calcluatorsDict.length; i++) {
-    //     // check if calc is checked:
-    //     var calc = calcluatorsDict[i]; // get calculator name..
-    //     var calc_checked = $('input[name="' + calc + '"]').val();
-    //     if (calc_checked) {
-    //         // loop properties if calc is checked:
-    //         for (var j = 0; j < checkedPropsList.length; j++) {
-    //             var prop = checkedPropsList[j];
-    //             var prop_checked = $('input[name="' + prop + '"]').val();
-    //             if (prop_checked) {
-
-    //             }
-    //         }
-    //     }
-    // }
-    
-
-// }
 
 </script>
 
