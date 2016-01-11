@@ -53,7 +53,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
             var sparc_post_data = { "chemical": structure, "calc": calc, "props": sparc_props_list };
             var post_data = { "chemical": structure, "calc": calc };
 
-            // add webservice key..
+            // add webservice key:
             if (calc == "chemaxon") { 
                 post_data.ws = "jchem";
                 post_data.service = "getPchemProps";
@@ -237,27 +237,28 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
                 console.log(response['data']['error']);
             }
             else {
-                // the new way..
-                // data = response['data']['val'];
-                // var data_key = Object.keys(response['data']['properties']);
-                data = response['data']; // the old way..
+                // the new way:
+                data = response['data']['val'];
+                var data_key = Object.keys(response['data']['properties']);
+                // data = response['data']; // the old way..
             }
         }
         else if (calc == "epi") {
             if (hasData) {
-                data = response['data']; // data already parsed from epi..
+                data = response['data']; // data already parsed from epi to node..
             }
             else {
-                data = response['data']['val']; // the old way..
+                // data = response['data']['val']; // the old way..
+                // the new way:
+                if (Object.keys(response['data']['properties']).length > 0) {
+                    var data_key = Object.keys(response['data']['properties'])[0];
+                    data = response['data']['properties'][data_key];
+                }
+                else {
+                    data = "calc error";
+                }
             }
-            // the new way:
-            // if (Object.keys(response['data']['properties']).length > 0) {
-            //     var data_key = Object.keys(response['data']['properties'])[0];
-            //     data = response['data']['properties'][data_key];
-            // }
-            // else {
-            //     data = "calc error";
-            // }
+            
         }
         else {
             data = response['data'];
@@ -265,6 +266,7 @@ function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
     }
 
     // This section deals with putting data onto the table..
+    
     var workflowUrl = window.location.href;
 
     var table_cell = $('.' + calc + '.' + prop); // table cell for calc's prop..
