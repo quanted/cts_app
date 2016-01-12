@@ -21,7 +21,7 @@ var json = null;  // spacetree json
 var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
 var nodeWidth = 100; //default node width (image)
-var callsTracker = 0; //tracks calls for p-chem requets; used for blocking ui
+var block_ui = false; // blocking UI load window boolean
 
 var checkedPropsList = [
     "melting_point",
@@ -78,12 +78,18 @@ var Log = {
 };
 
 //"wait" cursor during ajax events
+// NOTE: calls_tracker from pchemprop ajax calls file
 $(document).ajaxStart(function () {
-    if (callsTracker > 0) { blockInterface(true); }
+    if (block_ui) {
+        blockInterface(true);
+    }
     $('body').addClass('wait');
 }).ajaxComplete(function () {
-    if (callsTracker == 0) { blockInterface(false); }
-    $('body').removeClass('wait');
+    if (calls_tracker == 0) {
+        blockInterface(false);
+        $('body').removeClass('wait');
+        block_ui = false; // reset
+    }
 });
 
 $('#tabs').click(function(event) {
@@ -115,12 +121,13 @@ $('#btn-pchem-getdata').click(function() {
     }
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
+    block_ui = true; // initiate blocked UI load window..
 
     st.graph.eachNode(function(node) {
         // node must be within depth of parsedNodeList.length - 1
         if (node._depth < parsedNodeList.length) {
-            callsTracker += 1;  // inc calls tracker for blocking ui
-            console.log("inc tracker: " + callsTracker);
+            // callsTracker += 1;  // inc calls tracker for blocking ui
+            // console.log("inc tracker: " + callsTracker);
             getPchemData(node);
         }
     });
@@ -434,6 +441,44 @@ function getMolecularInfo(node) {
 }
 
 
+function getPchemData(node) {
+
+    // TODO: Check if metabolite already has pchem data before making call *******
+
+    if (!node) {
+        $('.gentransError').show();
+        return;
+    }
+
+    var smiles = node.data['smiles'];
+    var params = buildPostObject(smiles, "getPchemPropDict");
+    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call
+    
+    for (var i in acceptedKeys) {
+        var key = acceptedKeys[i];
+        params["data"][key] = null; // values are irrelevant (only need smiles)
+    }
+
+    // Return if no metabolite selected, i.e., null smiles, mass, etc. values
+    // "Must select (right-click) a metabolite first to get pchemprops"
+    if (params["data"]["smiles"] == "") {
+        $('.gentransError').show();
+        return;
+    }
+    else { $('.gentransError').hide(); }
+
+    makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {
+        var kowPH = $('#id_kow_ph').val();
+        // make p-chem calls (function from cts_pchemprop_ajax_calls.html):
+        startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node, currentNode);
+        // make border dark blue (has pchemprop data).. 
+        // TODO: only blue when data is actually downloaded
+        // $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node
+    });
+ 
+}
+
+
 function addImageToMolInfo(node) {
     var nodeHTML = $.parseHTML(node.data.html);
     var nodeImage = $(nodeHTML).children('div.metabolite_img');
@@ -491,44 +536,6 @@ function tabDisplayLogic(event) {
 }
 
 
-function getPchemData(node) {
-
-    // TODO: Check if metabolite already has pchem data before making call *******
-
-    if (!node) {
-        $('.gentransError').show();
-        return;
-    }
-
-    var smiles = node.data['smiles'];
-    var params = buildPostObject(smiles, "getPchemPropDict");
-    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call
-    
-    for (var i in acceptedKeys) {
-        var key = acceptedKeys[i];
-        params["data"][key] = null; // values are irrelevant (only need smiles)
-    }
-
-    // Return if no metabolite selected, i.e., null smiles, mass, etc. values
-    // "Must select (right-click) a metabolite first to get pchemprops"
-    if (params["data"]["smiles"] == "") {
-        $('.gentransError').show();
-        return;
-    }
-    else { $('.gentransError').hide(); }
-
-    makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {
-        var kowPH = $('#id_kow_ph').val();
-        // make p-chem calls (function from cts_pchemprop_ajax_calls.html):
-        startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node, currentNode);
-        // make border dark blue (has pchemprop data).. 
-        // TODO: only blue when data is actually downloaded
-        $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node
-    });
- 
-}
-
-
 function buildPostObject(smiles, service) {
     var params = new Object();
     params.url = "/cts/portal";
@@ -573,8 +580,6 @@ function makeAjaxCall(node, params, callback) {
       dataType: params.dataType,
       success: function(data) {
         var data = jsonRepack(data);
-        callsTracker -= 1;
-        console.log("dec tracker: " + callsTracker);
         callback(node, data);
       },
       error: function(jqXHR, textStatus, errorThrown) {

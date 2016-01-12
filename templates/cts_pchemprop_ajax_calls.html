@@ -17,6 +17,7 @@ var sparcPropMap = {
 var jchem_methods = ['KLOP', 'PHYS', 'VG'];
 var checkedCalcsAndProps; // format --> {'calc': ['checked_prop', ..], ..}
 var spinner_html = '<img src="/static/images/loader.gif" id="spinner" />';
+var calls_tracker = 0;
 
 $(document).ready(function() {
     // Some global and local variable delcarations:
@@ -121,13 +122,21 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 
 
 function makeTheCall(calcPropData, node, addDataToTable) {
+    calls_tracker++;
+    console.log("calls tracker: " + calls_tracker);
     $.ajax({ 
         url: "/cts/portal",
         type: "POST",
         dataType: "json",
         data: calcPropData,
-        timeout: 20000,
+        timeout: 10000,
         success: function(data) {
+
+            // implement call tracker stuff here?
+            calls_tracker--;
+            console.log("calls tracker: " + calls_tracker);
+            $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node
+
             if (data['calc'] == "sparc") { 
                 parseSPARCResponseToPchemTable(data, node, addDataToTable);
             }
@@ -209,7 +218,8 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         $(table_cell).html(response['error']);
         return;
     }
-    else if (response['data'].hasOwnProperty('error')) {
+
+    else if (!('data' in response)) {
         $(table_cell.html("error processing data"));
         return;
     }

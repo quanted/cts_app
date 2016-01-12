@@ -61,7 +61,8 @@ function plotMicroDist() {
   for (var series in plot['series']) {
     var color = plot['series'][series]['color']; //series color
     var name = plot['series'][series]['label']; //series name
-    $('#' + name).css('border', '2px solid ' + color);
+    $('#' + name).parent('div').css('border', '2px solid ' + color);
+    $('#' + name).css('border', 'none');
   }
 }
 </script>
