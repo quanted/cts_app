@@ -135,7 +135,7 @@ function makeTheCall(calcPropData, node, addDataToTable) {
             // implement call tracker stuff here?
             calls_tracker--;
             console.log("calls tracker: " + calls_tracker);
-            $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node
+            if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node
 
             if (data['calc'] == "sparc") { 
                 parseSPARCResponseToPchemTable(data, node, addDataToTable);
