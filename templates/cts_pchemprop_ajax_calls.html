@@ -15,11 +15,11 @@ var sparcPropMap = {
 };
 
 var jchem_methods = ['KLOP', 'PHYS', 'VG'];
-
 var checkedCalcsAndProps; // format --> {'calc': ['checked_prop', ..], ..}
+var spinner_html = '<img src="/static/images/loader.gif" id="spinner" />';
 
 $(document).ready(function() {
-    //some global and local variable delcarations..
+    // Some global and local variable delcarations:
     checkedCalcsAndProps = {{checkedCalcsAndProps}};
     var structure = "{{structure}}";
     kowPH = "{{kow_ph}}";
@@ -33,94 +33,94 @@ $(document).ready(function() {
     if (test_results.length > 0) {
         parseTESTResultsToTable(test_results); // load already-collected TEST data into table..
     }
-    startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null); // get pchem data..
+    startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null); // get pchem data..
 });
 
 
-function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node) {
+function isPchemWorkflow(workflow_url) {
+    if (workflow_url.indexOf("pchem") > -1) { return true; }
+    else { return false; }
+}
 
-    console.log(structure);
+
+function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node, currentNode) {
     
     if (checkedCalcsAndProps == null) { return; }
 
     var sparc_props_list = [];
-    var pchemForSelectedNode = parseFloat($('#gen-select-pchem').val());
-    var workflowPath = window.location.href; // check if pchem or trans products workflow..
+    var num_pchem = parseFloat($('#gen-select-pchem').val()); // number of props
+    var workflow_url = window.location.href; // check if pchem or trans products workflow..
+
+    console.log("incoming structure: " + structure);
 
     for (var calc in checkedCalcsAndProps) {
         if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
-            var sparc_post_data = { "chemical": structure, "calc": calc, "props": sparc_props_list };
+            // var sparc_post_data = { "chemical": structure, "calc": calc, "props": sparc_props_list };
             var post_data = { "chemical": structure, "calc": calc };
 
-            // add webservice key:
+            // 1. Add webservice key:
             if (calc == "chemaxon") { 
                 post_data.ws = "jchem";
                 post_data.service = "getPchemProps";
             }
             else if (calc == "sparc") {
-                sparc_post_data.ws = "sparc";
+                post_data.ws = "sparc";
+                post_data.props = sparc_props_list;
             }
             else { post_data.ws = calc; }
 
             for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+
                 var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
                 var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
+                var addDataToTable = false; // whether to plot on visible pchem table or not..
+
+                // 2. Build POST data:
                 if (calc == "sparc") {
-                    sparc_props_list.push(prop); // build prop list for one call to sparc..
-                    $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
+                    sparc_props_list.push(prop); // build list for 1 call for all props..
                 }
-                else if (calc == "epi") {
+                else {
                     post_data['prop'] = prop;
                     if (prop == "kow_wph") { post_data.ph = kowPH; }
-                    if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
-                        $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
-                        makeTheCall(post_data, node, true); // pchemprop workflow
-                    }
-                    else { makeTheCall(post_data, node, false); } // pchem for metabolites, no spinners..
                 }
 
-                // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                // adding TEST condition here for metabolites async data collection...
-                // this is temporary since async calls aren't the best for TEST..
-                else if (calc == "test") {
-                    post_data['prop'] = prop;
-                    if (prop == "kow_wph") { post_data.ph = kowPH; }
-                    if (workflowPath.indexOf("pchem") > -1 || pchemForSelectedNode == 0) {
-                        $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
-                        makeTheCall(post_data, node, true); // pchemprop workflow
-                    }
-                    else { makeTheCall(post_data, node, false); } // pchem for metabolites, no spinners..   
+                // 3. Determine whether data should be inserted into pchem table:
+                if (isPchemWorkflow(workflow_url)) {
+                    addDataToTable = true; // always add data to table in pchem workflow..
                 }
-                // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                else {
+                    if (currentNode != null && node.id == currentNode.id) {
+                        addDataToTable = true; 
+                    }
+                    else { addDataToTable = false; }
+                }
 
+                // 4. Add spinner to calc-prop table cell:
+                if (addDataToTable) { $(tblCell).html(spinner_html); }
 
-                else if (calc == "chemaxon") {
-                    post_data['prop'] = prop; // add property to post data..
-                    if (prop == "kow_wph") { post_data.ph = kowPH; } // add ph to post data if logD..
-                    // Get data for all 3 methods if chemaxon prop is logD or logP..
+                // 5. Make data calls, determine if additional methods required:
+                if (calc == "chemaxon") {
                     if (prop == "kow_wph" || prop == "kow_no_ph") {
                         for (var method in jchem_methods) {
-                            $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
                             post_data['method'] = jchem_methods[method];
-                            makeTheCall(post_data, node, true); // pchemprop workflow..
+                            makeTheCall(post_data, node, addDataToTable);
                         }
+                        delete post_data['method']; // lazy fix for methods showing in non-method props
                     }
-                    else {
-                        $(tblCell).html('<img src="/static/images/loader.gif" id="spinner" />');
-                        makeTheCall(post_data, node, true); // pchemprop workflow
-                    }
+                    else { makeTheCall(post_data, node, addDataToTable); }
                 }
+                else if (calc != "sparc") { makeTheCall(post_data, node, addDataToTable); }
             }
-            // make sparc call after all props are gathered into list..
-            if (calc == "sparc") { makeTheCall(sparc_post_data, node, true); }
+            // Make sparc call after all props are gathered into list:
+            if (calc == "sparc") { makeTheCall(post_data, node, addDataToTable); }
         }
     }
 
 }
 
 
-function makeTheCall(calcPropData, node, plotDataToTable) {
+function makeTheCall(calcPropData, node, addDataToTable) {
     $.ajax({ 
         url: "/cts/portal",
         type: "POST",
@@ -129,10 +129,10 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
         timeout: 20000,
         success: function(data) {
             if (data['calc'] == "sparc") { 
-                parseSPARCResponseToPchemTable(data, node, plotDataToTable);
+                parseSPARCResponseToPchemTable(data, node, addDataToTable);
             }
             else { 
-                parseResponseToPchemTable(data, node, false, plotDataToTable);
+                parseResponseToPchemTable(data, node, false, addDataToTable);
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -143,10 +143,10 @@ function makeTheCall(calcPropData, node, plotDataToTable) {
                 "prop": calcPropData['prop']
             };
             if (error['calc'] == "sparc") { 
-                parseSPARCResponseToPchemTable(error, node, plotDataToTable);
+                parseSPARCResponseToPchemTable(error, node, addDataToTable);
             }
             else { 
-                parseResponseToPchemTable(error, node, false, plotDataToTable);
+                parseResponseToPchemTable(error, node, false, addDataToTable);
             }
         }
     });
@@ -164,143 +164,103 @@ function parseTESTResultsToTable(test_results) {
 }
 
 
-function parseSPARCResponseToPchemTable(data, node, plotDataToTable) {
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// SPARC is different. It's getting all props back at once so it
+// needs to parse the data to the p-chem table differently
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function parseSPARCResponseToPchemTable(data, node, addDataToTable) {
     var calc = data['calc']; // sparc
     var props = data['props']; // get sparc props list
     var sparc_results = data['data']['calculationResults'];
     console.log("parsing sparc data...");
     for (prop in props) {
         if (props.hasOwnProperty(prop)) {
-            // var sparcPropName = sparcPropMap[props[prop]];
-            console.log("current property: " + props[prop]);
-            getPropFromSPARCResults(data, node, props[prop], sparc_results, plotDataToTable);
+            getPropFromSPARCResults(data, node, props[prop], sparc_results, addDataToTable);
         }
     }
-    console.log("finished..");
 }
-
-
-function getPropFromSPARCResults(data, node, prop, sparc_results, plotDataToTable) {
+function getPropFromSPARCResults(data, node, prop, sparc_results, addDataToTable) {
     var responseObj = {"calc": "sparc"}; // initial obj for parsing to table
     var sparcProp = sparcPropMap[prop]; // get sparc's name for prop
-
-    console.log("parsing sparc results for property...");
-    console.log("sparc property: " + sparcProp);
-
     for (index in sparc_results) {
         if (sparc_results.hasOwnProperty(index)) {
             var propObj = sparc_results[index]; // property object
-
-            console.log("sparc property: ");
-            console.log(propObj);
-
             if (propObj['type'] == sparcProp) {
-
-                console.log("requested property found in sparc results...parsing to table...");
-
                 responseObj['prop'] = prop;
                 responseObj['data'] = propObj['result']; // prop result value
-
-                parseResponseToPchemTable(responseObj, node, false, true, plotDataToTable);
-
-                console.log("allegedly parsed to table...");
-
+                parseResponseToPchemTable(responseObj, node, false, true, addDataToTable);
             }
         }
     }
 }
 
 
-function parseResponseToPchemTable(response, node, hasData, plotDataToTable) {
-    //map response to pchemprop output table:
+function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
+    // Map response to pchemprop output table:
 
     var calc = response['calc'];
     var prop = response['prop'];
-
-    if (response.hasOwnProperty('error')) {
-        $('.' + calc + '.' + prop).html(response['error']); //add error to table
-        console.log(response['error']);
-        return; //get out of there
-    }
-
-    var data;
-    if (response.hasOwnProperty('data')) {
-        // if ((calc != "chemaxon") && (calc != "sparc")) {
-        if (calc == "test") {
-            // var test = response['data']['properties'].keys().length;
-            if (response['data']['properties'] === "undefined") {
-                data = "calc returned nothing";
-                console.log("data has null value");
-            }
-            else if (response['data'].hasOwnProperty('error')) {
-                data = "calc error";
-                console.log(response['data']['error']);
-            }
-            else {
-                // the new way:
-                data = response['data']['val'];
-                var data_key = Object.keys(response['data']['properties']);
-                // data = response['data']; // the old way..
-            }
-        }
-        else if (calc == "epi") {
-            if (hasData) {
-                data = response['data']; // data already parsed from epi to node..
-            }
-            else {
-                // data = response['data']['val']; // the old way..
-                // the new way:
-                if (Object.keys(response['data']['properties']).length > 0) {
-                    var data_key = Object.keys(response['data']['properties'])[0];
-                    data = response['data']['properties'][data_key];
-                }
-                else {
-                    data = "calc error";
-                }
-            }
-            
-        }
-        else {
-            data = response['data'];
-        }
-    }
-
-    // This section deals with putting data onto the table..
-    
     var workflowUrl = window.location.href;
-
     var table_cell = $('.' + calc + '.' + prop); // table cell for calc's prop..
+    var data;
 
-    if (workflowUrl.indexOf("pchem") > -1) {
-        // at the pchemprop workflow, simply display data..
-        if (calc == "chemaxon" && (prop == "kow_no_ph" || prop == "kow_wph")) {
-            var method = response['method']; // assuming method exist..
-            var has_spinner = $(table_cell).children('img#spinner').length;
-            if (has_spinner > 0) {
-                $(table_cell).html(""); // remove spinner from cell..
-            }
-            $(table_cell).append(organizeData(calc, prop, data) + " (" + method + ")<br>"); // add data to table..
+    // TODO: improve error handling to mitigate error checking like below..
+    if (response.hasOwnProperty('error')) { 
+        $(table_cell).html(response['error']);
+        return;
+    }
+    else if (response['data'].hasOwnProperty('error')) {
+        $(table_cell.html("error processing data"));
+        return;
+    }
+
+    if (calc == "test") {
+        data = response['data']['val'];
+    }
+    else if (calc == "epi") {
+        if (hasData) {
+            data = response['data']; // data already parsed from epi to node..
         }
         else {
-            $(table_cell).html(organizeData(calc, prop, data)); // add data to table..
+            data = response['data']['val']; // the old way..
+            // the new way:
+            // if (Object.keys(response['data']['properties']).length > 0) {
+            //     var data_key = Object.keys(response['data']['properties'])[0];
+            //     data = response['data']['properties'][data_key];
+            // }
+            // else {
+            //     data = "calc error";
+            // }
+        }    
+    }
+    else { data = response['data']; }
+
+    // Add pchemprop data to node if gentrans workflow:
+    if (!isPchemWorkflow(workflowUrl)) {
+        if (!node.data.hasOwnProperty('pchemprops')) {
+            node.data.pchemprops = []; // keys: calc, prop, data (single-level)..
+        }
+        var post_data = {"calc": calc, "prop": prop, "data": data};
+        if (response.hasOwnProperty('method')) { 
+            post_data['method'] = response['method'];
+        }
+        if (hasData == false) {
+            node.data.pchemprops.push(post_data);
         }
     }
-    else {
-        if (node !== 'undefined' && node != null) {
-            if (!node.data.hasOwnProperty('pchemprops')) {
-                node.data.pchemprops = []; //array of with keys: calc, prop, data (single-level)
-            }
 
-            if (hasData == false) {
-                node.data.pchemprops.push({"calc": calc, "prop": prop, "data": data});
-            }
-
-            if (plotDataToTable && currentNode) {
-                $(table_cell).html(organizeData(calc, prop, data)); //add data to table
-            }
-
+    if (response.hasOwnProperty('method')) {
+        var method = response['method'];
+        var has_spinner = $(table_cell).children('img#spinner').length;
+        if (has_spinner > 0) { $(table_cell).html(""); }
+        if (addDataToTable) {
+            $(table_cell).append(organizeData(calc, prop, data) + " (" + method + ")<br>"); // append method to cell..
         }
     }
+    else { 
+        if (addDataToTable) { $(table_cell).html(organizeData(calc, prop, data)); }
+    }
+
 }
 
 

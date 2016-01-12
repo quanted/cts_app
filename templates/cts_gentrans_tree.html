@@ -130,7 +130,7 @@ $('#btn-pchem-getdata').click(function() {
 
 // Right-click mol info image >> focus page on metabolite in tree:
 // TODO: Doesn't always focus right on node like it should :(
-$('#mol-info-wrapper').on('mousedown', 'img.metabolite', function (e) {
+$('#mol-info-wrapper').on('mouseup', 'img.metabolite', function (e) {
     if (e.which == 3) {
         var nodePos = Math.abs(currentNode.pos.y); // scroll to height of selected metabolite, convert to int
         var treePos = $('#cont').offset().top;
@@ -140,7 +140,10 @@ $('#mol-info-wrapper').on('mousedown', 'img.metabolite', function (e) {
 });
 
 // Prevent right-click menu if clicked on mol info or spacetree div:
-$('#mol-info-wrapper, #cont').on('contextmenu', function (e) {
+// $('#mol-info-wrapper, #cont').on('contextmenu', function (e) {
+//     return false;
+// });
+$('#metaboliteInfo, #cont').on('contextmenu', function (e) {
     return false;
 });
 
@@ -490,7 +493,7 @@ function tabDisplayLogic(event) {
 
 function getPchemData(node) {
 
-    //TODO: Check if metabolite already has pchem data before making call *******
+    // TODO: Check if metabolite already has pchem data before making call *******
 
     if (!node) {
         $('.gentransError').show();
@@ -506,10 +509,9 @@ function getPchemData(node) {
         params["data"][key] = null; // values are irrelevant (only need smiles)
     }
 
-    //Return if no metabolite selected, i.e., null smiles, mass, etc. values
-    //"Must select (right-click) a metabolite first to get pchemprops"
+    // Return if no metabolite selected, i.e., null smiles, mass, etc. values
+    // "Must select (right-click) a metabolite first to get pchemprops"
     if (params["data"]["smiles"] == "") {
-        //display error message near button
         $('.gentransError').show();
         return;
     }
@@ -517,8 +519,8 @@ function getPchemData(node) {
 
     makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {
         var kowPH = $('#id_kow_ph').val();
-        // make p-chem calls (function from cts_pchemprop_ajax_calls.html)..
-        startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node);
+        // make p-chem calls (function from cts_pchemprop_ajax_calls.html):
+        startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node, currentNode);
         // make border dark blue (has pchemprop data).. 
         // TODO: only blue when data is actually downloaded
         $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node

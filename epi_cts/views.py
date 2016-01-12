@@ -69,5 +69,5 @@ def request_manager(request):
 
   except requests.exceptions.ConnectionError as ce:
     logging.warning("Connection error occurred: {}".format(ce))
-    postData.update({"error": "connection error"})
+    postData.update({"error": "error connecting to calculator server"})
     return HttpResponse(json.dumps(postData), content_type='application/json')
