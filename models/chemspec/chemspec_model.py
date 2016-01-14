@@ -18,10 +18,9 @@ import datetime
 
 
 class chemspec(object):
-    def __init__(self, run_type, chem_struct, smiles, name, formula, mass, pkaChkbox, tautChkbox, stereoChkbox,
-                 pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
-                 isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH,
-                 stereoisomers_maxNoOfStructures):
+    def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass, pkaChkbox, tautChkbox, 
+                 stereoChkbox, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
+                 isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
         self.jid = jchem_rest.gen_jid()
 
@@ -30,6 +29,7 @@ class chemspec(object):
         # Chemical Editor Tab
         self.chem_struct = chem_struct  # SMILE of chemical on 'Chemical Editor' tab
         self.smiles = smiles
+        self.orig_smiles = orig_smiles
         self.name = name
         self.formula = formula
         self.mass = mass + ' g/mol'

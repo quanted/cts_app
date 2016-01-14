@@ -75,24 +75,25 @@ function importMol(chemical) {
   // get smiles of user-entered chemical
   convertToSMILES(chemical, function(smiles_result) {
     if (smiles_result != "Fail") {
-      var smiles = smiles_result['structure'];
-      // run smiles through validation/processing..
-      // returns 'smiles', 'processsmiles', and 'valid' key:values..
-       isValidSMILES(smiles, function (processed_smiles_json) {
-         if (processed_smiles_json['valid']) {
+      var smiles = smiles_result['structure']; // use this smiles as the initial smiles..
+      // run smiles through validation/processing:
+       // isValidSMILES(smiles, function (processed_smiles_json) {
+       //   if (processed_smiles_json['valid']) {
             // get chemical info of processed smiles..
-            getChemDetails(processed_smiles_json['processedsmiles'], function (chemResults) {
+            // getChemDetails(processed_smiles_json['processedsmiles'], function (chemResults) {
+            getChemDetails(smiles, function (chemResults) {
               if (chemResults != "Fail") {
                 data = chemResults.data[0];
+                data['orig_smiles'] = smiles;
                 // data['smiles'] = processed_smiles_json['processedsmiles'];
                 populateResultsTbl(data);
                 marvinSketcherInstance.importStructure("mrv", data.structureData.structure); //Load chemical to marvin sketch
               }
               else { displayErrorInTextbox("An error occurred retrieving chemical information.."); }
             });
-         }
-         else { displayErrorInTextbox("SMILES not valid.."); }
-       });
+       //   }
+       //   else { displayErrorInTextbox("SMILES not valid.."); }
+       // });
     }
     else { displayErrorInTextbox("An error has occurred retrieving smiles.."); }
   });
@@ -117,6 +118,7 @@ function importMolFromCanvas() {
             getChemDetails(processed_smiles, function(chemResults) {
               if (chemResults != "Fail") {
                 data = chemResults.data[0];
+                data['orig_smiles'] = smiles;
                 populateResultsTbl(data);
               }
               else { displayErrorInTextbox("An error occurred retrieving chemical information.."); }
@@ -222,6 +224,7 @@ function populateResultsTbl(data) {
   //Populates Results textboxes with data:
   $('#id_chem_struct').val(data["smiles"]); //Enter SMILES txtbox
   $('#molecule').val(data["smiles"]); //SMILES string txtbox - results table
+  $('#orig-molecule').val(data['orig_smiles'])
   $('#IUPAC').val(data["iupac"]); //IUPAC txtbox - results table
   $('#formula').val(data["formula"]); //Formula txtbox - results table
   $('#weight').val(data["mass"]); //Mass txtbox - results table

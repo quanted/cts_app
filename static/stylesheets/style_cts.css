@@ -1465,6 +1465,12 @@ div.wrapped_molecule {
   margin: 4px 4px 4px 4px;
 }
 
+/* metabolite images black and white! */
+img.metabolite {
+  -webkit-filter: grayscale(100%);
+  z-index: -9999999999999999999999999px;
+}
+
 /* qtip2 stuff */
 .tooltiptext {
   display: none;
@@ -1838,9 +1844,4 @@ div.pka-wrapper {
 }
 #reactsim-libs {
   border: black 1px solid;
-}
-
-img.metabolite {
-  -webkit-filter: grayscale(100%);
-  z-index: -9999999999999999999999999px;
 }

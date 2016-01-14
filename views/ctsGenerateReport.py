@@ -8,6 +8,7 @@ import pytz
 import json
 import os
 import pdfkit
+from bs4 import BeautifulSoup
 
 import logging
 from models.gentrans import data_walks
@@ -87,7 +88,7 @@ def pdfReceiver(request, model=''):
     """
     input_str = ''
     input_str += parsePOST(request)
-    packet = StringIO.StringIO(input_str) #write to memory
+    packet = StringIO.StringIO(input_str) # write to memory
     config = pdfkit.configuration(wkhtmltopdf=os.environ['wkhtmltopdf'])
     # landscape only for metabolites output:
     if 'pdf_json' in request.POST and request.POST['pdf_json']:

@@ -9,6 +9,7 @@ def chemspecOutputPage(request):
     # Chemical Editor tab
     chemStruct = request.POST.get('chem_struct')
     smiles = request.POST.get('smiles')
+    orig_smiles = request.POST.get('orig-smiles')
     name = request.POST.get('name')
     formula = request.POST.get('formula')
     mass = request.POST.get('mass')
@@ -31,7 +32,7 @@ def chemspecOutputPage(request):
     
     sterMaxNumStructs = request.POST.get('stereoisomers_maxNoOfStructures')
 
-    chemspec_obj = chemspec_model.chemspec("single", chemStruct, smiles, name, formula, 
+    chemspec_obj = chemspec_model.chemspec("single", chemStruct, smiles, orig_smiles, name, formula, 
                     mass, pkaChkbox, tautChkbox, stereoChkbox, pKaDecs, pKaPhLow, 
                     pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
                     tautMaxNumStructs, tautMaxNumStructsPh, sterMaxNumStructs)

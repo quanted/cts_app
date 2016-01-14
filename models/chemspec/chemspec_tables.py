@@ -50,7 +50,8 @@ def getInputTemplate():
 
 def getMolTblData(chemspec_obj):
     data = [
-        {'SMILES': chemspec_obj.smiles}, 
+        {'SMILES': chemspec_obj.smiles},
+        {'Initial SMILES': chemspec_obj.orig_smiles},
         {'IUPAC': chemspec_obj.name}, 
         {'Formula': chemspec_obj.formula}, 
         {'Mass': chemspec_obj.mass}

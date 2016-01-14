@@ -129,13 +129,12 @@ function makeTheCall(calcPropData, node, addDataToTable) {
         type: "POST",
         dataType: "json",
         data: calcPropData,
-        timeout: 10000,
+        timeout: 15000,
         success: function(data) {
-
-            // implement call tracker stuff here?
             calls_tracker--;
             console.log("calls tracker: " + calls_tracker);
-            if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node
+
+            if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node..
 
             if (data['calc'] == "sparc") { 
                 parseSPARCResponseToPchemTable(data, node, addDataToTable);
@@ -145,7 +144,9 @@ function makeTheCall(calcPropData, node, addDataToTable) {
             }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(errorThrown);
+            console.log("Error: " + errorThrown);
+            calls_tracker--; // TODO (maybe): retry call instead of decrementing and moving on..
+            console.log("calls tracker: " + calls_tracker);
             var error = {
                 "error": textStatus,
                 "calc": calcPropData['calc'],

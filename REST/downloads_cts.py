@@ -33,6 +33,17 @@ class CSV(object):
         self.molecular_info = ['smiles', 'name', 'mass', 'formula'] # original user sructure
 
     def parseToCSV(self, run_data):
+
+
+        # Print incoming data to fix encoding bug:
+        # fileout = open('C:\\Users\\nickpope\\Desktop\\incoming_data.txt', 'w')
+        # fileout.write("{}".format(run_data))
+        # fileout.close()
+        # encoded_data = dict((key.encode('utf8'), val.encode('utf8')) for (key, val) in run_data.items())
+        # logging.info("encoded data: {}").format(encoded_data)
+        # OR JUST DO THIS (CHECK IF NECESSARY FIRST) IN THE BELOW LOOP THAT WRITES DATA ROWS!!!!
+
+
         jid = gen_jid() # create timestamp
         time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
@@ -149,7 +160,8 @@ class CSV(object):
 
             gen_list = []
 
-            # loop detabolite data, one per row, insert data at index of matching header..
+            # loop metabolite data, one per row, insert data at index of matching header:
+            # (this builds the rows as list)
             for metabolite in metabolites_data:
 
                 # predefine row because code below will insert data at index of its column header..
@@ -193,11 +205,17 @@ class CSV(object):
         writer.writerow(rows['headers'])
 
         # todo: remove blank columns before writing to csv..
+        # write data rows to csv file:
         if self.model == 'gentrans':
             for gen in gen_list: writer.writerow(rows[gen])
         else:
             for row, row_data in rows.items():
-                if row != "headers": writer.writerow(row_data)
+                # add checking for character encoding..
+                encoded_row_data = []
+                for datum in row_data:
+                    if isinstance(datum, unicode): datum = datum.encode('utf8')
+                    encoded_row_data.append(datum)
+                if row != "headers": writer.writerow(encoded_row_data)
 
         return response
 

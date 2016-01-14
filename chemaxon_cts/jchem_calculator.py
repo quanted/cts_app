@@ -72,10 +72,8 @@ class JchemProperty(object):
             "structure": structure,
             "parameters": self.postData
         }
-        logging.info("is it getting here???")
         if method:
             postData['parameters']['method'] = method
-            logging.info("making a data request !!!!!!!!!!!!")
         try:
             response = requests.post(url, data=json.dumps(postData), headers=headers, timeout=60)
             self.results = json.loads(response.content)

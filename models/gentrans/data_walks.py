@@ -177,6 +177,7 @@ def buildTableValues(nodeList, keys, nRound):
             else:
                 htmlListItem.update({key: ''})
         htmlList.append(htmlListItem)
+    logging.info("TABLE VALUES FOR PDF: {}".format(htmlList))
     return htmlList
 
 

@@ -56,13 +56,13 @@ function plotMicroDist() {
     }
   });
 
-  //Get series colors to make microspecies image border
-  //the same as its series color
+  // Get series colors to make microspecies image border
+  // the same as its series color
   for (var series in plot['series']) {
-    var color = plot['series'][series]['color']; //series color
-    var name = plot['series'][series]['label']; //series name
-    $('#' + name).parent('div').css('border', '2px solid ' + color);
-    $('#' + name).css('border', 'none');
+    var color = plot['series'][series]['color']; // series color..
+    var name = plot['series'][series]['label']; // series name..
+    $('#' + name).parent('div').css('border', '2px solid ' + color); // color parent div..
+    $('#' + name).css('border', 'none'); // remove image border..
   }
 }
 </script>
