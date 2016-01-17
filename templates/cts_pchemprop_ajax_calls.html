@@ -30,7 +30,7 @@ $(document).ready(function() {
     formula = "{{formula}}";
     time = "{{time}}";
     sparcPropMap['kow_ph'] = kowPH;
-    var test_results = {{ test_results }};
+    var test_results = {{ test_results }}; // used for pchem workflow..
     if (test_results.length > 0) {
         parseTESTResultsToTable(test_results); // load already-collected TEST data into table..
     }
@@ -38,7 +38,8 @@ $(document).ready(function() {
 });
 
 
-function isPchemWorkflow(workflow_url) {
+function isPchemWorkflow() {
+    var workflow_url = window.location.href;
     if (workflow_url.indexOf("pchem") > -1) { return true; }
     else { return false; }
 }
@@ -50,12 +51,12 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 
     var sparc_props_list = [];
     var num_pchem = parseFloat($('#gen-select-pchem').val()); // number of props
-    var workflow_url = window.location.href; // check if pchem or trans products workflow..
 
     console.log("incoming structure: " + structure);
 
     for (var calc in checkedCalcsAndProps) {
-        if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+        // run TEST here only for metabolites:
+        if (calc != "test"  || !isPchemWorkflow) {
 
             // var sparc_post_data = { "chemical": structure, "calc": calc, "props": sparc_props_list };
             var post_data = { "chemical": structure, "calc": calc };
@@ -87,7 +88,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 }
 
                 // 3. Determine whether data should be inserted into pchem table:
-                if (isPchemWorkflow(workflow_url)) {
+                if (isPchemWorkflow()) {
                     addDataToTable = true; // always add data to table in pchem workflow..
                 }
                 else {
@@ -168,7 +169,7 @@ function parseTESTResultsToTable(test_results) {
     for (result in test_results) {
         if (test_results.hasOwnProperty(result)) {
             console.log(test_results[result]);
-            parseResponseToPchemTable(test_results[result], null, false, null);
+            parseResponseToPchemTable(test_results[result], null, false, true);
         }
     }
 }
@@ -226,7 +227,8 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
     }
 
     if (calc == "test") {
-        data = response['data']['val'];
+        // data = response['data']['val'];
+        data = response['data'];
     }
     else if (calc == "epi") {
         if (hasData) {
@@ -247,7 +249,7 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
     else { data = response['data']; }
 
     // Add pchemprop data to node if gentrans workflow:
-    if (!isPchemWorkflow(workflowUrl)) {
+    if (!isPchemWorkflow()) {
         if (!node.data.hasOwnProperty('pchemprops')) {
             node.data.pchemprops = []; // keys: calc, prop, data (single-level)..
         }
