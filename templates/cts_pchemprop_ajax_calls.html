@@ -182,7 +182,8 @@ function parseTESTResultsToTable(test_results) {
 function parseSPARCResponseToPchemTable(data, node, addDataToTable) {
     var calc = data['calc']; // sparc
     var props = data['props']; // get sparc props list
-    var sparc_results = data['data']['calculationResults'];
+    var sparc_results;
+    if ('calculationResults' in data['data']) { sparc_results = data['data']['calculationResults']; }
     console.log("parsing sparc data...");
     for (prop in props) {
         if (props.hasOwnProperty(prop)) {
