@@ -206,7 +206,8 @@ function getPropFromSPARCResults(data, node, prop, sparc_results, addDataToTable
             var propObj = sparc_results[index]; // property object
             if (propObj['type'] == sparcProp) {
                 responseObj['prop'] = prop;
-                responseObj['data'] = propObj['result']; // prop result value
+                if ('error' in data) { responseObj['data'] == data['error']; }
+                else { responseObj['data'] = propObj['result']; } // prop result value
                 parseResponseToPchemTable(responseObj, node, false, true, addDataToTable);
             }
         }
