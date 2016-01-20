@@ -25,7 +25,9 @@ def request_manager(request):
             "props": props
         }
 
-        calcObj = SparcCalc(structure)
+
+        filtered_smiles = parseSmilesByCalculator(structure, "sparc") # call smilesfilter
+        calcObj = SparcCalc(filtered_smiles)
         returnedData = calcObj.makeDataRequest() # make call for data!
 
         # sparc makes one big call and returns all data in one large json packet
