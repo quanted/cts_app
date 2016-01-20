@@ -27,6 +27,12 @@ def request_manager(request):
 
 
         filtered_smiles = parseSmilesByCalculator(structure, "sparc") # call smilesfilter
+
+        if '[' in filtered_smiles or ']' in filtered_smiles:
+          logging.warning("SPARC ignoring request due to brackets in SMILES..")
+          postData.update({'error': "SPARC cannot process charged species or metals (e.g., [S+], [c+])"})
+          return HttpResponse(json.dumps(postData), content_type='application/json')
+
         calcObj = SparcCalc(filtered_smiles)
         returnedData = calcObj.makeDataRequest() # make call for data!
 
