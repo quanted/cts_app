@@ -50,7 +50,7 @@ class SparcCalc(Calculator):
     def get_sparc_query(self):
         query = {
             'pressure': self.pressure,
-            'meltingpoint': self.meltingpoint,
+            'meltingPoint': self.meltingpoint,
             'temperature': self.temperature,
             'calculations': self.getCalculations(),
             'smiles': self.smiles,
@@ -66,7 +66,7 @@ class SparcCalc(Calculator):
             'solvents': [],
             'units': units,
             'pressure': self.pressure,
-            'meltingpoint': self.meltingpoint,
+            'meltingPoint': self.meltingpoint,
             'temperature': self.temperature,
             'type': sparc_prop
         }
