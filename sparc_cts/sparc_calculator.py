@@ -117,39 +117,39 @@ class SparcCalc(Calculator):
 
     def makeDataRequest(self):
 
-        # Testing on local machine using static sparc response file:
-        post = self.get_sparc_query()
-        headers = {'Content-Type': 'application/json'}
-        url = self.base_url
-        logging.info("SPARC URL: {}".format(url))
-        logging.info("SPARC POST: {}".format(post))
-        fileout = open('C:\\Users\\nickpope\\Desktop\\sparc_response.txt', 'r')
-        response_json_string = fileout.read()
-        fileout.close()
-        logging.info("SPARC Response: {}".format(response_json_string))
-        logging.info("Type: {}".format(type(response_json_string)))
-        self.results = json.loads(response_json_string)
-        # self.performUnitConversions(self.results)
-        return self.results
-
-        # Actual calls to SPARC calculator:
+        # # Testing on local machine using static sparc response file:
         # post = self.get_sparc_query()
+        # headers = {'Content-Type': 'application/json'}
         # url = self.base_url
-
         # logging.info("SPARC URL: {}".format(url))
         # logging.info("SPARC POST: {}".format(post))
+        # fileout = open('C:\\Users\\nickpope\\Desktop\\sparc_response.txt', 'r')
+        # response_json_string = fileout.read()
+        # fileout.close()
+        # logging.info("SPARC Response: {}".format(response_json_string))
+        # logging.info("Type: {}".format(type(response_json_string)))
+        # self.results = json.loads(response_json_string)
+        # # self.performUnitConversions(self.results)
+        # return self.results
 
-        # try:
-        #     response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)
-        #     self.results = json.loads(response.content)
-        # except requests.exceptions.ConnectionError as ce:
-        #     logging.info("connection exception: {}".format(ce))
-        #     raise
-        # except requests.exceptions.Timeout as te:
-        #     logging.info("timeout exception: {}".format(te))
-        #     raise
-        # else:
-        #     return self.results
+        # Actual calls to SPARC calculator:
+        post = self.get_sparc_query()
+        url = self.base_url
+
+        logging.info("SPARC URL: {}".format(url))
+        logging.info("SPARC POST: {}".format(post))
+
+        try:
+            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)
+            self.results = json.loads(response.content)
+        except requests.exceptions.ConnectionError as ce:
+            logging.info("connection exception: {}".format(ce))
+            raise
+        except requests.exceptions.Timeout as te:
+            logging.info("timeout exception: {}".format(te))
+            raise
+        else:
+            return self.results
 
 
     def makeCallForPKA(self):
