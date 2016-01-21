@@ -32,15 +32,15 @@ class SparcCalc(Calculator):
             "boiling_point": "BOILING_POINT"
         }
         self.sparc_props = [
-            { 'name': "VAPOR_PRESSURE", 'units': "logAtm" },
+            { 'name': "VAPOR_PRESSURE", 'units': "Torr" },
             { 'name': "BOILING_POINT", 'units': "degreesC" },
             { 'name': "DIFFUSION", 'units': "NO_UNITS" },
             { 'name': "VOLUME", 'units': "cmCubedPerMole" },
             { 'name': "DENSITY", 'units': "gPercmCubed" },
             { 'name': "POLARIZABLITY", 'units': "angCubedPerMolecule" },
             { 'name': "INDEX_OF_REFRACTION", 'units': "dummy" },
-            { 'name': "HENRYS_CONSTANT", 'units': "logAtmPerMolePerLiter" },
-            { 'name': "SOLUBILITY", 'units': "mgPerLiter" },
+            { 'name': "HENRYS_CONSTANT", 'units': "AtmPerMolPerM3" },
+            { 'name': "SOLUBILITY", 'units': "mgPerL" },
             { 'name': "ACTIVITY", 'units': "dummy" },
             { 'name': "ELECTRON_AFFINITY", 'units': "dummy" },
             { 'name': "DISTRIBUTION", 'units': "NO_UNITS" }
@@ -84,7 +84,7 @@ class SparcCalc(Calculator):
     def getCalculations(self):
 
         calculations = []
-        calculations.append(self.get_calculation("VAPOR_PRESSURE", "logAtm")) 
+        calculations.append(self.get_calculation("VAPOR_PRESSURE", "Torr"))
         calculations.append(self.get_calculation("BOILING_POINT", "degreesC"))
         calculations.append(self.get_calculation("DIFFUSION", "NO_UNITS"))
         calculations.append(self.get_calculation("VOLUME", "cmCubedPerMole"))
@@ -92,11 +92,11 @@ class SparcCalc(Calculator):
         calculations.append(self.get_calculation("POLARIZABLITY", "angCubedPerMolecule"))
         calculations.append(self.get_calculation("INDEX_OF_REFRACTION", "dummy"))
 
-        calcHC = self.get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
+        calcHC = self.get_calculation("HENRYS_CONSTANT", "AtmPerMolPerM3")
         calcHC["solvents"].append(self.get_solvent("O", "water"))
         calculations.append(calcHC)
 
-        calcSol = self.get_calculation("SOLUBILITY", "mgPerLiter")
+        calcSol = self.get_calculation("SOLUBILITY", "mgPerL")
         calcSol["solvents"].append(self.get_solvent("O", "water"))
         calculations.append(calcSol)
 
@@ -149,7 +149,7 @@ class SparcCalc(Calculator):
             return None
         else:
             self.results = json.loads(response.content)
-            self.performUnitConversions(self.results)
+            # self.performUnitConversions(self.results)
             return self.results
 
 
@@ -167,3 +167,20 @@ class SparcCalc(Calculator):
             # elif prop['type'] == 'SOLUBILITY':
             #     logging.info("SOLUBILITY RESULT: {}".format(prop['result']))
             #     prop['result'] = math.exp(prop['result']) # ???????? log(molefrac) --> mg/L ????????
+
+
+    def makeCallForPKA(self):
+        """
+        Separate call for pKa. Not sure why but
+        what what I'm told it needs to be done 
+        separately for now
+        """
+        return None
+
+
+    def makeCallForLogD(self):
+        """
+        Seprate call for octanol/water partition
+        coefficient with pH (logD?)
+        """
+        return None
