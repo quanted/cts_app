@@ -13,11 +13,12 @@ from REST.calculator import CTSChemicalProperties
 
 
 ########################## SPARC physical properties calculator interface ###################
-
+headers = {'Content-Type': 'application/json'}
 class SparcCalc(Calculator):
     def __init__(self, smiles=None, pressure=760.0, meltingpoint=0.0, temperature=25.0):
 
-        self.baseUrl = os.environ['CTS_SPARC_SERVER']
+        self.base_url = os.environ['CTS_SPARC_SERVER']
+        self.multiproperty_url = '/sparc-integration/rest/calc/multiProperty'
         self.name = "sparc"
         self.smiles = smiles
         self.solvents = dict()
@@ -116,57 +117,39 @@ class SparcCalc(Calculator):
 
     def makeDataRequest(self):
 
-        # # Testing on local machine using static sparc response file:
-        # post = self.get_sparc_query()
-        # headers = {'Content-Type': 'application/json'}
-        # url = self.baseUrl
-        # logging.info("SPARC URL: {}".format(url))
-        # logging.info("SPARC POST: {}".format(post))
-        # fileout = open('C:\\Users\\nickpope\\Desktop\\sparc_response.txt', 'r')
-        # response_json_string = fileout.read()
-        # fileout.close()
-        # logging.info("SPARC Response: {}".format(response_json_string))
-        # logging.info("Type: {}".format(type(response_json_string)))
-        # self.results = json.loads(response_json_string)
-        # self.performUnitConversions(self.results)
-        # return self.results
-
-        # Actual calls to SPARC calculator:
+        # Testing on local machine using static sparc response file:
         post = self.get_sparc_query()
         headers = {'Content-Type': 'application/json'}
-        url = self.baseUrl
-
+        url = self.base_url
         logging.info("SPARC URL: {}".format(url))
         logging.info("SPARC POST: {}".format(post))
+        fileout = open('C:\\Users\\nickpope\\Desktop\\sparc_response.txt', 'r')
+        response_json_string = fileout.read()
+        fileout.close()
+        logging.info("SPARC Response: {}".format(response_json_string))
+        logging.info("Type: {}".format(type(response_json_string)))
+        self.results = json.loads(response_json_string)
+        # self.performUnitConversions(self.results)
+        return self.results
 
-        try:
-            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)
-        except requests.exceptions.ConnectionError as ce:
-            logging.info("connection exception: {}".format(ce))
-            return None
-        except requests.exceptions.Timeout as te:
-            logging.info("timeout exception: {}".format(te))
-            return None
-        else:
-            self.results = json.loads(response.content)
-            # self.performUnitConversions(self.results)
-            return self.results
+        # Actual calls to SPARC calculator:
+        # post = self.get_sparc_query()
+        # url = self.base_url
 
+        # logging.info("SPARC URL: {}".format(url))
+        # logging.info("SPARC POST: {}".format(post))
 
-    def performUnitConversions(self, results_dict):
-        """
-        loops through sparc results, making any 
-        necessary conversions
-        """
-        prop_data = results_dict['calculationResults']
-        for prop in prop_data:
-            if prop['type'] == 'VAPOR_PRESSURE':
-                prop['result'] = 760.0 * math.exp(prop['result']) # log(Atm) --> mmHg
-            elif prop['type'] == 'HENRYS_CONSTANT':
-                prop['result'] = math.exp(prop['result']) / 1000.0 # log(atm-L/mol) --> atm-m3/mol
-            # elif prop['type'] == 'SOLUBILITY':
-            #     logging.info("SOLUBILITY RESULT: {}".format(prop['result']))
-            #     prop['result'] = math.exp(prop['result']) # ???????? log(molefrac) --> mg/L ????????
+        # try:
+        #     response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)
+        #     self.results = json.loads(response.content)
+        # except requests.exceptions.ConnectionError as ce:
+        #     logging.info("connection exception: {}".format(ce))
+        #     raise
+        # except requests.exceptions.Timeout as te:
+        #     logging.info("timeout exception: {}".format(te))
+        #     raise
+        # else:
+        #     return self.results
 
 
     def makeCallForPKA(self):
@@ -175,7 +158,27 @@ class SparcCalc(Calculator):
         what what I'm told it needs to be done 
         separately for now
         """
-        return None
+        pka_url = "/rest/calc/fullSpeciation"
+        url = self.base_url + pka_url
+        post = {
+            "type":"FULL_SPECIATION",
+            "temperature":25.0,
+            "minPh":0,
+            "phIncrement":0.5,
+            "smiles": self.smiles,
+            "username":"browser1",
+            "elimAcid":[],
+            "elimBase":[],
+            "considerMethylAsAcid": True
+        }
+        try:
+            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=20)
+            results = json.loads(response.content)
+        except Exception as e:
+            logging.warning("SPARC PKA CALL ERROR: {}".format(e))
+            raise
+        else:
+            return results
 
 
     def makeCallForLogD(self):
@@ -183,4 +186,38 @@ class SparcCalc(Calculator):
         Seprate call for octanol/water partition
         coefficient with pH (logD?)
         """
-        return None
+        logd_url = "/rest/calc/logd"
+        url = self.base_url + logd_url
+        post = {
+           "type":"LOGD",
+           "solvent": {
+              "solvents": None,
+              "smiles": "O",
+              "mixedSolvent": False,
+              "name": "water"
+           },
+           "temperature": 25.0,
+           "pH_minimum": 0,
+           "pH_increment": 0.5,
+           "ionic_strength": 0.0,
+           "smiles": self.smiles
+        }
+        try:
+            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=20)
+            results = json.loads(response.content)
+        except Exception as e:
+            logging.warning("SPARC LOGD CALL ERROR: {}".format(e))
+            raise
+        else:
+            return results
+
+    def getLogDForPH(self, results, ph=7.0):
+        """
+        Gets logD value at ph from
+        logD response data
+        TODO: add ph functionality
+        """
+        plot_data = results['plotCoordinates'] # list of [x,y]..
+        for xypair in plot_data:
+            if xypair[0] == ph:
+                return xypair[1]

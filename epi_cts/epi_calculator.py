@@ -14,15 +14,11 @@ class EpiCalc(Calculator):
     """
 	EPI Suite Calculator
 	"""
-
     def __init__(self):
         Calculator.__init__(self)
-
         self.postData = {"smiles" : ""}
         self.name = "epi"
         self.baseUrl = os.environ['CTS_EPI_SERVER']
-        # self.urlStruct = "/test/epi/calc/{}/{}" # molID, propKey
-        # self.urlStruct = "/api/calculations/EpiSuite/{}"
         self.urlStruct = "/api/epiSuiteCalcs/{}"
         self.methods = None
         self.propMap = {

@@ -15,6 +15,7 @@ def request_manager(request):
         calc = request.POST.get("calc")
         props = request.POST.getlist("props[]")
         structure = request.POST.get("chemical")
+        prop = request.POST.get("post") # will this raise error if None??
 
         logging.info("Incoming data to SPARC: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
 
@@ -22,6 +23,7 @@ def request_manager(request):
             "calc": calc,
             "props": props
         }
+
 
         ############### filtered smiles stuff!!! ################################################
         # filtered_smiles = parseSmilesByCalculator(structure, "sparc") # call smilesfilter
@@ -35,13 +37,29 @@ def request_manager(request):
         ###########################################################################################
 
         calcObj = SparcCalc(structure)
-        returnedData = calcObj.makeDataRequest() # make call for data!
 
-        postData.update({"calc": "sparc", "props": props, "data": returnedData}) # add that data
 
-        logging.info("SPARC POST Data: {}".format(postData))
-
-        return HttpResponse(json.dumps(postData), content_type='application/json')
+        # TODO: Handle request key for getting pka or ion_con props!!!
+        if prop == 'pka':
+            # make request to pka in sparc class:
+            raise KeyError("pka not added yet")
+        elif prop == 'logd':
+            # make request to logD:
+            response = calcObj.makeCallForLogD()
+            # parse response to get standard format: {calc: '', prop: '', data: ''}
+            post_data = { 
+                'data': calcObj.getLogDForPH(response),
+                'calc': calc,
+                'prop': prop
+            }
+            logging.info("sparc post data: {}".format(post_data))
+            return HttpResponse(json.dumps(post_data), content_type='application/json')
+        else:
+            # business as usual:
+            returnedData = calcObj.makeDataRequest() # make call for data!
+            postData.update({"calc": "sparc", "props": props, "data": returnedData}) # add that data
+            logging.info("SPARC POST Data: {}".format(postData))
+            return HttpResponse(json.dumps(postData), content_type='application/json')
 
     except requests.HTTPError as e:
         logging.warning("HTTP Error occurred: {}".format(e))

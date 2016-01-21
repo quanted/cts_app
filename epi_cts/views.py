@@ -54,7 +54,7 @@ def request_manager(request):
     response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
     postData.update({"data": json.loads(response.content)}) # add that data
 
-    logging.info("DATA: {}".format(postData))
+    logging.info("EPI RESPONSE: {}".format(postData))
 
     return HttpResponse(json.dumps(postData), content_type='application/json')
 
