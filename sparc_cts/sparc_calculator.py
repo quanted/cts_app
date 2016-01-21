@@ -83,8 +83,8 @@ class SparcCalc(Calculator):
 
     def getCalculations(self):
 
-        calculations = list()
-        calculations.append(self.get_calculation("VAPOR_PRESSURE", "logAtm")) ##############
+        calculations = []
+        calculations.append(self.get_calculation("VAPOR_PRESSURE", "logAtm")) 
         calculations.append(self.get_calculation("BOILING_POINT", "degreesC"))
         calculations.append(self.get_calculation("DIFFUSION", "NO_UNITS"))
         calculations.append(self.get_calculation("VOLUME", "cmCubedPerMole"))
@@ -92,8 +92,8 @@ class SparcCalc(Calculator):
         calculations.append(self.get_calculation("POLARIZABLITY", "angCubedPerMolecule"))
         calculations.append(self.get_calculation("INDEX_OF_REFRACTION", "dummy"))
 
-        calcHC = self.get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter") ###############
-        calcHC["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
+        calcHC = self.get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
+        calcHC["solvents"].append(self.get_solvent("O", "water"))
         calculations.append(calcHC)
 
         calcSol = self.get_calculation("SOLUBILITY", "mgPerLiter")
@@ -101,14 +101,13 @@ class SparcCalc(Calculator):
         calculations.append(calcSol)
 
         calcAct = self.get_calculation("ACTIVITY", "dummy")
-        calcAct["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
+        calcAct["solvents"].append(self.get_solvent("O", "water"))
         calculations.append(calcAct)
 
         calculations.append(self.get_calculation("ELECTRON_AFFINITY", "dummy"))
 
         calcDist = self.get_calculation("DISTRIBUTION", "NO_UNITS")
         calcDist["solvents"].append(self.get_solvent("O", "water"))
-        calcDist["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
 
         calculations.append(calcDist)
 
@@ -117,7 +116,7 @@ class SparcCalc(Calculator):
 
     def makeDataRequest(self):
 
-        # Testing on local machine using static sparc response file:
+        # # Testing on local machine using static sparc response file:
         # post = self.get_sparc_query()
         # headers = {'Content-Type': 'application/json'}
         # url = self.baseUrl
