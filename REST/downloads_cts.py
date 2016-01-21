@@ -220,6 +220,22 @@ class CSV(object):
         return response
 
 
+# class LogFile(object):
+#     def __init__(self, model):
+#         self.models = ['chemspec', 'pchemprop', 'gentrans']
+#         self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
+#         self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 
+#                         'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc']
+#         if model and (model in self.models):
+#             self.model = model # model name
+#         else:
+#             raise KeyError("Model - {} - not accepted..".format(model))
+#         self.molecular_info = ['smiles', 'name', 'mass', 'formula'] # original user sructure
+
+#     def parseToLogFile(self, run_data):
+        
+
+
 def getCalcMapKeys(calc):
     """
     returns prop map of requested calculator

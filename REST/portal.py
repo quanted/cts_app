@@ -17,6 +17,8 @@ import json
 def directAllTraffic(request):
     webservice = request.POST.get('ws')
 
+    # if webservice == 'getVersion':
+
     if webservice == 'validateSMILES':
         chemical = request.POST.get('chemical')
         json_results = json.dumps(is_valid_smiles(chemical)) # returns python dict

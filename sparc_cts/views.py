@@ -9,56 +9,39 @@ import json
 from sparc_calculator import SparcCalc
 
 
-
 def request_manager(request):
-    # input: {"calc": [calculator], "prop": [property]}
-    # output: returns data from TEST server
-
 
     try:
         calc = request.POST.get("calc")
         props = request.POST.getlist("props[]")
         structure = request.POST.get("chemical")
 
+        logging.info("Incoming data to SPARC: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
+
         postData = {
             "calc": calc,
             "props": props
         }
 
+        ############### filtered smiles stuff!!! ################################################
+        # filtered_smiles = parseSmilesByCalculator(structure, "sparc") # call smilesfilter
 
-        filtered_smiles = parseSmilesByCalculator(structure, "sparc") # call smilesfilter
+        # logging.info("SPARC Filtered SMILES: {}".format(filtered_smiles)) 
 
-        if '[' in filtered_smiles or ']' in filtered_smiles:
-          logging.warning("SPARC ignoring request due to brackets in SMILES..")
-          postData.update({'error': "SPARC cannot process charged species or metals (e.g., [S+], [c+])"})
-          return HttpResponse(json.dumps(postData), content_type='application/json')
+        # if '[' in filtered_smiles or ']' in filtered_smiles:
+        #   logging.warning("SPARC ignoring request due to brackets in SMILES..")
+        #   postData.update({'error': "SPARC cannot process charged species or metals (e.g., [S+], [c+])"})
+        #   return HttpResponse(json.dumps(postData), content_type='application/json')
+        ###########################################################################################
 
-        calcObj = SparcCalc(filtered_smiles)
+        calcObj = SparcCalc(structure)
         returnedData = calcObj.makeDataRequest() # make call for data!
-
-        # sparc makes one big call and returns all data in one large json packet
-        # that means either sparc's calculator should be able to pick them out,
-        # or the front end should be able to loop multiple props at once.
-
-        # "calculatorResults" value is list objects with same keys but different values:
-        # {
-        #   "type": "VAPOR_PRESSURE",
-        #   "units": "logAtm",
-        #   "pressure": 760,
-        #   "temperature": 25,
-        #   "meltingPoint": 0,
-        #   "result": -0.86,
-        #   "messageString": "vapor_pressure.\n0.\n25.0.\n",
-        #   "batchString": "'0.'.\n''none'.'.\n'25.0.'.\n'0.0.'.\n'vp.'.\n"
-        # },
-
-        # result = calcObj.getPropertyValue(prop)
 
         postData.update({"calc": "sparc", "props": props, "data": returnedData}) # add that data
 
-        #resultDict = json.dumps({"calc": "sparc", "prop": prop, "data": result})
-        return HttpResponse(json.dumps(postData), content_type='application/json')
+        logging.info("SPARC POST Data: {}".format(postData))
 
+        return HttpResponse(json.dumps(postData), content_type='application/json')
 
     except requests.HTTPError as e:
         logging.warning("HTTP Error occurred: {}".format(e))

@@ -1,7 +1,7 @@
 __author__ = 'np'
 
 """
-Classes for jchem ws p-chem and other properties.
+Classes for jchem ws - p-chem and other properties.
 Intended to match the structure of the other
 calculator classes.
 """
@@ -77,6 +77,8 @@ class JchemProperty(object):
         try:
             response = requests.post(url, data=json.dumps(postData), headers=headers, timeout=60)
             self.results = json.loads(response.content)
+            logging.info("JCALC RESULTS: {}".format(self.results))
+            logging.info("Type: {}".format(type(self.results)))
             return response
         except ValueError as ve:
             logging.warning("> error decoding json: {}".format(ve))

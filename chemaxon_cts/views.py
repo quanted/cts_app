@@ -8,7 +8,7 @@ from jchem_calculator import JchemProperty as jp
 
 # TODO: get these from the to-be-modified jchem_rest class..
 services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMILES',
-				'getTransProducts', 'getPchemProps', 'getPchemPropDict']
+				'getTransProducts', 'getPchemProps', 'getPchemPropDict', 'getJchemVersion']
 
 
 def request_manager(request):

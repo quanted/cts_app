@@ -25,6 +25,7 @@ class Urls:
     jchemBase = cts_jchem_server + '/webservices'
 
     # jchem ws urls:
+    serverUrl = '/rest-v0'
     exportUrl = '/rest-v0/util/calculate/molExport'
     detailUrl = '/rest-v0/util/detail'
     hydroUrl = '/rest-v0/util/convert/hydrogenizer'
@@ -41,6 +42,17 @@ def doc(request):
 	API Documentation Page
 	"""
     return render(request, 'jchem_docs.html')
+
+
+def getJchemVersion(request=None):
+    """
+    Gets version of jchem being used.
+    Initially intended for producing a log file.
+    """
+    # NOTE: it's a GET
+    url = Urls.jchemBase + Urls.serverUrl
+    imgData = web_call(url, request, None)  # get response from jchem ws
+    return imgData  # return dict of image data
 
 
 def getChemDetails(request):
@@ -376,7 +388,10 @@ def web_call(url, request, data):
 	and POST data. Returns an http response.
 	"""
     try:
-        response = requests.post(url, data=data, headers=headers, timeout=30)
+        if data == None:
+            response = requests.get(url, timeout=10)
+        else:
+            response = requests.post(url, data=data, headers=headers, timeout=30)
         return response
     except requests.exceptions.RequestException as e:
         logging.warning("error at web call: {} /error".format(e))

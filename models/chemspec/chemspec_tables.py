@@ -425,3 +425,12 @@ def wrap_molecule(propDict, height, width, scale):
     html += '</div>'
 
     return html
+
+
+def makeLogFile(chemspec_obj):
+    """
+    Gathers data for log file and
+    puts it in a hidden div to be downloaded
+    by the user
+    """
+    

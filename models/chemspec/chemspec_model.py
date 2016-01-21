@@ -45,10 +45,15 @@ class chemspec(object):
         self.tautomer_pH = tautomer_pH
         self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
 
+
+        # Call jchem server (it's the only one used) to get get server
+        # info for the user log file..
+        
+        
+        
+
         jchemDataDict = {}
-
         # NOTE: All of this below is just waiting to be turned into a nice loop..
-
         pkaObj, majorMsObj, isoPtObj, tautObj, stereoObj = None, None, None, None, None
 
         if pkaChkbox == 'on' or pkaChkbox == True:

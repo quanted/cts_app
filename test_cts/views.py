@@ -41,10 +41,10 @@ def request_manager(request):
 
     # if '[' in filtered_smiles or ']' in filtered_smiles:
     #   logging.warning("TEST ignoring request due to brackets in SMILES..")
-    #   postData.update({'error': "TEST Suite cannot process charged species or metals (e.g., [S+], [c+])"})
+    #   postData.update({'error': "TEST cannot process charged species or metals (e.g., [S+], [c+])"})
     #   return HttpResponse(json.dumps(postData), content_type='application/json')
 
-    logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
+    # logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
