@@ -103,7 +103,7 @@ class SparcCalc(Calculator):
         calcAct = self.get_calculation("ACTIVITY", "dummy")
         calcAct["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcAct)
-        
+
         calculations.append(self.get_calculation("ELECTRON_AFFINITY", "dummy"))
 
         calcDist = self.get_calculation("DISTRIBUTION", "NO_UNITS")
@@ -138,7 +138,7 @@ class SparcCalc(Calculator):
         url = self.baseUrl
 
         logging.info("SPARC URL: {}".format(url))
-        logging.info("sparc POST: {}".format(post))
+        logging.info("SPARC POST: {}".format(post))
 
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)

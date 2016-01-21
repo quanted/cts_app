@@ -180,24 +180,36 @@ function parseTESTResultsToTable(test_results) {
 // needs to parse the data to the p-chem table differently
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function parseSPARCResponseToPchemTable(data, node, addDataToTable) {
+
     var calc = data['calc']; // sparc
     var props = data['props']; // get sparc props list
-    var sparc_results;
-    // if ('calculationResults' in data['data']) { sparc_results = data['data']['calculationResults']; }
-    if ('error' in data) {
-        var error_message = data['error'];
-        data['data'] = error_message;
-    }
-    else if ('calculationResults' in data['data']) {
-        sparc_results = data['data']['calculationResults'];
-    }
-    console.log("parsing sparc data...");
+
     for (prop in props) {
-        if (props.hasOwnProperty(prop)) {
-            getPropFromSPARCResults(data, node, props[prop], sparc_results, addDataToTable);
+
+        var cts_prop_name = props[prop]; // sparc vocab for props..
+        var sparc_prop_name = sparcPropMap[cts_prop_name]; // cts vocab for props..
+        var response_obj = {'calc': "sparc", 'prop': cts_prop_name};
+
+        if ('error' in data) {
+            // Display error message in SPARC prop p-chem cells:
+            response_obj['data'] = data['error']; // response data set to bubbled-up sparc error..
         }
+        else if ('calculationResults' in data['data']) {
+            // Build response object with SPARC's returned results:
+            var sparc_results = data['data']['calculationResults'];
+            for (index in sparc_results) {
+                var prop_obj = sparc_results[index]; // property object..
+                if (prop_obj['type'] == sparc_prop_name) {
+                    response_obj['data'] = prop_obj['result'];
+                }
+            }        
+        }
+
+        parseResponseToPchemTable(response_obj, node, false, true, addDataToTable);
+
     }
 }
+
 function getPropFromSPARCResults(data, node, prop, sparc_results, addDataToTable) {
     var responseObj = {"calc": "sparc"}; // initial obj for parsing to table
     var sparcProp = sparcPropMap[prop]; // get sparc's name for prop
