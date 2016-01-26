@@ -76,7 +76,7 @@ class SparcCalc(Calculator):
         solvent = {
             'solvents': None,
             'smiles': smiles,
-            'mixedSolvent': None,
+            'mixedSolvent': False,
             'name': name
         }
         return solvent
@@ -86,6 +86,7 @@ class SparcCalc(Calculator):
 
         calculations = []
         calculations.append(self.get_calculation("VAPOR_PRESSURE", "Torr"))
+        # calculations.append(self.get_calculation("VAPOR_PRESSURE", "logAtm"))
         calculations.append(self.get_calculation("BOILING_POINT", "degreesC"))
         calculations.append(self.get_calculation("DIFFUSION", "NO_UNITS"))
         calculations.append(self.get_calculation("VOLUME", "cmCubedPerMole"))
@@ -94,21 +95,27 @@ class SparcCalc(Calculator):
         calculations.append(self.get_calculation("INDEX_OF_REFRACTION", "dummy"))
 
         calcHC = self.get_calculation("HENRYS_CONSTANT", "AtmPerMolPerM3")
+        # calcHC = self.get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
         calcHC["solvents"].append(self.get_solvent("O", "water"))
+        # calcHC["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcHC)
 
         calcSol = self.get_calculation("SOLUBILITY", "mgPerL")
+        # calcSol = self.get_calculation("SOLUBILITY", "logMolefrac")
         calcSol["solvents"].append(self.get_solvent("O", "water"))
+        # calcSol["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcSol)
 
         calcAct = self.get_calculation("ACTIVITY", "dummy")
         calcAct["solvents"].append(self.get_solvent("O", "water"))
+        # calcAct["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcAct)
 
         calculations.append(self.get_calculation("ELECTRON_AFFINITY", "dummy"))
 
         calcDist = self.get_calculation("DISTRIBUTION", "NO_UNITS")
         calcDist["solvents"].append(self.get_solvent("O", "water"))
+        calcDist["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
 
         calculations.append(calcDist)
 
@@ -135,6 +142,12 @@ class SparcCalc(Calculator):
         # Actual calls to SPARC calculator:
         post = self.get_sparc_query()
         url = self.base_url
+
+        logging.info("post: {}".format(post))
+
+        fileout = open('C:\\Users\\nickpope\\Desktop\\sparc_post_unitsChanged.txt', 'w')
+        fileout.write(json.dumps(post))
+        fileout.close()
 
         logging.info("SPARC URL: {}".format(url))
         logging.info("SPARC POST: {}".format(post))
