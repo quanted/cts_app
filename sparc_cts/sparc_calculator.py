@@ -141,8 +141,8 @@ class SparcCalc(Calculator):
 
         # Actual calls to SPARC calculator:
         post = self.get_sparc_query()
-        url = self.base_url
-        
+        url = self.base_url + self.multiproperty_url
+
         logging.info("SPARC URL: {}".format(url))
         logging.info("SPARC POST: {}".format(post))
 
