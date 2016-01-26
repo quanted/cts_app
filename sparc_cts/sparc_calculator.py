@@ -142,13 +142,7 @@ class SparcCalc(Calculator):
         # Actual calls to SPARC calculator:
         post = self.get_sparc_query()
         url = self.base_url
-
-        logging.info("post: {}".format(post))
-
-        fileout = open('C:\\Users\\nickpope\\Desktop\\sparc_post_unitsChanged.txt', 'w')
-        fileout.write(json.dumps(post))
-        fileout.close()
-
+        
         logging.info("SPARC URL: {}".format(url))
         logging.info("SPARC POST: {}".format(post))
 
