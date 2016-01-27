@@ -83,10 +83,8 @@ class SparcCalc(Calculator):
 
 
     def getCalculations(self):
-
         calculations = []
         calculations.append(self.get_calculation("VAPOR_PRESSURE", "Torr"))
-        # calculations.append(self.get_calculation("VAPOR_PRESSURE", "logAtm"))
         calculations.append(self.get_calculation("BOILING_POINT", "degreesC"))
         calculations.append(self.get_calculation("DIFFUSION", "NO_UNITS"))
         calculations.append(self.get_calculation("VOLUME", "cmCubedPerMole"))
@@ -95,20 +93,15 @@ class SparcCalc(Calculator):
         calculations.append(self.get_calculation("INDEX_OF_REFRACTION", "dummy"))
 
         calcHC = self.get_calculation("HENRYS_CONSTANT", "AtmPerMolPerM3")
-        # calcHC = self.get_calculation("HENRYS_CONSTANT", "logAtmPerMolePerLiter")
         calcHC["solvents"].append(self.get_solvent("O", "water"))
-        # calcHC["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcHC)
 
         calcSol = self.get_calculation("SOLUBILITY", "mgPerL")
-        # calcSol = self.get_calculation("SOLUBILITY", "logMolefrac")
         calcSol["solvents"].append(self.get_solvent("O", "water"))
-        # calcSol["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcSol)
 
         calcAct = self.get_calculation("ACTIVITY", "dummy")
         calcAct["solvents"].append(self.get_solvent("O", "water"))
-        # calcAct["solvents"].append(self.get_solvent("OCCCCCCCC", "octanol"))
         calculations.append(calcAct)
 
         calculations.append(self.get_calculation("ELECTRON_AFFINITY", "dummy"))
@@ -124,22 +117,6 @@ class SparcCalc(Calculator):
 
     def makeDataRequest(self):
 
-        # # Testing on local machine using static sparc response file:
-        # post = self.get_sparc_query()
-        # headers = {'Content-Type': 'application/json'}
-        # url = self.base_url
-        # logging.info("SPARC URL: {}".format(url))
-        # logging.info("SPARC POST: {}".format(post))
-        # fileout = open('C:\\Users\\nickpope\\Desktop\\sparc_response.txt', 'r')
-        # response_json_string = fileout.read()
-        # fileout.close()
-        # logging.info("SPARC Response: {}".format(response_json_string))
-        # logging.info("Type: {}".format(type(response_json_string)))
-        # self.results = json.loads(response_json_string)
-        # # self.performUnitConversions(self.results)
-        # return self.results
-
-        # Actual calls to SPARC calculator:
         post = self.get_sparc_query()
         url = self.base_url + self.multiproperty_url
 
@@ -159,7 +136,7 @@ class SparcCalc(Calculator):
             return self.results
 
 
-    def makeCallForPKA(self):
+    def makeCallForPka(self):
         """
         Separate call for pKa. Not sure why but
         what what I'm told it needs to be done 
@@ -181,11 +158,28 @@ class SparcCalc(Calculator):
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=20)
             results = json.loads(response.content)
+            results = results.replace(" ", "") # remove whitespace precaution..
         except Exception as e:
             logging.warning("SPARC PKA CALL ERROR: {}".format(e))
             raise
         else:
             return results
+
+
+    def getPkaResults(self, results):
+        """
+        Gets pKa values from SPARC pKa request
+        """
+        try:
+            pka_results = results['macroPkaResults'] # list of pka..
+            pka_data = [] # return list of pka values..
+            for pka in pka_results:
+                pka_data.append(pka['macroPka'])
+        except Exception as e:
+            logging.warning("Error getting pka from SPARC response: {}".format(e))
+            raise
+        else:
+            return {"pKa": pka_data}
 
 
     def makeCallForLogD(self):
@@ -205,7 +199,7 @@ class SparcCalc(Calculator):
            },
            "temperature": 25.0,
            "pH_minimum": 0,
-           "pH_increment": 0.5,
+           "pH_increment": 0.1,
            "ionic_strength": 0.0,
            "smiles": self.smiles
         }
@@ -224,7 +218,12 @@ class SparcCalc(Calculator):
         logD response data
         TODO: add ph functionality
         """
-        plot_data = results['plotCoordinates'] # list of [x,y]..
-        for xypair in plot_data:
-            if xypair[0] == ph:
-                return xypair[1]
+        logging.info("getting sparc logd at ph: {}".format(ph))
+        try:
+            plot_data = results['plotCoordinates'] # list of [x,y]..
+            for xypair in plot_data:
+                if xypair[0] == float(ph):
+                    return xypair[1]
+        except Exception as e:
+            logging.warning("Error getting logD at PH from SPARC: {}".format(e))
+            raise
