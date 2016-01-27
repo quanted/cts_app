@@ -174,10 +174,11 @@ class SparcCalc(Calculator):
             pka_results = results['macroPkaResults'] # list of pka..
             pka_data = [] # return list of pka values..
             for pka in pka_results:
-                pka_data.append(pka['macroPka'])
+                if 'macroPka' in pka:
+                    pka_data.append(pka['macroPka'])
         except Exception as e:
             logging.warning("Error getting pka from SPARC response: {}".format(e))
-            raise
+            raise Exception("error parsing sparc request")
         else:
             return {"pKa": pka_data}
 

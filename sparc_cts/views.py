@@ -76,7 +76,7 @@ def request_manager(request):
 
     except ValueError as ve:
         logging.warning("POST data is incorrect: {}".format(ve))
-        postData.update({"error": "value error"})
+        postData.update({"error": "{}".format(ve))
         return HttpResponse(json.dumps(postData), content_type='application/json')
 
     except requests.exceptions.ConnectionError as ce:
