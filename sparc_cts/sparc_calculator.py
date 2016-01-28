@@ -150,7 +150,7 @@ class SparcCalc(Calculator):
             "temperature":25.0,
             "minPh":0,
             "phIncrement":0.5,
-            "smiles": self.smiles,
+            "smiles": str(self.smiles),
             "username":"browser1",
             "elimAcid":[],
             "elimBase":[],
