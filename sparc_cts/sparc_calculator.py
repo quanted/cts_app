@@ -142,7 +142,7 @@ class SparcCalc(Calculator):
         what what I'm told it needs to be done 
         separately for now
         """
-        pka_url = "/rest/calc/fullSpeciation"
+        pka_url = "/sparc-integration/rest/calc/fullSpeciation"
         url = self.base_url + pka_url
         logging.info("URL: {}".format(url))
         sparc_post = {
@@ -193,7 +193,7 @@ class SparcCalc(Calculator):
         Seprate call for octanol/water partition
         coefficient with pH (logD?)
         """
-        logd_url = "/rest/calc/logd"
+        logd_url = "/sparc-integration/rest/calc/logd"
         url = self.base_url + logd_url
         post = {
            "type":"LOGD",
