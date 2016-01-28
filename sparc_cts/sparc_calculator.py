@@ -145,7 +145,7 @@ class SparcCalc(Calculator):
         pka_url = "/rest/calc/fullSpeciation"
         url = self.base_url + pka_url
         logging.info("URL: {}".format(url))
-        post = {
+        sparc_post = {
             "type":"FULL_SPECIATION",
             "temperature":25.0,
             "minPh":0,
@@ -156,8 +156,8 @@ class SparcCalc(Calculator):
             "elimBase":[],
             "considerMethylAsAcid": True
         }
-        post_string = json.dumps(post)
-        logging.info("POST: {}".format(post))
+        post_string = json.dumps(sparc_post)
+        logging.info("POST: {}".format(sparc_post))
         try:
             response = requests.post(url, data=post_string, headers=headers, timeout=20)
             results = json.loads(response.content)
