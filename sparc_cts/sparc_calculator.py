@@ -144,6 +144,7 @@ class SparcCalc(Calculator):
         """
         pka_url = "/rest/calc/fullSpeciation"
         url = self.base_url + pka_url
+        logging.info("URL: {}".format(url))
         post = {
             "type":"FULL_SPECIATION",
             "temperature":25.0,
