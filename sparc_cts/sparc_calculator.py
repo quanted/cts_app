@@ -211,6 +211,7 @@ class SparcCalc(Calculator):
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=20)
             results = json.loads(response.content)
+            logging.info("{}".format(results))
         except Exception as e:
             logging.warning("SPARC LOGD CALL ERROR: {}".format(e))
             raise
