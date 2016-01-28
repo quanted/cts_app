@@ -74,10 +74,10 @@ def request_manager(request):
         logging.warning("HTTP Error occurred: {}".format(e))
         return HttpResponse(e.msg, status=e.code, content_type='text/plain')
 
-    except ValueError as ve:
-        logging.warning("POST data is incorrect: {}".format(ve))
-        postData.update({"error": "{}".format(ve)})
-        return HttpResponse(json.dumps(postData), content_type='application/json')
+    # except ValueError as ve:
+    #     logging.warning("POST data is incorrect: {}".format(ve))
+    #     postData.update({"error": "{}".format(ve)})
+    #     return HttpResponse(json.dumps(postData), content_type='application/json')
 
     except requests.exceptions.ConnectionError as ce:
         logging.warning("Connection error occurred: {}".format(ce))
