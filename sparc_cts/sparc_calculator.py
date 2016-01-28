@@ -198,9 +198,9 @@ class SparcCalc(Calculator):
            "type":"LOGD",
            "solvent": {
               "solvents": None,
-              "smiles": "O",
+              "smiles": "OCCCCCCCC",
               "mixedSolvent": False,
-              "name": "water"
+              "name": "octanol"
            },
            "temperature": 25.0,
            "pH_minimum": 0,
