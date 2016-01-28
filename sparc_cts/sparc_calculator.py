@@ -159,15 +159,16 @@ class SparcCalc(Calculator):
         post_string = json.dumps(sparc_post)
         logging.info("POST: {}".format(sparc_post))
         logging.info("POST (string): {}".format(post_string))
-        try:
-            response = requests.post(url, data=post_string, headers=headers, timeout=20)
-            results = json.loads(response.content)
-            results = results.replace(" ", "") # remove whitespace precaution..
-        except Exception as e:
-            logging.warning("SPARC PKA CALL ERROR: {}".format(e))
-            raise
-        else:
-            return results
+        # try:
+        response = requests.post(url, data=post_string, headers=headers, timeout=20)
+        results = json.loads(response.content)
+        results = results.replace(" ", "") # remove whitespace precaution..
+        return results
+        # except Exception as e:
+        #     logging.warning("SPARC PKA CALL ERROR: {}".format(e))
+        #     raise
+        # else:
+        #     return results
 
 
     def getPkaResults(self, results):
