@@ -162,8 +162,8 @@ class SparcCalc(Calculator):
         try:
             response = requests.post(url, data=post_string, headers=headers, timeout=20)
             logging.info("response: {}".format(response.content))
-            results = json.loads(response.content)
-            results = results.replace(" ", "") # remove whitespace precaution..
+            cleaned_json = response.content.replace(" ", "") # remove whitespace precaution..
+            results = json.loads(cleaned_json)
         except Exception as e:
             logging.warning("SPARC PKA CALL ERROR: {}".format(e))
             raise
