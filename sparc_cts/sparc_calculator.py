@@ -158,6 +158,7 @@ class SparcCalc(Calculator):
         }
         post_string = json.dumps(sparc_post)
         logging.info("POST: {}".format(sparc_post))
+        logging.info("POST (string): {}".format(post_string))
         try:
             response = requests.post(url, data=post_string, headers=headers, timeout=20)
             results = json.loads(response.content)
