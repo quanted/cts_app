@@ -161,6 +161,7 @@ class SparcCalc(Calculator):
         logging.info("POST (string): {}".format(post_string))
         try:
             response = requests.post(url, data=post_string, headers=headers, timeout=20)
+            logging.info("response: {}".format(response.content))
             results = json.loads(response.content)
             results = results.replace(" ", "") # remove whitespace precaution..
         except Exception as e:
