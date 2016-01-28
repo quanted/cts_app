@@ -43,7 +43,7 @@ def request_manager(request):
 
         # TODO: Handle request key for getting pka or ion_con props!!!
         if single_prop == 'ion_con':
-            # make request to pka in sparc class:
+            # make request to pka:
             response = calcObj.makeCallForPka()
             post_data = {
                 'data': calcObj.getPkaResults(response),
@@ -76,7 +76,7 @@ def request_manager(request):
 
     except ValueError as ve:
         logging.warning("POST data is incorrect: {}".format(ve))
-        postData.update({"error": "{}".format(ve))
+        postData.update({"error": "{}".format(ve)})
         return HttpResponse(json.dumps(postData), content_type='application/json')
 
     except requests.exceptions.ConnectionError as ce:
