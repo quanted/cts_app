@@ -156,8 +156,10 @@ class SparcCalc(Calculator):
             "elimBase":[],
             "considerMethylAsAcid": True
         }
+        post_string = json.dumps(post)
+        logging.info("POST: {}".format(post))
         try:
-            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=20)
+            response = requests.post(url, data=post_string, headers=headers, timeout=20)
             results = json.loads(response.content)
             results = results.replace(" ", "") # remove whitespace precaution..
         except Exception as e:
