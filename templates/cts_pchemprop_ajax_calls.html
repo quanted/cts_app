@@ -79,7 +79,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 var addDataToTable = false; // whether to plot on visible pchem table or not..
 
                 // 2. Build POST data:
-                if (calc == "sparc") {
+                if (calc == "sparc" && prop != "ion_con" && prop != "kow_wph") {
                     sparc_props_list.push(prop); // build list for 1 call for all props..
                 }
                 else {
