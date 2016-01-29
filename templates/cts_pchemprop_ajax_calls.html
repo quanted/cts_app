@@ -79,7 +79,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 var addDataToTable = false; // whether to plot on visible pchem table or not..
 
                 // 2. Build POST data:
-                if (calc == "sparc" && prop != "ion_con" && prop != "kow_wph") {
+                if (calc == "sparc") {
                     sparc_props_list.push(prop); // build list for 1 call for all props..
                 }
                 else {
@@ -112,22 +112,13 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                     }
                     else { makeTheCall(post_data, node, addDataToTable); }
                 }
-                else if (calc == "test" || calc == "epi") { 
+                else if (calc != "sparc") { 
                     makeTheCall(post_data, node, addDataToTable);
                 }
-                else if (calc == "sparc") {
-                    // make single call to sparc if prop is ion_con or kow_wph
-                    post_data['ph'] = kowPH; // only needed for kow_wph..
-                    if (prop == "ion_con" || prop == "kow_wph") {
-                        post_data['single_prop'] = prop;
-                        makeTheCall(post_data, node, addDataToTable);
-                    }
-                }
-
-                // else if (calc != "sparc") { makeTheCall(post_data, node, addDataToTable); }
             }
             // Make sparc call after all props are gathered into list:
-            if (calc == "sparc" && prop != "ion_con" && prop != "kow_wph") { 
+            if (calc == "sparc") { 
+                post_data['ph'] = kowPH;
                 makeTheCall(post_data, node, addDataToTable);
             }
         }
@@ -189,43 +180,67 @@ function parseTESTResultsToTable(test_results) {
 }
 
 
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// SPARC is different. It's getting all props back at once so it
-// needs to parse the data to the p-chem table differently
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function parseSPARCResponseToPchemTable(data, node, addDataToTable) {
 
     var calc = data['calc']; // sparc
     var props = data['props']; // get sparc props list
-    var single_prop = null;
 
-    if ('prop' in data) { 
-        single_prop = data['prop'];
-        parseResponseToPchemTable(data, node, false, addDataToTable); // parse like other calcs..
+    for (prop_data in data['data']) {
+        var prop_obj = data['data'][prop_data];
+        parseResponseToPchemTable(prop_obj, node, false, true, addDataToTable);
     }
-    else {
-        for (prop in props) {
-            var cts_prop_name = props[prop]; // sparc vocab for props..
-            var sparc_prop_name = sparcPropMap[cts_prop_name]; // cts vocab for props..
-            var response_obj = {'calc': "sparc", 'prop': cts_prop_name};
-            if ('error' in data) {
-                // Display error message in SPARC prop p-chem cells:
-                response_obj['data'] = data['error']; // response data set to bubbled-up sparc error..
-            }
-            else if ('calculationResults' in data['data']) {
-                // Build response object with SPARC's returned results:
-                var sparc_results = data['data']['calculationResults'];
-                for (index in sparc_results) {
-                    var prop_obj = sparc_results[index]; // property object..
-                    if (prop_obj['type'] == sparc_prop_name) {
-                        response_obj['data'] = prop_obj['result'];
-                    }
-                }        
-            }
-            parseResponseToPchemTable(response_obj, node, false, true, addDataToTable);
-        }
-    }
+
+    // for (prop in props) {
+    //     var cts_prop_name = props[prop]; // sparc vocab for props..
+    //     var sparc_prop_name = sparcPropMap[cts_prop_name]; // cts vocab for props..
+    //     var response_obj = {'calc': "sparc", 'prop': cts_prop_name};
+    //     if ('error' in data) {
+    //         // Display error message in SPARC prop p-chem cells:
+    //         response_obj['data'] = data['error']; // response data set to bubbled-up sparc error..
+    //     }
+    //     else if ()
+    //     parseResponseToPchemTable(response_obj, node, false, true, addDataToTable);
+    // }
 }
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// SPARC is different. It's getting all props back at once so it
+// needs to parse the data to the p-chem table differently
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// function parseSPARCResponseToPchemTable(data, node, addDataToTable) {
+
+//     var calc = data['calc']; // sparc
+//     var props = data['props']; // get sparc props list
+//     var single_prop = null;
+
+//     if ('prop' in data) { 
+//         single_prop = data['prop'];
+//         parseResponseToPchemTable(data, node, false, addDataToTable); // parse like other calcs..
+//     }
+//     else {
+//         for (prop in props) {
+//             var cts_prop_name = props[prop]; // sparc vocab for props..
+//             var sparc_prop_name = sparcPropMap[cts_prop_name]; // cts vocab for props..
+//             var response_obj = {'calc': "sparc", 'prop': cts_prop_name};
+//             if ('error' in data) {
+//                 // Display error message in SPARC prop p-chem cells:
+//                 response_obj['data'] = data['error']; // response data set to bubbled-up sparc error..
+//             }
+//             else if ('calculationResults' in data['data']) {
+//                 // Build response object with SPARC's returned results:
+//                 var sparc_results = data['data']['calculationResults'];
+//                 for (index in sparc_results) {
+//                     var prop_obj = sparc_results[index]; // property object..
+//                     if (prop_obj['type'] == sparc_prop_name) {
+//                         response_obj['data'] = prop_obj['result'];
+//                     }
+//                 }        
+//             }
+//             parseResponseToPchemTable(response_obj, node, false, true, addDataToTable);
+//         }
+//     }
+// }
 
 function getPropFromSPARCResults(data, node, prop, sparc_results, addDataToTable) {
     var responseObj = {"calc": "sparc"}; // initial obj for parsing to table

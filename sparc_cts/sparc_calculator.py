@@ -32,20 +32,16 @@ class SparcCalc(Calculator):
             "mol_diss" : "DIFFUSION",
             "boiling_point": "BOILING_POINT"
         }
-        self.sparc_props = [
-            { 'name': "VAPOR_PRESSURE", 'units': "Torr" },
-            { 'name': "BOILING_POINT", 'units': "degreesC" },
-            { 'name': "DIFFUSION", 'units': "NO_UNITS" },
-            { 'name': "VOLUME", 'units': "cmCubedPerMole" },
-            { 'name': "DENSITY", 'units': "gPercmCubed" },
-            { 'name': "POLARIZABLITY", 'units': "angCubedPerMolecule" },
-            { 'name': "INDEX_OF_REFRACTION", 'units': "dummy" },
-            { 'name': "HENRYS_CONSTANT", 'units': "AtmPerMolPerM3" },
-            { 'name': "SOLUBILITY", 'units': "mgPerL" },
-            { 'name': "ACTIVITY", 'units': "dummy" },
-            { 'name': "ELECTRON_AFFINITY", 'units': "dummy" },
-            { 'name': "DISTRIBUTION", 'units': "NO_UNITS" }
-        ]
+        self.sparc_props = {
+            "SOLUBILITY": "water_sol",
+            "VAPOR_PRESSURE": "vapor_press",
+            "WATER_DIFFUSION": "mol_diss",
+            "FULL_SPECIATION": "ion_con",
+            "HENRYS_CONSTANT": "henrys_law_con",
+            "DISTRIBUTION": "kow_no_ph",
+            "LOGD": "kow_wph",
+            "BOILING_POINT": "boiling_point" 
+        }
 
     def get_sparc_query(self):
         query = {
@@ -124,7 +120,7 @@ class SparcCalc(Calculator):
         logging.info("SPARC POST: {}".format(post))
 
         try:
-            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)
+            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=20)
             self.results = json.loads(response.content)
         except requests.exceptions.ConnectionError as ce:
             logging.info("connection exception: {}".format(ce))
@@ -134,6 +130,28 @@ class SparcCalc(Calculator):
             raise
         else:
             return self.results
+
+
+    def parseMultiPropResponse(self, results):
+        """
+        Loops through data grabbing the results
+        and building {calc, prop, data} objects
+        for front end.
+
+        TODO: Add more info to returned data (object instead of value)
+        """
+        if not results or not isinstance(results, list):
+            raise Exception("(sparc) no results given to parse or not a list..")
+
+        sparc_response = []
+        for prop_data in results:
+            sparc_prop = prop_data['type']
+            if sparc_prop in self.sparc_props:
+                cts_prop = self.sparc_props[sparc_prop]
+                data = prop_data['result']
+                sparc_response.append({'calc': 'sparc', 'prop': cts_prop, 'data': data})
+
+        return sparc_response
 
 
     def makeCallForPka(self):
@@ -168,7 +186,7 @@ class SparcCalc(Calculator):
             logging.warning("SPARC PKA CALL ERROR: {}".format(e))
             raise
         else:
-            return results
+            return self.results
 
 
     def getPkaResults(self, results):
@@ -217,7 +235,7 @@ class SparcCalc(Calculator):
             logging.warning("SPARC LOGD CALL ERROR: {}".format(e))
             raise
         else:
-            return results
+            return self.results
 
     def getLogDForPH(self, results, ph=7.0):
         """
@@ -228,6 +246,7 @@ class SparcCalc(Calculator):
         logging.info("getting sparc logd at ph: {}".format(ph))
         try:
             plot_data = results['plotCoordinates'] # list of [x,y]..
+            logging.info("plot data: {}".format(plot_data))
             for xypair in plot_data:
                 if xypair[0] == float(ph):
                     return xypair[1]
