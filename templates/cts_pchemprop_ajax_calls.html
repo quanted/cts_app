@@ -120,8 +120,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                     post_data['ph'] = kowPH; // only needed for kow_wph..
                     if (prop == "ion_con" || prop == "kow_wph") {
                         post_data['single_prop'] = prop;
-                        // makeTheCall(post_data, node, addDataToTable);
-                        makeSparcCall(post_data, node, addDataToTable);
+                        makeTheCall(post_data, node, addDataToTable);
                     }
                 }
 
@@ -129,43 +128,11 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
             }
             // Make sparc call after all props are gathered into list:
             if (calc == "sparc" && prop != "ion_con" && prop != "kow_wph") { 
-                // makeTheCall(post_data, node, addDataToTable);
-                makeSparcCall(post_data, node, addDataToTable);
+                makeTheCall(post_data, node, addDataToTable);
             }
         }
     }
 
-}
-
-
-function makeSparcCall(calcPropData, node, addDataToTable) {
-    calls_tracker++;
-    console.log("calls tracker: " + calls_tracker);
-    $.ajax({ 
-        url: "/cts/portal",
-        type: "POST",
-        dataType: "json",
-        data: calcPropData,
-        async: false,
-        timeout: 15000,
-        success: function(data) {
-            calls_tracker--;
-            console.log("calls tracker: " + calls_tracker);
-            if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node..
-            parseSPARCResponseToPchemTable(data, node, addDataToTable);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log("Error: " + errorThrown);
-            calls_tracker--; // TODO (maybe): retry call instead of decrementing and moving on..
-            console.log("calls tracker: " + calls_tracker);
-            var error = {
-                "error": textStatus,
-                "calc": calcPropData['calc'],
-                "prop": calcPropData['prop']
-            };
-            parseSPARCResponseToPchemTable(error, node, addDataToTable);
-        }
-    });
 }
 
 
