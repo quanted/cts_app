@@ -95,44 +95,6 @@ def request_manager(request):
 
         return HttpResponse(json.dumps(post_data), content_type='application/json')
 
-
-        # if 'calculationResults' in multi_response:
-        #     # append ion_con or kow_wph to multi prop response:
-        #     multi_response['calculationResults'].append(ion_con_response)
-        #     multi_response['calculationResults'].append(kow_wph_response)
-
-
-
-
-        # # TODO: Handle request key for getting pka or ion_con props!!!
-        # if single_prop == 'ion_con':
-        #     # make request to pka:
-        #     response = calcObj.makeCallForPka()
-        #     post_data = {
-        #         'data': calcObj.getPkaResults(response),
-        #         'calc': calc,
-        #         'prop': single_prop
-        #     }
-        #     logging.info("sparc post data: {}".format(post_data))
-        #     return HttpResponse(json.dumps(post_data), content_type='application/json')
-        # elif single_prop == 'kow_wph':
-        #     # make request to logD:
-        #     ph = request.POST.get('ph') # get PH for logD calculation..
-        #     response = calcObj.makeCallForLogD()
-        #     post_data = { 
-        #         'data': calcObj.getLogDForPH(response, ph),
-        #         'calc': calc,
-        #         'prop': single_prop
-        #     }
-        #     logging.info("sparc post data: {}".format(post_data))
-        #     return HttpResponse(json.dumps(post_data), content_type='application/json')
-        # else:
-        #     # business as usual:
-        #     returnedData = calcObj.makeDataRequest() # make call for data!
-        #     post_data.update({"calc": "sparc", "props": props, "data": returnedData}) # add that data
-        #     logging.info("SPARC POST Data: {}".format(post_data))
-        #     return HttpResponse(json.dumps(post_data), content_type='application/json')
-
     except requests.HTTPError as e:
         logging.warning("HTTP Error occurred: {}".format(e))
         return HttpResponse(e.msg, status=e.code, content_type='text/plain')

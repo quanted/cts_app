@@ -186,7 +186,7 @@ class SparcCalc(Calculator):
             logging.warning("SPARC PKA CALL ERROR: {}".format(e))
             raise
         else:
-            return self.results
+            return results
 
 
     def getPkaResults(self, results):
@@ -235,7 +235,7 @@ class SparcCalc(Calculator):
             logging.warning("SPARC LOGD CALL ERROR: {}".format(e))
             raise
         else:
-            return self.results
+            return results
 
     def getLogDForPH(self, results, ph=7.0):
         """
