@@ -54,10 +54,12 @@ class TestCalc(Calculator):
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=60)
         except requests.exceptions.ConnectionError as ce:
             logging.info("connection exception: {}".format(ce))
-            return None
+            # return None
+            raise
         except requests.exceptions.Timeout as te:
             logging.info("timeout exception: {}".format(te))
-            return None
+            # return None
+            raise
         self.results = response
         return response
 
