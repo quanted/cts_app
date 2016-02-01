@@ -52,11 +52,14 @@ def request_manager(request):
 
             if prop == 'ion_con':
                 response = calcObj.makeCallForPka() # response as d ict returned..
+                logging.info("1. Response from SPARC calculator: {}".format(response))
+                pka_data = calcObj.getPkaResults(response)
                 ion_con_response = {
                     'calc': 'sparc',
                     'prop': 'ion_con',
-                    'data': calcObj.getPkaResults(response)
+                    'data': pka_data
                 }
+                logging.info("2. Appending {} to sparc results".format(pka_data))
                 sparc_results.append(ion_con_response)
                 # del props[props.index('ion_con')]
 
