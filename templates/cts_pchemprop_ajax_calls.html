@@ -156,7 +156,7 @@ function makeTheCall(calcPropData, node, addDataToTable) {
                 "prop": calcPropData['prop']
             };
 
-            if ('props' in data) {
+            if ('props' in calcPropData) {
                 parseListDataFromResults(error, node, addDataToTable);
             }
             else {
