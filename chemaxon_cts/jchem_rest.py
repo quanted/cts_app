@@ -193,7 +193,6 @@ def getStructInfo(structure):
 	Output: dict with structure's info (i.e., formula, iupac, mass, smiles),
 	or dict with aforementioned keys but None values
 	"""
-
     request = requests.Request(data={"chemical": structure, "addH": True})
     response = getChemDetails(request)
     structDict = json.loads(response.content)
@@ -214,7 +213,6 @@ def removeExplicitHFromSMILES(request):
     removes explicit hydrogens from SMILES string.
     expects request to have 'smiles' key
     """
-    # request = requests.Request(data={'chemical': structure, })
     try:
         smiles = request.data.get('smiles')
     except Exception as e:
@@ -240,7 +238,7 @@ def removeExplicitHFromSMILES(request):
 
 def getMass(request):
     """
-    get mass of structure
+    get mass of structure from jchem ws
     """
     try:
         smiles = request.data.get('smiles')
@@ -268,6 +266,28 @@ def getMass(request):
     return results
 
 
+def singleFilter(request):
+    """
+    Calls single EFS Standardizer filter
+    for filtering SMILES
+    """
+    try:
+        smiles = request.data.get('smiles')
+        action = request.data.get('action')
+    except Exception as e:
+        logging.info("Exception retrieving mass from jchem: {}".format(e))
+        raise
+    post_data = {
+        "structure": smiles,
+        "actions": [
+            action
+        ]
+    }
+    url = Urls.standardizerUrlEFS
+    results = web_call(url, request, json.dumps(post_data))
+    return results
+
+
 def clearStereo(request):
     """
     clear stereoisomers from structure
@@ -277,15 +297,6 @@ def clearStereo(request):
     except Exception as e:
         logging.info("Exception retrieving mass from jchem: {}".format(e))
         raise
-    # post_data = {
-    #     "structure": smiles,
-    #     "filterChain": [{
-    #         "filter": "standardizer",
-    #         "parameters": {
-    #             "standardizerDefinition": "clearstereo"
-    #         }
-    #     }]
-    # }
     post_data = {
         "structure": smiles,
         "actions": [
@@ -299,30 +310,19 @@ def clearStereo(request):
 
 def transform(request):
     """
-    transform [N+](=O)[O-] >> N(=O)=O
+    transform N(=O)=O >> [N+](=O)[O-]
     """
     try:
         smiles = request.data.get('smiles')
     except Exception as e:
         logging.info("Exception retrieving mass from jchem: {}".format(e))
         raise
-    # post_data = {
-    #     "structure": smiles,
-    #     "filterChain": [{
-    #         "filter": "standardizer",
-    #         "parameters": {
-    #             "standardizerDefinition": "[N+](=O)[O-]>>N(=O)=O"
-    #         }
-    #     }]
-    # }
     post_data = {
         "structure": smiles,
         "actions": [
             "transform"
         ]
     }
-
-    # url = Urls.jchemBase + Urls.standardizerUrl
     url = Urls.standardizerUrlEFS
     results = web_call(url, request, json.dumps(post_data))
     return results
@@ -340,33 +340,6 @@ def filterSMILES(request):
         logging.info("exception at transformSMILES: {}".format(e))
         return
     else:
-        # POST data for jchem web services:
-        # post_data = {
-        #     "structure": "aspirin",
-        #     "parameters": "smiles",
-        #     "filterChain": [
-        #         {
-        #             "filter": "standardizer",
-        #             "parameters": {
-        #                 "standardizerDefinition": "[O:2]=[N:1]=O>>[O-:2][N+:1]=O"
-        #             }
-        #         },
-        #         {
-        #             "filter": "hydrogenizer",
-        #             "parameters": {
-        #                 "method": "DEHYDROGENIZE"
-        #             }
-        #         },
-        #         {
-        #             "filter": "standardizer",
-        #             "parameters": {
-        #                 "standardizerDefinition": "tautomerize"
-        #             }
-        #         }
-        #     ]
-        # }
-        # url = Urls.jchemBase + Urls.exportUrl
-
         # POST data for efs standardizer ws:
         post_data = {
             "structure": smiles,

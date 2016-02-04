@@ -25,39 +25,48 @@ def request_manager(request):
 
   try:
     calc = request.POST.get("calc")
-    prop = request.POST.get("prop")
+    # prop = request.POST.get("prop")
+    props = request.POST.getlist("props[]")
     structure = request.POST.get("chemical")
 
     postData = {
       "calc": calc,
-      "prop": prop
+      "props": props,
+      "data": None
     }
 
     # filter smiles before sending to TEST:
     # ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
     filtered_smiles = parseSmilesByCalculator(structure, "test") # call smilesfilter
-
-    logging.info("TEST receiving SMILES: {}".format(filtered_smiles))
-
     # if '[' in filtered_smiles or ']' in filtered_smiles:
     #   logging.warning("TEST ignoring request due to brackets in SMILES..")
     #   postData.update({'error': "TEST cannot process charged species or metals (e.g., [S+], [c+])"})
     #   return HttpResponse(json.dumps(postData), content_type='application/json')
-
-    # logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
+    logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
     calcObj = TestCalc()
-    response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
+    logging.info("TEST props: {}".format(props))
+    # response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
 
-    prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
-    logging.info(">>> {}".format(prop_data))
-    prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
-    logging.info(">>> {}".format(prop_data))
+     ### Make sequential calls to TEST here!!! #######################
+    test_results = []
+    for prop in props:
+        request = HttpRequest()
+        post_data = { "calc":"test", "prop":prop, "data": None }
+        # response = test_views.request_manager(request) # make request to TEST
+        response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
+        # response_json = json.loads(response.content)
+        # test_results.append(response_json)
+        prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
+        logging.info(">>> {}".format(prop_data))
+        prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
+        logging.info(">>> {}".format(prop_data))
+        post_data["data"] = prop_data # add that data
+        test_results.append(post_data)
+    #################################################################
 
-    postData.update({"data": prop_data}) # add that data
-
+    postDatap['data'] = test_results
     logging.info("TEST DATA: {}".format(postData))
 
     return HttpResponse(json.dumps(postData), content_type='application/json')

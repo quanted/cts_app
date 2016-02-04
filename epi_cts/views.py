@@ -51,7 +51,7 @@ def request_manager(request):
 
     # get data through epi_calculator:
     calcObj = EpiCalc()
-    response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
+    response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
     postData.update({"data": json.loads(response.content)}) # add that data
 
     logging.info("EPI RESPONSE: {}".format(postData))

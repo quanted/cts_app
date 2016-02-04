@@ -12,7 +12,7 @@ import django.core.handlers.wsgi
 app = django.core.handlers.wsgi.WSGIHandler()
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings_local")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()

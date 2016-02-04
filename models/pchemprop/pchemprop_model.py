@@ -124,16 +124,16 @@ class PChemProp(object):
                             propList.append(propKey)
                 self.checkedCalcsAndPropsDict.update({calcKey: propList})
 
-        ### Make sequential calls to TEST here!!! #######################
-        self.test_results = []
-        if 'test' in self.checkedCalcsAndPropsDict:
-            for prop in self.checkedCalcsAndPropsDict['test']:
-                request = HttpRequest()
-                request.POST = { "calc":"test", "prop":prop, "chemical":self.chem_struct }
-                response = test_views.request_manager(request) # make request to TEST
-                response_json = json.loads(response.content)
-                self.test_results.append(response_json)
-        #################################################################
+        # ### Make sequential calls to TEST here!!! #######################
+        # self.test_results = []
+        # if 'test' in self.checkedCalcsAndPropsDict:
+        #     for prop in self.checkedCalcsAndPropsDict['test']:
+        #         request = HttpRequest()
+        #         request.POST = { "calc":"test", "prop":prop, "chemical":self.chem_struct }
+        #         response = test_views.request_manager(request) # make request to TEST
+        #         response_json = json.loads(response.content)
+        #         self.test_results.append(response_json)
+        # #################################################################
 
         # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING +++++
         run_data = {
