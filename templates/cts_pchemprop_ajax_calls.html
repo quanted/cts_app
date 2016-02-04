@@ -55,72 +55,69 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     console.log("incoming structure: " + structure);
 
     for (var calc in checkedCalcsAndProps) {
-        // run TEST here only for metabolites:
-        if (calc != "test"  || !isPchemWorkflow) {
 
-            // var sparc_post_data = { "chemical": structure, "calc": calc, "props": sparc_props_list };
-            var post_data = { "chemical": structure, "calc": calc };
+        var post_data = { "chemical": structure, "calc": calc };
 
-            // 1. Add webservice key:
-            if (calc == "chemaxon") { 
-                post_data.ws = "jchem";
-                post_data.service = "getPchemProps";
+        // 1. Add webservice key:
+        if (calc == "chemaxon") { 
+            post_data.ws = "jchem";
+            post_data.service = "getPchemProps";
+        }
+        else if (calc == "sparc") { 
+            post_data.ws = "sparc";
+        }
+        else { post_data.ws = calc; }
+
+        for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+            var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
+            var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
+            var addDataToTable = false; // whether to plot on visible pchem table or not..
+
+            // 2. Build POST data:
+            post_data['prop'] = prop;
+            if (prop == "kow_wph") { post_data.ph = kowPH; }
+
+            // 3. Determine whether data should be inserted into pchem table:
+            if (isPchemWorkflow()) {
+                addDataToTable = true; // always add data to table in pchem workflow..
             }
-            else if (calc == "sparc") { 
-                post_data.ws = "sparc";
-            }
-            else { post_data.ws = calc; }
-
-            for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
-                var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
-                var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
-                var addDataToTable = false; // whether to plot on visible pchem table or not..
-
-                // 2. Build POST data:
-                post_data['prop'] = prop;
-                if (prop == "kow_wph") { post_data.ph = kowPH; }
-
-                // 3. Determine whether data should be inserted into pchem table:
-                if (isPchemWorkflow()) {
-                    addDataToTable = true; // always add data to table in pchem workflow..
+            else {
+                if (currentNode != null && node.id == currentNode.id) {
+                    addDataToTable = true; 
                 }
-                else {
-                    if (currentNode != null && node.id == currentNode.id) {
-                        addDataToTable = true; 
+                else { addDataToTable = false; }
+            }
+
+            // 4. Add spinner to calc-prop table cell:
+            if (addDataToTable) { $(tblCell).html(spinner_html); }
+
+            // 5. Make data calls, determine if additional methods required:
+            if (calc == "chemaxon") {
+                if (prop == "kow_wph" || prop == "kow_no_ph") {
+                    for (var method in jchem_methods) {
+                        post_data['method'] = jchem_methods[method];
+                        makeTheCall(post_data, node, addDataToTable);
                     }
-                    else { addDataToTable = false; }
+                    delete post_data['method']; // lazy fix for methods showing in non-method props
                 }
-
-                // 4. Add spinner to calc-prop table cell:
-                if (addDataToTable) { $(tblCell).html(spinner_html); }
-
-                // 5. Make data calls, determine if additional methods required:
-                if (calc == "chemaxon") {
-                    if (prop == "kow_wph" || prop == "kow_no_ph") {
-                        for (var method in jchem_methods) {
-                            post_data['method'] = jchem_methods[method];
-                            makeTheCall(post_data, node, addDataToTable);
-                        }
-                        delete post_data['method']; // lazy fix for methods showing in non-method props
-                    }
-                    else { makeTheCall(post_data, node, addDataToTable); }
-                }
-                else if (calc == "epi") { 
-                    makeTheCall(post_data, node, addDataToTable);
-                }
+                else { makeTheCall(post_data, node, addDataToTable); }
             }
-            // Make sparc call after all props are gathered into list:
-            if (calc == "sparc") { 
-                post_data['props'] = checkedCalcsAndProps['sparc'];
-                post_data['ph'] = kowPH;
-                makeTheCall(post_data, node, addDataToTable);
-            }
-            else if (calc == "test") {
-                post_data['props'] = checkedCalcsAndProps['test'];
-                post_data['ph'] = kowPH;
+            else if (calc == "epi") { 
                 makeTheCall(post_data, node, addDataToTable);
             }
         }
+        // Make sparc call after all props are gathered into list:
+        if (calc == "sparc") { 
+            post_data['props'] = checkedCalcsAndProps['sparc'];
+            post_data['ph'] = kowPH;
+            makeTheCall(post_data, node, addDataToTable);
+        }
+        else if (calc == "test") {
+            post_data['props'] = checkedCalcsAndProps['test'];
+            post_data['ph'] = kowPH;
+            makeTheCall(post_data, node, addDataToTable);
+        }
+
     }
 
 }
