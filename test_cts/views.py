@@ -25,13 +25,13 @@ def request_manager(request):
 
   try:
     calc = request.POST.get("calc")
-    # prop = request.POST.get("prop")
-    props = request.POST.getlist("props[]")
+    prop = request.POST.get("prop")
+    # props = request.POST.getlist("props[]")
     structure = request.POST.get("chemical")
 
     postData = {
       "calc": calc,
-      "props": props,
+      "prop": props,
       "data": None
     }
 
@@ -47,26 +47,29 @@ def request_manager(request):
 
     calcObj = TestCalc()
     logging.info("TEST props: {}".format(props))
-    # response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
+    response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
+    prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
+    prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
+
 
      ### Make sequential calls to TEST here!!! #######################
-    test_results = []
-    for prop in props:
-        request = HttpRequest()
-        post_data = { "calc":"test", "prop":prop, "data": None }
-        # response = test_views.request_manager(request) # make request to TEST
-        response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
-        # response_json = json.loads(response.content)
-        # test_results.append(response_json)
-        prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
-        logging.info(">>> {}".format(prop_data))
-        prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
-        logging.info(">>> {}".format(prop_data))
-        post_data["data"] = prop_data # add that data
-        test_results.append(post_data)
-    #################################################################
+    # test_results = []
+    # for prop in props:
+    #     request = HttpRequest()
+    #     post_data = { "calc":"test", "prop":prop, "data": None }
+    #     # response = test_views.request_manager(request) # make request to TEST
+    #     response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
+    #     # response_json = json.loads(response.content)
+    #     # test_results.append(response_json)
+    #     prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
+    #     logging.info(">>> {}".format(prop_data))
+    #     prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
+    #     logging.info(">>> {}".format(prop_data))
+    #     post_data["data"] = prop_data # add that data
+    #     test_results.append(post_data)
+    # #################################################################
 
-    postDatap['data'] = test_results
+    postData['data'] = prop_data
     logging.info("TEST DATA: {}".format(postData))
 
     return HttpResponse(json.dumps(postData), content_type='application/json')

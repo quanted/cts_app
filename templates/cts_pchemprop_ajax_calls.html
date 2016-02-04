@@ -102,7 +102,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 }
                 else { makeTheCall(post_data, node, addDataToTable); }
             }
-            else if (calc == "epi") { 
+            else if (calc == "epi" || calc == "test") { 
                 makeTheCall(post_data, node, addDataToTable);
             }
         }
@@ -112,11 +112,11 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
             post_data['ph'] = kowPH;
             makeTheCall(post_data, node, addDataToTable);
         }
-        else if (calc == "test") {
-            post_data['props'] = checkedCalcsAndProps['test'];
-            post_data['ph'] = kowPH;
-            makeTheCall(post_data, node, addDataToTable);
-        }
+        // else if (calc == "test") {
+        //     post_data['props'] = checkedCalcsAndProps['test'];
+        //     post_data['ph'] = kowPH;
+        //     makeTheCall(post_data, node, addDataToTable);
+        // }
 
     }
 
@@ -137,7 +137,6 @@ function makeTheCall(calcPropData, node, addDataToTable) {
             console.log("calls tracker: " + calls_tracker);
 
             if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node..
-
 
             if ('props' in data) {
                 parseListDataFromResults(data, node, addDataToTable);
