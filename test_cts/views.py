@@ -45,7 +45,7 @@ def request_manager(request):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     calcObj = TestCalc()
-    logging.info("TEST props: {}".format(props))
+    # logging.info("TEST props: {}".format(props))
     response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
     prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
     prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
