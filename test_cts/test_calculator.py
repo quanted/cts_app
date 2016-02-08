@@ -20,23 +20,23 @@ class TestCalc(Calculator):
         self.name = "test"
         self.baseUrl = os.environ['CTS_TEST_SERVER']
         # self.urlStruct = "/api/epiSuiteCalcs/{}"
-        self.urlStruct = "/api/calculations/TEST/{}/{}" # method, property
+        self.urlStruct = "/api/TEST/{}/{}" # method, property
 
         # self.methods = ['hierarchical']
-        self.methods = ['fda']
+        self.methods = ['FDAMethod']
         # map workflow parameters to test
         self.propMap = {
             'melting_point': {
-               'urlKey': 'MP'
+               'urlKey': 'MeltingPoint'
             },
             'boiling_point': {
-               'urlKey': 'BP'
+               'urlKey': 'BoilingPoint'
             },
             'water_sol': {
-               'urlKey': 'WS'
+               'urlKey': 'WaterSolubility'
             },
             'vapor_press': {
-               'urlKey': 'VP'
+               'urlKey': 'VaporPressure'
             }
             # 'henrys_law_con': ,
             # 'kow_no_ph': 
@@ -49,7 +49,7 @@ class TestCalc(Calculator):
         post = self.getPostData(calc, prop)
         post['identifiers']['SMILES'] = structure # set smiles
         test_prop = self.propMap[prop]['urlKey'] # prop name TEST understands
-        url = self.baseUrl + self.urlStruct.format('hierarchical', test_prop)
+        url = self.baseUrl + self.urlStruct.format('HierarchicalMethod', test_prop)
         try:
             response = requests.post(url, data=json.dumps(post), headers=headers, timeout=20)
         except requests.exceptions.ConnectionError as ce:
