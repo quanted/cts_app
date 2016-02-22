@@ -30,11 +30,9 @@ $(document).ready(function() {
     formula = "{{formula}}";
     time = "{{time}}";
     sparcPropMap['kow_ph'] = kowPH;
-    // var test_results = {{ test_results }}; // used for pchem workflow..
-    // if (test_results.length > 0) {
-    //     parseTESTResultsToTable(test_results); // load already-collected TEST data into table..
-    // }
+
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null); // get pchem data..
+
 });
 
 
@@ -102,7 +100,8 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
                 }
                 else { makeTheCall(post_data, node, addDataToTable); }
             }
-            else if (calc == "epi" || calc == "test") { 
+            // else if (calc == "epi" || calc == "test") { 
+            else if (calc == "epi") {
                 makeTheCall(post_data, node, addDataToTable);
             }
         }
@@ -112,26 +111,27 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
             post_data['ph'] = kowPH;
             makeTheCall(post_data, node, addDataToTable);
         }
-        // else if (calc == "test") {
-        //     post_data['props'] = checkedCalcsAndProps['test'];
-        //     post_data['ph'] = kowPH;
-        //     makeTheCall(post_data, node, addDataToTable);
-        // }
+        else if (calc == "test") {
+            post_data['props'] = checkedCalcsAndProps['test'];
+            post_data['ph'] = kowPH;
+            makeTheCall(post_data, node, addDataToTable, 120*1000);
+        }
 
     }
 
 }
 
 
-function makeTheCall(calcPropData, node, addDataToTable) {
+function makeTheCall(calcPropData, node, addDataToTable, timeout) {
     calls_tracker++;
     console.log("calls tracker: " + calls_tracker);
+    if (timeout === 'undefined') { timeout = 20000; }
     $.ajax({ 
         url: "/cts/portal",
         type: "POST",
         dataType: "json",
         data: calcPropData,
-        timeout: 15000,
+        timeout: timeout, //in milliseconds
         success: function(data) {
             calls_tracker--;
             console.log("calls tracker: " + calls_tracker);
@@ -182,7 +182,13 @@ function parseListDataFromResults(data, node, addDataToTable) {
     var calc = data['calc']; // sparc
     var props = data['props']; // get sparc props list
     for (prop_data in data['data']) {
-        var prop_obj = data['data'][prop_data];
+        var prop_obj;
+        if ('error' in data) { 
+            prop_data = {'calc': data['calc'], 'prop': data['prop'], 'data': data['error']};
+        }
+        else { 
+            prop_obj = data['data'][prop_data];
+        }
         parseResponseToPchemTable(prop_obj, node, false, true, addDataToTable);
     }
 }
@@ -225,8 +231,9 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         return;
     }
 
-    if (calc == "test") { data = response['data']; }
-    else if (calc == "epi") {
+    // if (calc == "test") { data = response['data']; }
+    // else if (calc == "epi") {
+    if (calc == "test" || calc == "epi") {
         if (hasData) { data = response['data']; } // data already parsed from epi to node
         else {
             // data = response['data']['val']; // the old way..
@@ -275,6 +282,7 @@ function organizeData(calc, prop, data) {
 
     if (typeof data === "number") {
         if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss" || prop == "henrys_law_con") {
+            if (calc == "test" && prop == "vapor_press") { data = Math.pow(10, data); }
             return data.toExponential(3);
         }
         else {

@@ -23,7 +23,7 @@ class TestCalc(Calculator):
         self.urlStruct = "/api/TEST/{}/{}" # method, property
 
         # self.methods = ['hierarchical']
-        self.methods = ['FDAMethod']
+        self.methods = ['FDAMethod', 'HierarchicalMethod']
         # map workflow parameters to test
         self.propMap = {
             'melting_point': {
@@ -49,9 +49,9 @@ class TestCalc(Calculator):
         post = self.getPostData(calc, prop)
         post['identifiers']['SMILES'] = structure # set smiles
         test_prop = self.propMap[prop]['urlKey'] # prop name TEST understands
-        url = self.baseUrl + self.urlStruct.format('HierarchicalMethod', test_prop)
+        url = self.baseUrl + self.urlStruct.format('FDAMethod', test_prop)
         try:
-            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=20)
+            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)
         except requests.exceptions.ConnectionError as ce:
             logging.info("connection exception: {}".format(ce))
             # return None
