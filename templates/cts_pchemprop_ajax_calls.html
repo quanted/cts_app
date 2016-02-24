@@ -36,134 +36,41 @@ $(document).ready(function() {
 });
 
 
-function isPchemWorkflow() {
-    var workflow_url = window.location.href;
-    if (workflow_url.indexOf("pchem") > -1) { return true; }
-    else { return false; }
-}
-
-
 function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node, currentNode) {
     
     if (checkedCalcsAndProps == null) { return; }
 
+    var socket = io.connect("localhost", {port:4000}); // initiates user connection on node server
+
     var sparc_props_list = [];
     var num_pchem = parseFloat($('#gen-select-pchem').val()); // number of props
 
+    // determine whether data should be inserted into pchem table:
+    if (isPchemWorkflow()) { addDataToTable = true; }
+    else if (currentNode != null && node.id == currentNode.id) {
+        addDataToTable = true; 
+    }
+    else { addDataToTable = false; }
+
+
     console.log("incoming structure: " + structure);
 
-    for (var calc in checkedCalcsAndProps) {
+    // var data_calls = JSON.stringify({'data': checkedCalcsAndProps, 'chem': structure});
+    var data_calls = {
+        'data': checkedCalcsAndProps, 
+        'chem': structure,
+        'ws': 'node_api',
+    };
 
-        var post_data = { "chemical": structure, "calc": calc };
+    socket.emit('get_data', data_calls); // send checked calcs/props to nodejs
 
-        // 1. Add webservice key:
-        if (calc == "chemaxon") { 
-            post_data.ws = "jchem";
-            post_data.service = "getPchemProps";
-        }
-        else if (calc == "sparc") { 
-            post_data.ws = "sparc";
-        }
-        else { post_data.ws = calc; }
-
-        for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
-            var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
-            var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
-            var addDataToTable = false; // whether to plot on visible pchem table or not..
-
-            // 2. Build POST data:
-            post_data['prop'] = prop;
-            if (prop == "kow_wph") { post_data.ph = kowPH; }
-
-            // 3. Determine whether data should be inserted into pchem table:
-            if (isPchemWorkflow()) {
-                addDataToTable = true; // always add data to table in pchem workflow..
-            }
-            else {
-                if (currentNode != null && node.id == currentNode.id) {
-                    addDataToTable = true; 
-                }
-                else { addDataToTable = false; }
-            }
-
-            // 4. Add spinner to calc-prop table cell:
-            if (addDataToTable) { $(tblCell).html(spinner_html); }
-
-            // 5. Make data calls, determine if additional methods required:
-            if (calc == "chemaxon") {
-                if (prop == "kow_wph" || prop == "kow_no_ph") {
-                    for (var method in jchem_methods) {
-                        post_data['method'] = jchem_methods[method];
-                        makeTheCall(post_data, node, addDataToTable);
-                    }
-                    delete post_data['method']; // lazy fix for methods showing in non-method props
-                }
-                else { makeTheCall(post_data, node, addDataToTable); }
-            }
-            // else if (calc == "epi" || calc == "test") { 
-            else if (calc == "epi") {
-                makeTheCall(post_data, node, addDataToTable);
-            }
-        }
-        // Make sparc call after all props are gathered into list:
-        if (calc == "sparc") { 
-            post_data['props'] = checkedCalcsAndProps['sparc'];
-            post_data['ph'] = kowPH;
-            makeTheCall(post_data, node, addDataToTable);
-        }
-        else if (calc == "test") {
-            post_data['props'] = checkedCalcsAndProps['test'];
-            post_data['ph'] = kowPH;
-            makeTheCall(post_data, node, addDataToTable, 120*1000);
-        }
-
-    }
-
-}
-
-
-function makeTheCall(calcPropData, node, addDataToTable, timeout) {
-    calls_tracker++;
-    console.log("calls tracker: " + calls_tracker);
-    if (timeout === 'undefined') { timeout = 20000; }
-    $.ajax({ 
-        url: "/cts/portal",
-        type: "POST",
-        dataType: "json",
-        data: calcPropData,
-        timeout: timeout, //in milliseconds
-        success: function(data) {
-            calls_tracker--;
-            console.log("calls tracker: " + calls_tracker);
-
-            if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node..
-
-            if ('props' in data) {
-                parseListDataFromResults(data, node, addDataToTable);
-            }
-            else {
-                parseResponseToPchemTable(data, node, false, addDataToTable);
-            }
-
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log("Error: " + errorThrown);
-            calls_tracker--; // TODO (maybe): retry call instead of decrementing and moving on..
-            console.log("calls tracker: " + calls_tracker);
-            var error = {
-                "error": textStatus,
-                "calc": calcPropData['calc'],
-                "prop": calcPropData['prop']
-            };
-
-            if ('props' in calcPropData) {
-                parseListDataFromResults(error, node, addDataToTable);
-            }
-            else {
-                parseResponseToPchemTable(error, node, false, addDataToTable);
-            }
-        }
+    // incoming data pushed to client from redis:
+    socket.on('message', function(data) {
+        if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node
+        data = JSON.parse(data);
+        parseResponseToPchemTable(data, node, false, addDataToTable); // expecting prop data object as usual
     });
+
 }
 
 
@@ -208,6 +115,13 @@ function getPropFromSPARCResults(data, node, prop, sparc_results, addDataToTable
             }
         }
     }
+}
+
+
+function isPchemWorkflow() {
+    var workflow_url = window.location.href;
+    if (workflow_url.indexOf("pchem") > -1) { return true; }
+    else { return false; }
 }
 
 

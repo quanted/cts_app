@@ -44,11 +44,12 @@ def request_manager(request):
 			logging.info("getting p-chem list..."); # TODO: do this on the front end instead of calling server!
 			response = jrest.getpchemprops(request) # gets pchemprop_model object..
 		else:
-			response = sendRequestToWebService(service, chemical, prop, ph, method)
+			response = sendRequestToWebService(service, chemical, prop, ph, method) # returns json string
 
-		logging.info("Jchem REPONSE: {}".format(response))
+		logging.warning("Jchem REPONSE: {}".format(response))
+		logging.warning(type(response))
 
-		return HttpResponse(response)
+		return HttpResponse(response, content_type='application/json')
 
 	except Exception as e:
 		logging.warning("error occurred in request_manager: {}".format(e))

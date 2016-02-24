@@ -1,26 +1,21 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import patterns, include, url
+from chemaxon_cts import jchem_rest
 # from django.contrib import admin
 # admin.autodiscover()
 
 
 # All view functions here must be in '/views/views.py'
 # path: serverLocation/jchem/...
-urlpatterns = patterns('REST',
+urlpatterns = patterns('chemaxon_cts',
     # url(r'^docs/', include('docs.urls')),
     # (r'^$', 'jchem_rest.doc'),  # Landing page
-    (r'^ws/traffic-cop/?$', 'jchem_traffic_cop.directJchemTraffic'),
     (r'^docs/?$', 'jchem_rest.doc'),
     (r'^ws/getChemDetails/?$', 'jchem_rest.getChemDetails'),
     (r'^ws/convertToSMILES/?$', 'jchem_rest.convertToSMILES'),
     (r'^ws/getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
     (r'^ws/smilesToImage/?$', 'jchem_rest.smilesToImage'),
-    (r'^ws/standardizer/?$', 'jchem_rest.standardizer'),
     (r'^ws/getpchemprops/?$', 'jchem_rest.getpchemprops'),
-    # (r'^ws/traffic-cop/?$', 'jchem_rest.trafficCop'),
-    # (r'^ws/test-sse/?$', 'jchem_rest.sse_test'), # testing sse in django
-    # (r'^ws/test-poll/?$', 'jchem_rest.poll_test') # testing ajax polling
-    # (r'^ws/data/?$', 'jchem_rest.poll_test_data')
 )
 
 # 404 Error view (file not found)

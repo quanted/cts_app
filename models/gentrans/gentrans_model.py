@@ -71,7 +71,7 @@ class gentrans(object):
             response = jchem_rest.getTransProducts(request)
         except Exception as e:
             logging.warning("error making data request: {}".format(e))
-            pass
+            raise
 
         # reformat data for outputting to tree structure:
         data_walks.j = 0

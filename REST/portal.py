@@ -5,21 +5,32 @@ webservices proxy (i.e., test-cts or jchem_rest).
 
 import requests
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from chemaxon_cts import views as chemaxon_views
 from epi_cts import views as epi_views
 from sparc_cts import views as sparc_views
 from test_cts import views as test_views
-import logging
+from nodejs_cts import views as nodejs_views
 from smilesfilter import is_valid_smiles
+
 import json
+import logging
 
 
+# @csrf_exempt
 def directAllTraffic(request):
     webservice = request.POST.get('ws')
 
+    logging.info("portal receiving web service: {}".format(webservice))
+
     # if webservice == 'getVersion':
 
-    if webservice == 'validateSMILES':
+    if webservice == 'node_api':
+        # go to node api handler:
+        logging.info("incoming request from nodejs server..")
+        return nodejs_views.request_manager(request)
+
+    elif webservice == 'validateSMILES':
         chemical = request.POST.get('chemical')
         json_results = json.dumps(is_valid_smiles(chemical)) # returns python dict
         return HttpResponse(json_results, content_type='application/json')
