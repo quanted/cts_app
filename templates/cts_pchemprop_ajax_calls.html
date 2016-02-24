@@ -15,14 +15,14 @@ var sparcPropMap = {
 };
 
 var jchem_methods = ['KLOP', 'PHYS', 'VG'];
-var checkedCalcsAndProps; // format --> {'calc': ['checked_prop', ..], ..}
+var checkedCalcsAndProps, structure; // format --> {'calc': ['checked_prop', ..], ..}
 var spinner_html = '<img src="/static/images/loader.gif" id="spinner" />';
 var calls_tracker = 0;
 
 $(document).ready(function() {
     // Some global and local variable delcarations:
     checkedCalcsAndProps = {{checkedCalcsAndProps}};
-    var structure = "{{structure}}";
+    structure = "{{structure}}";
     kowPH = "{{kow_ph}}";
     smiles = "{{structure}}";
     name = "{{name}}";
@@ -31,9 +31,68 @@ $(document).ready(function() {
     time = "{{time}}";
     sparcPropMap['kow_ph'] = kowPH;
 
+    var test = $('#btn-pchem-data');
+
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null); // get pchem data..
 
+
+    // Get Data button for gathering pchem props:
+    $('#btn-pchem-data').on('click', function() {
+        var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call
+        var params = buildPostObject(structure, "getPchemPropDict");
+        for (var i in acceptedKeys) {
+            var key = acceptedKeys[i];
+            params["data"][key] = null; // values are irrelevant (only need smiles)
+        }
+        getPchemPropDict(params, function(checkedCalcsAndProps) {
+            kowPH = $('#id_kow_ph').val();
+            startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null);
+        });
+    });
+
 });
+
+
+function buildPostObject(smiles, service) {
+    var params = new Object();
+    params.url = "/cts/portal";
+    params.type = "POST";
+    params.contentType = "application/json";
+    params.dataType = "json";
+    params.data = { 
+        "chemical" : smiles,
+        "ws": "jchem",
+        "service": service,
+    };
+    var allCheckBoxes = $('#pchemprop_table input:checkbox');
+    $(allCheckBoxes).each(function() {
+        params["data"][this.name] = this.checked;
+    });
+    params["data"]["chem_struct"] = smiles
+    // params["data"]["chem_struct"] = node.data['smiles'];
+    return params;
+}
+
+
+function getPchemPropDict(params, callback) {
+    $.ajax({
+      url: params.url,
+      type: params.type,
+      data: params.data,
+      dataType: params.dataType,
+      success: function(data) {
+        var data = jsonRepack(data);
+        callback(data);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        callback("Fail");
+      },
+      timeout: 20000
+    });
+}
+
+
+
 
 
 function isPchemWorkflow() {
@@ -311,6 +370,11 @@ function organizeData(calc, prop, data) {
         }
     }
     return parsedData;
+}
+
+
+function jsonRepack(jsonobj) {
+  return JSON.parse(JSON.stringify(jsonobj));
 }
 
 </script>

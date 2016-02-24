@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 import requests
 import jchem_rest as jrest
 import logging
@@ -42,6 +42,10 @@ def request_manager(request):
 
 		if service == 'getPchemPropDict':
 			logging.info("getting p-chem list..."); # TODO: do this on the front end instead of calling server!
+			logging.info(request)
+			logging.info(type(request))
+			request_data = request.POST.get('')
+			logging.info("request data: {}".format(request_data))
 			response = jrest.getpchemprops(request) # gets pchemprop_model object..
 		else:
 			response = sendRequestToWebService(service, chemical, prop, ph, method)
