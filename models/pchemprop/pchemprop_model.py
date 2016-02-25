@@ -6,10 +6,6 @@ import pchemprop_parameters  # Chemical Calculator and Transformation Pathway pa
 from chemaxon_cts import jchem_rest
 import logging
 
-# Need these if want to do data crunching on back end
-# from REST.epi_calculator import Calculator as calc
-from chemaxon_cts.jchem_calculator import JchemProperty as jp
-# from requests_futures.sessions import FuturesSession
 from django.core.cache import cache
 import datetime
 import json

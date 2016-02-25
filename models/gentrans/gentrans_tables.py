@@ -100,7 +100,7 @@ def table_all(gentrans_obj):
 
     html_all = table_inputs(gentrans_obj)
 
-    # html_all += table_metabolite_info(gentrans_obj) # included in table_metabolites() now
+    # html_all += build_pchem_table(gentrans_obj) # included in table_metabolites() now
 
     html_all += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
     html_all += table_metabolites(gentrans_obj)
@@ -182,21 +182,7 @@ def table_metabolites(gentrans_obj):
     <div class="out_">
     """
     html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
-    html += table_metabolite_info(gentrans_obj)
-    # html += """
-    # <br>
-    # Display up to:
-    # <select id="gen-select">
-    #     <option value="1" />1st gen </option>
-    #     <option value="2" />2nd gen </option>
-    #     <option value="3" />3rd gen </option>
-    #     <option value="4" />Show All </option>
-    # </select>
-    # """
-
-    pchemHTML = render_to_string('cts_pchem.html', {})
-    pchemHTML += str(pchemprop_parameters.form(None))
-    pchemHTML = pchemHtmlTemplate().render(Context(dict(pchemHtml=pchemHTML)))
+    html += build_pchem_table() # build pchem workflow's pchem table
 
     html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
@@ -211,7 +197,7 @@ def table_metabolites(gentrans_obj):
     return html
 
 
-def table_metabolite_info(gentrans_obj):
+def build_pchem_table():
     """
     For floating window that displays metabolite's 
     p-chem and structure data. 
@@ -222,8 +208,6 @@ def table_metabolite_info(gentrans_obj):
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
     <script>
     $(document).ready(function() {
-        //$("#metaboliteInfo").draggable();
-        // $("#tabs").tabs();
         $("#pchemprop_table").css('display', 'table');
     });
     </script>
@@ -238,7 +222,7 @@ def table_metabolite_info(gentrans_obj):
 
 
 def pchemHtmlTemplate():
-    # <div id="metaboliteInfo">
+    # do this when inserting it into html (see metaboliteInfoTmpl):
     pchem_html = """
     {% autoescape off %}{{pchemHtml}}{% endautoescape %}
     """

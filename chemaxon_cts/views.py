@@ -72,22 +72,6 @@ def getRequestParam(request, key):
 		return value
 
 
-# def getRequestPh(request):
-# 	"""
-# 	Picks out kow pH from request
-# 	"""
-# 	try:
-# 		ph = request.POST.get('ph')
-# 	except AttributeError as ae:
-# 		logging.warning("error: request has no attribute 'POST' -- {}".format(ae))
-# 		raise
-# 	except KeyError as ke:
-# 		logging.info("error: request has no key 'ph' -- {}".format(ke))
-# 		pass
-# 	else:
-# 		return ph
-
-
 def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None):
 	"""
 	Makes call to jchem rest service

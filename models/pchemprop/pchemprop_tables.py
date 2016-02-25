@@ -92,7 +92,7 @@ def output_pchem_table(pchemprop_obj):
     pchemHTML += str(pchemprop_parameters.form(None))
 
     html += pchemHTML
-    html += render_to_string('cts_pchemprop_cleanOutputTable.html', {"kow_ph": kow_ph})
+    # html += render_to_string('cts_pchemprop_cleanOutputTable.html', {"kow_ph": kow_ph})
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "time": pchemprop_obj.jid,
                                     "kow_ph": kow_ph,
@@ -107,6 +107,14 @@ def output_pchem_table(pchemprop_obj):
     </div>
     """
     return html
+
+
+def pchemHtmlTemplate():
+    # do this when inserting it into html (see metaboliteInfoTmpl):
+    pchem_html = """
+    {% autoescape off %}{{pchemHtml}}{% endautoescape %}
+    """
+    return Template(pchem_html)
 
 
 def timestamp(pchemprop_obj="", batch_jid=""):

@@ -8,7 +8,6 @@ import pytz
 import json
 import os
 import pdfkit
-from bs4 import BeautifulSoup
 
 import logging
 from models.gentrans import data_walks

@@ -456,7 +456,7 @@ function getPchemData(node) {
     
     for (var i in acceptedKeys) {
         var key = acceptedKeys[i];
-        params["data"][key] = null; // values are irrelevant (only need smiles)
+        params["data"][key] = null;
     }
 
     // Return if no metabolite selected, i.e., null smiles, mass, etc. values
@@ -466,6 +466,11 @@ function getPchemData(node) {
         return;
     }
     else { $('.gentransError').hide(); }
+
+
+    // this is where a front end function for getting checkedCalcsAndProps
+    // would come in handy! currently, it's making a call to get pchem table
+    // inputs for EVERY node, which is unnecessary!
 
     makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {
         var kowPH = $('#id_kow_ph').val();

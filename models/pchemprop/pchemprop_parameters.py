@@ -17,8 +17,8 @@ from parsley.decorators import parsleyfy
 
 
 # Define Custom Templates
-def tmpl_ChemCalcsCTS():
-	tmpl_ChemCalcsCTS = """
+def tmpl_pchemTableCTS():
+	tmpl_pchemTableCTS = """
 	{% load color_table %}
 	{% for field in form %}
 		{% if field.id_for_label == "id_kow_wph" %}
@@ -49,16 +49,16 @@ def tmpl_ChemCalcsCTS():
 		</tr>
 	</table>
 	"""
-	return tmpl_ChemCalcsCTS
+	return tmpl_pchemTableCTS
 
 
-tmpl_ChemCalcsCTS = Template(tmpl_ChemCalcsCTS())
+tmpl_pchemTableCTS = Template(tmpl_pchemTableCTS())
 
 
 # Method(s) called from *_inputs.py
 def form(formData):
 	form_cts_ChemCalcs_props = CTS_ChemCalcs_Props(formData)
-	html = tmpl_ChemCalcsCTS.render(Context(dict(form=form_cts_ChemCalcs_props)))
+	html = tmpl_pchemTableCTS.render(Context(dict(form=form_cts_ChemCalcs_props)))
 	return html
 
 
