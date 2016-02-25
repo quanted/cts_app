@@ -52,6 +52,7 @@ inTmpl = Template(getInputTemplate())
 
 def table_all(pchemprop_obj):
     html_all = '<br>'
+    html_all += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
     html_all += input_struct_table(pchemprop_obj)
     html_all += output_pchem_table(pchemprop_obj)
     # html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
@@ -82,6 +83,11 @@ def output_pchem_table(pchemprop_obj):
     <br>
     <H3 class="out_1 collapsible" id="section1"><span></span>p-Chem Properties Results</H3>
     <div class="out_">
+    <script>
+    $(document).ready(function() {
+        $("#pchemprop_table").css('display', 'table');
+    });
+    </script>
     """
 
     kow_ph = 0.0
@@ -90,8 +96,10 @@ def output_pchem_table(pchemprop_obj):
 
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))
+    pchemHTML = pchemHtmlTemplate().render(Context(dict(pchemHtml=pchemHTML)))
 
     html += pchemHTML
+
     # html += render_to_string('cts_pchemprop_cleanOutputTable.html', {"kow_ph": kow_ph})
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "time": pchemprop_obj.jid,
@@ -104,6 +112,12 @@ def output_pchem_table(pchemprop_obj):
                                     # "test_results": mark_safe(json.dumps(pchemprop_obj.test_results))
                             })
     html += """
+        <br>
+        <input type="button" value="Get data" class="submit input_button btn-pchem" id="btn-pchem-data">
+        <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
+        <br>
+        <p class="gentransError">Must right-click a metabolite first</p>
+        <p class="selectNodeForData">Select (right-click) a node to view p-chem data</p>
     </div>
     """
     return html
