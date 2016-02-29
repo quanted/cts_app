@@ -77,43 +77,38 @@ $(document).ready(function() {
 
 });
 
-function submitButtonLogic() {
 
+function submitButtonLogic() {
     //Enable submit only when a calculator is 
     //checked AND an available property:
 
     //disable submit if no calculator is checked
-    if ($('input[type=checkbox].col_header').is(':not(:checked)')) {
+    if ($('input[type=checkbox].calc_checkbox').is(':not(:checked)')) {
         $('.submit.input_button').prop('disabled', true).removeClass('brightBorders');
     }
-
     //loop through calculators' checkboxes
-    $('input[type=checkbox].col_header').each(function() {
-
+    $('input[type=checkbox].calc_checkbox').each(function() {
         if ($(this).is(':checked')) {
-
             var calcName = $(this).attr('name');
             var availableProps = $('td.ChemCalcs_available.' + calcName);
-
             //enable submit if checked calculator has checked properties
             if ($(availableProps).parent().find('input[type=checkbox]').is(':checked')) {
                 $('.submit.input_button').prop('disabled', false).addClass('brightBorders');
             }
-
         }
-
     });
-
 }
+
 
 function pchempropTableLogic() {
     //Highlight column of selected calculator:
-    $('input.col_header').change(function() {
+    $('input.calc_checkbox').change(function() {
         var colClass = $(this).attr('name');
         if ($(this).is(':checked')) { $('td.' + colClass).fadeTo(0, 1); }
         else { $('td.' + colClass).fadeTo(0, 0.75); }
     });
 }
+
 
 function clearPchemData() {
     // Clears all data on pchemprop table:

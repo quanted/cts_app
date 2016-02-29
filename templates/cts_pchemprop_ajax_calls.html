@@ -33,62 +33,41 @@ $(document).ready(function() {
 
     var test = $('#btn-pchem-data');
 
+    // checkedCalcsAndProps = buildCheckedCalcsAndProps(); // from scripts_pchemprop.js
     startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null); // get pchem data..
-
 
     // Get Data button for gathering pchem props:
     $('#btn-pchem-data').on('click', function() {
-        var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call
-        var params = buildPostObject(structure, "getPchemPropDict");
-        for (var i in acceptedKeys) {
-            var key = acceptedKeys[i];
-            params["data"][key] = null; // values are irrelevant (only need smiles)
-        }
-        getPchemPropDict(params, function(checkedCalcsAndProps) {
-            kowPH = $('#id_kow_ph').val();
-            startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null);
-        });
+        checkedCalcsAndProps = buildCheckedCalcsAndProps(); // from scripts_pchemprop.js
+        kowPH = $('#id_kow_ph').val();
+        startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null);
     });
 
 });
 
 
-function buildPostObject(smiles, service) {
-    var params = new Object();
-    params.url = "/cts/portal";
-    params.type = "POST";
-    params.contentType = "application/json";
-    params.dataType = "json";
-    params.data = { 
-        "chemical" : smiles,
-        "ws": "jchem",
-        "service": service,
-    };
-    var allCheckBoxes = $('#pchemprop_table input:checkbox');
-    $(allCheckBoxes).each(function() {
-        params["data"][this.name] = this.checked;
-    });
-    params["data"]["chem_struct"] = smiles
-    // params["data"]["chem_struct"] = node.data['smiles'];
-    return params;
-}
+// {'calc1': ['prop1', 'prop2'], 'calc2': ['prop']}
+function buildCheckedCalcsAndProps () {
+    // front end way to get checkedCalcsAndProps without
+    // calling cts-jchem rest
+    var calc_data_obj = {};
 
+    $('input.calc_checkbox:checked').each(function () {
+        var calc_name = $(this).attr('name'); 
+        var available_props = $('td.ChemCalcs_available.' + calc_name); // tbl cells of calc's available props..
+        var calc_prop_checkboxes = $(available_props).parent().find('input[type=checkbox]');
 
-function getPchemPropDict(params, callback) {
-    $.ajax({
-      url: params.url,
-      type: params.type,
-      data: params.data,
-      dataType: params.dataType,
-      success: function(data) {
-        var data = jsonRepack(data);
-        callback(data);
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        callback("Fail");
-      },
-      timeout: 20000
+        calc_data_obj[calc_name] = [];
+
+        $(calc_prop_checkboxes).each(function () {
+            if ($(this).is(':checked')) {
+                // var prop_name = $(this).attr('name');
+                var prop_name = this.name;
+                calc_data_obj[calc_name].push(prop_name); 
+            }
+        });
     });
+    return calc_data_obj;
 }
 
 
@@ -115,8 +94,9 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     }
     else { addDataToTable = false; }
 
-
-    console.log("incoming structure: " + structure);
+    for (calc in checkedCalcsAndProps) {
+        
+    }
 
     // var data_calls = JSON.stringify({'data': checkedCalcsAndProps, 'chem': structure});
     var data_calls = {
@@ -214,12 +194,13 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         if (hasData) { data = response['data']; } // data already parsed from epi to node
         else {
             // data = response['data']['val']; // the old way..
+            data = response['data'];
             // the new way:
-            if (Object.keys(response['data']['properties']).length > 0) {
-                var data_key = Object.keys(response['data']['properties'])[0];
-                data = response['data']['properties'][data_key];
-            }
-            else { data = "calc error"; }
+            // if (Object.keys(response['data']['properties']).length > 0) {
+            //     var data_key = Object.keys(response['data']['properties'])[0];
+            //     data = response['data']['properties'][data_key];
+            // }
+            // else { data = "calc error"; }
         }    
     }
     else { data = response['data']; }

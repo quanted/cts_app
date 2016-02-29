@@ -24,6 +24,16 @@ io.sockets.on('connection', function (socket) {
 
     // var sessionid = socket.handshake.cookie['sessionid']; // use cookie set by django..
 
+
+    // send socket id to cts backend upon client connection:
+    var values = querystring.stringify({
+        message: "start new session",
+        sessionid: socket.id,
+        ws: "new_session"
+    });
+    callCTSNodeAPI(values);
+
+
     var client = redis.createClient();
     console.log("node redis client established: " + client);
     client.subscribe(socket.id); // create channel with client's socket id
@@ -31,7 +41,7 @@ io.sockets.on('connection', function (socket) {
     // Grab message from Redis that was created by django and send to client
     client.on('message', function(channel, message){
         console.log("reading message from redis: " + message + " on channel: " + channel);
-        socket.send(message);
+        socket.send(message); // send to browser
     });
 
     console.log("session id: " + socket.id);
@@ -44,7 +54,27 @@ io.sockets.on('connection', function (socket) {
         // should calls be parsed out here, or after cts portal???
         // i'm going to try it from django first (node_api views)
 
-        web_service = message.ws;
+        var web_service = message.ws; // node_api
+        //var all_data = message['data'];
+
+        //for (calc in all_data) {
+        //
+        //    var calc_data = all_data[calc]; // prop data array
+        //    var post_data = {'chemical': message['chem'], 'calc': calc};
+        //
+        //    if (calc == "test") {
+        //        for (var i = 0; i < calc_data.length; i++) {
+        //            post_data['prop'] = calc_data[i];
+        //            var values = querystring.stringify({
+        //                message: post_data,
+        //                sessionid: socket.id,
+        //                ws: web_service
+        //            });
+        //            callCTSNodeAPI(values); // send off to cts backend, node_api views!
+        //        }
+        //    }
+        //}
+
         message = JSON.stringify(message);
 
         console.log("message: ");
@@ -59,31 +89,7 @@ io.sockets.on('connection', function (socket) {
         console.log("values established");
         console.log(values);
 
-        var options = {
-            host: 'localhost',
-            port: 8000,
-            path: '/cts/portal',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': values.length
-            }
-        };
-
-        console.log("options established");
-        
-        // Send message to CTS server:
-        var req = http.request(options, function(res){
-            res.setEncoding('utf8');        
-            // Print out error message:
-            res.on('data', function(message){
-                if(message != 'Everything worked :)'){
-                    console.log('Message: ' + message);
-                } 
-            });
-        });
-        req.write(values);
-        req.end();
+        callCTSNodeAPI(values);
 
     });
 
@@ -94,3 +100,31 @@ io.sockets.on('connection', function (socket) {
     });
 
 });
+
+function callCTSNodeAPI (values) {
+
+    var options = {
+        host: 'localhost',
+        port: 8000,
+        path: '/cts/portal',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': values.length
+        }
+    };
+
+    // Send message to CTS server:
+    var req = http.request(options, function(res){
+        res.setEncoding('utf8');        
+        // Print out error message:
+        res.on('data', function(message){
+            if(message != 'Everything worked :)'){
+                console.log('Message: ' + message);
+            } 
+        });
+    });
+    req.write(values);
+    req.end();
+
+}

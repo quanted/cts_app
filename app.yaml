@@ -9,7 +9,7 @@ libraries:
 - name: numpy
   version: latest
 - name: django
-  version: "1.5"
+  version: "1.6.5"
 - name: PIL
   version: latest
 - name: matplotlib

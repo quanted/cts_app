@@ -21,11 +21,8 @@ from chemaxon_cts.views import request_manager as chemaxon_manager
 
 # @csrf_exempt
 def request_manager(request):
-    logging.info("inside request manager!")
-    # logging.info("redis: {}".format(dir(r)))
 
     try:
-
         r = redis.StrictRedis(host='localhost', port=6379, db=0) # instantiate redis (where should this go???)
         logging.warning("connected to redis!")
         logging.warning("incoming message to cts nodejs request manager: {}".format(request.POST))
@@ -64,16 +61,27 @@ def request_manager(request):
             #     calc_data = sparc_manager(request)
             #     logging.warning("{} data for {} props coming into cts-node api".format(calc, props_list))
             #     r.publish(sessionid, calc_data)
-            # elif calc == 'test':
-            #     # send whole list of props! (sparc deals with the details)
-            #     data.update({'props': props_list}) # send whole list of props! (sparc deals with the details)
-            #     request = requests.Request(data=calc_data)
-            #     calc_data = sparc_manager(request)
-            #     logging.warning("{} data for {} props coming into cts-node api".format(calc, props_list))
-            #     r.publish(sessionid, calc_data)
+            if calc == 'test':
+                # send whole list of props! (sparc deals with the details)
+                # data.update({'props': props_list}) # send whole list of props! (sparc deals with the details)
+                for prop in props_list:
+                    # calc_data.update({'props': props_list})
+                    calc_data.update({'prop': prop})
+                    request = HttpResponse()
+                    request.POST = calc_data
+                    returned_data = test_manager(request).content # returned calc POST data!
+                    logging.warning("{} data: {}".format(calc, returned_data))
+                    logging.warning(type(returned_data))
+                    r.publish(sessionid, returned_data) # want to publish after EACH call, not after all of 'em
+
+                # for prop in props_list:
+                #     request = requests.Request(data=calc_data)
+                #     calc_data = sparc_manager(request)
+                #     logging.warning("{} data for {} props coming into cts-node api".format(calc, props_list))
+                #     r.publish(sessionid, calc_data)
             # elif calc == 'epi':
             #     # one at a time, i think
-            if calc == 'chemaxon':
+            elif calc == 'chemaxon':
                 # one at a time, i think
                 for prop in props_list:
                     logging.warning("prop: {}".format(prop))
@@ -88,13 +96,7 @@ def request_manager(request):
                 # shouldn't get here!
 
 
-
-        # returned_data = json.dumps({'calc': 'chemaxon', 'prop': 'water_sol', 'data': 140.12})
-        # r = redis.StrictRedis(host='localhost', port=6379, db=0) # instantiate redis (where should this go???)
-        # r.publish(sessionid,  'data: ' + returned_data) # pub message w/ user's session id as channel
-        # r.publish(sessionid, returned_data)
-
-        return HttpResponse("~~~~ it worked!")
+        return HttpResponse("~~~~ it worked! ~~~~")
 
     except Exception as e:
         logging.warning(e)
