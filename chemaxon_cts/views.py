@@ -32,7 +32,9 @@ def request_manager(request):
 		method = request.POST.get('method')
 		ph = request.POST.get('ph')
 
-		response = sendRequestToWebService(service, chemical, prop, ph, method, sessionid)  # returns json string
+		node = request.POST.get('node') # TODO: keep track of nodes without bringing node obj along for the ride!
+
+		response = sendRequestToWebService(service, chemical, prop, ph, method, sessionid, node)  # returns json string
 
 		return HttpResponse(response, content_type='application/json')
 
@@ -41,7 +43,7 @@ def request_manager(request):
 		raise HttpResponse(e)
 
 
-def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None):
+def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None, node=None):
 	"""
     Makes call to jchem rest service
     """
@@ -61,7 +63,7 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None
 	return response
 
 
-def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None):
+def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None, node=None):
 
 	resultDict = {"calc": "chemaxon", "prop": prop}
 

@@ -41,7 +41,9 @@ $(document).ready(function() {
     $('#btn-pchem-data').on('click', function() {
 
         // quick check for kow ph range:
-        socket.disconnect();
+        if (socket) {
+            socket.disconnect();
+        }
         checkedCalcsAndProps = buildCheckedCalcsAndProps(); // from scripts_pchemprop.js
         kowPH = $('#id_kow_ph').val();
         connectToSocket();
@@ -76,7 +78,14 @@ function buildCheckedCalcsAndProps () {
 
 
 function connectToSocket() {
-    socket = io.connect("localhost", {port: 4000, 'force new connection': true}); // initiates user connection on node server
+
+    if (typeof io !== 'undefined') {
+        socket = io.connect("localhost", {port: 4000, 'force new connection': true}); // initiates user connection on node server
+    }
+    else {
+        socket = null;
+        return;
+    }
 
     // incoming data pushed to client from redis:
     socket.on('message', function(data) {
@@ -165,6 +174,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 
 function makeTheCall(calcPropData, node, addDataToTable, socket) {
     if (socket) {
+        calcPropData['node'] = node; // send node through socket for tracking returned data
         var post_data = JSON.stringify(calcPropData);
         socket.emit('get_data', post_data);
     }

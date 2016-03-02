@@ -116,7 +116,7 @@ $('#btn-pchem-getdata').click(function() {
     checkedCalcsAndProps = buildCheckedCalcsAndProps(); // from cts_pchemprop_ajax_calls
     kowPH = $('#id_kow_ph').val();
 
-     if (socket) {
+    if (socket) {
         socket.disconnect();
     }
     connectToSocket(); // cts_pchemprop_ajax_calls
@@ -156,9 +156,6 @@ $('#mol-info-wrapper').on('mouseup', 'img.metabolite', function (e) {
 });
 
 // Prevent right-click menu if clicked on mol info or spacetree div:
-// $('#mol-info-wrapper, #cont').on('contextmenu', function (e) {
-//     return false;
-// });
 $('#metaboliteInfo, #cont').on('contextmenu', function (e) {
     return false;
 });
