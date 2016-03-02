@@ -1,11 +1,13 @@
 # from django.conf import settings # This urls.py file is looking for the TEST_CTS_PROXY_URL variable in the project settings.py file.
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.core.cache import cache
 
 import logging
-import os
 import requests
 import json
+import redis
+
 from sparc_calculator import SparcCalc
 
 
@@ -15,10 +17,9 @@ def request_manager(request):
         calc = request.POST.get("calc")
         props = request.POST.getlist("props[]")
         structure = request.POST.get("chemical")
-        single_prop = request.POST.get('single_prop') # is None if doesn't exist..
+        sessionid = request.POST.get('sessionid')
 
         logging.info("Incoming data to SPARC: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
-        logging.info("Single prop: {}".format(single_prop))
 
         post_data = {
             "calc": calc,
@@ -48,20 +49,15 @@ def request_manager(request):
 
         for prop in props:
 
-            logging.info("PROP: {}".format(prop))
-
             if prop == 'ion_con':
                 response = calcObj.makeCallForPka() # response as d ict returned..
-                logging.info("1. Response from SPARC calculator: {}".format(response))
                 pka_data = calcObj.getPkaResults(response)
                 ion_con_response = {
                     'calc': 'sparc',
                     'prop': 'ion_con',
                     'data': pka_data
                 }
-                logging.info("2. Appending {} to sparc results".format(pka_data))
                 sparc_results.append(ion_con_response)
-                # del props[props.index('ion_con')]
 
             if prop == 'kow_wph':
                 ph = request.POST.get('ph') # get PH for logD calculation..
@@ -72,15 +68,10 @@ def request_manager(request):
                     'data': calcObj.getLogDForPH(response, ph)
                 }
                 sparc_results.append(kow_wph_response)
-                # del props[props.index('kow_wph')]
 
-        logging.info("props: {}".format(props))
-        logging.info("length: {}".format(len(props)))
-
-        logging.info("prop map {}".format(calcObj.propMap.keys()))
         prop_map = calcObj.propMap.keys()
         if any(prop in prop_map for prop in props):
-            logging.info("### making multi property request ###")
+            logging.info("Making SPARC multi property request...")
             multi_response = calcObj.makeDataRequest()
             if 'calculationResults' in multi_response:
                 multi_response = calcObj.parseMultiPropResponse(multi_response['calculationResults'])
@@ -93,7 +84,13 @@ def request_manager(request):
 
         post_data.update({'data': sparc_results})
 
-        return HttpResponse(json.dumps(post_data), content_type='application/json')
+        # node/redis stuff:
+        result_json = json.dumps(post_data)
+        if sessionid:
+            r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+            r.publish(sessionid, result_json)
+
+        return HttpResponse(result_json, content_type='application/json')
 
     except requests.HTTPError as e:
         logging.warning("HTTP Error occurred: {}".format(e))

@@ -1,11 +1,11 @@
-# from django.conf import settings # This urls.py file is looking for the TEST_CTS_PROXY_URL variable in the project settings.py file.
-from django.shortcuts import render
 from django.http import HttpResponse
 
 import logging
 import os
 import requests
 import json
+import redis
+
 from test_calculator import TestCalc
 from REST.smilesfilter import parseSmilesByCalculator
 
@@ -25,14 +25,15 @@ def request_manager(request):
 
   try:
     calc = request.POST.get("calc")
-    prop = request.POST.get("prop")
-    # props = request.POST.getlist("props[]")
+    # prop = request.POST.get("prop")
+    props = request.POST.getlist("props[]")
     structure = request.POST.get("chemical")
+    sessionid = request.POST.get('sessionid')
 
     postData = {
       "calc": calc,
-      "prop": prop
-      # "props": props
+      # "prop": prop
+      "props": props
     }
 
     # filter smiles before sending to TEST:
@@ -46,29 +47,22 @@ def request_manager(request):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     calcObj = TestCalc()
-    # logging.info("TEST props: {}".format(props))
-    response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
-    prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
-    prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
 
+    test_results = []
+    for prop in props:
+        data_obj = {'calc':'test', 'prop':prop}
+        response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
+        response_json = json.loads(response.content)
+        data_obj['data'] = response_json
+        test_results.append(data_obj)
 
-    # ### Make sequential calls to TEST here!!! #######################
-    # Note: this is where data in loop would be pushed to redis, which
-    # would trigger an async event on a tornado or nodejs servlet to
-    # push up to the client
-    # test_results = []
-    # for prop in props:
-    #     data_obj = {'calc':'test', 'prop':prop}
-    #     response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
-    #     response_json = json.loads(response.content)
-    #     data_obj['data'] = response_json
-    #     test_results.append(data_obj)
-    # # #################################################################
+        # node/redis stuff:
+        if sessionid:
+            result_json = json.dumps(data_obj)
+            r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+            r.publish(sessionid, result_json)
 
-    # postData.update({'data': test_results})
-    postData.update({'data': prop_data})
-
-    logging.info("TEST DATA: {}".format(postData))
+    postData.update({'data': test_results})
 
     return HttpResponse(json.dumps(postData), content_type='application/json')
 

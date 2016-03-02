@@ -3,6 +3,7 @@ __author__ = 'np'
 from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
+from django.core.cache import cache
 
 import logging
 import os
@@ -19,84 +20,26 @@ from chemaxon_cts.views import request_manager as chemaxon_manager
 # r = redis.StrictRedis(host='localhost', port=6379, db=0) # instantiate redis (where should this go???)
 # logging.info("django redis client instantiated: {}".format(r))
 
+
 # @csrf_exempt
 def request_manager(request):
 
     try:
-        r = redis.StrictRedis(host='localhost', port=6379, db=0) # instantiate redis (where should this go???)
-        logging.warning("connected to redis!")
+
         logging.warning("incoming message to cts nodejs request manager: {}".format(request.POST))
 
-        node_data = request.POST.get('message')
-        # node_data = request.POST.get('data')
-        # calcs_props_dict = request.POST.get('data') # incoming message from socket server
+        message = request.POST.get('message')
         sessionid = request.POST.get('sessionid') # session id created w/ client's socket id on node server
-        # chemical = request.POST.get('chem')
 
-        logging.warning("nodejs request manager received message: {}".format(node_data))
         logging.warning("for session id: {}".format(sessionid))
 
+        if message == "new session":
+            cache.set('sessionid', sessionid) # will this key collide with other users?!?!
 
-        # this is another place the calls could be looped??????
-        # NOTE: i feel like having the calls parsed out here on the 
-        # django side is going to fire everything sequentially!
-        # i may have to do them either from the front like usual
-        # or, if possible, the node server code!
-    
+        elif message == "close session":
+            cache.delete(sessionid)
 
-        data_obj = json.loads(node_data)
-
-        logging.warning("node data: {}".format(data_obj))
-        logging.warning(type(data_obj))
-
-        for calc, props_list in data_obj['data'].items():
-
-            calc_data = {'chemical': data_obj['chem'], 'calc': calc} # initialize data obj for calc
-            logging.warning("calc_data: {}".format(calc_data))
-            logging.warning("props_list: {}".format(props_list))
-
-            # if calc == 'sparc':
-            #     data.update({'props': props_list}) # send whole list of props! (sparc deals with the details)
-            #     request = requests.Request(data=calc_data)
-            #     calc_data = sparc_manager(request)
-            #     logging.warning("{} data for {} props coming into cts-node api".format(calc, props_list))
-            #     r.publish(sessionid, calc_data)
-            if calc == 'test':
-                # send whole list of props! (sparc deals with the details)
-                # data.update({'props': props_list}) # send whole list of props! (sparc deals with the details)
-                for prop in props_list:
-                    # calc_data.update({'props': props_list})
-                    calc_data.update({'prop': prop})
-                    request = HttpResponse()
-                    request.POST = calc_data
-                    returned_data = test_manager(request).content # returned calc POST data!
-                    logging.warning("{} data: {}".format(calc, returned_data))
-                    logging.warning(type(returned_data))
-                    r.publish(sessionid, returned_data) # want to publish after EACH call, not after all of 'em
-
-                # for prop in props_list:
-                #     request = requests.Request(data=calc_data)
-                #     calc_data = sparc_manager(request)
-                #     logging.warning("{} data for {} props coming into cts-node api".format(calc, props_list))
-                #     r.publish(sessionid, calc_data)
-            # elif calc == 'epi':
-            #     # one at a time, i think
-            elif calc == 'chemaxon':
-                # one at a time, i think
-                for prop in props_list:
-                    logging.warning("prop: {}".format(prop))
-                    calc_data.update({'prop': prop, 'service': 'getPchemProps'})
-                    request = HttpRequest()
-                    request.POST = calc_data
-                    returned_data = chemaxon_manager(request).content
-                    logging.warning("{} data: {}".format(calc, returned_data))
-                    logging.warning(type(returned_data))
-                    r.publish(sessionid, returned_data)
-            # else:
-                # shouldn't get here!
-
-
-        return HttpResponse("~~~~ it worked! ~~~~")
+        return HttpResponse("cts received message from node")
 
     except Exception as e:
         logging.warning(e)

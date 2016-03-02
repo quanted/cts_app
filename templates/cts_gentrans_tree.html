@@ -112,23 +112,32 @@ $('#gen-select').change(function() {
 
 // Get Data button for gathering pchem props for node:
 $('#btn-pchem-getdata').click(function() {
+
+    checkedCalcsAndProps = buildCheckedCalcsAndProps(); // from cts_pchemprop_ajax_calls
+    kowPH = $('#id_kow_ph').val();
+
+     if (socket) {
+        socket.disconnect();
+    }
+    connectToSocket(); // cts_pchemprop_ajax_calls
+
     //Check  #gen-select-pchem value to determine how
     //many nodes to get pchemprops for:
     var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
     if (genLevel == 0) {
-        getPchemData(currentNode); // pchemprops only for selected metabolite..
+        getPchemData(currentNode, checkedCalcsAndProps, kowPH); // pchemprops only for selected metabolite..
         return;
     }
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
-    block_ui = true; // initiate blocked UI load window..
+    // block_ui = true; // initiate blocked UI load window..
 
     st.graph.eachNode(function(node) {
         // node must be within depth of parsedNodeList.length - 1
         if (node._depth < parsedNodeList.length) {
             // callsTracker += 1;  // inc calls tracker for blocking ui
             // console.log("inc tracker: " + callsTracker);
-            getPchemData(node);
+            getPchemData(node, checkedCalcsAndProps, kowPH);
         }
     });
 
@@ -441,7 +450,7 @@ function getMolecularInfo(node) {
 }
 
 
-function getPchemData(node) {
+function getPchemData(node, checkedCalcsAndProps, kowPH) {
 
     // TODO: Check if metabolite already has pchem data before making call *******
 
@@ -451,35 +460,34 @@ function getPchemData(node) {
     }
 
     var smiles = node.data['smiles'];
-    var params = buildPostObject(smiles, "getPchemPropDict");
-    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call
-    
-    for (var i in acceptedKeys) {
-        var key = acceptedKeys[i];
-        params["data"][key] = null;
-    }
+{#    var params = buildPostObject(smiles, "getPchemPropDict");#}
+{#    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call#}
+{#    #}
+{#    for (var i in acceptedKeys) {#}
+{#        var key = acceptedKeys[i];#}
+{#        params["data"][key] = null;#}
+{#    }#}
 
     // Return if no metabolite selected, i.e., null smiles, mass, etc. values
     // "Must select (right-click) a metabolite first to get pchemprops"
-    if (params["data"]["smiles"] == "") {
+    if (smiles == "") {
         $('.gentransError').show();
         return;
     }
     else { $('.gentransError').hide(); }
 
 
-    // this is where a front end function for getting checkedCalcsAndProps
-    // would come in handy! currently, it's making a call to get pchem table
-    // inputs for EVERY node, which is unnecessary!
+    startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
 
-    makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {
-        var kowPH = $('#id_kow_ph').val();
-        // make p-chem calls (function from cts_pchemprop_ajax_calls.html):
-        startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node, currentNode);
-        // make border dark blue (has pchemprop data).. 
-        // TODO: only blue when data is actually downloaded
-        // $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node
-    });
+
+{#    makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {#}
+{#        var kowPH = $('#id_kow_ph').val();#}
+{#        // make p-chem calls (function from cts_pchemprop_ajax_calls.html):#}
+{#        startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node, currentNode);#}
+{#        // make border dark blue (has pchemprop data).. #}
+{#        // TODO: only blue when data is actually downloaded#}
+{#        // $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node#}
+{#    });#}
  
 }
 

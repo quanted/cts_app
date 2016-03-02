@@ -24,16 +24,6 @@ io.sockets.on('connection', function (socket) {
 
     // var sessionid = socket.handshake.cookie['sessionid']; // use cookie set by django..
 
-
-    // send socket id to cts backend upon client connection:
-    var values = querystring.stringify({
-        message: "start new session",
-        sessionid: socket.id,
-        ws: "new_session"
-    });
-    callCTSNodeAPI(values);
-
-
     var client = redis.createClient();
     console.log("node redis client established: " + client);
     client.subscribe(socket.id); // create channel with client's socket id
@@ -51,40 +41,17 @@ io.sockets.on('connection', function (socket) {
 
         console.log("nodejs server received message..");
 
-        // should calls be parsed out here, or after cts portal???
-        // i'm going to try it from django first (node_api views)
+        message_obj = JSON.parse(message);
 
-        var web_service = message.ws; // node_api
-        //var all_data = message['data'];
-
-        //for (calc in all_data) {
-        //
-        //    var calc_data = all_data[calc]; // prop data array
-        //    var post_data = {'chemical': message['chem'], 'calc': calc};
-        //
-        //    if (calc == "test") {
-        //        for (var i = 0; i < calc_data.length; i++) {
-        //            post_data['prop'] = calc_data[i];
-        //            var values = querystring.stringify({
-        //                message: post_data,
-        //                sessionid: socket.id,
-        //                ws: web_service
-        //            });
-        //            callCTSNodeAPI(values); // send off to cts backend, node_api views!
-        //        }
-        //    }
-        //}
-
-        message = JSON.stringify(message);
-
-        console.log("message: ");
-        console.log(message);
-
-        values = querystring.stringify({
-            message: message, // this key is the event name for client.on() above..
-            sessionid: socket.id,
-            ws: web_service
-        });
+        var values = {};
+        for (var key in message_obj) {
+            if (message_obj.hasOwnProperty(key)) {
+                if (key == 'props') { values[key + '[]'] = message_obj[key]; }
+                else { values[key] = message_obj[key]; }
+            }
+        }
+        values['sessionid'] = socket.id;
+        values = querystring.stringify(values);
 
         console.log("values established");
         console.log(values);
@@ -96,13 +63,12 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function () {
         console.log("client " + socket.id + " disconnected..");
         client.unsubscribe(socket.id); // unsubscribe from channel
-        console.log("client unsubscribed from redis channel..");
+        console.log("client " + socket.id + " unsubscribed from redis channel..");
     });
 
 });
 
 function callCTSNodeAPI (values) {
-
     var options = {
         host: 'localhost',
         port: 8000,
@@ -113,7 +79,6 @@ function callCTSNodeAPI (values) {
             'Content-Length': values.length
         }
     };
-
     // Send message to CTS server:
     var req = http.request(options, function(res){
         res.setEncoding('utf8');        
@@ -126,5 +91,4 @@ function callCTSNodeAPI (values) {
     });
     req.write(values);
     req.end();
-
 }

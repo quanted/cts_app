@@ -1,57 +1,38 @@
 from django.http import HttpResponse, HttpRequest
+from django.core.cache import cache
 import requests
 import jchem_rest as jrest
 import logging
 import json
+import redis
 from jchem_calculator import JchemProperty as jp
 
 
 # TODO: get these from the to-be-modified jchem_rest class..
 services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMILES',
-				'getTransProducts', 'getPchemProps', 'getPchemPropDict', 'getJchemVersion']
+            'getTransProducts', 'getPchemProps', 'getPchemPropDict', 'getJchemVersion']
 
 
 def request_manager(request):
 	"""
-	Redirects request from frontend to the 
-	approriate jchem web service. All calls going
-	from browser to cts for jchem go through
-	here first.
-
-	Expects: data for requested service, and
-	which name of service to call
-	Format: {"service": "", "data": {usual POST data}}
-	"""
+    Redirects request from frontend to the
+    approriate jchem web service. All calls going
+    from browser to cts for jchem go through
+    here first.
+    Expects: data for requested service, and
+    which name of service to call
+    Format: {"service": "", "data": {usual POST data}}
+    """
 
 	try:
-		service = getRequestParam(request, 'service')
-		chemical = getRequestParam(request, 'chemical')
-		prop = getRequestParam(request, 'prop')
+		service = request.POST.get('service')
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		sessionid = request.POST.get('sessionid')  # None if it doesn't exist
+		method = request.POST.get('method')
+		ph = request.POST.get('ph')
 
-		if 'method' in request.POST: 
-			method = getRequestParam(request, 'method')
-		else:
-			logging.info("no method specified..")
-			method = None
-
-		if prop == 'kow_wph':
-			ph = getRequestParam(request, 'ph')
-			logging.info("KOW PH: {}".format(ph))
-		else:
-			ph = None
-
-		if service == 'getPchemPropDict':
-			logging.info("getting p-chem list..."); # TODO: do this on the front end instead of calling server!
-			logging.info(request)
-			logging.info(type(request))
-			request_data = request.POST.get('')
-			logging.info("request data: {}".format(request_data))
-			response = jrest.getpchemprops(request) # gets pchemprop_model object..
-		else:
-			response = sendRequestToWebService(service, chemical, prop, ph, method) # returns json string
-
-		logging.warning("Jchem REPONSE: {}".format(response))
-		logging.warning(type(response))
+		response = sendRequestToWebService(service, chemical, prop, ph, method, sessionid)  # returns json string
 
 		return HttpResponse(response, content_type='application/json')
 
@@ -60,26 +41,10 @@ def request_manager(request):
 		raise HttpResponse(e)
 
 
-def getRequestParam(request, key):
+def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None):
 	"""
-	Picks out a key:value from request POST
-	"""
-	try:
-		value = request.POST.get(key)
-	except AttributeError as ae:
-		logging.warning("attribute error -- {}".format(ae))
-		raise
-	except KeyError as ke:
-		logging.warning("error: request has no key 'service' -- {}".format(ke))
-		raise
-	else:
-		return value
-
-
-def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None):
-	"""
-	Makes call to jchem rest service
-	"""
+    Makes call to jchem rest service
+    """
 	request = requests.Request(data={'chemical': chemical})
 	if service == 'getChemDetails':
 		response = jrest.getChemDetails(request).content
@@ -90,15 +55,13 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None
 	elif service == 'convertToSMILES':
 		response = jrest.convertToSMILES(request).content
 	elif service == 'getPchemProps':
-		response = getJchemPropData(chemical, prop, phForLogD, method)
+		response = getJchemPropData(chemical, prop, phForLogD, method, sessionid)
+	elif service == 'getPchemPropDict':
+		response = jrest.getpchemprops(request)  # gets pchemprop_model object..
 	return response
 
 
-def getJchemPropData(chemical, prop, phForLogD=None, method=None):
-
-	logging.info("> prop: {}".format(prop))
-	logging.info("> chemical: {}".format(chemical))
-	logging.info("> method: {}".format(method))
+def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None):
 
 	resultDict = {"calc": "chemaxon", "prop": prop}
 
@@ -124,9 +87,14 @@ def getJchemPropData(chemical, prop, phForLogD=None, method=None):
 
 	# ADD METHOD KEY:VALUE IF LOGD OR LOGP...
 	resultDict['data'] = result
-	if method: resultDict['method'] = method
+	if method:
+		resultDict['method'] = method
 
 	result_json = json.dumps(resultDict)
 
-	# resultDict = json.dumps({"calc": "chemaxon", "prop": prop, "data": result})
+	# node/redis stuff:
+	if sessionid:
+		r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+		r.publish(sessionid, result_json)
+
 	return result_json

@@ -73,12 +73,22 @@ class CTS_ChemCalcs_Props(forms.Form):
 	henrys_law_con = forms.BooleanField(required=False, label=mark_safe("Henry's Law Constant (atm-m<sup>3</sup>/mol)"))
 	kow_no_ph = forms.BooleanField(required=False, label=mark_safe("Octanol/Water Partition Coefficient (log)"))
 	kow_wph = forms.BooleanField(required=False, label=mark_safe('Octanol/Water Partition Coefficient (log)'))
-	kow_ph = forms.FloatField (
+	# kow_ph = forms.FloatField (
+	# 			label='at pH:',
+	# 			widget=forms.NumberInput(attrs={'class':'numberInput'}),
+	# 			initial=7.4,
+	# 			min_value=0,
+	# 			max_value=14,
+	# 			decimal_places=1
+	# 		)
+	kow_ph = forms.DecimalField (
 				label='at pH:',
 				widget=forms.NumberInput(attrs={'class':'numberInput'}),
 				initial=7.4,
 				min_value=0,
 				max_value=14,
+				decimal_places=1,
+				max_digits=4
 			)
 	koc = forms.BooleanField(required=False, label=mark_safe('Organic Carbon Partition Coefficient (L/kg)'))
 

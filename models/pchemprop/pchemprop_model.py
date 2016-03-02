@@ -137,4 +137,4 @@ class PChemProp(object):
 
         # cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
         if self.run_type != 'metabolite':
-            cache.set('pchemprop_json', json.dumps(run_data), 300) # must manually clear after use
+            cache.set('pchemprop_json', json.dumps(run_data), 500) # must manually clear after use
