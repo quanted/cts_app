@@ -3,19 +3,13 @@ from django.conf.urls import patterns, include, url
 from chemaxon_cts import jchem_rest
 # from django.contrib import admin
 # admin.autodiscover()
+import cts_rest
 
 
 # All view functions here must be in '/views/views.py'
 # path: serverLocation/jchem/...
-urlpatterns = patterns('chemaxon_cts',
-    # url(r'^docs/', include('docs.urls')),
-    # (r'^$', 'jchem_rest.doc'),  # Landing page
-    (r'^docs/?$', 'jchem_rest.doc'),
-    ('ws/getChemDetails/?$', 'jchem_rest.getChemDetails'),
-    (r'^ws/convertToSMILES/?$', 'jchem_rest.convertToSMILES'),
-    (r'^ws/getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
-    (r'^ws/smilesToImage/?$', 'jchem_rest.smilesToImage'),
-    (r'^ws/getpchemprops/?$', 'jchem_rest.getpchemprops'),
+urlpatterns = patterns('REST',
+    (r'^rest/molecule/?$', 'cts_rest.getChemicalEditorData')
 )
 
 # 404 Error view (file not found)

@@ -6,11 +6,13 @@ import logging
 import json
 import redis
 from jchem_calculator import JchemProperty as jp
+from REST.smilesfilter import filterSMILES
 
 
 # TODO: get these from the to-be-modified jchem_rest class..
 services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMILES',
-            'getTransProducts', 'getPchemProps', 'getPchemPropDict', 'getJchemVersion']
+            'getTransProducts', 'getPchemProps', 'getPchemPropDict', 'getJchemVersion',
+            'getMolecularInfo']
 
 
 def request_manager(request):
@@ -49,6 +51,29 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None
     """
 	request = requests.Request(data={'chemical': chemical})
 	if service == 'getChemDetails':
+		# what about having this endpoint do the smiles conversion, filtering, then details...
+
+		try:
+			response = jrest.convertToSMILES(request)  # convert chemical to smiles
+			response = json.loads(response.content)  # get json data
+
+			# request.data = {'smiles': response['structure']}  # use converted smiles for next request
+			# response = jrest.filterSMILES(request)  # filter smiles
+			# response = json.loads(response.content)  # get json data
+
+			filtered_smiles = filterSMILES(response['structure'])  # call CTS REST SMILES filter
+
+			request.data = {'chemical': filtered_smiles}
+			response = jrest.getChemDetails(request)  # get chemical details
+			response = json.loads(response.content)
+
+			# return this data in a standardized way for molecular info!!!!
+
+		except Exception as e:
+			raise e # TODO: build HTTP-code-specific error handling at portal.py
+		
+
+
 		response = jrest.getChemDetails(request).content
 	elif service == 'getChemSpecData':
 		response = jrest.getChemSpecData(request).content

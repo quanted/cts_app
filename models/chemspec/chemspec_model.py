@@ -2,17 +2,10 @@
 2014-08-13 (np)
 """
 
-import urllib2
 import json
-import requests
-import chemspec_parameters  # Chemical Speciation parameters
-# from REST import rest_funcs
 from chemaxon_cts import jchem_rest
 from chemaxon_cts.jchem_calculator import JchemProperty as JProp
 import logging
-# from django.http import HttpRequest
-import chemspec_tables
-from models.gentrans import data_walks
 from django.core.cache import cache
 import datetime
 
@@ -26,7 +19,7 @@ class chemspec(object):
 
         self.run_type = run_type  # hardcoded in pchemprop_output.py
 
-        # Chemical Editor Tab
+        # Chemical Editor Tab (separate class!!!)
         self.chem_struct = chem_struct  # SMILE of chemical on 'Chemical Editor' tab
         self.smiles = smiles
         self.orig_smiles = orig_smiles
@@ -34,7 +27,7 @@ class chemspec(object):
         self.formula = formula
         self.mass = mass + ' g/mol'
 
-        # Chemical Speciation Tab
+        # Chemical Speciation Tab (separate class!!!)
         self.pKa_decimals = int(pKa_decimals)
         self.pKa_pH_lower = pKa_pH_lower
         self.pKa_pH_upper = pKa_pH_upper
