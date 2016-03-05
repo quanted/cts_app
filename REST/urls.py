@@ -9,7 +9,8 @@ import cts_rest
 # All view functions here must be in '/views/views.py'
 # path: serverLocation/jchem/...
 urlpatterns = patterns('REST',
-    (r'^rest/molecule/?$', 'cts_rest.getChemicalEditorData')
+	(r'^rest/molecule/?$', 'cts_rest.getChemicalEditorData'),
+	(r'^rest/speciation/?$', 'cts_rest.getChemicalEditorData'),
 )
 
 # 404 Error view (file not found)

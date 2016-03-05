@@ -76,19 +76,6 @@ $(document).ready(function() {
         }   
     );
 
-    // todo: fix this so that the user can still click the checkbox itself
-    //$('table.tab_Speciation').click(function() {
-    //    // check the table's checkbox if table is clicked:
-    //    var checkBox = $(this).find('input[type=checkbox]');
-    //    if ($(checkBox).is(':checked')) {
-    //        $(checkBox).prop('checked', false).trigger('change');
-    //    }
-    //    else {
-    //        $(checkBox).prop('checked', true).trigger('change');
-    //    }
-    //
-    //});
-
 });
 
 

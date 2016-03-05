@@ -96,5 +96,55 @@ def getChemicalEditorData(request):
 # class Metabolite(Molecule):
 
 
+def getChemicalSpeciationData(request):
+	"""
+	Makes calls to jchem_rest for chemaxon 
+	speciation data.
+	:param request - Molecule object
+	:return: chemical speciation data response json
+	"""
+	try:
 
+		# CTS web service to get chemical speciation data.
+		# Use chemspec model for this!
+		
+
+
+
+		chemical = request.POST.get('chemical')
+
+		# convert chemical to smiles format:
+		request = requests.Request(data={'chemical': chemical})
+		response = jchem_rest.convertToSMILES(request)  # convert chemical to smiles
+		response = json.loads(response.content)  # get json data
+		orig_smiles = response['structure']
+
+		filtered_smiles = filterSMILES(orig_smiles)  # call CTS REST SMILES filter
+		
+				
+
+		# request.data = {'chemical': filtered_smiles}
+		# jchem_response = jchem_rest.getChemDetails(request)  # get chemical details
+		# jchem_response = json.loads(jchem_response.content)
+		
+		# # return this data in a standardized way for molecular info!!!!
+		# molecule_obj = Molecule().createMolecule(chemical, orig_smiles, jchem_response)
+		
+		wrapped_post = {
+		    'status': True,
+		    # 'metadata': '',
+			'data': molecule_obj
+		}
+		json_data = json.dumps(wrapped_post)
+
+		return HttpResponse(json_data, content_type='application/json')
+
+	except KeyError as error:
+		logging.warning(error)
+		wrapped_post = {'status': False, 'error': 'Error validating chemical'}
+		return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
+	except Exception as error:
+		logging.warning(error)
+		wrapped_post = {'status': False, 'error': 'Error getting chemical information'}
+		return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
 

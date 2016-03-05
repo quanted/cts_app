@@ -41,15 +41,10 @@ $(document).ajaxStart(function () {
 
 
 function loadCachedChemical() {
-  var chemical = $("#id_chem_struct").val().trim(); // chemical from textbox
-  var cached_chemical = sessionStorage.getItem('structure'); // check chemical cache
-  if (cached_chemical !== null && cached_chemical != '') {
-    importMol(cached_chemical);
+  var cached_molecule = JSON.parse(sessionStorage.getItem('molecule'));
+  if (cached_molecule !== null) {
+    populateChemEditDOM(cached_molecule);
   }
-  else if (chemical != '' && chemical.indexOf('error') == -1) {
-    importMol(chemical); 
-  }
-  else { return; }
 }
 
 
@@ -69,9 +64,9 @@ function importMol(chemical) {
   var chemical_obj = {'chemical': chemical}; 
   
   getChemDetails(chemical_obj, function (molecule_info) {
-    sessionStorage.setItem('molecule', molecule_info.data); // set current chemical in session cache
-    populateResultsTbl(molecule_info['data']);
-    marvinSketcherInstance.importStructure("mrv", molecule_info.data.structureData.structure);
+    sessionStorage.setItem('molecule', JSON.stringify(molecule_info.data)); // set current chemical in session cache
+    populateChemEditDOM(molecule_info.data);
+    // marvinSketcherInstance.importStructure("mrv", molecule_info.data.structureData.structure);
   });
 
 }
@@ -89,9 +84,9 @@ function importMolFromCanvas() {
     var chemical_obj = {'chemical': mrv_chemical};
 
     getChemDetails(chemical_obj, function (molecule_info) {
-      sessionStorage.setItem('molecule', molecule_info.data); // set current chemical in session cache
-      populateResultsTbl(molecule_info['data']);
-      marvinSketcherInstance.importStructure("mrv", molecule_info.data.structureData.structure);
+      sessionStorage.setItem('molecule', JSON.stringify(molecule_info.data)); // set current chemical in session cache
+      populateChemEditDOM(molecule_info.data);
+      // marvinSketcherInstance.importStructure("mrv", molecule_info.data.structureData.structure);
     });
   });
 }
@@ -104,7 +99,7 @@ function getChemDetails(chemical_obj, callback) {
 }
 
 
-function populateResultsTbl(data) {
+function populateChemEditDOM(data) {
   //Populates Results textboxes with data:
   $('#id_chem_struct').val(data["smiles"]); //Enter SMILES txtbox
   $('#molecule').val(data["smiles"]); //SMILES string txtbox - results table
@@ -112,6 +107,9 @@ function populateResultsTbl(data) {
   $('#IUPAC').val(data["iupac"]); //IUPAC txtbox - results table
   $('#formula').val(data["formula"]); //Formula txtbox - results table
   $('#weight').val(data["mass"]); //Mass txtbox - results table
+
+  marvinSketcherInstance.importStructure("mrv", data.structureData.structure);
+
 }
 
 
