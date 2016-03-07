@@ -9,15 +9,15 @@ def chemspecOutputPage(request):
     # Chemical Editor tab
     chemStruct = request.POST.get('chem_struct')
     smiles = request.POST.get('smiles')
-    orig_smiles = request.POST.get('orig-smiles')
-    name = request.POST.get('name')
+    orig_smiles = request.POST.get('orig_smiles')
+    name = request.POST.get('iupac')
     formula = request.POST.get('formula')
     mass = request.POST.get('mass')
 
     # Checmial Speciation tab - checkboxes
-    pkaChkbox = request.POST.get('pka_chkbox', False)
-    tautChkbox = request.POST.get('tautomer_chkbox', 'off')
-    stereoChkbox = request.POST.get('stereoisomer_chkbox', 'off')
+    get_pka = request.POST.get('pka_chkbox')
+    get_taut = request.POST.get('tautomer_chkbox')
+    get_stereo = request.POST.get('stereoisomer_chkbox')
 
     # Checmial Speciation tab - inputs 
     pKaDecs = request.POST.get('pKa_decimals')
@@ -32,8 +32,8 @@ def chemspecOutputPage(request):
     
     sterMaxNumStructs = request.POST.get('stereoisomers_maxNoOfStructures')
 
-    chemspec_obj = chemspec_model.chemspec("single", chemStruct, smiles, orig_smiles, name, formula, 
-                    mass, pkaChkbox, tautChkbox, stereoChkbox, pKaDecs, pKaPhLow, 
+    chemspec_obj = chemspec_model.chemspec(chemStruct, smiles, orig_smiles, name, formula, 
+                    mass, get_pka, get_taut, get_stereo, pKaDecs, pKaPhLow, 
                     pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
                     tautMaxNumStructs, tautMaxNumStructsPh, sterMaxNumStructs)
 

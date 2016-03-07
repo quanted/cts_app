@@ -230,7 +230,7 @@ class IsoelectricPoint(JchemProperty):
             logging.warning("key 'isoelectricPoint' not in results")
             return None
 
-    def getIsoPtChartData(self):
+    def getChartData(self):
         """
 		Returns isoelectricPoint chart data
 		"""

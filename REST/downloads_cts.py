@@ -24,33 +24,23 @@ class CSV(object):
     def __init__(self, model):
         self.models = ['chemspec', 'pchemprop', 'gentrans']
         self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
-        self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 
-                        'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc']
+        self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss',
+                      'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc']
         if model and (model in self.models):
-            self.model = model # model name
+            self.model = model  # model name
         else:
             raise KeyError("Model - {} - not accepted..".format(model))
-        self.molecular_info = ['smiles', 'name', 'mass', 'formula'] # original user sructure
+        self.molecular_info = ['smiles', 'name', 'mass', 'formula']  # original user sructure
 
     def parseToCSV(self, run_data):
 
-
-        # Print incoming data to fix encoding bug:
-        # fileout = open('C:\\Users\\nickpope\\Desktop\\incoming_data.txt', 'w')
-        # fileout.write("{}".format(run_data))
-        # fileout.close()
-        # encoded_data = dict((key.encode('utf8'), val.encode('utf8')) for (key, val) in run_data.items())
-        # logging.info("encoded data: {}").format(encoded_data)
-        # OR JUST DO THIS (CHECK IF NECESSARY FIRST) IN THE BELOW LOOP THAT WRITES DATA ROWS!!!!
-
-
-        jid = gen_jid() # create timestamp
+        jid = gen_jid()  # create timestamp
         time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + jid + '.csv'
 
-        writer = csv.writer(response) # bind writer to http response
+        writer = csv.writer(response)  # bind writer to http response
 
         # build title section of csv..
         writer.writerow([run_data['title']])
@@ -59,7 +49,7 @@ class CSV(object):
 
         # rows = [[], []] # initialized with header and first row..
         rows = {
-            'headers': [],
+        'headers': [],
             '1': []
         }
 
@@ -82,7 +72,7 @@ class CSV(object):
                             rows['headers'].append(key + str(i))
                             rows['1'].append(item)
                             i+=1
-                    elif key == 'pka-parent' or key == 'majorMicrospecies':
+                    elif key == 'pka_parent' or key == 'majorMicrospecies':
                         rows['headers'].append(key + '-smiles')
                         rows['1'].append(val['smiles'])
                     elif key == 'pka-micospecies':
@@ -105,7 +95,7 @@ class CSV(object):
                             for pka_key, pka_val in calc_props[prop].items():
                                 rows['headers'].append("{} ({})".format(pka_key, calc))
                                 rows['1'].append(pka_val)
-                        else:   
+                        else:
                             rows['headers'].append("{} ({})".format(prop, calc))
                             rows['1'].append(calc_props[prop])
 
@@ -154,8 +144,8 @@ class CSV(object):
 
             # m = 1 # detabolite indexer
             logging.info("HEADERS: {}".format(rows['headers']))
-            
-            # list size out of whack because metabolites' gen, smiles, etc. isn't being declared, 
+
+            # list size out of whack because metabolites' gen, smiles, etc. isn't being declared,
             # just the props!!!!!
 
             gen_list = []
@@ -197,7 +187,7 @@ class CSV(object):
                                     i+=1
                         else:
                             col_header = "{} ({})".format(prop, calc)
-                            if col_header in rows['headers']: 
+                            if col_header in rows['headers']:
                                 header_index = rows['headers'].index(col_header)
                                 rows[new_key][header_index] = data
 
@@ -220,28 +210,17 @@ class CSV(object):
         return response
 
 
-# class LogFile(object):
-#     def __init__(self, model):
-#         self.models = ['chemspec', 'pchemprop', 'gentrans']
-#         self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
-#         self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 
-#                         'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc']
-#         if model and (model in self.models):
-#             self.model = model # model name
-#         else:
-#             raise KeyError("Model - {} - not accepted..".format(model))
-#         self.molecular_info = ['smiles', 'name', 'mass', 'formula'] # original user sructure
-
-#     def parseToLogFile(self, run_data):
-        
-
-
 def getCalcMapKeys(calc):
     """
     returns prop map of requested calculator
     """
-    if calc == 'chemaxon': return JchemProperty().propMap.keys()
-    elif calc == 'epi': return EpiCalc().propMap.keys()
-    elif calc == 'test': return TestCalc().propMap.keys()
-    elif calc == 'sparc': return SparcCalc().propMap.keys()
-    else: return None
+    if calc == 'chemaxon':
+        return JchemProperty().propMap.keys()
+    elif calc == 'epi':
+        return EpiCalc().propMap.keys()
+    elif calc == 'test':
+        return TestCalc().propMap.keys()
+    elif calc == 'sparc':
+        return SparcCalc().propMap.keys()
+    else:
+        return None

@@ -1,21 +1,14 @@
 from django.views.decorators.http import require_POST
 import StringIO
 from django.http import HttpResponse
-from django.conf import settings
 from django.template import Context
-import datetime
-import pytz
 import json
-import os
-import pdfkit
 
 import logging
 from models.gentrans import data_walks
 from models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
 from chemaxon_cts.jchem_rest import gen_jid
-import csv
 from django.core.cache import cache
-
 
 
 def parsePOST(request):
@@ -85,20 +78,22 @@ def pdfReceiver(request, model=''):
     PDF Generation Receiver function.
     Sends POST data as string to pdfkit library for processing
     """
+    from xhtml2pdf import pisa
+
     input_str = ''
     input_str += parsePOST(request)
-    packet = StringIO.StringIO(input_str) # write to memory
-    config = pdfkit.configuration(wkhtmltopdf=os.environ['wkhtmltopdf'])
+    packet = StringIO.StringIO()  # write to memory
+    pisa.CreatePDF(input_str, dest=packet)
+
     # landscape only for metabolites output:
-    if 'pdf_json' in request.POST and request.POST['pdf_json']:
-        options = {'orientation': 'Landscape'}
-    else:
-        options = {'orientation': 'Portrait'}
-    pdf = pdfkit.from_string(input_str, False, configuration=config, options=options)
-    jid = gen_jid() # create timestamp
-    response = HttpResponse(pdf, content_type='application/pdf')
+    # if 'pdf_json' in request.POST and request.POST['pdf_json']:
+    #     options = {'orientation': 'Landscape'}
+    # else:
+    #     options = {'orientation': 'Portrait'}
+
+    jid = gen_jid()  # create timestamp
+    response = HttpResponse(packet.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
-    # packet.truncate(0)  # clear from memory?
     packet.close()  # todo: figure out why this doesn't solve the 'caching problem'
     return response
 
@@ -126,16 +121,14 @@ def csvReceiver(request, model=''):
     """
     from REST.downloads_cts import CSV
 
-    cache_key = "{}_json".format(model) # model-specific cache
-
     try:
-        run_json = cache.get(cache_key) # todo: add error handling
-        cache.delete(cache_key)
-        run_data = json.loads(run_json)
-    except TypeError as te:
-        logging.info("CSV ERROR: {}".format(te))
-        raise te
-        # return HttpResponse("A problem has been encountered downloading the CSV, press the back button, refresh the page, and try again")
+        # run_data = json.loads(request.body)  # [!] json string coming back from cts_downloads.html in body????
+
+        run_data = json.loads(request.POST.get('run_data'))
+
+    except Exception as error:
+        logging.info("CSV ERROR: {}".format(error))
+        raise error
 
     if model == 'pchemprop':
         try:
@@ -156,4 +149,4 @@ def csvReceiver(request, model=''):
             raise err
 
     csv_obj = CSV(model)
-    return csv_obj.parseToCSV(run_data)
+    return csv_obj.parseToCSV(run_data['run_data'])

@@ -1,4 +1,45 @@
+<script type="text/javascript">
+
 $(document).ready(function () {
+
+	var run_data = {{run_data}};  // TODO: make sure this will work with metabolites data size!!!
+
+
+	function parseOutputForCSV() {
+		var json_obj = {};
+		var workflow = getWorkflow(); // get current workflow name
+    	if (workflow == "pchemprop") {
+    		// todo: loop props, then calcs so the csv can be ordered by props
+    		for (var calc in checkedCalcsAndProps) {
+    			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+
+    				json_obj[calc] = {};
+
+    				for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+    					// looping props of calc..
+    					var calc_prop = checkedCalcsAndProps[calc][i];
+						var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
+						if (calc_prop == "ion_con") {
+							data = pickOutPka(data);
+						}
+						if (data != null) {
+							json_obj[calc][calc_prop] = data;
+						}
+    				}
+    			}
+    		}
+    	}
+
+    	else if (workflow == "gentrans") {
+    		json_obj = buildMetabolitesArray();
+    	}
+
+    	console.log(json_obj);
+		jsonData = JSON.stringify({'run_data': run_data});
+
+    	return jsonData;
+	}
+
 
 	function parseOutput(file_type) {
 		
@@ -10,60 +51,25 @@ $(document).ready(function () {
 
         elements = collectDOM(workflow); // get relevant dom objects
 
-        if (file_type == "pdf" || file_type == "html") {
-       		if (workflow == "chemspec") {
-	            try {
-	                imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
-	                imgData.push($('#isoelectric-point').jqplotToImageStr(options));
-	            }
-	            catch(e) { console.log(e); }
-	        }
-	        else if (workflow == "gentrans") {
-	            var nodeArray = buildMetabolitesArray(); // (cts_gentrans_tree)
-	            jsonData = JSON.stringify(nodeArray); // spacetree data (cts_gentrans_tree)
-	        }
-			jq_html = $('<div />').append($(elements).clone()).html();
-			var n_plot_1 = $('#microspecies-distribution').size();
-			var n_plot_2 = $('#isoelectric-point').size();
-			n_plot = n_plot_1 + n_plot_2;
-			imgData_json = JSON.stringify(imgData, null, '\t');
+   		if (workflow == "chemspec") {
+            try {
+                imgData.push($('#microspecies-distribution').jqplotToImageStr(options));
+                imgData.push($('#isoelectric-point').jqplotToImageStr(options));
+            }
+            catch(e) { console.log(e); }
+        }
+        else if (workflow == "gentrans") {
+            var nodeArray = buildMetabolitesArray(); // (cts_gentrans_tree)
+            jsonData = JSON.stringify(nodeArray); // spacetree data (cts_gentrans_tree)
         }
 
-        else if (file_type == "csv") {
-        	var json_obj = {};
-        	if (workflow == "pchemprop") {
-        		// todo: loop props, then calcs so the csv can be ordered by props
-        		for (var calc in checkedCalcsAndProps) {
-        			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+		jq_html = $('<div />').append($(elements).clone()).html();
+		var n_plot_1 = $('#microspecies-distribution').size();
+		var n_plot_2 = $('#isoelectric-point').size();
+		n_plot = n_plot_1 + n_plot_2;
+		imgData_json = JSON.stringify(imgData, null, '\t');
 
-        				json_obj[calc] = {};
-
-        				for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
-        					// looping props of calc..
-        					var calc_prop = checkedCalcsAndProps[calc][i];
-							var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
-							if (calc_prop == "ion_con") {
-								data = pickOutPka(data);
-							}
-							if (data != null) {
-								json_obj[calc][calc_prop] = data;
-							}
-        				}
-        			}
-        		}
-        	}
-        	else if (workflow == "gentrans") {
-        		json_obj = buildMetabolitesArray();
-        	}
-        	console.log(json_obj);
-        	jsonData = { "run_data": JSON.parse(sessionStorage.getItem("run_data")) };
-        	// jsonData = JSON.stringify(jsonData);
-        	return jsonData;
-        }
-
-        else { return; }
-
-        // appendToRequestTable(jq_html, n_plot, imgData_json, jsonData); // append elements to request table
+        appendToRequestTable(jq_html, n_plot, imgData_json, jsonData); // append elements to request table
 
 	}
 
@@ -78,20 +84,17 @@ $(document).ready(function () {
 	});
 
 	$('#csvExport').click(function () {
-        var jsonData = parseOutput('csv');
-       	// $('form').attr({'action': 'csv', 'method': 'POST'}).submit();
-       	$.ajax({
-            url: "/cts/chemspec/csv",
-            type: "POST",
-            dataType: "json",
-            data: jsonData,
-            success: function (data) {
 
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-            	alert("Error creating CSV file");
-            }
-        });
+        var jsonData = parseOutputForCSV();
+
+		$('table.getpdf').html("");
+		$('<tr style="display:none"><td><input type="hidden" name="run_data"></td></tr>')
+				.appendTo('.getpdf')
+				.find('input')
+				.val(jsonData);
+
+		$('form').attr({'action': 'csv', 'method': 'POST'}).submit();
+
 	});
 
 
@@ -131,10 +134,6 @@ function buildMetabolitesArray() {
     var nodeArray = [];
     for (var node in canvasNodes) {
         if (canvasNodes.hasOwnProperty(node)) {
-            // var nodeItem = {
-            //     'image': canvasNodes[node]['name'],
-            //     'data': canvasNodes[node]['data']
-            // };
             var nodeItem = canvasNodes[node]['data']
             nodeArray.push(nodeItem);
         }
@@ -230,3 +229,6 @@ function pickOutPka(html_string) {
 	});
 	return pka_obj;
 }
+
+
+</script>

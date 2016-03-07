@@ -33,13 +33,9 @@ def requestTimeout(request):
 	html = render_to_string('01cts_uberheader.html', {'title': 'Error'})
 	html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {'title2': 'Request timed out'})
 	html = html + linksLeft.linksLeft()
-	# html = html + render_to_string('04ubertext_start.html', {
-	# 'model_attributes': 'Request timed out',
-	# 'text_paragraph': ""})
 	html = html + """<div class="articles">
                     <img class="model_header" src="/static/images/408error.png" width="300" height="300">
                     </div>"""
-	# html = html + render_to_string('04ubertext_end.html', {})
 	html = html + render_to_string('05cts_ubertext_links_right.html', {})
 	html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
 
@@ -97,27 +93,6 @@ def displayPDF(request, reactionLib=None):
 
 	return response
 
-#
-# def downloadUserGuide(request):
-# 	text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'views/main_text.txt'), 'r')
-# 	xx = text_file2.read()
-#
-# 	html = render_to_string('01cts_uberheader.html', {})
-# 	html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {})
-# 	html = html + linksLeft.linksLeft()
-# 	html = html + render_to_string('04ubertext_start_index.html', {
-# 		'text_paragraph': xx
-# 	})
-# 	html += """
-#     <embed src="/static/docs/CTS_USER_Guide_weber_9-14-15.docx">
-#     """
-# 	html = html + render_to_string('04ubertext_end.html', {})
-# 	html = html + render_to_string('05cts_ubertext_links_right.html', {})
-# 	html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
-# 	response = HttpResponse()
-# 	response.write(html)
-# 	return response
-
 
 def moduleDescriptions(request, module=None):
 	logging.info("MODULE: " + module)
@@ -138,13 +113,7 @@ def moduleDescriptions(request, module=None):
 		'model_attributes': "",
 		'text_paragraph': module_text
 	})
-
-	# html = html + render_to_string('04ubertext_start.html', {
-	# 'model_attributes': 'This page is still under maintenance',
-	#         'text_paragraph': ""})
-	# html = html + """ <img src="/static/images/404error.png" width="300" height="300">"""
-	# html = html + """<img src="/static/images/fist-with-hammer.jpg" style="display:block; margin:auto;">"""
-
+	
 	html += render_to_string('04ubertext_end.html', {})
 	html += render_to_string('05cts_ubertext_links_right.html', {})
 	html += render_to_string('06cts_uberfooter.html', {'links': ''})

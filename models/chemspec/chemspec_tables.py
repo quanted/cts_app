@@ -113,9 +113,11 @@ inTmpl = Template(getInputTemplate())
 
 
 def table_all(chemspec_obj):
-    html_all = '<script type="text/javascript" src="/static/stylesheets/qtip/jquery.qtip.js"></script>'
+    html_all = '<script type="text/javascript" src="/static/stylesheets/jquery.qtip.js"></script>'
     # html_all += render_to_string('cts_export_chemspec.html', {'jchemDict': mark_safe(json.dumps(chemspec_obj.jchemDictResults))})
-    html_all += '<link type="text/css" rel="stylesheet" href="/static/stylesheets/qtip/jquery.qtip.css"></link>'
+    html_all += '<link type="text/css" rel="stylesheet" href="/static/stylesheets/jquery.qtip.css"></link>'
+
+    html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))})
     html_all += table_inputs(chemspec_obj)
     html_all += table_outputs(chemspec_obj)
     # qtip popup script for images with class "wrapped_molecule"
@@ -144,6 +146,7 @@ def table_all(chemspec_obj):
     tipit();
     </script>
     """
+
     return html_all
 
 
@@ -217,7 +220,7 @@ def getIsoPtResults(chemspec_obj):
         isoPt = isoPtObj.getIsoelectricPoint()
         if isoPt:
             isoPt = round(isoPt, chemspec_obj.pKa_decimals)
-        isoPtChartData = isoPtObj.getIsoPtChartData()
+        isoPtChartData = isoPtObj.getChartData()
     except AttributeError:
         logging.info("isoelectricPoint not checked..moving on..")
         return ""
