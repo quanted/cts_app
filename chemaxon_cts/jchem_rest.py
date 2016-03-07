@@ -171,19 +171,19 @@ def getTransProducts(request):
     return results
 
 
-def getpchemprops(request):
-    """
-	Calls pchemprop model to get pchem props 
-	for a given molecule. This ws was
-	originally meant for getting pchem props 
-	for METABOLITES on the gentrans output page.
+# def getpchemprops(request):
+#     """
+# 	Calls pchemprop model to get pchem props 
+# 	for a given molecule. This ws was
+# 	originally meant for getting pchem props 
+# 	for METABOLITES on the gentrans output page.
 
-	This is only here for accessing pchemprop_model
-	via frontend ajax calls
-	"""
-    from models.pchemprop import pchemprop_output
-    pchemprop_obj = pchemprop_output.pchempropOutputPage(request, True)  # run model for metabolite
-    return json.dumps(pchemprop_obj.checkedCalcsAndPropsDict)
+# 	This is only here for accessing pchemprop_model
+# 	via frontend ajax calls
+# 	"""
+#     from models.pchemprop import pchemprop_output
+#     pchemprop_obj = pchemprop_output.pchempropOutputPage(request, True)  # run model for metabolite
+#     return json.dumps(pchemprop_obj.checkedCalcsAndPropsDict)
 
 
 def getStructInfo(structure):

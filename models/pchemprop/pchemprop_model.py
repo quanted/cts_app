@@ -32,7 +32,7 @@ class PChemProp(object):
         self.name = name
         self.formula = formula
         # make sure to include units when assigning mass - 'g/mol'
-        self.mass = mass
+        self.mass = "{} g/mol".format(mass)
 
         # chemical properties (values 'on' or None) -- django params
         self.melting_point = melting_point

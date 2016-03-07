@@ -14,6 +14,7 @@ from chemaxon_cts import jchem_rest
 from smilesfilter import filterSMILES
 # from models.chemspec.chemspec_model import chemspec as ChemSpec
 # from models.chemspec import chemspec_model
+from models.chemspec import chemspec_output
 
 
 # TODO: Consider putting these classes somewhere else, maybe even the *_models.py files!
@@ -21,6 +22,7 @@ class Molecule(object):
 	"""
 	Basic molecule object for CTS
 	"""
+
 	def __init__(self):
 
 		# cts keys:
@@ -69,17 +71,16 @@ def getChemicalEditorData(request):
 
 		orig_smiles = response['structure']
 		filtered_smiles = filterSMILES(orig_smiles)  # call CTS REST SMILES filter
-		
+
 		request.data = {'chemical': filtered_smiles}
 		jchem_response = jchem_rest.getChemDetails(request)  # get chemical details
 		jchem_response = json.loads(jchem_response.content)
-		
+
 		# return this data in a standardized way for molecular info!!!!
 		molecule_obj = Molecule().createMolecule(chemical, orig_smiles, jchem_response)
-		
+
 		wrapped_post = {
-			'status': True,
-			# 'metadata': '',
+			'status': True,  # 'metadata': '',
 			'data': molecule_obj
 		}
 		json_data = json.dumps(wrapped_post)
@@ -95,6 +96,7 @@ def getChemicalEditorData(request):
 		wrapped_post = {'status': False, 'error': 'Error getting chemical information'}
 		return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
 
+
 # class Metabolite(Molecule):
 
 
@@ -106,37 +108,37 @@ def getChemicalSpeciationData(request):
 	:param request - chemspec_model
 	:return: chemical speciation data response json
 	"""
-	
 	# expected inputs (building chemspec model)
-	chem_struct = request.POST.get('chem_struct')
-	smiles = request.POST.get('smiles')
-	orig_smiles = request.POST.get('orig_smiles')
-	name = request.POST.get('name')
-	formula = request.POST.get('formula')
-	mass = request.POST.get('mass')
-	get_pka = request.POST.get('get_pka')
-	get_taut = request.POST.get('get_taut')
-	get_stereo = request.POST.get('get_stereo')
-	pKa_decimals = request.POST.get('pKa_decimals')
-	pKa_pH_lower = request.POST.get('pKa_pH_lower')
-	pKa_pH_upper = request.POST.get('pKa_pH_upper')
-	pKa_pH_increment = request.POST.get('pKa_pH_increment')
-	pH_microspecies = request.POST.get('pH_microspecies')
-	isoelectricPoint_pH_increment = request.POST.get('isoelectricPoint_pH_increment')
-	tautomer_maxNoOfStructures = request.POST.get('tautomer_maxNoOfStructures')
-	tautomer_pH = request.POST.get('tautomer_pH')
-	stereoisomers_maxNoOfStructures = request.POST.get('stereoisomers_maxNoOfStructures')
+	# chem_struct = request.POST.get('chem_struct')
+	# smiles = request.POST.get('smiles')
+	# orig_smiles = request.POST.get('orig_smiles')
+	# name = request.POST.get('name')
+	# formula = request.POST.get('formula')
+	# mass = request.POST.get('mass')
+	# get_pka = request.POST.get('get_pka')
+	# get_taut = request.POST.get('get_taut')
+	# get_stereo = request.POST.get('get_stereo')
+	# pKa_decimals = request.POST.get('pKa_decimals')
+	# pKa_pH_lower = request.POST.get('pKa_pH_lower')
+	# pKa_pH_upper = request.POST.get('pKa_pH_upper')
+	# pKa_pH_increment = request.POST.get('pKa_pH_increment')
+	# pH_microspecies = request.POST.get('pH_microspecies')
+	# isoelectricPoint_pH_increment = request.POST.get('isoelectricPoint_pH_increment')
+	# tautomer_maxNoOfStructures = request.POST.get('tautomer_maxNoOfStructures')
+	# tautomer_pH = request.POST.get('tautomer_pH')
+	# stereoisomers_maxNoOfStructures = request.POST.get('stereoisomers_maxNoOfStructures')
 
 
 	try:
-		chemspec_obj = ChemSpec(chem_struct, smiles, orig_smiles, name, formula, 
-	                    mass, get_pka, get_taut, get_stereo, pKa_decimals, pKa_pH_lower, 
-	                    pKa_pH_upper, pKa_pH_increment, pH_microspecies, isoelectricPoint_pH_increment, 
-	                    tautomer_maxNoOfStructures, tautomer_maxNoOfStructures, stereoisomers_maxNoOfStructures)
+		# chemspec_obj = ChemSpec(chem_struct, smiles, orig_smiles, name, formula, 
+		# mass, get_pka, get_taut, get_stereo, pKa_decimals, pKa_pH_lower,
+		# pKa_pH_upper, pKa_pH_increment, pH_microspecies, isoelectricPoint_pH_increment,
+		#                    tautomer_maxNoOfStructures, tautomer_maxNoOfStructures, stereoisomers_maxNoOfStructures)
+
+		chemspec_obj = chemspec_output.chemspecOutputPage(request)
 
 		wrapped_post = {
-			'status': True,
-			# 'metadata': '',
+			'status': True,  # 'metadata': '',
 			'data': chemspec_obj.run_data
 		}
 		json_data = json.dumps(wrapped_post)
@@ -144,18 +146,28 @@ def getChemicalSpeciationData(request):
 		return HttpResponse(json_data, content_type='application/json')
 
 	except Exception as error:
-		logging.warning(error)
-		wrapped_post = {'status': False, 'error': 'Error retrieving chemical speciation data'}
-		return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
+		raise
+	# logging.warning(error)
+	# wrapped_post = {'status': False, 'error': 'Error retrieving chemical speciation data'}
+	# return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
 
 
+def getPchemPropData(request):
+	"""
+	CTS web service for getting p-chem
+	data from various calculators
+	"""
 
 
 def booleanize(value):
-    """
+	"""
     django checkbox comes back as 'on' or 'off',
     or True/False depending on version, so this
     makes sure they're True/False
     """
-    if value == 'on': return True
-    if value == 'off': return False
+	if value == 'on' or value == 'true':
+		return True
+	if value == 'off' or value == 'false':
+		return False
+	if isinstance(value, bool):
+		return value

@@ -81,8 +81,8 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None
 		response = jrest.smilesToImage(request).content
 	elif service == 'convertToSMILES':
 		response = jrest.convertToSMILES(request).content
-	elif service == 'getPchemProps':
-		response = getJchemPropData(chemical, prop, phForLogD, method, sessionid)
+	# elif service == 'getPchemProps':
+	# 	response = getJchemPropData(chemical, prop, phForLogD, method, sessionid)
 	elif service == 'getPchemPropDict':
 		response = jrest.getpchemprops(request)  # gets pchemprop_model object..
 	return response

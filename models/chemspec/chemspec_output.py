@@ -15,9 +15,9 @@ def chemspecOutputPage(request):
     mass = request.POST.get('mass')
 
     # Checmial Speciation tab - checkboxes
-    get_pka = request.POST.get('pka_chkbox')
-    get_taut = request.POST.get('tautomer_chkbox')
-    get_stereo = request.POST.get('stereoisomer_chkbox')
+    get_pka = request.POST.get('get_pka')
+    get_taut = request.POST.get('get_taut')
+    get_stereo = request.POST.get('get_stereo')
 
     # Checmial Speciation tab - inputs 
     pKaDecs = request.POST.get('pKa_decimals')

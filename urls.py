@@ -29,6 +29,7 @@ urlpatterns += patterns('',
     (r'^cts/guide/?$', 'views.misc.displayPDF'),
 
     (r'^cts/rest/molecule/?$', 'REST.cts_rest.getChemicalEditorData'),
+    (r'^cts/rest/speciation/?$', 'REST.cts_rest.getChemicalSpeciationData'),
 
     (r'^cts/(?P<model>.*?)/description/?$', 'views.description.descriptionPage'),
     (r'^cts/(?P<model>.*?)/input/?$', 'views.input.inputPage'),

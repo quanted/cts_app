@@ -36,7 +36,8 @@ class JchemProperty(object):
 		Can set one key:value with (propKey, propValue)
 		"""
         try:
-            self.postData[propKey] = propValue
+            if propValue:
+                self.postData[propKey] = propValue
         except KeyError as ke:
             logging.warning("key {} does not exist".format(propKey))
             raise
@@ -50,7 +51,8 @@ class JchemProperty(object):
 		"""
         try:
             for key, value in multiKeyValueDict.items():
-                self.postData[key] = value
+                if value:
+                    self.postData[key] = value
         except KeyError as ke:
             logging.warning("key {} does not exist".format(key))
             return None

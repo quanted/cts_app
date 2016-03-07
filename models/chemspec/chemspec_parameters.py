@@ -37,11 +37,11 @@ def tmpl_speciationCTS():
 	<table class="input_table tab tab_Speciation" name="{{name}}" style="display:none">
 
 	{% if name == "CTS_Speciation_Pka" %}
-		<tr><th colspan="2" class="ctsInputHeader">{{ form.pka_chkbox }} {{ header }}</th></tr>
+		<tr><th colspan="2" class="ctsInputHeader">{{ form.get_pka }} {{ header }}</th></tr>
 	{% elif name == "CTS_Speciation_Tautomer" %}
-		<tr><th colspan="2" class="ctsInputHeader">{{ form.tautomer_chkbox }} {{ header }}</th></tr>
+		<tr><th colspan="2" class="ctsInputHeader">{{ form.get_taut }} {{ header }}</th></tr>
 	{% elif name == "CTS_Speciation_Stereoisomers" %}
-		<tr><th colspan="2" class="ctsInputHeader">{{ form.stereoisomer_chkbox }} {{ header }}</th></tr>
+		<tr><th colspan="2" class="ctsInputHeader">{{ form.get_stereo }} {{ header }}</th></tr>
 	{% endif %}
 		
 	{% for field in form %}
@@ -139,7 +139,7 @@ class CTS_Speciation_Pka(forms.Form):
 					)
 
 	# Check box for selecting table
-	pka_chkbox = forms.BooleanField (
+	get_pka = forms.BooleanField (
 						label='',
 						widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}),
 						required=False,
@@ -195,7 +195,7 @@ class CTS_Speciation_Tautomer(forms.Form):
 						max_value=14,
 					)
 
-	tautomer_chkbox = forms.BooleanField (
+	get_taut = forms.BooleanField (
 						label='', 
 						widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}),
 						required=False,
@@ -213,7 +213,7 @@ class CTS_Speciation_Stereoisomers(forms.Form):
 						max_value=100,
 					)
 
-	stereoisomer_chkbox = forms.BooleanField (
+	get_stereo = forms.BooleanField (
 						label='', 
 						widget=forms.CheckboxInput(attrs={'class':'alignChkbox'}),
 						required=False,

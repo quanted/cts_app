@@ -22,9 +22,6 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.name = request.POST.get('name')
     pchemprop_obj.formula = request.POST.get('formula')
     pchemprop_obj.mass = request.POST.get('mass')
-    pchemprop_obj.mass += " g/mol"
-
-
 
     # Pchem Properties Column Checkboxes
     pchemprop_obj.chemaxon = request.POST.get('chemaxon')

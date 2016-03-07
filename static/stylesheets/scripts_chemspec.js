@@ -45,7 +45,7 @@ $(document).ready(function() {
             }
         }
         //check first table (calculate ionization constants parameters)
-        var defaultChkbox = $('input[name=pka_chkbox]');
+        var defaultChkbox = $('input[name=get_pka]');
         $(defaultChkbox).prop('checked', true);
         enableTable(defaultChkbox);
     });
