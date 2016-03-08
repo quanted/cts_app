@@ -103,6 +103,7 @@ def table_all(gentrans_obj):
     # html_all += build_pchem_table(gentrans_obj) # included in table_metabolites() now
 
     html_all += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
+    html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(gentrans_obj.run_data))})
     html_all += table_metabolites(gentrans_obj)
 
     # html_all += pchemprop_input_fields(gentrans_obj)
@@ -154,7 +155,7 @@ def timestamp(gentrans_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div class="out_" id="timestamp">
-        <b>Generate Transformation Pathways Version 1.0</a> (Alpha)<br>
+        <b>Generate Transformation Pathways Version 1.0</a> (Beta)<br>
     """
     html = html + st
     html = html + " (EST)</b>"

@@ -2,8 +2,9 @@
 CTS-specific styles for overriding shared style.css
 **************************************************/
 
-body {
-  font-family: 'Open Sans', sans-serif;
+html, body {
+  font-family: 'Open Sans', sans-serif; /* changing */
+  background-color: #F4F7ED;
 }
 
 h4 {
@@ -17,7 +18,7 @@ h4 {
   position: relative;
   margin: 8px 0 8px 8px;
   padding: 12px 16px;
-  background: #F7F9F4;
+  background-color: #F7F9F4;
   border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -70,7 +71,7 @@ a:hover {
 #banner {
   width: 1024px;
   /*background: #356697 url(/static/images/epa_logo.png) no-repeat;*/
-  background: #356697;
+  background-color: #356697;
   /*min-height: 70px;*/
   min-height: 30px;
   font-size: 1.6em;
@@ -135,7 +136,7 @@ a:hover {
 #topheader_p_main {
   width: 300px;
   height: 240px;
-  background: #1F262A;
+  background-color: #1F262A;
   float: right;
   color: white;
   /*font-size: 12px;*/
@@ -161,7 +162,7 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
 #header_menu_nav {
   width: 864px;
   height: 30px;
-  background: #356697;
+  background-color: #356697;
   float: left;
   border-radius: 0 0 0 4px;
   -webkit-border-radius: 0 0 0 4px;
@@ -1145,7 +1146,7 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
 #header_menu_r {
   width: 160px;
   height: 30px;
-  background: #356697;
+  background-color: #356697;
   float: left;
   border-radius: 0 0 4px 0;
   -webkit-border-radius: 0 0 4px 0;
@@ -1158,7 +1159,7 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
   font-size: 13px;
   letter-spacing: 0.0625em;
   color: #FFFFFF;
-  background: #356697;
+  background-color: #356697;
   margin: 0;
   /*text-transform: uppercase;*/
   padding: 5px 0 5px 8px;
@@ -1183,7 +1184,7 @@ a.logreg:link, a.logreg:visited, a.logreg:active {
 }
 .fadeMenu {
   color: #333333;
-  background: #dee7ef;
+  background-color: #dee7ef;
 }
 .urbangreymenu a.aSelected {
   display:block;
@@ -1356,11 +1357,11 @@ th {
   font-size: 1.1em;
 }
 .ChemCalcs_available {
-  background: #356697;
+  background-color: #356697;
   color: #F7F9F4;
 }
 .ChemCalcs_unavailable {
-  background: #bc2f2f;
+  background-color: #bc2f2f;
   color: #F7F9F4;
 }
 .tab_Transform ul {
@@ -1447,7 +1448,6 @@ div.wrapped_molecule {
 /*img.wrapped_molecule {
   position: center;
 }*/
-
 
 .wrapped_molecule td {
   background-color: transparent;
@@ -1718,7 +1718,7 @@ div#l_menu {
 
 }
 #l_menu h3 {
-  background: #00d02f;
+  background-color: #00d02f;
 }
 /*#l_menu a {
   background: #ccf5d5;

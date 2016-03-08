@@ -71,9 +71,6 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None
 
 		except Exception as e:
 			raise e # TODO: build HTTP-code-specific error handling at portal.py
-		
-
-
 		response = jrest.getChemDetails(request).content
 	elif service == 'getChemSpecData':
 		response = jrest.getChemSpecData(request).content
@@ -81,10 +78,10 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None
 		response = jrest.smilesToImage(request).content
 	elif service == 'convertToSMILES':
 		response = jrest.convertToSMILES(request).content
-	# elif service == 'getPchemProps':
-	# 	response = getJchemPropData(chemical, prop, phForLogD, method, sessionid)
-	elif service == 'getPchemPropDict':
-		response = jrest.getpchemprops(request)  # gets pchemprop_model object..
+	elif service == 'getPchemProps':
+		response = getJchemPropData(chemical, prop, phForLogD, method, sessionid)
+	# elif service == 'getPchemPropDict':
+	# 	response = jrest.getpchemprops(request)  # gets pchemprop_model object..
 	return response
 
 

@@ -108,32 +108,8 @@ def getChemicalSpeciationData(request):
 	:param request - chemspec_model
 	:return: chemical speciation data response json
 	"""
-	# expected inputs (building chemspec model)
-	# chem_struct = request.POST.get('chem_struct')
-	# smiles = request.POST.get('smiles')
-	# orig_smiles = request.POST.get('orig_smiles')
-	# name = request.POST.get('name')
-	# formula = request.POST.get('formula')
-	# mass = request.POST.get('mass')
-	# get_pka = request.POST.get('get_pka')
-	# get_taut = request.POST.get('get_taut')
-	# get_stereo = request.POST.get('get_stereo')
-	# pKa_decimals = request.POST.get('pKa_decimals')
-	# pKa_pH_lower = request.POST.get('pKa_pH_lower')
-	# pKa_pH_upper = request.POST.get('pKa_pH_upper')
-	# pKa_pH_increment = request.POST.get('pKa_pH_increment')
-	# pH_microspecies = request.POST.get('pH_microspecies')
-	# isoelectricPoint_pH_increment = request.POST.get('isoelectricPoint_pH_increment')
-	# tautomer_maxNoOfStructures = request.POST.get('tautomer_maxNoOfStructures')
-	# tautomer_pH = request.POST.get('tautomer_pH')
-	# stereoisomers_maxNoOfStructures = request.POST.get('stereoisomers_maxNoOfStructures')
-
 
 	try:
-		# chemspec_obj = ChemSpec(chem_struct, smiles, orig_smiles, name, formula, 
-		# mass, get_pka, get_taut, get_stereo, pKa_decimals, pKa_pH_lower,
-		# pKa_pH_upper, pKa_pH_increment, pH_microspecies, isoelectricPoint_pH_increment,
-		#                    tautomer_maxNoOfStructures, tautomer_maxNoOfStructures, stereoisomers_maxNoOfStructures)
 
 		chemspec_obj = chemspec_output.chemspecOutputPage(request)
 
@@ -157,6 +133,9 @@ def getPchemPropData(request):
 	CTS web service for getting p-chem
 	data from various calculators
 	"""
+	# Should this call the calculator views?
+	# Is this parallel and doubling code from portal/views?
+	# Is portal 
 
 
 def booleanize(value):

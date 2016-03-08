@@ -7,7 +7,7 @@
 <!-- ### END JIT REFERENCES ### -->
 
 <script type="text/javascript" src="/static/stylesheets/jquery-ui.js"></script>
-<script type="text/javascript" src="/static/stylesheets/scripts_jchem.js"></script>
+<!-- <script type="text/javascript" src="/static/stylesheets/scripts_jchem.js"></script> -->
 
 <script>
 var labelType, useGradients, nativeTextSupport, animate;
@@ -113,7 +113,8 @@ $('#gen-select').change(function() {
 // Get Data button for gathering pchem props for node:
 $('#btn-pchem-getdata').click(function() {
 
-    checkedCalcsAndProps = buildCheckedCalcsAndProps(); // from cts_pchemprop_ajax_calls
+    checkedCalcsAndProps = buildCheckedCalcsAndProps();  // get current data
+
     kowPH = $('#id_kow_ph').val();
 
     if (socket) {
@@ -404,7 +405,6 @@ function getMolecularInfo(node) {
     // doesn't have any:
     if (node.data.hasOwnProperty("molecularInfo")) {
         buildMolInfoTable(molInfoTable, node, node.data.molecularInfo);
-
         $("#" + node.id).children('img').toggleClass("selectedMetabolite");  // highlight node
         var molInfoHeader = $(molInfo).siblings('h3')[0];
         if ($(molInfoHeader).hasClass('collapse-close')) {
@@ -412,17 +412,28 @@ function getMolecularInfo(node) {
         }
     }
     else {
-        // add mol info to node.data.molecularInfo (from scripts_jchem.js):
-        getChemDetails(node.data.smiles, function(chemResults) {
-            var data = chemResults.data[0];
-            node.data.molecularInfo = data;  // add mol info to node data
-            buildMolInfoTable(molInfoTable, node, data);  // build mol info table
-
-            $("#" + node.id).children('img').addClass("selectedMetabolite");  // highlight node
-
-            var molInfoHeader = $(molInfo).siblings('h3')[0];
-            if ($(molInfoHeader).hasClass('collapse-close')) {
-                $(molInfoHeader).removeClass('collapse-close').addClass('collapse-open');
+        // add mol info to node.data.molecularInfo:
+        $.ajax({
+            url: '/cts/rest/molecule',
+            type: 'POST',
+            data: {'chemical': node.data.smiles},
+            dataType: 'json',
+            success: function(data) {
+                var data = jsonRepack(data);
+                if (data.status == false) {
+                    console.log(textStatus);
+                    return;
+                }
+                node.data.molecularInfo = data['data'];  // add mol info to node data
+                buildMolInfoTable(molInfoTable, node, data['data']);  // build mol info table
+                $("#" + node.id).children('img').addClass("selectedMetabolite");  // highlight node
+                var molInfoHeader = $(molInfo).siblings('h3')[0];
+                if ($(molInfoHeader).hasClass('collapse-close')) {
+                    $(molInfoHeader).removeClass('collapse-close').addClass('collapse-open');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(textStatus);
             }
         });
     }
@@ -457,13 +468,6 @@ function getPchemData(node, checkedCalcsAndProps, kowPH) {
     }
 
     var smiles = node.data['smiles'];
-{#    var params = buildPostObject(smiles, "getPchemPropDict");#}
-{#    var acceptedKeys = ['smiles', 'mass', 'formula', 'iupac']; // need these for pchemprop model call#}
-{#    #}
-{#    for (var i in acceptedKeys) {#}
-{#        var key = acceptedKeys[i];#}
-{#        params["data"][key] = null;#}
-{#    }#}
 
     // Return if no metabolite selected, i.e., null smiles, mass, etc. values
     // "Must select (right-click) a metabolite first to get pchemprops"
@@ -475,16 +479,6 @@ function getPchemData(node, checkedCalcsAndProps, kowPH) {
 
 
     startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
-
-
-{#    makeAjaxCall(node, params, function(node, checkedCalcsAndProps) {#}
-{#        var kowPH = $('#id_kow_ph').val();#}
-{#        // make p-chem calls (function from cts_pchemprop_ajax_calls.html):#}
-{#        startPchemPropDataCollection(node.data['smiles'], checkedCalcsAndProps, kowPH, node, currentNode);#}
-{#        // make border dark blue (has pchemprop data).. #}
-{#        // TODO: only blue when data is actually downloaded#}
-{#        // $("#" + node.id).children('img').addClass("hasPchemProps"); //highlight node#}
-{#    });#}
  
 }
 

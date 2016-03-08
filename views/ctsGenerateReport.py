@@ -42,8 +42,9 @@ def parsePOST(request):
     # Styling
     input_css="""
             <style>
-
-            body {font-family: 'Open Sans', sans-serif;}
+            body {
+                font-family: 'Open Sans', sans-serif;
+            }
             table, td, th {
                 border: 1px solid #666666;
             }
@@ -56,7 +57,6 @@ def parsePOST(request):
                 max-width: 600px;
                 word-break: break-all;
             }
-            table {border-collapse: collapse;}
             th {text-align:center; padding:2px; font-size:11px;}
             td {padding:2px; font-size:10px;}
             h2 {font-size:13px; color:#79973F;}
@@ -83,6 +83,7 @@ def pdfReceiver(request, model=''):
     input_str = ''
     input_str += parsePOST(request)
     packet = StringIO.StringIO()  # write to memory
+
     pisa.CreatePDF(input_str, dest=packet)
 
     # landscape only for metabolites output:
@@ -106,7 +107,7 @@ def htmlReceiver(request, model=''):
     input_str = ''
     input_str += parsePOST(request)
     packet = StringIO.StringIO(input_str)  # write to memory
-    jid = gen_jid() # create timestamp
+    jid = gen_jid()  # create timestamp
     response = HttpResponse(packet.getvalue(), content_type='application/html')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.html'
     # packet.truncate(0)  # clear from memory?
@@ -122,31 +123,11 @@ def csvReceiver(request, model=''):
     from REST.downloads_cts import CSV
 
     try:
-        # run_data = json.loads(request.body)  # [!] json string coming back from cts_downloads.html in body????
-
         run_data = json.loads(request.POST.get('run_data'))
 
     except Exception as error:
         logging.info("CSV ERROR: {}".format(error))
         raise error
 
-    if model == 'pchemprop':
-        try:
-            json_data = request.POST.get('pdf_json') # checkCalcsAndProps dict
-            run_data.update(json.loads(json_data))
-        except Exception as err:
-            raise err
-
-    elif model == 'gentrans':
-
-        logging.info(cache.get('pchemprop_json'))
-
-        try:
-            json_data = request.POST.get('pdf_json') # checkCalcsAndProps dict
-            run_data.update({'pdf_json': json.loads(json_data)})
-        except Exception as err:
-            logging.warning("!!! csv error: {} !!!".format(err))
-            raise err
-
     csv_obj = CSV(model)
-    return csv_obj.parseToCSV(run_data['run_data'])
+    return csv_obj.parseToCSV(run_data)

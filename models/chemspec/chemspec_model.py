@@ -32,7 +32,7 @@ class chemspec(object):
 
         # Chemical Speciation Tab
         self.pKa_decimals = None
-        if isinstance(pKa_decimals, str):
+        if pKa_decimals:
             self.pKa_decimals = int(pKa_decimals)
         self.pKa_pH_lower = pKa_pH_lower
         self.pKa_pH_upper = pKa_pH_upper

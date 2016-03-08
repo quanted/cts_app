@@ -56,7 +56,7 @@ class gentrans(object):
         # NOTE: populationLimit is hard-coded to 0 as it currently does nothing
 
         dataDict = {
-            'structure': self.chem_struct,
+            'structure': self.smiles,
             'generationLimit': self.gen_limit,
             'populationLimit': 0,
             # 'likelyLimit': self.likely_limit,
@@ -84,7 +84,7 @@ class gentrans(object):
         self.rawData = response.content
 
         # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING ++++++++++++++
-        run_data = {
+        self.run_data = {
             'title': "Transformation Products Output",
             'jid': self.jid,
             'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
@@ -94,4 +94,3 @@ class gentrans(object):
             'formula': self.formula,
             'mass': self.mass
         }
-        cache.set('gentrans_json', json.dumps(run_data), None) # must manually clear after use

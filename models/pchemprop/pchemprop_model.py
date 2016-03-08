@@ -6,7 +6,6 @@ import pchemprop_parameters  # Chemical Calculator and Transformation Pathway pa
 from chemaxon_cts import jchem_rest
 import logging
 
-from django.core.cache import cache
 import datetime
 import json
 from test_cts import views as test_views
@@ -120,9 +119,7 @@ class PChemProp(object):
                             propList.append(propKey)
                 self.checkedCalcsAndPropsDict.update({calcKey: propList})
                 
-
-        # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING +++++
-        run_data = {
+        self.run_data = {
             'title': "p-Chem Properties Output",
             'jid': self.jid,
             'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
@@ -132,9 +129,3 @@ class PChemProp(object):
             'formula': self.formula,
             'mass': self.mass
         }
-
-        logging.info("--- RUN: {} ---".format(self.run_type))
-
-        # cache.set('run_json', json.dumps(run_data), None) # must manually clear after use
-        if self.run_type != 'metabolite':
-            cache.set('pchemprop_json', json.dumps(run_data), 500) # must manually clear after use

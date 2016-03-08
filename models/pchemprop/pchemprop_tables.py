@@ -53,9 +53,9 @@ inTmpl = Template(getInputTemplate())
 def table_all(pchemprop_obj):
     html_all = '<br>'
     html_all += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
+    html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
     html_all += input_struct_table(pchemprop_obj)
     html_all += output_pchem_table(pchemprop_obj)
-    # html_all += render_to_string('cts_display_raw_data.html', {'rawData': pchemprop_obj.rawData}) # temporary
     return html_all
 
 
@@ -138,7 +138,7 @@ def timestamp(pchemprop_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div class="out_">
-        <b>Generate Transformation Pathways Version 1.0</a> (Alpha)<br>
+        <b>Calculate p-Chem Properties Version 1.0</a> (Beta)<br>
     """
     html = html + st
     html = html + " (EST)</b>"
