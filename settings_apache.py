@@ -31,7 +31,7 @@ os.environ.update({
     'CTS_TEST_SERVER': 'http://172.20.100.16:8080',                   # test rest server (intranet)
     'CTS_JCHEM_SERVER': 'http://172.20.100.12',       # jchem rest server (internal)
     # 'CTS_EPI_SERVER': 'http://172.20.100.16:7080',
-    'CTS_EPI_SERVER': 'http://172.20.100.18',
+    'CTS_EPI_SERVER': 'http://172.20.100.18:55342',
     'CTS_EFS_SERVER': 'http://172.20.100.12',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',         # SPARC rest server (external)
     'wkhtmltopdf': PROJECT_ROOT + '/wkhtmltopdf/linux/wkhtmltopdf',
@@ -46,7 +46,7 @@ os.environ.update({
 SECRET_KEY = secret.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = False
 
