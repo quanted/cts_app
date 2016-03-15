@@ -42,6 +42,9 @@ def parsePOST(request):
     # Styling
     input_css="""
             <style>
+            html {
+                background-color:#FFFFFF;
+            }
             body {
                 font-family: 'Open Sans', sans-serif;
             }
@@ -84,7 +87,12 @@ def pdfReceiver(request, model=''):
     input_str += parsePOST(request)
     packet = StringIO.StringIO()  # write to memory
 
-    pisa.CreatePDF(input_str, dest=packet)
+    try:
+        pisa.CreatePDF(input_str, dest=packet)
+    except ValueError as error:
+        # triggered from the elusive invalid color value issue:
+        logging.warning("elusive invalid color value, defaulting html background-color to FFFFFF")
+        pisa.CreatePDF(input_str, dest=packet, default_css="body{background-color:#FFFFFF;}")
 
     # landscape only for metabolites output:
     # if 'pdf_json' in request.POST and request.POST['pdf_json']:

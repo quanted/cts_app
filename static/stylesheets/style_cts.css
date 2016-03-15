@@ -1428,7 +1428,8 @@ th {
 /* Image of molecule wrapped in 
 table for ChemSpec output */
 .wrapped_molecule, .chemspec_molecule {
-  background-color: transparent;
+  /*background-color: transparent;*/
+  background-color: #F4F7ED;
   font-size: 11px;
   margin: 0px;
 }
@@ -1450,7 +1451,8 @@ div.wrapped_molecule {
 }*/
 
 .wrapped_molecule td {
-  background-color: transparent;
+  /*background-color: transparent;*/
+  background-color: #F4F7ED;
   /*width: 150px;*/
 }
 
@@ -1514,7 +1516,8 @@ body.wait *, body.wait
 #chemspecInputs, #chemspecInputs td, #chemspecInputs th {
   font-size: 11px;
   border-spacing: 0px;
-  background-color: transparent;
+  /*background-color: transparent;*/
+  background-color: #F4F7ED;
 }
 
 /*#chemspecInputs {
@@ -1531,7 +1534,6 @@ body.wait *, body.wait
 .ctsTableStylin, .ctsTableStylin td, .ctsTableStylin th {
   font-size: 11px;
   border-spacing: 0px;
-  /*background-color: transparent;*/
   background-color: #F7F9F4;
 }
 
@@ -1567,18 +1569,15 @@ body.wait *, body.wait
 /*#msMain {*/
   /*max-width: 792px;*/
   /*margin-left: 0px;*/
-  /*background-color: transparent;*/
 /*}*/
 
 #msMain table {
   max-width: 792px;
   margin: 0px;
-  /*background-color: transparent;*/
 }
 
 #msMain td {
   vertical-align: center;
-  /*background-color: transparent;*/
   /*border: 0px;*/
 }
 
@@ -1591,7 +1590,8 @@ body.wait *, body.wait
 
 /* style for pchemprop output table data cell */
 .pchemCell, .pchemCell td {
-  background-color: transparent;
+  /*background-color: transparent;*/
+  background-color: #F4F7ED;
   border: 1px solid #EEF0E6;
   padding: 4px;
   /*display: inline-block;*/

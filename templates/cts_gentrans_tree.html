@@ -131,7 +131,9 @@ $('#btn-pchem-getdata').click(function() {
     }
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
-    // block_ui = true; // initiate blocked UI load window..
+    block_ui = true; // initiate blocked UI load window..
+
+    total_calls = calculateTotalCalls(parsedNodeList, checkedCalcsAndProps);  // get total calls (pchemprop_ajax global)
 
     st.graph.eachNode(function(node) {
         // node must be within depth of parsedNodeList.length - 1
@@ -540,57 +542,42 @@ function tabDisplayLogic(event) {
 }
 
 
-function buildPostObject(smiles, service) {
-    var params = new Object();
-    params.url = "/cts/portal";
-    params.type = "POST";
-    params.contentType = "application/json";
-    params.dataType = "json";
-    params.data = { 
-        "chemical" : smiles,
-        "ws": "jchem",
-        "service": service,
-    };
-    var allCheckBoxes = $('#pchemprop_table input:checkbox');
-    $(allCheckBoxes).each(function() {
-        params["data"][this.name] = this.checked;
-    });
-    params["data"]["chem_struct"] = smiles
-    // params["data"]["chem_struct"] = node.data['smiles'];
-    return params;
+function calculateTotalCalls(nodes_list, checkedCalcsAndProps) {
+    // get max calls for progress bar (max metabolites + calcs + props + any methods):
+    
+    var num_nodes = 0;
+    for (var i = 0; i < nodes_list.length; i++) {
+        num_nodes += nodes_list[i];
+    }
+
+    var num_props = 0;
+    for (calc in checkedCalcsAndProps) {
+        if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+            var props = checkedCalcsAndProps[calc];
+            for (var i = 0; i < props.length; i ++) {
+                var prop = props[i];
+                if (calc == "chemaxon") { 
+                    if (prop == 'kow_no_ph' || prop == 'kow_wph') { 
+                        num_props += 3;  // these chemaxon props have 3 methods
+                    }
+                    else { num_props += 1; }
+                }
+                else { num_props += 1; }
+            }
+        }
+    }
+
+    var total_calls = num_nodes * num_props;
+    return total_calls;
+
 }
 
 
-function getPchemDataObj(chemical) {
-    var params = new Object();
-    params.url = "/cts/portal";
-    params.type = "POST";
-    params.contentType = "application/json";
-    params.dataType = "json";
-    params.data = { 
-        "chemical" : chemical,
-        "ws": "jchem",
-        "service": "getPchemProps"
-    };
-    return params;
-}
-
-
-function makeAjaxCall(node, params, callback) {
-    $.ajax({
-      url: params.url,
-      type: params.type,
-      data: params.data,
-      dataType: params.dataType,
-      success: function(data) {
-        var data = jsonRepack(data);
-        callback(node, data);
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        callback("Fail");
-      },
-      timeout: 20000
-    });
+function updateProgressBar(calls_tracker, total_calls) {
+    var progress = 100 * (1 - (calls_tracker / total_calls));
+    $('#progressbar').progressbar({
+        value: progress
+    });  
 }
 
 
@@ -611,7 +598,7 @@ function blockInterface(block) {
                 "-webkit-box-shadow": "3px 3px 15px #333",
                 "-moz-box-shadow": "3px 3px 15px #333"
             },
-            message: '<h2 class="popup_header">Retrieving data...</h2><br/><img src="/static/images/loader.gif" style="margin-top:-16px">',
+            message: '<div><h2 class="popup_header">Retrieving data...</h2><br><div id="progressbar"></div></div>',
             fadeIn: 500
         });
     }

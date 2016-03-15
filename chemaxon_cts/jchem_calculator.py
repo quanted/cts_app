@@ -278,7 +278,8 @@ class Tautomerization(JchemProperty):
         self.name = 'tautomerization'
         self.url = '/webservices/rest-v0/util/calculate/tautomerization'
         self.postData = {
-            "calculationType": "DOMINANT",
+            # "calculationType": "DOMINANT",
+            "calculationType": "MAJOR",
             "maxStructureCount": 1000,
             "considerPH": False,
             "enableMaxPathLength": True,
@@ -303,12 +304,14 @@ class Tautomerization(JchemProperty):
         tautDict = {'tautStructs': [None]}
         tautImageList = []
         try:
-            for taut in self.results['result']:
-                tautStructDict = {'image': taut['image']['image'], 'key': 'taut'}
-                structInfo = getStructInfo(taut['structureData']['structure'])
-                tautStructDict.update(structInfo)
-                tautStructDict.update({'dist': 100 * round(taut['dominantTautomerDistribution'], 4)})
-                tautImageList.append(tautStructDict)
+            # expecting list of result objects:
+            # for taut in self.results['result']:
+            taut = self.results['result']  # single result object
+            tautStructDict = {'image': taut['image']['image'], 'key': 'taut'}
+            structInfo = getStructInfo(taut['structureData']['structure'])
+            tautStructDict.update(structInfo)
+            # tautStructDict.update({'dist': 100 * round(taut['dominantTautomerDistribution'], 4)})
+            tautImageList.append(tautStructDict)
             tautDict.update({'tautStructs': tautImageList})
             return tautImageList
         except KeyError as ke:

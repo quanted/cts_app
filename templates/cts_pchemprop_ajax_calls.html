@@ -17,7 +17,8 @@ var sparcPropMap = {
 var jchem_methods = ['KLOP', 'PHYS', 'VG'];
 var checkedCalcsAndProps, structure; // format --> {'calc': ['checked_prop', ..], ..}
 var spinner_html = '<img src="/static/images/loader.gif" id="spinner" />';
-var calls_tracker = 0;
+var calls_tracker = 0;  // keeps track of pchem data calls for metabolites
+var total_calls = 0;  // used for metabolite pchem data progress
 var socket = null; // web socket global var
 var node_tracker = null;
 var addDataToTable_tracker = null;
@@ -188,6 +189,7 @@ function makeTheCall(calcPropData, node, addDataToTable, socket) {
             data: calcPropData,
             success: function(data) {
                 calls_tracker--;
+                if (node) { updateProgressBar(calls_tracker, total_calls); }
                 console.log("calls tracker: " + calls_tracker);
                 if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node..
                 if ('props' in data) {
@@ -200,6 +202,7 @@ function makeTheCall(calcPropData, node, addDataToTable, socket) {
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log("Error: " + errorThrown);
                 calls_tracker--; // TODO (maybe): retry call instead of decrementing and moving on..
+                if (node) { updateProgressBar(calls_tracker, total_calls); }
                 var error = {
                     "error": textStatus,
                     "calc": calcPropData['calc'],
