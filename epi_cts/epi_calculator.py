@@ -20,7 +20,8 @@ class EpiCalc(Calculator):
         self.name = "epi"
         self.baseUrl = os.environ['CTS_EPI_SERVER']
         # self.urlStruct = "/api/epiSuiteCalcs/{}"
-        self.urlStruct = "/epiSuiteCalcs/{}"
+        # self.urlStruct = "/epiSuiteCalcs/{}"
+        self.urlStruct = "/episuite_api/epiSuiteCalcs/{}"
         self.methods = None
         self.propMap = {
             'melting_point': {
