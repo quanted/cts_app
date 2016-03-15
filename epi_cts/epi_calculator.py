@@ -19,7 +19,8 @@ class EpiCalc(Calculator):
         self.postData = {"smiles" : ""}
         self.name = "epi"
         self.baseUrl = os.environ['CTS_EPI_SERVER']
-        self.urlStruct = "/api/epiSuiteCalcs/{}"
+        # self.urlStruct = "/api/epiSuiteCalcs/{}"
+        self.urlStruct = "/epiSuiteCalcs/{}"
         self.methods = None
         self.propMap = {
             'melting_point': {
@@ -61,19 +62,21 @@ class EpiCalc(Calculator):
 
     def getPostData(self, calc, prop, method=None):
         # return {"smiles": ""} # the old way..
-        return {"identifiers":{"SMILES": ""}} # the new way..
+        # return {"identifiers":{"SMILES": ""}} # the new way..
+        return {'structure': ""}
 
     def makeDataRequest(self, structure, calc, prop, method=None):
         post = self.getPostData(calc, prop)
         # post['smiles'] = structure # the old way..
-        post['identifiers']['SMILES'] = structure # set smiles, the new way..
+        # post['identifiers']['SMILES'] = structure # set smiles, the new way..
+        post['structure'] = structure
 
         url = self.baseUrl + self.getUrl(prop)
 
         logging.info("EPI URL: {}".format(url))
 
         try:
-            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=120)
+            response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)
         except requests.exceptions.ConnectionError as ce:
             logging.info("connection exception: {}".format(ce))
             raise 

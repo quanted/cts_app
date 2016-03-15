@@ -262,7 +262,7 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         return;
     }
 
-    if (calc == "test" || calc == "epi") {
+    if (calc == "test") {
         if (hasData) { data = response['data']; } // data already parsed from epi to node
         else {
             // data = response['data']['val']; // the old way..
@@ -273,6 +273,9 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
             }
             else { data = "calc error"; }
         }    
+    }
+    else if (calc == "epi") {
+        data = response['data']['propertyvalue'];
     }
     else { data = response['data']; }
 
