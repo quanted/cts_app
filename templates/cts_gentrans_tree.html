@@ -451,7 +451,9 @@ function getMolecularInfo(node) {
         // loop pchemprops calling parseResponseToPchemTable() (cts_pchemprop_ajax_calls)
         for (var i = 0; i < node.data.pchemprops.length; i++) {
             var response = node.data.pchemprops[i];  // "response" data
-            if (response['data'] != null) { response['data'].val = response['data']; }
+            if (response['data'] != null) { 
+                response['data'].val = response['data'];
+            }
             currentNode = node;  // will only display data for currentNode
             parseResponseToPchemTable(response, node, true, true);
         }
@@ -598,7 +600,7 @@ function blockInterface(block) {
                 "-webkit-box-shadow": "3px 3px 15px #333",
                 "-moz-box-shadow": "3px 3px 15px #333"
             },
-            message: '<div><h2 class="popup_header">Retrieving data...</h2><br><div id="progressbar"></div></div>',
+            message: '<div><h2 class="popup_header">Retrieving data...</h2><br><div id="progressbar"></div><br></div>',
             fadeIn: 500
         });
     }

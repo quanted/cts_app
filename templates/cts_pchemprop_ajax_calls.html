@@ -253,6 +253,7 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
 
     // TODO: improve error handling to mitigate error checking like below..
     if (response.hasOwnProperty('error')) { 
+        $(table_cell).html("");
         $(table_cell).html(response['error']);
         return;
     }
@@ -275,7 +276,14 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         }    
     }
     else if (calc == "epi") {
-        data = response['data']['propertyvalue'];
+        if (response.data.propertyvalue) {
+            data = response.data.propertyvalue;
+        }
+        else {
+            data = response['data'];
+        }
+        // data = response['data']['propertyvalue'];
+        // data = response['data'];
     }
     else { data = response['data']; }
 
