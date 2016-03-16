@@ -143,7 +143,7 @@ class Pka(JchemProperty):
             return pkaValList
         else:
             logging.warning("key: 'mostAcidic' not in self.results")
-            return None
+            return pkaValList
 
     def getMostBasicPka(self):
         """
@@ -156,7 +156,7 @@ class Pka(JchemProperty):
             return pkaValList
         else:
             logging.warning("no key 'mostBasic' in results")
-            return None
+            return pkaValList
 
     def getParent(self):
         """
