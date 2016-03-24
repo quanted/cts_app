@@ -4,78 +4,116 @@ import logging
 import os
 import requests
 import json
-import redis
-
 from test_calculator import TestCalc
 from REST.smilesfilter import parseSmilesByCalculator
 
+from celery import Celery
+from django.conf import settings
+import redis
+
+# celery stuff:
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
+app = Celery('cts_tasks', broker='redis://localhost:6379/0')
+app.config_from_object('django.conf:settings')
+app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
 
 def request_manager(request):
-  """
-  less_simple_proxy takes a request and
-  makes the proper call to the TEST web services.
-  it relies on the test_calculator to do such.
+	"""
+	less_simple_proxy takes a request and
+	makes the proper call to the TEST web services.
+	it relies on the test_calculator to do such.
 
-  input: {"calc": [calculator], "prop": [property]}
-  output: returns data from TEST server
-  """
+	input: {"calc": [calculator], "prop": [property]}
+	output: returns data from TEST server
+	"""
 
-  TEST_URL = os.environ["CTS_TEST_SERVER"]
-  postData = {}
+	TEST_URL = os.environ["CTS_TEST_SERVER"]
+	postData = {}
 
-  try:
-    calc = request.POST.get("calc")
-    # prop = request.POST.get("prop")
-    props = request.POST.getlist("props[]")
-    structure = request.POST.get("chemical")
-    sessionid = request.POST.get('sessionid')
+	calc = request.POST.get("calc")
+	# prop = request.POST.get("prop")
 
-    postData = {
-      "calc": calc,
-      # "prop": prop
-      "props": props
-    }
+	try:
+		props = request.POST.getlist("props[]")  # expecting None if none
+	except AttributeError:
+		props = request.POST.get("props")
 
-    # filter smiles before sending to TEST:
-    # ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
-    filtered_smiles = parseSmilesByCalculator(structure, "test") # call smilesfilter
-    # if '[' in filtered_smiles or ']' in filtered_smiles:
-    #   logging.warning("TEST ignoring request due to brackets in SMILES..")
-    #   postData.update({'error': "TEST cannot process charged species or metals (e.g., [S+], [c+])"})
-    #   return HttpResponse(json.dumps(postData), content_type='application/json')
-    logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
-    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	calc_data = request.POST.get('checkedCalcsAndProps')
+	structure = request.POST.get("chemical")
+	sessionid = request.POST.get('sessionid')
 
-    calcObj = TestCalc()
+	if calc_data:
+		calc = "test"
+		props = calc_data['test']  # list of props
 
-    test_results = []
-    for prop in props:
-        data_obj = {'calc':'test', 'prop':prop}
-        response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
-        response_json = json.loads(response.content)
-        data_obj['data'] = response_json
-        test_results.append(data_obj)
+	postData = {
+		"calc": calc,
+		# "prop": prop
+		# "props": props
+	}
 
-        # node/redis stuff:
-        if sessionid:
-            result_json = json.dumps(data_obj)
-            r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-            r.publish(sessionid, result_json)
+	# filter smiles before sending to TEST:
+	# ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
+	try:
+		filtered_smiles = parseSmilesByCalculator(structure, calc) # call smilesfilter
+	except Exception as err:
+		logging.warning("Error filtering SMILES: {}".format(err))
+		postData.update({'error': "Cannot filter SMILES for TEST data"})
+		return HttpResponse(json.dumps(postData), content_type='application/json')
+	# if '[' in filtered_smiles or ']' in filtered_smiles:
+	#   logging.warning("TEST ignoring request due to brackets in SMILES..")
+	#   postData.update({'error': "TEST cannot process charged species or metals (e.g., [S+], [c+])"})
+	#   return HttpResponse(json.dumps(postData), content_type='application/json')
+	logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
+	# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-    postData.update({'data': test_results})
+	# test_results = tasked_calls.delay(sessionid, filtered_smiles, props)
+	calcObj = TestCalc()
+	test_results = []
+	for prop in props:
 
-    return HttpResponse(json.dumps(postData), content_type='application/json')
+		data_obj = {'calc': calc, 'prop':prop}
 
-  except requests.HTTPError as e:
-    logging.warning("HTTP Error occurred: {}".format(e))
-    return HttpResponse(TEST_URL+e.msg, status=e.code, content_type='text/plain')
+		try:
+			response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
 
-  except ValueError as ve:
-    logging.warning("POST data is incorrect: {}".format(ve))
-    postData.update({"error": "value error"})
-    return HttpResponse(json.dumps(postData), content_type='application/json')
+			response_json = json.loads(response.content)
+			logging.info("response data: ".format(response_json))
 
-  except requests.exceptions.ConnectionError as ce:
-    logging.warning("Connection error occurred: {}".format(ce))
-    postData.update({"error": "connection error"})
-    return HttpResponse(json.dumps(postData), content_type='application/json')
+			data_obj['data'] = response_json
+			result_json = json.dumps(data_obj)
+
+			# node/redis stuff:
+			if sessionid:
+				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+				r.publish(sessionid, result_json)
+			else:
+				test_results.append(data_obj)
+
+		except requests.HTTPError as e:
+			logging.info("HTTPError occurred getting TEST data: {}: {}".format(e.code, e.message))
+			if e.code == 408:
+				data_obj.update({'error': "data request timed out"})
+			elif e.code == 500 or e.code == 404:
+				data_obj.update({'error': "cannot reach TEST calculator"})
+			else:
+				data_obj.update({'error': e.message})
+			# return HttpResponse(json.dumps(data_obj), content_type='application/json')
+		except Exception as err:
+			logging.warning("Exception occurred getting TEST data: {}".format(err))
+			data_obj.update({'error': "cannot reach TEST calculator"})
+
+			logging.info("##### session id: {}".format(sessionid))
+
+			# node/redis stuff:
+			if sessionid: 
+				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+				r.publish(sessionid, json.dumps(data_obj))
+			else:
+				test_results.append(data_obj)
+
+	# TODO: Track this response when using celery, where does it go?
+	postData.update({'data': test_results, 'props': props})
+	return HttpResponse(json.dumps(postData), content_type='application/json')
+	# return HttpResponse("retrieving TEST data..")

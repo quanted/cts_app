@@ -41,22 +41,26 @@ io.sockets.on('connection', function (socket) {
 
         console.log("nodejs server received message..");
 
-        message_obj = JSON.parse(message);
+        var message_obj = JSON.parse(message);
 
         var values = {};
         for (var key in message_obj) {
             if (message_obj.hasOwnProperty(key)) {
-                if (key == 'props') { values[key + '[]'] = message_obj[key]; }
-                else { values[key] = message_obj[key]; }
+                if (key == 'props') {
+                    values[key + '[]'] = message_obj[key];
+                }
+                else {
+                    values[key] = message_obj[key];
+                }
             }
         }
-        values['sessionid'] = socket.id;
-        values = querystring.stringify(values);
 
-        console.log("values established");
-        console.log(values);
+        var query = querystring.stringify({
+            sessionid: socket.id,
+            message: JSON.stringify(values)
+        });
 
-        callCTSNodeAPI(values);
+        callCTSNodeAPI(query);
 
     });
 

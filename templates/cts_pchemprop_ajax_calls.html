@@ -117,121 +117,127 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     node_tracker = node;
     addDataToTable_tracker = addDataToTable;
 
+    var pchem_data = {
+        'chemical': structure,
+        'ph': kowPH,
+        'node': node
+    };
+
     for (var calc in checkedCalcsAndProps) {
+        if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
-        var post_data = { "chemical": structure, "calc": calc };
+            pchem_data['calc'] = calc;
+            pchem_data['props'] = checkedCalcsAndProps[calc];  // get list of requested props
 
-        // 2. Add webservice key:
-        if (calc == "chemaxon") { 
-            post_data.ws = "jchem";
-            post_data.service = "getPchemProps";
+            // var pchem_data_json = JSON.stringify(pchem_data);
+            var cache = [];
+            var pchem_data_json = JSON.stringify(pchem_data, function(key, value) {
+                if (typeof value === 'object' && value !== null) {
+                    if (cache.indexOf(value) !== -1) {
+                        // Circular reference found, discard key
+                        return;
+                    }
+                    // Store value in our collection
+                    cache.push(value);
+                }
+                return value;
+            });
+            cache = null; // Enable garbage collection
+
+            if (socket) {
+                // emit data through web socket:
+                socket.emit('get_data', pchem_data_json)
+            }
+            else {
+                // send pchem request through ajax calls, one calc per call:
+                makeTheCall(pchem_data_json, node, addDataToTable);
+            }
+
+            // Add those spinners...(todo: a better way than looping props):
+            for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+                var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
+                var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
+                if (addDataToTable) { $(tblCell).html(spinner_html); }
+            }
+
         }
-        else { post_data.ws = calc; }
+    }
 
+
+    // makeTheCall(pchem_data, node, addDataToTable);  // send pchem request to CTS
+
+    for (var calc in checkedCalcsAndProps) {
         for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
-
             var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
             var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
-
-            // 3. Build POST data:
-            post_data['prop'] = prop;
-            post_data['ph'] = kowPH;
-
-            // 4. Add spinner to calc-prop table cell:
             if (addDataToTable) { $(tblCell).html(spinner_html); }
-
-            // 5. Make data calls, determine if additional methods required:
-            if (calc == "chemaxon") {
-                if (prop == "kow_wph" || prop == "kow_no_ph") {
-                    for (var method in jchem_methods) {
-                        post_data['method'] = jchem_methods[method];
-                        makeTheCall(post_data, node, addDataToTable, socket);
-                    }
-                    delete post_data['method']; // lazy fix for methods showing in non-method props
-                }
-                else { 
-                    makeTheCall(post_data, node, addDataToTable, socket);
-                }
-            }
-            else if (calc == "epi") {
-                makeTheCall(post_data, node, addDataToTable, socket);
-            }
         }
-
-        // Make sparc call after all props are gathered into list:
-        if (calc == "sparc") { 
-            post_data['props'] = checkedCalcsAndProps['sparc'];
-            makeTheCall(post_data, node, addDataToTable, socket);
-        }
-        else if (calc == "test") {
-            post_data['props'] = checkedCalcsAndProps['test'];
-            makeTheCall(post_data, node, addDataToTable, socket);
-        }
-
     }
 
 }
 
 
-function makeTheCall(calcPropData, node, addDataToTable, socket) {
-    if (socket) {
-        calcPropData['node'] = node; // send node through socket for tracking returned data
-        var post_data = JSON.stringify(calcPropData);
-        socket.emit('get_data', post_data);
-    }
-    else {
-        calls_tracker++;
-        console.log("calls tracker: " + calls_tracker);
-        $.ajax({
-            url: "/cts/portal",
-            type: "POST",
-            dataType: "json",
-            data: calcPropData,
-            success: function(data) {
-                calls_tracker--;
-                if (node) { updateProgressBar(calls_tracker, total_calls); }
-                console.log("calls tracker: " + calls_tracker);
-                if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node..
-                if ('props' in data) {
-                    parseListDataFromResults(data, node, addDataToTable);
-                }
-                else {
-                    parseResponseToPchemTable(data, node, false, addDataToTable);
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log("Error: " + errorThrown);
-                calls_tracker--; // TODO (maybe): retry call instead of decrementing and moving on..
-                if (node) { updateProgressBar(calls_tracker, total_calls); }
-                var error = {
-                    "error": textStatus,
-                    "calc": calcPropData['calc'],
-                    "prop": calcPropData['prop']
-                };
-                if ('props' in calcPropData) {
-                    parseListDataFromResults(error, node, addDataToTable);
-                }
-                else {
-                    parseResponseToPchemTable(error, node, false, addDataToTable);
-                }
+function makeTheCall(calcPropData, node, addDataToTable) {
+    calls_tracker++;
+    console.log("calls tracker: " + calls_tracker);
+    $.ajax({
+        url: "/cts/portal",
+        type: "POST",
+        dataType: "json",
+        data: calcPropData,
+        success: function(data) {
+            calls_tracker--;
+            if (node) { updateProgressBar(calls_tracker, total_calls); }
+            console.log("calls tracker: " + calls_tracker);
+            if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node..
+            if ('props' in data) {
+                parseListDataFromResults(data, node, addDataToTable);
             }
-        });
-    }
+            else {
+                parseResponseToPchemTable(data, node, false, addDataToTable);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log("Error: " + errorThrown);
+            calls_tracker--; // TODO (maybe): retry call instead of decrementing and moving on..
+            if (node) { updateProgressBar(calls_tracker, total_calls); }
+            var error = {
+                "error": textStatus,
+                "calc": calcPropData['calc'],
+                "prop": calcPropData['prop']
+            };
+            if ('props' in calcPropData) {
+                parseListDataFromResults(error, node, addDataToTable);
+            }
+            else {
+                parseResponseToPchemTable(error, node, false, addDataToTable);
+            }
+        }
+    });
 }
 
 
 function parseListDataFromResults(data, node, addDataToTable) {
     var calc = data['calc']; // sparc
     var props = data['props']; // get sparc props list
-    for (prop_data in data['data']) {
-        var prop_obj;
-        if ('error' in data) { 
-            prop_data = {'calc': data['calc'], 'prop': data['prop'], 'data': data['error']};
+    var data_key = "";
+    if ('error' in data) {
+        for (prop in props) {
+            var prop_obj = {'calc': data['calc'], 'prop': prop, 'data': data['error']};
+            parseResponseToPchemTable(prop_obj, node, false, true, addDataToTable);
         }
-        else { 
-            prop_obj = data['data'][prop_data];
-        }
-        parseResponseToPchemTable(prop_obj, node, false, true, addDataToTable);
+    }
+    else { 
+        for (prop_data in data['data']) {
+            var prop_obj;
+            if ('error' in data) { 
+                prop_data = {'calc': data['calc'], 'prop': data['prop'], 'data': data['error']};
+            }
+            else { 
+                prop_obj = data['data'][prop_data];
+            }
+            parseResponseToPchemTable(prop_obj, node, false, true, addDataToTable);
+        }   
     }
 }
 

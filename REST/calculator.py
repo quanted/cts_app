@@ -39,6 +39,13 @@ class Calculator(object):
         self.urlStruct = ''
         self.results = ''
 
+        # cts data object for p-chem data:
+        self.data_obj = {
+            'calc': '',
+            'prop': '',
+            'data': None
+        }
+
     # self.postData =
 
     # @classmethod

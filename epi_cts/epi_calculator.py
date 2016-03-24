@@ -19,43 +19,48 @@ class EpiCalc(Calculator):
         self.postData = {"smiles" : ""}
         self.name = "epi"
         self.baseUrl = os.environ['CTS_EPI_SERVER']
-        # self.urlStruct = "/api/epiSuiteCalcs/{}"
-        # self.urlStruct = "/epiSuiteCalcs/{}"
-        self.urlStruct = "/episuite_api/epiSuiteCalcs/{}"
+        self.urlStruct = "/rest/episuite/{}/estimated"
         self.methods = None
         self.propMap = {
             'melting_point': {
-                'urlKey': 'meltingPtDegCEstimated',
+                # 'urlKey': 'meltingPtDegCEstimated',
+                'urlKey': 'meltingPoint',
                 'propKey': 'Melting Pt (deg C)(estimated)',
                 'resultKey': 'meltingPtDegCEstimated'
             },
             'boiling_point': {
-                'urlKey': 'boilingPtDegCEstimated',
+                # 'urlKey': 'boilingPtDegCEstimated',,
+                'urlKey': 'boilingPoint',
                 'propKey': '',
                 'resultKey': 'boilingPtDegCEstimated'
             },
             'water_sol': {
-                'urlKey': 'waterSolMgLEstimated',
+                # 'urlKey': 'waterSolMgLEstimated',,
+                'urlKey': 'waterSolubility',
                 'propKey': '',
                 'resultKey': 'waterSolMgLEstimated'
             },
             'vapor_press': {
-                'urlKey': 'vaporPressMmHgEstimated',
+                # 'urlKey': 'vaporPressMmHgEstimated',,
+                'urlKey': 'vaporPressure',
                 'propKey': '',
                 'resultKey': 'vaporPressMmHgEstimated'
             },
             'henrys_law_con': {
-                'urlKey': 'henryLcBondAtmM3Mole',
+                # 'urlKey': 'henryLcBondAtmM3Mole',,
+                'urlKey': 'henrysLawConstant',
                 'propKey': '',
                 'resultKey': 'henryLcBondAtmM3Mole'
             },
             'kow_no_ph': {
-                'urlKey': 'logKowEstimate',
+                # 'urlKey': 'logKowEstimate',,
+                'urlKey': 'logKow',
                 'propKey': '',
                 'resultKey': 'logKowEstimate'
             },
             'koc': {
-                'urlKey': 'soilAdsorptionCoefKoc',
+                # 'urlKey': 'soilAdsorptionCoefKoc',,
+                'urlKey': 'soilAdsorptionCoefficientKoc',
                 'propKey': '',
                 'resultKey': 'soilAdsorptionCoefKoc'
             }

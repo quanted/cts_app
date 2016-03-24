@@ -22,9 +22,9 @@ test_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available
 sparc_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 
 				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable']
 
-# NOTE: temporarily setting kow_no_ph for test to unavailable
-# measured_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
-#  				'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
+# NOTE: Measured data is from EPI measured values
+measured_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available']
 
 
 # value - chemical property (melting point, etc)
@@ -44,8 +44,8 @@ def color_filter(value, args):
 			service_props = test_props
 		elif args == 'sparc':
 			service_props = sparc_props
-		# elif args == 'measured':
-		# 	service_props = measured_props
+		elif args == 'measured':
+			service_props = measured_props
 
 		gen_dict = dict(zip(props_list, service_props)) # Make key/value pairs out of props list and service list
 

@@ -23,22 +23,23 @@ def request_manager(request):
 	  """
 
 	EPI_URL = os.environ["CTS_EPI_SERVER"]
-	postData = {}
+
+	calc = request.POST.get("calc")
+	prop = request.POST.get("prop")
+	structure = request.POST.get("chemical")
+	sessionid = request.POST.get('sessionid')
 
 	try:
-		calc = request.POST.get("calc")
-		prop = request.POST.get("prop")
-		structure = request.POST.get("chemical")
-		sessionid = request.POST.get('sessionid')
+		props = request.POST.getlist("props[]")  # expecting None if none
+	except AttributeError:
+		props = request.POST.get("props")
 
-		logging.info("structure: {}".format(structure))
+	postData = {
+		'calc': calc,
+		'props': props
+	}
 
-		postData = {
-			"calc": calc,
-			"prop": prop
-		}
-
-
+	try:
 		# ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
 		filtered_smiles = parseSmilesByCalculator(structure, "epi") # call smilesfilter
 
@@ -51,31 +52,56 @@ def request_manager(request):
 
 		logging.info("EPI Filtered SMILES: {}".format(filtered_smiles))
 		# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	except Exception as err:
+		logging.warning("Error filtering SMILES: {}".format(err))
+		postData.update({'error': "Cannot filter SMILES for TEST data"})
+		return HttpResponse(json.dumps(postData), content_type='application/json')
 
-		# get data through epi_calculator:
-		calcObj = EpiCalc()
-		response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
-		postData.update({"data": json.loads(response.content)}) # add that data
+	calcObj = EpiCalc()
+	epi_results = []
 
-		result_json = json.dumps(postData)
+	for prop in props:
 
-		# node/redis stuff:
-		if sessionid:
-			r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-			r.publish(sessionid, result_json)
+		data_obj = {
+			"calc": calc,
+			"prop": prop
+		}
 
-		return HttpResponse(result_json, content_type='application/json')
+		try:
+			response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
+			data_obj.update({"data": json.loads(response.content)}) # add that data
 
-	except requests.HTTPError as e:
-		logging.warning("HTTP Error occurred: {}".format(e))
-		return HttpResponse(EPI_URL+e.msg, status=e.code, content_type='text/plain')
+			# node/redis stuff:
+			if sessionid:
+				result_json = json.dumps(data_obj)
+				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+				r.publish(sessionid, result_json)
+			else:
+				# if node ain't there, append to data list and send as HttpResponse:
+				epi_results.append(data_obj)
+
+		except Exception as err:
+			logging.warning("Exception occurred getting TEST data: {}".format(err))
+			data_obj.update({'error': "cannot reach TEST calculator"})
+
+			logging.info("##### session id: {}".format(sessionid))
+
+			# node/redis stuff:
+			if sessionid: 
+				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+				r.publish(sessionid, json.dumps(data_obj))
+			else:
+				epi_results.append(data_obj)
+
+	postData.update({'data': epi_results})
+
+	return HttpResponse(json.dumps(postData), content_type='application/json')
+
+	# except requests.HTTPError as e:
+	# 	logging.warning("HTTP Error occurred: {}".format(e))
+	# 	return HttpResponse(EPI_URL+e.msg, status=e.code, content_type='text/plain')
 
 	# except ValueError as ve:
 	# 	logging.warning("POST data is incorrect: {}".format(ve))
 	# 	postData.update({"error": "value error"})
-	# 	return HttpResponse(json.dumps(postData), content_type='application/json')
-
-	# except requests.exceptions.ConnectionError as ce:
-	# 	logging.warning("Connection error occurred: {}".format(ce))
-	# 	postData.update({"error": "error connecting to calculator server"})
 	# 	return HttpResponse(json.dumps(postData), content_type='application/json')

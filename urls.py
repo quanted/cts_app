@@ -9,6 +9,7 @@ import chemaxon_cts
 urlpatterns = patterns('',
     # url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
+    # url(r'^cts/portal/?$', 'REST.portal.parseRequestByCalculator'),
     url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app
     url(r'^jchem-cts/', include('chemaxon_cts.urls')),
 )

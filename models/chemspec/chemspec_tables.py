@@ -101,8 +101,9 @@ def getPkaValues(chemspec_obj):
     # jsonData = json.dumps(chemspec_obj.result)
     
     data = { 
-        'Basic pKa Value(s)': chemspec_obj.pkaDict['mostBasicPka'], 
-        'Acidic pKa Value(s)': chemspec_obj.pkaDict['mostAcidicPka']
+        # 'Basic pKa Value(s)': chemspec_obj.pkaDict['mostBasicPka'], 
+        # 'Acidic pKa Value(s)': chemspec_obj.pkaDict['mostAcidicPka']
+        'pKa Value(s)': chemspec_obj.pkaDict['mostAcidicPka']
     }
     return data
 

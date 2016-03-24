@@ -7,57 +7,82 @@ import os
 import requests
 import json
 from measured_calculator import MeasuredCalc
+import redis
+from REST.smilesfilter import parseSmilesByCalculator
 
 
 
 def request_manager(request):
-  """
-  less_simple_proxy takes a request and
-  makes the proper call to the TEST web services.
-  it relies on the measured_calculator to do such.
 
-  input: {"calc": [calculator], "prop": [property]}
-  output: returns data from TEST server
-  """
+	calc = request.POST.get("calc")
+	# props = request.POST.getlist("props[]")
+	try:
+		props = request.POST.getlist("props[]")  # expecting None if none
+	except AttributeError:
+		props = request.POST.get("props")
 
-  TEST_URL = os.environ["CTS_TEST_SERVER"]
-  postData = {}
+	structure = request.POST.get("chemical")
+	sessionid = request.POST.get('sessionid')
 
-  try:
-    calc = request.POST.get("calc")
-    prop = request.POST.get("prop")
-    structure = request.POST.get("chemical")
+	logging.info("Incoming data to Measured: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
 
-    postData = {
-      "calc": calc,
-      "prop": prop
-    }
+	post_data = {
+		"calc": calc,
+		"props": props
+	}
 
 
-    calcObj = MeasuredCalc()
-    response = calcObj.makeDataRequest(structure, calc, prop) # make call for data!
+	try:
+		# ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
+		filtered_smiles = parseSmilesByCalculator(structure, "epi") # call smilesfilter
 
-    prop_data = json.loads(response.content)['properties'] # TEST props (MP, BP, etc.)
-    logging.info(">>> {}".format(prop_data))
-    prop_data = prop_data[calcObj.propMap[prop]['urlKey']]
-    logging.info(">>> {}".format(prop_data))
+		logging.info("Measured receiving SMILES: {}".format(filtered_smiles))
 
-    postData.update({"data": prop_data}) # add that data
+		# if '[' in filtered_smiles or ']' in filtered_smiles:
+		# 	logging.warning("Measured ignoring request due to brackets in SMILES..")
+		# 	post_data.update({'error': "Measured Suite cannot process charged species or metals (e.g., [S+], [c+])"})
+		# 	return HttpResponse(json.dumps(post_data), content_type='application/json')
 
-    logging.info("Measured DATA: {}".format(postData))
+		logging.info("Measured Filtered SMILES: {}".format(filtered_smiles))
+		# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	except Exception as err:
+		logging.warning("Error filtering SMILES: {}".format(err))
+		post_data.update({'error': "Cannot filter SMILES for Measured data"})
+		return HttpResponse(json.dumps(post_data), content_type='application/json')
 
-    return HttpResponse(json.dumps(postData), content_type='application/json')
+	calcObj = MeasuredCalc()
+	measured_results = []
 
-  except requests.HTTPError as e:
-    logging.warning("HTTP Error occurred: {}".format(e))
-    return HttpResponse(TEST_URL+e.msg, status=e.code, content_type='text/plain')
+	try:
+		response = calcObj.makeDataRequest(filtered_smiles) # make call for data!
+		measured_data = json.loads(response.content)
+		
+		# get requested properties from results:
+		for prop in props:
+			data_obj = calcObj.getPropertyValue(prop, measured_data)
 
-  except ValueError as ve:
-    logging.warning("POST data is incorrect: {}".format(ve))
-    postData.update({"error": "value error"})
-    return HttpResponse(json.dumps(postData), content_type='application/json')
+			# node/redis stuff:
+			if sessionid:
+				result_json = json.dumps(data_obj)
+				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+				r.publish(sessionid, result_json)
+			else:
+				# if node ain't there, append to data list and send as HttpResponse:
+				measured_results.append(data_obj)
 
-  except requests.exceptions.ConnectionError as ce:
-    logging.warning("Connection error occurred: {}".format(ce))
-    postData.update({"error": "connection error"})
-    return HttpResponse(json.dumps(postData), content_type='application/json')
+	except Exception as err:
+		logging.warning("Exception occurred getting Measured data: {}".format(err))
+		for data_obj in measured_results:
+			data_obj.update({'error': "cannot reach Measured calculator"})
+
+		post_data.update({'data': measured_results})
+
+		# node/redis stuff:
+		if sessionid: 
+			r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+			r.publish(sessionid, json.dumps(post_data))
+
+		return HttpResponse(json.dumps(post_data), content_type='application/json')
+
+	post_data.update({'data': measured_results})
+	return HttpResponse(json.dumps(post_data), content_type='application/json')

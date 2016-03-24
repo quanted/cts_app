@@ -30,7 +30,7 @@ def tmpl_pchemTableCTS():
 			<td id="id_kow_EPI" class="{{form.kow_wph|color_filter:"epi"}} epi kow_wph"></td>
 			<td id="id_kow_TEST" class="{{form.kow_wph|color_filter:"test"}} test kow_wph"></td>
 			<td id="id_kow_SPARC" class="{{form.kow_wph|color_filter:"sparc"}} sparc kow_wph"></td>
-			<td id="id_kow_Measured" class="{{form.kow_wph|color_filter:"test"}} measured kow_wph"></td>
+			<td id="id_kow_Measured" class="{{form.kow_wph|color_filter:"measured"}} measured kow_wph"></td>
 		{% else %}
 			<tr>
 			<th class="chemprop">{{ field }} <span>{{ field.label }}</span></th>
@@ -38,7 +38,7 @@ def tmpl_pchemTableCTS():
 			<td id="{{ field.id_for_label }}_EPI" class="{{ field | color_filter:"epi" }} epi {{field.name}}"></td>
 			<td id="{{ field.id_for_label }}_TEST" class="{{ field | color_filter:"test" }} test {{field.name}}"></td>
 			<td id="{{ field.id_for_label }}_SPARC" class="{{ field | color_filter:"sparc" }} sparc {{field.name}}"></td>
-			<td id="{{ field.id_for_label }}_Measured" class="{{ field | color_filter:"test" }} measured {{field.name}}"></td>
+			<td id="{{ field.id_for_label }}_Measured" class="{{ field | color_filter:"measured" }} measured {{field.name}}"></td>
 			</tr>
 		{% endif %}
 	{% endfor %}
@@ -73,14 +73,6 @@ class CTS_ChemCalcs_Props(forms.Form):
 	henrys_law_con = forms.BooleanField(required=False, label=mark_safe("Henry's Law Constant (atm-m<sup>3</sup>/mol)"))
 	kow_no_ph = forms.BooleanField(required=False, label=mark_safe("Octanol/Water Partition Coefficient (log)"))
 	kow_wph = forms.BooleanField(required=False, label=mark_safe('Octanol/Water Partition Coefficient (log)'))
-	# kow_ph = forms.FloatField (
-	# 			label='at pH:',
-	# 			widget=forms.NumberInput(attrs={'class':'numberInput'}),
-	# 			initial=7.4,
-	# 			min_value=0,
-	# 			max_value=14,
-	# 			decimal_places=1
-	# 		)
 	kow_ph = forms.DecimalField (
 				label='at pH:',
 				widget=forms.NumberInput(attrs={'class':'numberInput'}),
@@ -120,7 +112,7 @@ def pchempropAvailable(calculator, prop):
 	elif calculator == "sparc":
 		calcDict = dict(zip(color_table.props_list, color_table.sparc_props))
 	elif calculator == "measured":
-		calcDict = dict(zip(color_table.props_list, color_table.test_props))
+		calcDict = dict(zip(color_table.props_list, color_table.measured_props))
 
 	available = None
 	if prop in calcDict:
