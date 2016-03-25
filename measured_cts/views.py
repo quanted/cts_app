@@ -31,24 +31,16 @@ def request_manager(request):
 		"props": props
 	}
 
+	logging.info("Measured receiving SMILES: {}".format(structure))
 
 	try:
-		# ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
 		filtered_smiles = parseSmilesByCalculator(structure, "epi") # call smilesfilter
-
-		logging.info("Measured receiving SMILES: {}".format(filtered_smiles))
-
-		# if '[' in filtered_smiles or ']' in filtered_smiles:
-		# 	logging.warning("Measured ignoring request due to brackets in SMILES..")
-		# 	post_data.update({'error': "Measured Suite cannot process charged species or metals (e.g., [S+], [c+])"})
-		# 	return HttpResponse(json.dumps(post_data), content_type='application/json')
-
-		logging.info("Measured Filtered SMILES: {}".format(filtered_smiles))
-		# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	except Exception as err:
 		logging.warning("Error filtering SMILES: {}".format(err))
 		post_data.update({'error': "Cannot filter SMILES for Measured data"})
 		return HttpResponse(json.dumps(post_data), content_type='application/json')
+
+	logging.info("Measured Filtered SMILES: {}".format(filtered_smiles))
 
 	calcObj = MeasuredCalc()
 	measured_results = []
@@ -72,8 +64,14 @@ def request_manager(request):
 
 	except Exception as err:
 		logging.warning("Exception occurred getting Measured data: {}".format(err))
-		for data_obj in measured_results:
-			data_obj.update({'error': "cannot reach Measured calculator"})
+		measured_results = []
+		for prop in props:
+			data_obj = {
+				'error': "cannot find measured data for structure",
+				'calc': "measured",
+				'prop': prop
+			}
+			measured_results.append(data_obj)
 
 		post_data.update({'data': measured_results})
 

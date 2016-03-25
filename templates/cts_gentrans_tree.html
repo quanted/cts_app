@@ -22,28 +22,6 @@ var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
 var nodeWidth = 100; //default node width (image)
 var block_ui = false; // blocking UI load window boolean
-
-var checkedPropsList = [
-    "melting_point",
-    "boiling_point",
-    "water_sol",
-    "vapor_press",
-    "mol_diss",
-    "ion_con",
-    "henrys_law_con",
-    "kow_no_ph",
-    "kow_wph",
-    "kow_ph",
-    "koc"
-];
-
-var calcluatorsList = [
-    "chemaxon",
-    "epi",
-    "test",
-    "sparc"
-    // "measured": measured
-];
 // ################################################
 
 (function() {
@@ -111,7 +89,7 @@ $('#gen-select').change(function() {
 });
 
 // Get Data button for gathering pchem props for node:
-$('#btn-pchem-getdata').click(function() {
+$('#btn-pchem-getdata').click(function () {
 
     checkedCalcsAndProps = buildCheckedCalcsAndProps();  // get current data
 
@@ -134,6 +112,16 @@ $('#btn-pchem-getdata').click(function() {
     block_ui = true; // initiate blocked UI load window..
 
     total_calls = calculateTotalCalls(parsedNodeList, checkedCalcsAndProps);  // get total calls (pchemprop_ajax global)
+
+    // node_data_list = [];
+    // st.graph.eachNode(function(node) {
+    //     // node must be within depth of parsedNodeList.length - 1
+    //     if (node._depth < parsedNodeList.length) {
+    //         node_data_list.push(node.data);
+    //     }
+    // });
+
+    // startPchemPropDataCollection(node_data_list, checkedCalcsAndProps, kowPH, st.graph.nodes['1'], currentNode);
 
     st.graph.eachNode(function(node) {
         // node must be within depth of parsedNodeList.length - 1
@@ -495,7 +483,7 @@ function addImageToMolInfo(node) {
 
 
 function buildMolInfoTable(molTable, node, data) {
-    var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac'];
+    var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac', 'routes'];
 
     //Clear existing table data..
     $(molTable).children().empty();
@@ -591,7 +579,7 @@ function blockInterface(block) {
                 "left": "" + winleft + "",
                 "padding": "30px 20px",
                 "width": "400px",
-                "height": "60px",
+                "height": "100px",
                 "border": "0 none",
                 "border-radius": "4px",
                 "-webkit-border-radius": "4px",
@@ -600,7 +588,7 @@ function blockInterface(block) {
                 "-webkit-box-shadow": "3px 3px 15px #333",
                 "-moz-box-shadow": "3px 3px 15px #333"
             },
-            message: '<div><h2 class="popup_header">Retrieving data...</h2><br><div id="progressbar"></div><br></div>',
+            message: '<div><h2 class="popup_header">Retrieving data...</h2><br><img src="/static/images/loader.gif" style="margin-top:-16px"><br><br><div id="progressbar"></div><br></div>',
             fadeIn: 500
         });
     }

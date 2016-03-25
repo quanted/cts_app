@@ -38,7 +38,8 @@ def request_manager(request):
 	calc = request.POST.get('calc')
 
 	try:
-		props = request.POST.getlist("props[]")  # expecting None if none
+		# props = request.POST.getlist("props[]")  # expecting None if none
+		props = request.POST.get("props[]")
 	except AttributeError:
 		props = request.POST.get("props")
 

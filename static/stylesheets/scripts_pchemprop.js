@@ -58,9 +58,28 @@ $(document).ready(function() {
     $('.submit.input_button').prop('disabled', true); //initialize submit as disabled
 
 
+    // Triggered if any checkbox is clicked on pchem table:
     $('input[type=checkbox]').change(function() {
+
         submitButtonLogic(); //tie submitLogic() to any checkbox changes
         pchempropTableLogic();
+
+        var workflow_url = window.location.href;
+
+        // abandon if not in gentrans workflow to begin with:
+        if (workflow_url.indexOf("gentrans") < 0) { return; }
+
+        var is_checked = this.checked;
+        var is_TEST = false;
+
+        if (this.id.indexOf("test") > -1) { is_TEST = true; }
+
+        if (is_checked && is_TEST) {
+            // warn user that TEST takes awhile:
+            // TODO: maybe do a fancier popup near the TEST checkbox, not an obtrusive alert message!!!
+            alert("Note: The TEST calculator can take several minutes to run, so hang tight!");
+        }
+
     });
 
     //Initialize all checkboxes to be unchecked:

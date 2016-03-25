@@ -110,9 +110,15 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     var addDataToTable = false; // whether to plot on visible pchem table or not..
 
     // Determine whether data should be inserted into pchem table:
-    if (isPchemWorkflow()) { addDataToTable = true; }
-    else if (currentNode != null && node.id == currentNode.id) { addDataToTable = true; }
-    else { addDataToTable = false; }
+    if (isPchemWorkflow()) { 
+        addDataToTable = true;
+    }
+    else if (currentNode != null && node.id == currentNode.id) { 
+        addDataToTable = true;
+    }
+    else { 
+        addDataToTable = false;
+    }
 
     node_tracker = node;
     addDataToTable_tracker = addDataToTable;
@@ -123,6 +129,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
         'node': node
     };
 
+    // Separate call for each calculator:
     for (var calc in checkedCalcsAndProps) {
         if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
@@ -224,7 +231,7 @@ function parseListDataFromResults(data, node, addDataToTable) {
     if ('error' in data) {
         for (prop in props) {
             var prop_obj = {'calc': data['calc'], 'prop': prop, 'data': data['error']};
-            parseResponseToPchemTable(prop_obj, node, false, true, addDataToTable);
+            parseResponseToPchemTable(prop_obj, node, false, addDataToTable);  // note: hasData hardcoded to false!!
         }
     }
     else { 
@@ -236,7 +243,7 @@ function parseListDataFromResults(data, node, addDataToTable) {
             else { 
                 prop_obj = data['data'][prop_data];
             }
-            parseResponseToPchemTable(prop_obj, node, false, true, addDataToTable);
+            parseResponseToPchemTable(prop_obj, node, false, addDataToTable);  // note: hasData hardcoded to false!!
         }   
     }
 }
@@ -288,8 +295,6 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         else {
             data = response['data'];
         }
-        // data = response['data']['propertyvalue'];
-        // data = response['data'];
     }
     else { data = response['data']; }
 
@@ -316,7 +321,9 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         }
     }
     else { 
-        if (addDataToTable) { $(table_cell).html(organizeData(calc, prop, data)); }
+        if (addDataToTable) { 
+            $(table_cell).html(organizeData(calc, prop, data));
+        }
     }
 
 }

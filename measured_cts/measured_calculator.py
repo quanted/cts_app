@@ -28,19 +28,15 @@ class MeasuredCalc(Calculator):
 		# map workflow parameters to test
 		self.propMap = {
 			'melting_point': {
-			   # 'urlKey': 'MP'
 			   'result_key': 'melting_point'
 			},
 			'boiling_point': {
-			   # 'urlKey': 'BP'
 			   'result_key': 'boiling_point'
 			},
 			'water_sol': {
-			   # 'urlKey': 'WS'
 			   'result_key': 'water_solubility'
 			},
 			'vapor_press': {
-			   # 'urlKey': 'VP'
 			   'result_key': 'vapor_pressure'
 			},
 			'henrys_law_con': {

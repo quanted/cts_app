@@ -60,6 +60,7 @@ class TestCalc(Calculator):
             logging.info("timeout exception: {}".format(te))
             # return None
             raise
+
         self.results = response
         return response
 

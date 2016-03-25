@@ -29,7 +29,7 @@ def recursive(jsonStr):
 
 
 metID = 0  # unique id for each node
-metabolite_keys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation']
+metabolite_keys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation', 'routes']
 
 def traverse(root):
     """

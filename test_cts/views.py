@@ -78,10 +78,17 @@ def request_manager(request):
 		try:
 			response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
 
+
 			response_json = json.loads(response.content)
 			logging.info("response data: ".format(response_json))
 
-			data_obj['data'] = response_json
+			# sometimes TEST data successfully returns but with an error:
+			if response.status_code != 200:
+				# data_obj['error'] = "TEST could not process structure"
+				postData['data'] = "TEST could not process structure"
+			else:
+				data_obj['data'] = response_json
+				
 			result_json = json.dumps(data_obj)
 
 			# node/redis stuff:
