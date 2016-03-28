@@ -15,6 +15,15 @@ app = Celery('cts_tasks', broker='redis://localhost:6379/0')
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
+logging.getLogger('celery.task.default').setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.DEBUG)
+
+app.conf.CELERY_ALWAYS_EAGER = True
+app.conf.CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+
+from celery.utils import LOG_LEVELS
+app.conf.CELERYD_LOG_LEVEL = LOG_LEVELS['DEBUG']
+
 
 @app.task
 def startTESTTask(request_post):

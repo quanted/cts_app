@@ -17,18 +17,20 @@ def request_manager(request):
 	calc = request.POST.get("calc")
 	# props = request.POST.getlist("props[]")
 	try:
-		props = request.POST.getlist("props[]")  # expecting None if none
+		props = request.POST.get("props[]")  # expecting None if none
 	except AttributeError:
 		props = request.POST.get("props")
 
 	structure = request.POST.get("chemical")
 	sessionid = request.POST.get('sessionid')
+	node = request.POST.get('node')
 
 	logging.info("Incoming data to Measured: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
 
 	post_data = {
 		"calc": calc,
-		"props": props
+		"props": props,
+	    'node': node
 	}
 
 	logging.info("Measured receiving SMILES: {}".format(structure))
@@ -52,6 +54,7 @@ def request_manager(request):
 		# get requested properties from results:
 		for prop in props:
 			data_obj = calcObj.getPropertyValue(prop, measured_data)
+			data_obj.update({'node': node})
 
 			# node/redis stuff:
 			if sessionid:

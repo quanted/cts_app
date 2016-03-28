@@ -296,18 +296,18 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         return;
     }
 
-    if (calc == "test") {
-        if (hasData) { data = response['data']; } // data already parsed from epi to node
-        else {
-            // data = response['data']['val']; // the old way..
-            // the new way:
-            if (Object.keys(response['data']['properties']).length > 0) {
-                var data_key = Object.keys(response['data']['properties'])[0];
-                data = response['data']['properties'][data_key];
-            }
-            else { data = "calc error"; }
-        }    
-    }
+    // if (calc == "test") {
+    //     if (hasData) { data = response['data']; } // data already parsed from epi to node
+    //     else {
+    //         // data = response['data']; // the old way..
+    //         // the new way:
+    //         // if (Object.keys(response['data']['properties']).length > 0) {
+    //         //     var data_key = Object.keys(response['data']['properties'])[0];
+    //         //     data = response['data']['properties'][data_key];
+    //         // }
+    //         // else { data = "calc error"; }
+    //     }    
+    // }
     else if (calc == "epi") {
         if (response.data.propertyvalue) {
             data = response.data.propertyvalue;

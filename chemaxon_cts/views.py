@@ -49,6 +49,8 @@ def request_manager(request):
 		'props': props
 	}
 
+	session = FuturesSession()
+
 	if props:
 		chemaxon_results = []
 		for prop in props:
@@ -58,7 +60,7 @@ def request_manager(request):
 			try:
 				if prop == 'kow_wph' or prop == 'kow_no_ph':
 					for method in methods:
-						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node)  # returns json string
+						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
 						data_obj.update({'data': results['data'], 'method': method})
 						chemaxon_results.append(data_obj)
 
@@ -68,7 +70,7 @@ def request_manager(request):
 							r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
 							r.publish(sessionid, result_json)
 				else:
-					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node)  # returns json string
+					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
 					data_obj['data'] = results['data']
 					chemaxon_results.append(data_obj)
 
@@ -96,7 +98,12 @@ def request_manager(request):
 		return HttpResponse(json.dumps(postData), content_type='application/json')
 
 
-def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None, node=None):
+# def asyncResults(sess, rep):
+# 	# parse the json storing the result on the reponse object:
+# 	resp.data = resp.json()
+
+
+def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None, node=None, session=None):
 	"""
     Makes call to jchem rest service
     """
@@ -120,11 +127,11 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None
 	elif service == 'convertToSMILES':
 		response = jrest.convertToSMILES(request).content
 	elif service == 'getPchemProps':
-		response = getJchemPropData(chemical, prop, phForLogD, method, sessionid)
+		response = getJchemPropData(chemical, prop, phForLogD, method, sessionid, node, session)
 	return response
 
 
-def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None, node=None):
+def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None, node=None, session=None):
 	"""
 	Calls jchem web services from chemaxon and
 	wraps data in a CTS data object (keys: calc, prop, method, data)
@@ -135,11 +142,11 @@ def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None
 	result = ""
 	if prop == 'water_sol':
 		propObj = jp.getPropObject('solubility')
-		propObj.makeDataRequest(chemical)
+		propObj.makeDataRequest(chemical, None, session)
 		result = propObj.getSolubility()
 	elif prop == 'ion_con':
 		propObj = jp.getPropObject('pKa')
-		propObj.makeDataRequest(chemical)
+		propObj.makeDataRequest(chemical, None, session)
 
 		pkas = propObj.getMostAcidicPka() + propObj.getMostBasicPka()
 		pkas.sort()
@@ -148,11 +155,11 @@ def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None
 		# result = {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}
 	elif prop == 'kow_no_ph':
 		propObj = jp.getPropObject('logP')
-		propObj.makeDataRequest(chemical, method)
+		propObj.makeDataRequest(chemical, method, session)
 		result = propObj.getLogP()
 	elif prop == 'kow_wph':
 		propObj = jp.getPropObject('logD')
-		propObj.makeDataRequest(chemical, method)
+		propObj.makeDataRequest(chemical, method, session)
 		result = propObj.getLogD(phForLogD)
 	else:
 		result = None

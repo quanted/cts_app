@@ -42,6 +42,7 @@ def request_manager(request):
 	calc_data = request.POST.get('checkedCalcsAndProps')
 	structure = request.POST.get("chemical")
 	sessionid = request.POST.get('sessionid')
+	node = request.POST.get('node')
 
 	if calc_data:
 		calc = "test"
@@ -73,7 +74,7 @@ def request_manager(request):
 	test_results = []
 	for prop in props:
 
-		data_obj = {'calc': calc, 'prop':prop}
+		data_obj = {'calc': calc, 'prop':prop, 'node': node}
 
 		try:
 			response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
@@ -87,7 +88,7 @@ def request_manager(request):
 				# data_obj['error'] = "TEST could not process structure"
 				postData['data'] = "TEST could not process structure"
 			else:
-				data_obj['data'] = response_json
+				data_obj['data'] = response_json['properties'][calcObj.propMap[prop]['urlKey']]
 				
 			result_json = json.dumps(data_obj)
 

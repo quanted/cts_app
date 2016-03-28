@@ -15,6 +15,12 @@ from jchem_rest import getStructInfo
 headers = {'Content-Type': 'application/json'}
 
 
+# def asyncResult(session, response):
+#     # this function is called when a pchem result comes
+#     # back from jchem
+#     response.data = response.json()
+
+
 class JchemProperty(object):
     def __init__(self):
         self.propsList = ['pKa', 'isoelectricPoint', 'majorMicrospecies', 'tautomerization', 'stereoisomer']
@@ -60,7 +66,7 @@ class JchemProperty(object):
             logging.warning("error occurred: {}".format(e))
             return None
 
-    def makeDataRequest(self, structure, method=None):
+    def makeDataRequest(self, structure, method=None, session=None):
         url = self.baseUrl + self.url
         self.postData.update({
             "result-display": {
@@ -78,10 +84,12 @@ class JchemProperty(object):
             postData['parameters']['method'] = method
         try:
             response = requests.post(url, data=json.dumps(postData), headers=headers, timeout=60)
+            # future = session.post(url, data=json.dumps(postData), headers=headers, timeout=60, background_callback=asyncResult)
             self.results = json.loads(response.content)
-            logging.info("JCALC RESULTS: {}".format(self.results))
-            logging.info("Type: {}".format(type(self.results)))
-            return response
+            # logging.info("JCALC RESULTS: {}".format(self.results))
+            # logging.info("Type: {}".format(type(self.results)))
+            # return response
+            return
         except ValueError as ve:
             logging.warning("> error decoding json: {}".format(ve))
             raise ValueError("error decoding json")
