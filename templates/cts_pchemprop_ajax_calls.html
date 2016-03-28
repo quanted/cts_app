@@ -90,8 +90,27 @@ function connectToSocket() {
 
     // incoming data pushed to client from redis:
     socket.on('message', function(data) {
-        // if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node
+        calls_tracker--;
+        
         data = JSON.parse(data);
+
+        // expecting node object:
+        if (data['node'] !== null) {
+            node_tracker = data['node'];
+            $("#" + node_tracker.id).children('img').addClass("hasPchemProps"); // highlight node
+
+            // add pchem data to node from graph:
+            addPchemDataToNode(node_tracker, data);
+
+
+            if (calls_tracker <= 0) {
+                // pchem data collected! refresh tree (will this fix node updates?)
+                // st.compute();
+            }
+
+        }
+
+
         if ('props' in data) {
             parseListDataFromResults(data, node_tracker, addDataToTable_tracker);
         }
@@ -153,6 +172,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 
             if (socket) {
                 // emit data through web socket:
+                calls_tracker++;
                 socket.emit('get_data', pchem_data_json)
             }
             else {
@@ -266,7 +286,7 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
 
     // TODO: improve error handling to mitigate error checking like below..
     if (response.hasOwnProperty('error')) { 
-        $(table_cell).html("");
+        // $(table_cell).html("");
         $(table_cell).html(response['error']);
         return;
     }

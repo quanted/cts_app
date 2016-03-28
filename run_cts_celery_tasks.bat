@@ -1,1 +1,1 @@
-celery --app=tasks:app worker --loglevel=info
+python manage.py celery --app=tasks:app worker --loglevel=info

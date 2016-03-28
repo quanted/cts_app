@@ -2,9 +2,7 @@ from __future__ import absolute_import
 import os
 from celery import Celery
 from django.conf import settings
-from celery import shared_task
-from django.conf import settings
-import time
+import logging
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
@@ -26,5 +24,7 @@ def startTESTTask(request_post):
 	# wrap post in django request:
 	request = HttpRequest()
 	request.POST = request_post
+
+	logging.info("Calling TEST request_manager")
 
 	return views.request_manager(request)

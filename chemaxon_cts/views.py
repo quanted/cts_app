@@ -7,6 +7,7 @@ import json
 import redis
 from jchem_calculator import JchemProperty as jp
 from REST.smilesfilter import filterSMILES
+from requests_futures.sessions import FuturesSession
 
 
 # TODO: get these from the to-be-modified jchem_rest class..
@@ -52,22 +53,30 @@ def request_manager(request):
 		chemaxon_results = []
 		for prop in props:
 
-			data_obj = {'calc': calc, 'prop':prop}
+			data_obj = {'calc': calc, 'prop':prop, 'node': node}
 
 			try:
 				if prop == 'kow_wph' or prop == 'kow_no_ph':
 					for method in methods:
-						data_obj = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node)  # returns json string
+						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node)  # returns json string
+						data_obj.update({'data': results['data'], 'method': method})
 						chemaxon_results.append(data_obj)
+
+						# node/redis stuff:
+						if sessionid:
+							result_json = json.dumps(data_obj)
+							r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+							r.publish(sessionid, result_json)
 				else:
-					data_obj = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node)  # returns json string
+					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node)  # returns json string
+					data_obj['data'] = results['data']
 					chemaxon_results.append(data_obj)
 
-				# node/redis stuff:
-				if sessionid:
-					result_json = json.dumps(data_obj)
-					r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-					r.publish(sessionid, result_json)
+					# node/redis stuff:
+					if sessionid:
+						result_json = json.dumps(data_obj)
+						r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+						r.publish(sessionid, result_json)
 
 			except Exception as err:
 				logging.warning("Exception occurred getting chemaxon data: {}".format(err))

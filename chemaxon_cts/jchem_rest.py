@@ -100,6 +100,7 @@ def smilesToImage(request):
     imgScale = request.POST.get('scale')
     imgWidth = request.POST.get('width')
     imgHeight = request.POST.get('height')
+    
     request = {
         "structures": [
             {"structure": smiles}
@@ -107,14 +108,15 @@ def smilesToImage(request):
         "display": {
             "include": ["image"],
             "parameters": {
-                "image": {  # "width": imageWidth,  # "height": imageHeight
-                            "scale": imgScale
-                            }
+                "image": {
+                    "scale": imgScale
+                }
             }
         }
     }
-    if imgHeight != None:
+    if imgHeight:
         request['display']['parameters']['image'].update({"width": imgWidth, "height": imgHeight})
+
     data = json.dumps(request)  # to json string
     url = Urls.jchemBase + Urls.detailUrl
     imgData = web_call(url, request, data)  # get response from jchem ws

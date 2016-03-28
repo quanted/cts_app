@@ -101,7 +101,7 @@ def imgTmpl():
     imgTmpl = """
 	<img class="metabolite" id="{{key|default:""}}"
 		alt="{{smiles}}" src="data:image/png;base64,{{img}}"
-		width="{{width}}" height="{{height}}" /> 
+		width={{width}} height={{height}} /> 
 	"""
     return Template(imgTmpl)
 
@@ -126,8 +126,8 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
     dataProps = {key: None for key in paramKeys}  # metabolite properties
 
     html = '<div id="{}_div" class="nodeWrapDiv"><div class="metabolite_img" style="float:left;">'.format(molKey)
-    # html += nodeWrapper(root['smiles'], None, 250, 100)
-    html += nodeWrapper(root['smiles'], None, 250, 70)
+    html += nodeWrapper(root['smiles'], None, 250, 150)
+    # html += nodeWrapper(root['smiles'], None, 250, 70)  # Molecular Info image, metabolites output
     html += '</div>'
 
     if molKey:

@@ -28,9 +28,10 @@ def request_manager(request):
 	prop = request.POST.get("prop")
 	structure = request.POST.get("chemical")
 	sessionid = request.POST.get('sessionid')
+	node = request.POST.get('node')
 
 	try:
-		props = request.POST.getlist("props[]")  # expecting None if none
+		props = request.POST.get("props[]")  # expecting None if none
 	except AttributeError:
 		props = request.POST.get("props")
 
@@ -64,7 +65,8 @@ def request_manager(request):
 
 		data_obj = {
 			"calc": calc,
-			"prop": prop
+			"prop": prop,
+			'node': node
 		}
 
 		try:

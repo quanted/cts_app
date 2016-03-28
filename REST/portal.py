@@ -78,7 +78,7 @@ def directAllTraffic(request):
 
 		if sessionid:
 			# run TEST as subprocess if node server is up:
-			job = tasks.startTESTTask.delay(calc_request)
+			job = tasks.startTESTTask.delay(pchem_request)  # note: can't send http obj to celery task
 
 			# to return value as http response synchrounously (like if redis is down):
 			# job.get(timeout=180)  # 3min timeout

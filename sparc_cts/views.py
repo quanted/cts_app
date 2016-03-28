@@ -17,7 +17,7 @@ def request_manager(request):
         calc = request.POST.get("calc")
         # props = request.POST.getlist("props[]")
         try:
-            props = request.POST.getlist("props[]")  # expecting None if none
+            props = request.POST.get("props[]")  # expecting None if none
         except AttributeError:
             props = request.POST.get("props")
         structure = request.POST.get("chemical")

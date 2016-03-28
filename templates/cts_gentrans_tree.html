@@ -16,7 +16,7 @@ var labelType, useGradients, nativeTextSupport, animate;
 // ########## Globals!!! #########################
 var currentNode = null; //keeps up with selected node
 var genMax = {{ gen_max }};  // max generation limit
-var st = null; //spacetree object
+var st = null; //spacetree instance globalized
 var json = null;  // spacetree json
 var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
@@ -111,7 +111,7 @@ $('#btn-pchem-getdata').click(function () {
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
     block_ui = true; // initiate blocked UI load window..
 
-    total_calls = calculateTotalCalls(parsedNodeList, checkedCalcsAndProps);  // get total calls (pchemprop_ajax global)
+    // total_calls = calculateTotalCalls(parsedNodeList, checkedCalcsAndProps);  // get total calls (pchemprop_ajax global)
 
     // node_data_list = [];
     // st.graph.eachNode(function(node) {
@@ -157,6 +157,36 @@ function toggleHeaders() {
 }
 
 
+function addPchemDataToNode(node, pchem_data) {
+    for (node_index in st.graph.nodes) {
+        var some_node = st.graph.nodes[node_index];
+        if (some_node.id === node.id) {
+            if (!('pchemprops' in some_node.data)) {
+                some_node.data.pchemprops = [];
+            }
+            
+            delete pchem_data.node;
+
+            var calc_pchem_data = [];
+            for (node_pchemprop in some_node.data.pchemprops){
+                var data_obj = some_node.data.pchemprops[node_pchemprop];
+                if (data_obj['calc'] === pchem_data['calc']) {
+                    calc_pchem_data.push(data_obj);
+                }
+            }
+            for (node_pchemprop in calc_pchem_data) {
+                var data_obj = some_node.data.pchemprops[node_pchemprop];
+                if (data_obj['prop'] === pchem_data['prop']) {
+                    // data already exist!
+                    return;
+                }
+            }
+            some_node.data.pchemprops.push(pchem_data);
+        }
+    }
+}
+
+
 function addGenKey(jsonObj, json) {
     /* Adds genKey to node data. genKey is
      * the numbering scheme for metabolites that
@@ -185,10 +215,10 @@ function addGenKey(jsonObj, json) {
 }
 
 
-function init(){
+function init(json){
 
     //init data
-    json = $.parseJSON($('#hiddenJson').val());
+    // json = $.parseJSON($('#hiddenJson').val());
 
     //attempt at fixing "child-parent" problem. maybe not the best..worked though
     var newChilds = [];
@@ -439,9 +469,6 @@ function getMolecularInfo(node) {
         // loop pchemprops calling parseResponseToPchemTable() (cts_pchemprop_ajax_calls)
         for (var i = 0; i < node.data.pchemprops.length; i++) {
             var response = node.data.pchemprops[i];  // "response" data
-            if (response['data'] != null) { 
-                response['data'].val = response['data'];
-            }
             currentNode = node;  // will only display data for currentNode
             parseResponseToPchemTable(response, node, true, true);
         }
@@ -611,5 +638,8 @@ function jsonRepack(jsonobj) {
 </div>
 
 <script type="text/javascript">
-init();
+$(document).ready(function () {
+    var json = $.parseJSON($('#hiddenJson').val());
+    init(json);
+});
 </script>
