@@ -57,18 +57,18 @@ var Log = {
 
 //"wait" cursor during ajax events
 // NOTE: calls_tracker from pchemprop ajax calls file
-$(document).ajaxStart(function () {
-    if (block_ui) {
-        blockInterface(true);
-    }
-    $('body').addClass('wait');
-}).ajaxComplete(function () {
-    if (calls_tracker == 0) {
-        blockInterface(false);
-        $('body').removeClass('wait');
-        block_ui = false; // reset
-    }
-});
+// $(document).ajaxStart(function () {
+//     if (block_ui) {
+//         blockInterface(true);
+//     }
+//     $('body').addClass('wait');
+// }).ajaxComplete(function () {
+//     if (calls_tracker == 0) {
+//         blockInterface(false);
+//         $('body').removeClass('wait');
+//         block_ui = false; // reset
+//     }
+// });
 
 $('#tabs').click(function(event) {
     tabDisplayLogic(event);
@@ -109,9 +109,12 @@ $('#btn-pchem-getdata').click(function () {
     }
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
-    block_ui = true; // initiate blocked UI load window..
+    // block_ui = true; // initiate blocked UI load window..
+    blockInterface(true);
+    calls_tracker = 0;
 
-    // total_calls = calculateTotalCalls(parsedNodeList, checkedCalcsAndProps);  // get total calls (pchemprop_ajax global)
+    total_calls = calculateTotalCalls(parsedNodeList, checkedCalcsAndProps);  // get total calls (pchemprop_ajax global)
+    calls_tracker = total_calls;
 
     // node_data_list = [];
     // st.graph.eachNode(function(node) {
@@ -167,20 +170,12 @@ function addPchemDataToNode(node, pchem_data) {
             
             delete pchem_data.node;
 
-            var calc_pchem_data = [];
-            for (node_pchemprop in some_node.data.pchemprops){
-                var data_obj = some_node.data.pchemprops[node_pchemprop];
-                if (data_obj['calc'] === pchem_data['calc']) {
-                    calc_pchem_data.push(data_obj);
-                }
-            }
-            for (node_pchemprop in calc_pchem_data) {
-                var data_obj = some_node.data.pchemprops[node_pchemprop];
-                if (data_obj['prop'] === pchem_data['prop']) {
-                    // data already exist!
+            for (pchemprop_obj in some_node.data.pchemprops) {
+                if (Object.is(some_node.data.pchemprops[pchemprop_obj], pchem_data)) {
                     return;
                 }
             }
+
             some_node.data.pchemprops.push(pchem_data);
         }
     }
