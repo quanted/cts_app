@@ -31,7 +31,9 @@ def request_manager(request):
 	node = request.POST.get('node')
 
 	try:
-		props = request.POST.get("props[]")  # expecting None if none
+		props = request.POST.get("props[]")
+		if not props:
+			props = request.POST.getlist("props")
 	except AttributeError:
 		props = request.POST.get("props")
 

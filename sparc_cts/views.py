@@ -17,17 +17,22 @@ def request_manager(request):
         calc = request.POST.get("calc")
         # props = request.POST.getlist("props[]")
         try:
-            props = request.POST.get("props[]")  # expecting None if none
+            props = request.POST.get("props[]")
+            if not props:
+                props = request.POST.getlist("props")
         except AttributeError:
             props = request.POST.get("props")
+
         structure = request.POST.get("chemical")
         sessionid = request.POST.get('sessionid')
+        node = request.POST.get('node')
 
-        logging.info("Incoming data to SPARC: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
+        # logging.info("Incoming data to SPARC: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
 
         post_data = {
             "calc": calc,
-            "props": props
+            "props": props,
+            'node': node
         }
 
 
@@ -75,16 +80,16 @@ def request_manager(request):
 
         prop_map = calcObj.propMap.keys()
         if any(prop in prop_map for prop in props):
-            logging.info("Making SPARC multi property request...")
+            # logging.info("Making SPARC multi property request...")
             multi_response = calcObj.makeDataRequest()
             if 'calculationResults' in multi_response:
                 multi_response = calcObj.parseMultiPropResponse(multi_response['calculationResults'])
                 for prop_obj in multi_response:
-                    logging.info("prop: {}".format(prop_obj['prop']))
+                    # logging.info("prop: {}".format(prop_obj['prop']))
                     if prop_obj['prop'] in props:
                         sparc_results.append(prop_obj)
 
-        logging.info("SPARC RESULTS: {}".format(sparc_results))
+        # logging.info("SPARC RESULTS: {}".format(sparc_results))
 
         post_data.update({'data': sparc_results})
 

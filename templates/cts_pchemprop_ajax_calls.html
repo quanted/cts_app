@@ -90,8 +90,8 @@ function connectToSocket() {
 
     // incoming data pushed to client from redis:
     socket.on('message', function(data) {
-        calls_tracker--;
-        console.log("calls tracker: " + calls_tracker);
+        // calls_tracker--;
+        // console.log("calls tracker: " + calls_tracker);
         
         data = JSON.parse(data);
 
@@ -102,14 +102,6 @@ function connectToSocket() {
 
             // add pchem data to node from graph:
             addPchemDataToNode(node_tracker, data);
-
-
-            if (calls_tracker <= 0) {
-                // pchem data collected! refresh tree (will this fix node updates?)
-                // st.compute();
-                blockInterface(false);
-            }
-
         }
 
 
@@ -123,11 +115,11 @@ function connectToSocket() {
 }
 
 
-function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node, currentNode) {
+function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node, currentNode, nodes) {
     
     if (checkedCalcsAndProps == null) { return; }
 
-    var num_pchem = parseFloat($('#gen-select-pchem').val()); // number of props
+    // var num_pchem = parseFloat($('#gen-select-pchem').val()); // number of props
     var addDataToTable = false; // whether to plot on visible pchem table or not..
 
     // Determine whether data should be inserted into pchem table:
@@ -144,58 +136,44 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     node_tracker = node;
     addDataToTable_tracker = addDataToTable;
 
+    var pchem_data = {};
+
     var pchem_data = {
         'chemical': structure,
         'ph': kowPH,
-        'node': node
+        'node': node,
+        'pchem_request': checkedCalcsAndProps
     };
 
-    // Separate call for each calculator:
-    for (var calc in checkedCalcsAndProps) {
-        if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+    // pchem_data['calc'] = calc;
+    // pchem_data['props'] = checkedCalcsAndProps[calc];  // get list of requested props
 
-            pchem_data['calc'] = calc;
-            pchem_data['props'] = checkedCalcsAndProps[calc];  // get list of requested props
-
-            // var pchem_data_json = JSON.stringify(pchem_data);
-            var cache = [];
-            var pchem_data_json = JSON.stringify(pchem_data, function(key, value) {
-                if (typeof value === 'object' && value !== null) {
-                    if (cache.indexOf(value) !== -1) {
-                        // Circular reference found, discard key
-                        return;
-                    }
-                    // Store value in our collection
-                    cache.push(value);
-                }
-                return value;
-            });
-            cache = null; // Enable garbage collection
-
-            if (socket) {
-                // emit data through web socket:
-                // calls_tracker++;
-                // console.log("calls tracker: " + calls_tracker);
-                socket.emit('get_data', pchem_data_json)
+    // var pchem_data_json = JSON.stringify(pchem_data);
+    var cache = [];
+    var pchem_data_json = JSON.stringify(pchem_data, function(key, value) {
+        if (typeof value === 'object' && value !== null) {
+            if (cache.indexOf(value) !== -1) {
+                // Circular reference found, discard key
+                return;
             }
-            else {
-                // send pchem request through ajax calls, one calc per call:
-                makeTheCall(pchem_data_json, node, addDataToTable);
-            }
-
-            // Add those spinners...(todo: a better way than looping props):
-            for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
-                var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
-                var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
-                if (addDataToTable) { $(tblCell).html(spinner_html); }
-            }
-
+            // Store value in our collection
+            cache.push(value);
         }
+        return value;
+    });
+    cache = null; // Enable garbage collection
+
+    if (socket) {
+        // emit data through web socket:
+        socket.emit('get_data', pchem_data_json)
+    }
+    else {
+        // send pchem request through ajax calls, one calc per call:
+        makeTheCall(pchem_data_json, node, addDataToTable);
     }
 
-
-    // makeTheCall(pchem_data, node, addDataToTable);  // send pchem request to CTS
-
+    // adds spinners to table cells
+    // todo: do this a better way!
     for (var calc in checkedCalcsAndProps) {
         for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
             var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
@@ -280,7 +258,18 @@ function isPchemWorkflow() {
 
 
 function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
-    // Map response to pchemprop output table:
+    // Map response to pchemprop output table.
+    // Every calc-prop data value comes here.
+
+    if (node) {
+        calls_tracker--;
+        console.log("calls tracker: " + calls_tracker);
+
+        if (calls_tracker <= 0) {
+            console.log("All data retrieved!");
+            blockInterface(false);
+        }
+    }
 
     var calc = response['calc'];
     var prop = response['prop'];

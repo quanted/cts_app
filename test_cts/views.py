@@ -35,7 +35,9 @@ def request_manager(request):
 	# prop = request.POST.get("prop")
 
 	try:
-		props = request.POST.get("props[]")  # expecting None if none
+		props = request.POST.get("props[]")
+		if not props:
+			props = request.POST.getlist("props")
 	except AttributeError:
 		props = request.POST.get("props")
 
@@ -77,11 +79,12 @@ def request_manager(request):
 		data_obj = {'calc': calc, 'prop':prop, 'node': node}
 
 		try:
+			logging.info("Calling TEST for {} data...".format(prop))
+
 			response = calcObj.makeDataRequest(filtered_smiles, calc, prop)
-
-
 			response_json = json.loads(response.content)
-			logging.info("response data: ".format(response_json))
+
+			logging.info("TEST response data for {}: {}".format(prop, response_json))
 
 			# sometimes TEST data successfully returns but with an error:
 			if response.status_code != 200:

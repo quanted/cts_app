@@ -104,36 +104,53 @@ $('#btn-pchem-getdata').click(function () {
     //many nodes to get pchemprops for:
     var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
     if (genLevel == 0) {
-        getPchemData(currentNode, checkedCalcsAndProps, kowPH); // pchemprops only for selected metabolite..
+        total_calls = calculateTotalCalls([1], checkedCalcsAndProps);
+        console.log("starting with " + total_calls + " calls");
+        calls_tracker = total_calls;
+        // getPchemData(currentNode, checkedCalcsAndProps, kowPH); // pchemprops only for selected metabolite..
+        startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
         return;
     }
 
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);  // num nodes/depth up to genLevel
-    // block_ui = true; // initiate blocked UI load window..
+
     blockInterface(true);
-    calls_tracker = 0;
 
     total_calls = calculateTotalCalls(parsedNodeList, checkedCalcsAndProps);  // get total calls (pchemprop_ajax global)
+    console.log("starting with " + total_calls + " calls");
     calls_tracker = total_calls;
 
-    // node_data_list = [];
+    nodes = [];
+    for (node in st.graph.nodes) {
+        nodes.push(node.data);
+    }
+    // getPchemData(nodes, checkedCalcsAndProps, kowPH);
+    startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
+
+
+    // if (!nodes) {
+    //     $('.gentransError').show();
+    //     return;
+    // }
+
+    // var smiles = node.data['smiles'];
+
+    // if (smiles == "") {
+    //     $('.gentransError').show();
+    //     return;
+    // }
+    // else { $('.gentransError').hide(); }
+
+
+
     // st.graph.eachNode(function(node) {
     //     // node must be within depth of parsedNodeList.length - 1
     //     if (node._depth < parsedNodeList.length) {
-    //         node_data_list.push(node.data);
+    //         // callsTracker += 1;  // inc calls tracker for blocking ui
+    //         // console.log("inc tracker: " + callsTracker);
+    //         getPchemData(node, checkedCalcsAndProps, kowPH);
     //     }
     // });
-
-    // startPchemPropDataCollection(node_data_list, checkedCalcsAndProps, kowPH, st.graph.nodes['1'], currentNode);
-
-    st.graph.eachNode(function(node) {
-        // node must be within depth of parsedNodeList.length - 1
-        if (node._depth < parsedNodeList.length) {
-            // callsTracker += 1;  // inc calls tracker for blocking ui
-            // console.log("inc tracker: " + callsTracker);
-            getPchemData(node, checkedCalcsAndProps, kowPH);
-        }
-    });
 
 });
 
@@ -472,29 +489,28 @@ function getMolecularInfo(node) {
 }
 
 
-function getPchemData(node, checkedCalcsAndProps, kowPH) {
+// function getPchemData(nodes, checkedCalcsAndProps, kowPH) {
 
-    // TODO: Check if metabolite already has pchem data before making call *******
+//     // TODO: Check if metabolite already has pchem data before making call *******
 
-    if (!node) {
-        $('.gentransError').show();
-        return;
-    }
+//     if (!nodes) {
+//         $('.gentransError').show();
+//         return;
+//     }
 
-    var smiles = node.data['smiles'];
+//     // var smiles = node.data['smiles'];
 
-    // Return if no metabolite selected, i.e., null smiles, mass, etc. values
-    // "Must select (right-click) a metabolite first to get pchemprops"
-    if (smiles == "") {
-        $('.gentransError').show();
-        return;
-    }
-    else { $('.gentransError').hide(); }
+//     // Return if no metabolite selected, i.e., null smiles, mass, etc. values
+//     // "Must select (right-click) a metabolite first to get pchemprops"
+//     if (smiles == "") {
+//         $('.gentransError').show();
+//         return;
+//     }
+//     else { $('.gentransError').hide(); }
 
-
-    startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
+//     startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
  
-}
+// }
 
 
 function addImageToMolInfo(node) {

@@ -39,8 +39,9 @@ def request_manager(request):
 	calc = request.POST.get('calc')
 
 	try:
-		# props = request.POST.getlist("props[]")  # expecting None if none
 		props = request.POST.get("props[]")
+		if not props:
+			props = request.POST.getlist("props")
 	except AttributeError:
 		props = request.POST.get("props")
 
@@ -64,21 +65,21 @@ def request_manager(request):
 						data_obj.update({'data': results['data'], 'method': method})
 						chemaxon_results.append(data_obj)
 
-						# node/redis stuff:
-						if sessionid:
-							result_json = json.dumps(data_obj)
-							r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-							r.publish(sessionid, result_json)
+						# # node/redis stuff:
+						# if sessionid:
+						# 	result_json = json.dumps(data_obj)
+						# 	r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+						# 	r.publish(sessionid, result_json)
 				else:
 					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
 					data_obj['data'] = results['data']
 					chemaxon_results.append(data_obj)
 
-					# node/redis stuff:
-					if sessionid:
-						result_json = json.dumps(data_obj)
-						r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-						r.publish(sessionid, result_json)
+					# # node/redis stuff:
+					# if sessionid:
+					# 	result_json = json.dumps(data_obj)
+					# 	r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+					# 	r.publish(sessionid, result_json)
 
 			except Exception as err:
 				logging.warning("Exception occurred getting chemaxon data: {}".format(err))
@@ -96,11 +97,6 @@ def request_manager(request):
 		postData.update({'data': chemaxon_results})  # list of data objects (keys: calc, prop, data)
 
 		return HttpResponse(json.dumps(postData), content_type='application/json')
-
-
-# def asyncResults(sess, rep):
-# 	# parse the json storing the result on the reponse object:
-# 	resp.data = resp.json()
 
 
 def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None, node=None, session=None):

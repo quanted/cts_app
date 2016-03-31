@@ -11,16 +11,14 @@ from epi_cts import views as epi_views
 from sparc_cts import views as sparc_views
 from test_cts import views as test_views
 from measured_cts import views as measured_views
-from nodejs_cts import views as nodejs_views
 from smilesfilter import is_valid_smiles
-
 import json
 import logging
-import redis
-from celery import Celery
 import tasks  # CTS tasks.py
+import redis
 
-import os
+
+# test_queue_listener = tasks.startTESTQueueListener.delay()  # always listening for pchem request publishing
 
 
 # @csrf_exempt
@@ -37,59 +35,56 @@ def directAllTraffic(request):
 
 	pchem_request['sessionid'] = sessionid  # add sessionid to request obj
 
-	# check for list of nodes for looping node calls 
-	# BUT REMEMBER THAT LONG CALLS FROM THE BROWSER TO BACKEND CAN TIMEOUT AND
-	# BE SENSITIVE (that's what started the many ajax call method in the first place)
+	# pchem_request['pchem_request'] is checkedCalcsAndProps,
+	pchem_request_dict = pchem_request['pchem_request']
 
-	# After parsing json string, wrap request with HttpRequest object for calc views:
-	calc_request = HttpRequest()
-	calc_request.POST = pchem_request
+	# loop calcs and run them as separate processes:
+	for calc, props in pchem_request_dict.items():
 
+		logging.info("portal receiving web service: {}".format(calc))
 
+		pchem_request.update({'calc': calc, 'props': props})
 
-	# webservice = request.POST.get('calc')
-	webservice = pchem_request['calc']  # TODO: see if smiles fiter gets called from here with Chemical Editor!!
+		# After parsing json string, wrap request with HttpRequest object for calc views:
+		calc_request = HttpRequest()
+		calc_request.POST = pchem_request
 
+		if calc == 'validateSMILES':
+			chemical = calc_request.POST.get('chemical')
+			json_results = json.dumps(is_valid_smiles(chemical))  # returns python dict
+			# return HttpResponse(json_results, content_type='application/json')
+			# return HttpResponse(json.dumps({'isValid': isValid}), content_type='application/json')
 
+		elif calc == 'chemaxon':
+			logging.info('directing to jchem..')
+			# job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue="chemaxon")  # add job to TEST queue
+			# return HttpResponse("Chemaxon job started!")
+			chemaxon_views.request_manager(calc_request)
 
-	logging.info("portal receiving web service: {}".format(webservice))
+		# elif calc == 'epi':
+		# 	logging.info('directing to epi..')
+		# 	job = tasks.startEPITask.apply_async(args=[pchem_request], queue="EPI")  # add job to TEST queue
+		# 	# return HttpResponse("SPARC job started!")
+		# 	# return epi_views.request_manager(calc_request)
 
-	if webservice == 'validateSMILES':
-		chemical = calc_request.POST.get('chemical')
-		json_results = json.dumps(is_valid_smiles(chemical))  # returns python dict
-		return HttpResponse(json_results, content_type='application/json')
-		# return HttpResponse(json.dumps({'isValid': isValid}), content_type='application/json')
+		# elif calc == 'sparc':
+		# 	logging.info('directing to sparc..')
+		# 	job = tasks.startSPARCTask.apply_async(args=[pchem_request], queue="SPARC")  # add job to TEST queue
+		# 	# return HttpResponse("SPARC job started!")
+		# 	# return sparc_views.request_manager(calc_request)
 
-	elif webservice == 'chemaxon':
-		logging.info('directing to jchem..')
-		return chemaxon_views.request_manager(calc_request)
+		elif calc == 'test':
+			logging.info('directing to test..')
+			job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue="test")  # add job to TEST queue
+			# logging.info("TEST job started: {}".format(job))
+			# return HttpResponse("TEST job started!")
 
-	elif webservice == 'epi':
-		logging.info('directing to epi..')
-		return epi_views.request_manager(calc_request)
+		# elif calc == 'measured':
+		# 	logging.info('directing to measured..')
+		# 	job = tasks.startMeasuredTask.apply_async(args=[pchem_request], queue="TEST")  # add job to TEST queue
+		# 	# return measured_views.request_manager(calc_request)
 
-	elif webservice == 'sparc':
-		logging.info('directing to sparc..')
-		return sparc_views.request_manager(calc_request)
-
-	elif webservice == 'test':
-
-		logging.info('directing to test..')
-
-		if sessionid:
-			# run TEST as subprocess if node server is up:
-			job = tasks.startTESTTask.delay(pchem_request)  # note: can't send http obj to celery task
-
-			# to return value as http response synchrounously (like if redis is down):
-			# job.get(timeout=180)  # 3min timeout
-
-			logging.info("TEST job started: {}".format(job))
-			return HttpResponse("TEST job started")
 		else:
-			return test_views.request_manager(calc_request)
+			return HttpResponse("error: service requested does not exist")
 
-	elif webservice == 'measured':
-		return measured_views.request_manager(calc_request)
-
-	else:
-		return HttpResponse("error: service requested does not exist")
+	return HttpResponse("Calculator tasks started!")
