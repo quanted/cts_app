@@ -17,6 +17,8 @@ services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMIL
 
 methods = ['KLOP', 'VG', 'PHYS']
 
+redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
+
 
 def request_manager(request):
 	"""
@@ -61,42 +63,47 @@ def request_manager(request):
 			try:
 				if prop == 'kow_wph' or prop == 'kow_no_ph':
 					for method in methods:
+						
 						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
 						data_obj.update({'data': results['data'], 'method': method})
-						chemaxon_results.append(data_obj)
 
-						# # node/redis stuff:
-						# if sessionid:
-						# 	result_json = json.dumps(data_obj)
-						# 	r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-						# 	r.publish(sessionid, result_json)
+						if redis_conn:
+							result_json = json.dumps(data_obj)
+							redis_conn.publish(sessionid, result_json)
+						else:
+							chemaxon_results.append(data_obj)
+
 				else:
 					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
-					data_obj['data'] = results['data']
-					chemaxon_results.append(data_obj)
+					data_obj.update({'data': results['data']})
 
-					# # node/redis stuff:
-					# if sessionid:
-					# 	result_json = json.dumps(data_obj)
-					# 	r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-					# 	r.publish(sessionid, result_json)
+					if redis_conn:
+						result_json = json.dumps(data_obj)
+						redis_conn.publish(sessionid, result_json)
+					else:
+						chemaxon_results.append(data_obj)
 
 			except Exception as err:
 				logging.warning("Exception occurred getting chemaxon data: {}".format(err))
+				logging.info("session id: {}".format(sessionid))
+
 				data_obj.update({'error': "cannot reach chemaxon calculator"})
 
-				logging.info("##### session id: {}".format(sessionid))
-
-				# node/redis stuff:
-				if sessionid: 
-					r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-					r.publish(sessionid, json.dumps(data_obj))
+				if redis_conn: 
+					redis_conn.publish(sessionid, json.dumps(data_obj))
 				else:
 					chemaxon_results.append(data_obj)
 
-		postData.update({'data': chemaxon_results})  # list of data objects (keys: calc, prop, data)
+		# pack up all results to send at once if using http:
+		postData.update({'data': chemaxon_results})
 
-		return HttpResponse(json.dumps(postData), content_type='application/json')
+		if not redis_conn:
+			return HttpResponse(json.dumps(postData), content_type='application/json')
+
+
+# def asyncResults(sess, rep):
+# 	# parse the json storing the result on the reponse object:
+# 	resp.data = resp.json()
 
 
 def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None, node=None, session=None):
@@ -166,3 +173,40 @@ def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None
 		resultDict['method'] = method
 
 	return resultDict
+
+
+
+
+
+# if not props:
+# 	postData.update({'error': "error receiving requested properties"})
+# 	HttpResponse(json.dumps(postData))
+
+# session = FuturesSession()  # begin a session
+
+# for prop in props:
+
+# 	data_obj = {
+# 		'calc': calc,
+# 		'prop': prop,
+# 	}
+
+# 	try:
+# 		if prop == 'kow_wph' or prop == 'kow_no_ph':
+# 			for method in methods:
+# 				results = sendRequestToJchemCalculator("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
+# 		else:
+# 			results = sendRequestToJchemCalculator("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
+
+# 	except Exception as err:
+# 		logging.warning("Exception occurred getting chemaxon data: {}".format(err))
+# 		logging.info("session id: {}".format(sessionid))
+
+# 		# TODO: More verbose error handling
+# 		data_obj.update({'error': "cannot reach chemaxon calculator"})
+# 		result_json = json.dumps(data_obj)
+
+# 		if redis_conn:
+# 			redis_conn.publish(sessionid, result_json)  # nodejs will push data to user..
+# 		else:
+# 			HttpResponse(result_json, content_type='application/json')  # otherwise, send through http

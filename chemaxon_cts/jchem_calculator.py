@@ -11,14 +11,28 @@ import json
 import logging
 import os
 from jchem_rest import getStructInfo
+# import redis
+
 
 headers = {'Content-Type': 'application/json'}
+
+# redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 # def asyncResult(session, response):
 #     # this function is called when a pchem result comes
 #     # back from jchem
 #     response.data = response.json()
+
+#     if redis_conn:
+#         redis_conn.publish(sessionid, )
+
+#     # chemaxon views gets data out based on prop, so
+#     # call that when things come back!!!
+
+
+
+
 
 
 class JchemProperty(object):
@@ -84,12 +98,11 @@ class JchemProperty(object):
             postData['parameters']['method'] = method
         try:
             response = requests.post(url, data=json.dumps(postData), headers=headers, timeout=60)
+
+            # async call to jchem, callback at asyncResult():
             # future = session.post(url, data=json.dumps(postData), headers=headers, timeout=60, background_callback=asyncResult)
             self.results = json.loads(response.content)
-            # logging.info("JCALC RESULTS: {}".format(self.results))
-            # logging.info("Type: {}".format(type(self.results)))
-            # return response
-            return
+            # return
         except ValueError as ve:
             logging.warning("> error decoding json: {}".format(ve))
             raise ValueError("error decoding json")
@@ -417,14 +430,6 @@ class LogD(JchemProperty):
         self.name = 'logD'
         self.url = '/webservices/rest-v0/util/calculate/logD'
         self.methods = ['KLOP', 'VG', 'PHYS', 'WEIGHTED']
-        # if not method:
-        #     # default to WEIGHTED..
-        #     logging.info("using WEIGHTED method for logD..")
-        #     method = self.methods[3]
-        # if not (method in self.methods): 
-        #     key_err = "method {} not recognized as a method for logD ({}).."
-        #     logging.warning(key_err.format(method, self.methods))
-        #     raise KeyError(key_err.format(method, self.methods))
         self.postData = {
             "pHLower": 0.0,
             "pHUpper": 14.0,
