@@ -97,7 +97,8 @@ def request_manager(request):
 		# pack up all results to send at once if using http:
 		postData.update({'data': chemaxon_results})
 
-		if not redis_conn:
+		if not redis_conn and not sessionid:
+			# send response over http (for accessing as REST service)
 			return HttpResponse(json.dumps(postData), content_type='application/json')
 
 

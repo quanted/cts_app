@@ -11,11 +11,8 @@ from celery import Celery
 from django.conf import settings
 import redis
 
-# celery stuff:
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
-app = Celery('cts_tasks', broker='redis://localhost:6379/0')
-app.config_from_object('django.conf:settings')
-app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
+redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
 def request_manager(request):
@@ -88,7 +85,6 @@ def request_manager(request):
 
 			# sometimes TEST data successfully returns but with an error:
 			if response.status_code != 200:
-				# data_obj['error'] = "TEST could not process structure"
 				postData['data'] = "TEST could not process structure"
 			else:
 				data_obj['data'] = response_json['properties'][calcObj.propMap[prop]['urlKey']]
@@ -96,31 +92,20 @@ def request_manager(request):
 			result_json = json.dumps(data_obj)
 
 			# node/redis stuff:
-			if sessionid:
-				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-				r.publish(sessionid, result_json)
+			if redis_conn and sessionid:
+				redis_conn.publish(sessionid, result_json)
 			else:
 				test_results.append(data_obj)
 
-		except requests.HTTPError as e:
-			logging.info("HTTPError occurred getting TEST data: {}: {}".format(e.code, e.message))
-			if e.code == 408:
-				data_obj.update({'error': "data request timed out"})
-			elif e.code == 500 or e.code == 404:
-				data_obj.update({'error': "cannot reach TEST calculator"})
-			else:
-				data_obj.update({'error': e.message})
-			# return HttpResponse(json.dumps(data_obj), content_type='application/json')
 		except Exception as err:
 			logging.warning("Exception occurred getting TEST data: {}".format(err))
-			data_obj.update({'error': "cannot reach TEST calculator"})
+			data_obj.update({'error': "data request timed out"})
 
 			logging.info("##### session id: {}".format(sessionid))
 
 			# node/redis stuff:
-			if sessionid: 
-				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-				r.publish(sessionid, json.dumps(data_obj))
+			if redis_conn and sessionid: 
+				redis_conn.publish(sessionid, json.dumps(data_obj))
 			else:
 				test_results.append(data_obj)
 

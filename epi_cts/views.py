@@ -12,6 +12,9 @@ from epi_calculator import EpiCalc
 from REST.smilesfilter import parseSmilesByCalculator
 
 
+redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+
 def request_manager(request):
 	"""
 	  less_simple_proxy takes a request and
@@ -76,36 +79,26 @@ def request_manager(request):
 			data_obj.update({"data": json.loads(response.content)}) # add that data
 
 			# node/redis stuff:
-			if sessionid:
+			if redis_conn and sessionid:
 				result_json = json.dumps(data_obj)
-				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-				r.publish(sessionid, result_json)
+				redis_conn.publish(sessionid, result_json)
 			else:
-				# if node ain't there, append to data list and send as HttpResponse:
 				epi_results.append(data_obj)
 
 		except Exception as err:
-			logging.warning("Exception occurred getting TEST data: {}".format(err))
-			data_obj.update({'error': "cannot reach TEST calculator"})
+			logging.warning("Exception occurred getting {} data: {}".format(err, calc))
+			data_obj.update({'error': "cannot reach {} calculator".format(calc)})
 
 			logging.info("##### session id: {}".format(sessionid))
 
 			# node/redis stuff:
-			if sessionid: 
-				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-				r.publish(sessionid, json.dumps(data_obj))
+			if redis_conn and sessionid: 
+				redis_conn.publish(sessionid, json.dumps(data_obj))
 			else:
 				epi_results.append(data_obj)
 
 	postData.update({'data': epi_results})
 
-	return HttpResponse(json.dumps(postData), content_type='application/json')
-
-	# except requests.HTTPError as e:
-	# 	logging.warning("HTTP Error occurred: {}".format(e))
-	# 	return HttpResponse(EPI_URL+e.msg, status=e.code, content_type='text/plain')
-
-	# except ValueError as ve:
-	# 	logging.warning("POST data is incorrect: {}".format(ve))
-	# 	postData.update({"error": "value error"})
-	# 	return HttpResponse(json.dumps(postData), content_type='application/json')
+	if not redis_conn and not sessionid:
+		# send response over http (for accessing as REST service)
+		return HttpResponse(json.dumps(postData), content_type='application/json')

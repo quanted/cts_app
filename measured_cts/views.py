@@ -11,6 +11,8 @@ import redis
 from REST.smilesfilter import parseSmilesByCalculator
 
 
+redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
+
 
 def request_manager(request):
 
@@ -58,13 +60,10 @@ def request_manager(request):
 			data_obj = calcObj.getPropertyValue(prop, measured_data)
 			data_obj.update({'node': node})
 
-			# node/redis stuff:
-			if sessionid:
+			if redis_conn and sessionid:
 				result_json = json.dumps(data_obj)
-				r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-				r.publish(sessionid, result_json)
+				redis_conn.publish(sessionid, result_json)
 			else:
-				# if node ain't there, append to data list and send as HttpResponse:
 				measured_results.append(data_obj)
 
 	except Exception as err:
@@ -80,12 +79,11 @@ def request_manager(request):
 
 		post_data.update({'data': measured_results})
 
-		# node/redis stuff:
-		if sessionid: 
-			r = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
-			r.publish(sessionid, json.dumps(post_data))
+		if redis_conn and sessionid: 
+			redis_conn.publish(sessionid, json.dumps(post_data))
+		else:
+			HttpResponse(json.dumps(post_data), content_type='application/json')
 
+	if not redis_conn and not sessionid:
+		post_data.update({'data': measured_results})
 		return HttpResponse(json.dumps(post_data), content_type='application/json')
-
-	post_data.update({'data': measured_results})
-	return HttpResponse(json.dumps(post_data), content_type='application/json')
