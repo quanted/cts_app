@@ -60,19 +60,21 @@ io.sockets.on('connection', function (socket) {
             message: JSON.stringify(values)
         });
 
-        callCTSNodeAPI(query);
+        passRequestToCTS(query);
 
     });
 
     socket.on('disconnect', function () {
-        console.log("client " + socket.id + " disconnected..");
+        console.log("user " + socket.id + " disconnected..");
         client.unsubscribe(socket.id); // unsubscribe from channel
-        console.log("client " + socket.id + " unsubscribed from redis channel..");
+        console.log("user " + socket.id + " unsubscribed from redis channel..");
+        // clear user's requests from redis queues:
+        
     });
 
 });
 
-function callCTSNodeAPI (values) {
+function passRequestToCTS (values) {
     var options = {
         host: 'localhost',
         port: 8000,
