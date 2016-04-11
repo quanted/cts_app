@@ -51,6 +51,11 @@ $(document).ready(function() {
         startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null);
     });
 
+    // TODO: Cancel button, which removes pending tasks from celery queues:
+    $('#btn-pchem-cancel').on('click', function () {
+        socket.emit('get_data', JSON.stringify({'cancel': true}));
+    });
+
 });
 
 

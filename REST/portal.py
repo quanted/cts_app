@@ -16,6 +16,7 @@ import json
 import logging
 import tasks  # CTS tasks.py
 import redis
+import cts_celery_monitor
 
 
 redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -35,8 +36,16 @@ def directAllTraffic(request):
 
 	pchem_request['sessionid'] = sessionid  # add sessionid to request obj
 
+
+	# check for cancel request:
+	if 'cancel' in pchem_request.keys():
+		cts_celery_monitor.removeUserJobsFromQueue(sessionid)
+
+
 	# pchem_request['pchem_request'] is checkedCalcsAndProps,
 	pchem_request_dict = pchem_request['pchem_request']
+
+	user_jobs = []
 
 	# loop calcs and run them as separate processes:
 	for calc, props in pchem_request_dict.items():
@@ -50,7 +59,8 @@ def directAllTraffic(request):
 
 		try:
 			job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc)  # put job on calc queue
-		
+			user_jobs.append(job.id)
+
 		except Exception as error:
 			logging.warning("error requesting {} props from {} calculator..\n {}".format(props, calc, error))
 			if redis_conn and sessionid:
@@ -62,5 +72,8 @@ def directAllTraffic(request):
 				redis_conn.publish(sessionid, json.dumps(error_response))
 			else:
 				return HttpResponse(json.dumps(error_response), content_type='application/json')
+
+	# do this at views level:
+	# cts_celery_monitor.storeUserJobsToRedis(sessionid, user_jobs)
 
 	return HttpResponse("Calculator tasks started!")

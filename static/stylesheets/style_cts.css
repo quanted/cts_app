@@ -1650,6 +1650,8 @@ for nodes on gentrans output */
 
 .btn-pchem {
   float: right;
+  /*padding: 4px;*/
+  margin-left: 4px;
 }
 
 #btn-pchem-getdata.btn-pchem {

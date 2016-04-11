@@ -52,7 +52,7 @@ def request_manager(request):
 		'props': props
 	}
 
-	session = FuturesSession()
+	# session = FuturesSession()
 
 	if props:
 		chemaxon_results = []
@@ -93,6 +93,10 @@ def request_manager(request):
 					redis_conn.publish(sessionid, json.dumps(data_obj))
 				else:
 					chemaxon_results.append(data_obj)
+
+
+		redis_conn.delete(sessionid)  # clear user's job cache from redis
+
 
 		# pack up all results to send at once if using http:
 		postData.update({'data': chemaxon_results})
@@ -174,40 +178,3 @@ def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None
 		resultDict['method'] = method
 
 	return resultDict
-
-
-
-
-
-# if not props:
-# 	postData.update({'error': "error receiving requested properties"})
-# 	HttpResponse(json.dumps(postData))
-
-# session = FuturesSession()  # begin a session
-
-# for prop in props:
-
-# 	data_obj = {
-# 		'calc': calc,
-# 		'prop': prop,
-# 	}
-
-# 	try:
-# 		if prop == 'kow_wph' or prop == 'kow_no_ph':
-# 			for method in methods:
-# 				results = sendRequestToJchemCalculator("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
-# 		else:
-# 			results = sendRequestToJchemCalculator("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
-
-# 	except Exception as err:
-# 		logging.warning("Exception occurred getting chemaxon data: {}".format(err))
-# 		logging.info("session id: {}".format(sessionid))
-
-# 		# TODO: More verbose error handling
-# 		data_obj.update({'error': "cannot reach chemaxon calculator"})
-# 		result_json = json.dumps(data_obj)
-
-# 		if redis_conn:
-# 			redis_conn.publish(sessionid, result_json)  # nodejs will push data to user..
-# 		else:
-# 			HttpResponse(result_json, content_type='application/json')  # otherwise, send through http

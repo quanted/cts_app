@@ -115,6 +115,7 @@ def output_pchem_table(pchemprop_obj):
         <br>
         <input type="button" value="Get data" class="submit input_button btn-pchem" id="btn-pchem-data">
         <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
+        <input type="button" value="Cancel" class="input_button btn-pchem" id="btn-pchem-cancel">
         <br>
         <p class="gentransError">Must right-click a metabolite first</p>
         <p class="selectNodeForData">Select (right-click) a node to view p-chem data</p>
