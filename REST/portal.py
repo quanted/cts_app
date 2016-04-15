@@ -3,15 +3,7 @@ Routes calls from the browser to the proper
 webservices proxy (i.e., test-cts or jchem_rest).
 """
 
-import requests
 from django.http import HttpResponse, HttpRequest
-from django.views.decorators.csrf import csrf_exempt
-from chemaxon_cts import views as chemaxon_views
-from epi_cts import views as epi_views
-from sparc_cts import views as sparc_views
-from test_cts import views as test_views
-from measured_cts import views as measured_views
-from smilesfilter import is_valid_smiles
 import json
 import logging
 import tasks  # CTS tasks.py
@@ -36,14 +28,16 @@ def directAllTraffic(request):
 
 	pchem_request['sessionid'] = sessionid  # add sessionid to request obj
 
+	# pchem_request['pchem_request'] is checkedCalcsAndProps,
+	pchem_request_dict = pchem_request['pchem_request']
 
 	# check for cancel request:
 	if 'cancel' in pchem_request.keys():
-		cts_celery_monitor.removeUserJobsFromQueue(sessionid)
-
-
-	# pchem_request['pchem_request'] is checkedCalcsAndProps,
-	pchem_request_dict = pchem_request['pchem_request']
+		# default queue:
+		tasks.removeUserJobsFromQueue.apply_async(args=[sessionid, pchem_request_dict], queue="manager")
+		# tasks.removeUserJobsFromRedis.apply_async(args=[sessionid], queue="manager")
+		# return "success" or "failure" response
+		return HttpResponse(json.dumps({'status': "clearing user jobs from queues and redis"}), content_type='application/json')
 
 	user_jobs = []
 
@@ -58,7 +52,9 @@ def directAllTraffic(request):
 		logging.info("requesting {} props from {} calculator..".format(props, calc))
 
 		try:
-			job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc)  # put job on calc queue
+			# put job on calc queue:
+			# job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc, link=tasks.cleanQueues.s(sessionid))
+			job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc)
 			user_jobs.append(job.id)
 
 		except Exception as error:
@@ -75,5 +71,7 @@ def directAllTraffic(request):
 
 	# do this at views level:
 	# cts_celery_monitor.storeUserJobsToRedis(sessionid, user_jobs)
+	logging.info("caching jobs on redis")
+	redis_conn.set(sessionid, json.dumps({'jobs': user_jobs}))
 
 	return HttpResponse("Calculator tasks started!")

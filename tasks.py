@@ -5,6 +5,10 @@ from django.conf import settings
 import logging
 import redis
 import importlib
+import json
+
+
+redis_conn = redis.StrictRedis(host='localhost', port='6379', db=0)
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
@@ -40,3 +44,31 @@ def startCalcTask(calc, request_post):
 	logging.info("Calling {} request_manager as celery task!".format(calc))
 
 	return calc_views.request_manager(request)
+
+
+@app.task
+def removeUserJobsFromQueue(sessionid, pchem_request_dict):
+	"""
+	call flower server to stop user's queued jobs.
+	expects user_jobs as list
+	"""
+	from REST import cts_celery_monitor
+
+	logging.info("clearing celery task queues..")
+	cts_celery_monitor.removeUserJobsFromQueue(sessionid, pchem_request_dict)  # clear jobs from celery
+	logging.info("clearing redis cache..")
+	cts_celery_monitor.removeUserJobsFromRedis(sessionid)  # clear jobs from redis
+
+
+# @app.task
+# def removeUserJobsFromRedis(sessionid):
+# 	"""
+# 	call flower server to stop user's queued jobs.
+# 	expects user_jobs as list
+# 	"""
+# 	from REST import cts_celery_monitor
+
+# 	logging.info("inside clear redis task!!!")
+# 	cts_celery_monitor.removeUserJobsFromRedis(sessionid)
+
+# 	# return

@@ -124,33 +124,8 @@ $('#btn-pchem-getdata').click(function () {
     for (node in st.graph.nodes) {
         nodes.push(node.data);
     }
-    // getPchemData(nodes, checkedCalcsAndProps, kowPH);
+
     startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
-
-
-    // if (!nodes) {
-    //     $('.gentransError').show();
-    //     return;
-    // }
-
-    // var smiles = node.data['smiles'];
-
-    // if (smiles == "") {
-    //     $('.gentransError').show();
-    //     return;
-    // }
-    // else { $('.gentransError').hide(); }
-
-
-
-    // st.graph.eachNode(function(node) {
-    //     // node must be within depth of parsedNodeList.length - 1
-    //     if (node._depth < parsedNodeList.length) {
-    //         // callsTracker += 1;  // inc calls tracker for blocking ui
-    //         // console.log("inc tracker: " + callsTracker);
-    //         getPchemData(node, checkedCalcsAndProps, kowPH);
-    //     }
-    // });
 
 });
 
@@ -489,30 +464,6 @@ function getMolecularInfo(node) {
 }
 
 
-// function getPchemData(nodes, checkedCalcsAndProps, kowPH) {
-
-//     // TODO: Check if metabolite already has pchem data before making call *******
-
-//     if (!nodes) {
-//         $('.gentransError').show();
-//         return;
-//     }
-
-//     // var smiles = node.data['smiles'];
-
-//     // Return if no metabolite selected, i.e., null smiles, mass, etc. values
-//     // "Must select (right-click) a metabolite first to get pchemprops"
-//     if (smiles == "") {
-//         $('.gentransError').show();
-//         return;
-//     }
-//     else { $('.gentransError').hide(); }
-
-//     startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
- 
-// }
-
-
 function addImageToMolInfo(node) {
     var nodeHTML = $.parseHTML(node.data.html);
     var nodeImage = $(nodeHTML).children('div.metabolite_img');
@@ -567,37 +518,6 @@ function tabDisplayLogic(event) {
         else { $(divs).hide(); }
 
     }
-}
-
-
-function calculateTotalCalls(nodes_list, checkedCalcsAndProps) {
-    // get max calls for progress bar (max metabolites + calcs + props + any methods):
-    
-    var num_nodes = 0;
-    for (var i = 0; i < nodes_list.length; i++) {
-        num_nodes += nodes_list[i];
-    }
-
-    var num_props = 0;
-    for (calc in checkedCalcsAndProps) {
-        if (checkedCalcsAndProps.hasOwnProperty(calc)) {
-            var props = checkedCalcsAndProps[calc];
-            for (var i = 0; i < props.length; i ++) {
-                var prop = props[i];
-                if (calc == "chemaxon") { 
-                    if (prop == 'kow_no_ph' || prop == 'kow_wph') { 
-                        num_props += 3;  // these chemaxon props have 3 methods
-                    }
-                    else { num_props += 1; }
-                }
-                else { num_props += 1; }
-            }
-        }
-    }
-
-    var total_calls = num_nodes * num_props;
-    return total_calls;
-
 }
 
 

@@ -40,8 +40,6 @@ $(document).ready(function() {
 
     // Get Data button (pchem workflow) for gathering pchem props:
     $('#btn-pchem-data').on('click', function() {
-
-        // quick check for kow ph range:
         if (socket) {
             socket.disconnect();
         }
@@ -53,13 +51,12 @@ $(document).ready(function() {
 
     // TODO: Cancel button, which removes pending tasks from celery queues:
     $('#btn-pchem-cancel').on('click', function () {
-        socket.emit('get_data', JSON.stringify({'cancel': true}));
+        socket.emit('get_data', JSON.stringify({'cancel': true, 'pchem_request': checkedCalcsAndProps}));
     });
 
 });
 
 
-// {'calc1': ['prop1', 'prop2'], 'calc2': ['prop']}
 function buildCheckedCalcsAndProps () {
     // front end way to get checkedCalcsAndProps without
     // calling cts-jchem rest
@@ -99,6 +96,13 @@ function connectToSocket() {
         // console.log("calls tracker: " + calls_tracker);
         
         data = JSON.parse(data);
+
+        if ('status' in data) {
+            // either display in requested table cells, or popup message:
+            alert(data.status);  // display status to user
+            $('#pchemprop_table td').not('td.colorKey, th').html('');  // clear p-chem table
+            return;
+        }
 
         // expecting node object:
         if (data['node'] !== null) {
@@ -368,6 +372,34 @@ function organizeData(calc, prop, data) {
         }
     }
     return parsedData;
+}
+
+
+function calculateTotalCalls(nodes_list, checkedCalcsAndProps) {
+    // get max calls for progress bar (max metabolites + calcs + props + any methods):
+    var num_nodes = 0;
+    for (var i = 0; i < nodes_list.length; i++) {
+        num_nodes += nodes_list[i];
+    }
+
+    var num_props = 0;
+    for (calc in checkedCalcsAndProps) {
+        if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+            var props = checkedCalcsAndProps[calc];
+            for (var i = 0; i < props.length; i ++) {
+                var prop = props[i];
+                if (calc == "chemaxon") { 
+                    if (prop == 'kow_no_ph' || prop == 'kow_wph') { 
+                        num_props += 3;  // these chemaxon props have 3 methods
+                    }
+                    else { num_props += 1; }
+                }
+                else { num_props += 1; }
+            }
+        }
+    }
+    var total_calls = num_nodes * num_props;
+    return total_calls;
 }
 
 

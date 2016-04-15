@@ -8,6 +8,8 @@ var redis = require('redis');
 // client = redis.createClient();
 // console.log("node redis client established: " + client);
 
+var caching_client = redis.createClient();
+
 //Configure socket.io to store cookie set by Django
 io.configure(function(){
     io.set('authorization', function(data, accept){
@@ -24,12 +26,13 @@ io.sockets.on('connection', function (socket) {
 
     // var sessionid = socket.handshake.cookie['sessionid']; // use cookie set by django..
 
-    var client = redis.createClient();
-    console.log("node redis client established: " + client);
-    client.subscribe(socket.id); // create channel with client's socket id
+    var message_client = redis.createClient();
+
+    console.log("node redis client established: " + message_client);
+    message_client.subscribe(socket.id); // create channel with client's socket id
     
     // Grab message from Redis that was created by django and send to client
-    client.on('message', function(channel, message){
+    message_client.on('message', function(channel, message){
         console.log("reading message from redis: " + message + " on channel: " + channel);
         socket.send(message); // send to browser
     });
@@ -66,10 +69,20 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('disconnect', function () {
         console.log("user " + socket.id + " disconnected..");
-        client.unsubscribe(socket.id); // unsubscribe from channel
-        console.log("user " + socket.id + " unsubscribed from redis channel..");
-        // clear user's requests from redis queues:
-        
+        message_client.unsubscribe(socket.id); // unsubscribe from channel
+        //console.log("user " + socket.id + " unsubscribed from redis channel..");
+
+        // caching_client.del(socket.id);  // remove user job ids from redis queue
+
+        var message_obj = {'cancel': true};
+
+        var query = querystring.stringify({
+            sessionid: socket.id,
+            message: JSON.stringify(message_obj)
+        });
+
+        passRequestToCTS(query);
+
     });
 
 });
