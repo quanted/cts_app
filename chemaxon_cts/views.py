@@ -52,11 +52,13 @@ def request_manager(request):
 		'props': props
 	}
 
-	# session = FuturesSession()
+	session = FuturesSession()
 
 	if props:
 		chemaxon_results = []
 		for prop in props:
+
+			logging.info("requesting chemaxon {} data".format(prop))
 
 			data_obj = {'calc': calc, 'prop':prop, 'node': node}
 
@@ -67,6 +69,8 @@ def request_manager(request):
 						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
 						data_obj.update({'data': results['data'], 'method': method})
 
+						logging.info("chemaxon results: {}".format(results))
+
 						if redis_conn:
 							result_json = json.dumps(data_obj)
 							redis_conn.publish(sessionid, result_json)
@@ -76,6 +80,8 @@ def request_manager(request):
 				else:
 					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
 					data_obj.update({'data': results['data']})
+
+					logging.info("chemaxon results: {}".format(results))
 
 					if redis_conn:
 						result_json = json.dumps(data_obj)

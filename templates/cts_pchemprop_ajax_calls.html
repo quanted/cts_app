@@ -107,10 +107,19 @@ function connectToSocket() {
         // expecting node object:
         if (data['node'] !== null) {
             node_tracker = data['node'];
-            $("#" + node_tracker.id).children('img').addClass("hasPchemProps"); // highlight node
 
             // add pchem data to node from graph:
-            addPchemDataToNode(node_tracker, data);
+            addPchemDataToNode(data['node'], data);  // cts_gentrans_tree
+
+            calls_tracker--;
+            console.log("calls tracker: " + calls_tracker);
+
+            if (calls_tracker <= 0) {
+                console.log("All data retrieved!");
+                blockInterface(false);
+            }
+
+            return;
         }
 
 
@@ -153,6 +162,12 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
         'node': node,
         'pchem_request': checkedCalcsAndProps
     };
+
+
+    // adding new nodes stuff:
+    if (nodes !== null) {
+        pchem_data['nodes'] = nodes;  // add nodes key (list of nodes)
+    }
 
     // pchem_data['calc'] = calc;
     // pchem_data['props'] = checkedCalcsAndProps[calc];  // get list of requested props
@@ -270,15 +285,15 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
     // Map response to pchemprop output table.
     // Every calc-prop data value comes here.
 
-    if (node) {
-        calls_tracker--;
-        console.log("calls tracker: " + calls_tracker);
+    // if (node) {
+    //     calls_tracker--;
+    //     console.log("calls tracker: " + calls_tracker);
 
-        if (calls_tracker <= 0) {
-            console.log("All data retrieved!");
-            blockInterface(false);
-        }
-    }
+    //     if (calls_tracker <= 0) {
+    //         console.log("All data retrieved!");
+    //         blockInterface(false);
+    //     }
+    // }
 
     var calc = response['calc'];
     var prop = response['prop'];

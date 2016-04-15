@@ -39,8 +39,38 @@ def directAllTraffic(request):
 		# return "success" or "failure" response
 		return HttpResponse(json.dumps({'status': "clearing user jobs from queues and redis"}), content_type='application/json')
 
+
 	user_jobs = []
 
+	if 'nodes' in pchem_request.keys():
+		# loop calculator p-chem loop
+		# TODO: consider more efficient ways to parse up calls,
+		# some calcs can process data for multiple smiles in one request
+		for node in pchem_request['nodes']:
+			pchem_request['node'] = node
+			pchem_request['chemical'] = node['smiles']
+			jobs = parseOutPchemCallsToWorkers(sessionid, pchem_request)
+			user_jobs = user_jobs + jobs  # build single-level list of jobs
+
+	else:
+		user_jobs = parseOutPchemCallsToWorkers(sessionid, pchem_request)
+
+	logging.info("caching jobs on redis")
+	redis_conn.set(sessionid, json.dumps({'jobs': user_jobs}))
+
+	return HttpResponse("Calculator tasks started!")
+
+
+def parseOutPchemCallsToWorkers(sessionid, pchem_request):
+	"""
+	parses out calls to the celery workers by calculator.
+	returning values are sent to user via redis messaging.
+	returns user jobs list for caching
+	"""
+
+	pchem_request_dict = pchem_request['pchem_request']
+
+	user_jobs = []
 	# loop calcs and run them as separate processes:
 	for calc, props in pchem_request_dict.items():
 
@@ -69,9 +99,4 @@ def directAllTraffic(request):
 			else:
 				return HttpResponse(json.dumps(error_response), content_type='application/json')
 
-	# do this at views level:
-	# cts_celery_monitor.storeUserJobsToRedis(sessionid, user_jobs)
-	logging.info("caching jobs on redis")
-	redis_conn.set(sessionid, json.dumps({'jobs': user_jobs}))
-
-	return HttpResponse("Calculator tasks started!")
+	return user_jobs

@@ -384,6 +384,7 @@ class Solubility(JchemProperty):
 		Gets water solubility for chemaxon
 		"""
         try:
+            logging.info("getting solubility from: {}".format(self.results))
             return 1000.0 * self.results['intrinsicSolubility']
         except KeyError as ke:
             logging.warning("key error: {}".format(ke))

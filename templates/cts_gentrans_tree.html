@@ -122,10 +122,10 @@ $('#btn-pchem-getdata').click(function () {
 
     nodes = [];
     for (node in st.graph.nodes) {
-        nodes.push(node.data);
+        nodes.push(st.graph.nodes[node].data);
     }
 
-    startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
+    startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode, nodes);
 
 });
 
@@ -155,7 +155,8 @@ function toggleHeaders() {
 function addPchemDataToNode(node, pchem_data) {
     for (node_index in st.graph.nodes) {
         var some_node = st.graph.nodes[node_index];
-        if (some_node.id === node.id) {
+        // if (some_node.id === node.id) {
+        if (some_node.data.genKey == node.genKey) {
             if (!('pchemprops' in some_node.data)) {
                 some_node.data.pchemprops = [];
             }
@@ -171,6 +172,7 @@ function addPchemDataToNode(node, pchem_data) {
             some_node.data.pchemprops.push(pchem_data);
         }
     }
+    $("#" + node_tracker.id).children('img').addClass("hasPchemProps"); // highlight node
 }
 
 
