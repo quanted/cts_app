@@ -28,17 +28,16 @@ def directAllTraffic(request):
 
 	pchem_request['sessionid'] = sessionid  # add sessionid to request obj
 
-	# pchem_request['pchem_request'] is checkedCalcsAndProps,
-	pchem_request_dict = pchem_request['pchem_request']
-
 	# check for cancel request:
 	if 'cancel' in pchem_request.keys():
 		# default queue:
-		tasks.removeUserJobsFromQueue.apply_async(args=[sessionid, pchem_request_dict], queue="manager")
+		tasks.removeUserJobsFromQueue.apply_async(args=[sessionid], queue="manager")  # use default IDs
 		# tasks.removeUserJobsFromRedis.apply_async(args=[sessionid], queue="manager")
 		# return "success" or "failure" response
 		return HttpResponse(json.dumps({'status': "clearing user jobs from queues and redis"}), content_type='application/json')
 
+	# pchem_request['pchem_request'] is checkedCalcsAndProps,
+	pchem_request_dict = pchem_request['pchem_request']
 
 	user_jobs = []
 
@@ -84,7 +83,10 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 		try:
 			# put job on calc queue:
 			# job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc, link=tasks.cleanQueues.s(sessionid))
-			job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc)
+			# this one works:
+
+			# NOTE: have to enable backend for celery to have linked callbacks for results
+			job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc)  # use session for ID
 			user_jobs.append(job.id)
 
 		except Exception as error:

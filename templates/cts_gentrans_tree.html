@@ -107,6 +107,7 @@ $('#btn-pchem-getdata').click(function () {
         total_calls = calculateTotalCalls([1], checkedCalcsAndProps);
         console.log("starting with " + total_calls + " calls");
         calls_tracker = total_calls;
+        node = currentNode;
         // getPchemData(currentNode, checkedCalcsAndProps, kowPH); // pchemprops only for selected metabolite..
         startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
         return;
@@ -122,6 +123,7 @@ $('#btn-pchem-getdata').click(function () {
 
     nodes = [];
     for (node in st.graph.nodes) {
+        st.graph.nodes[node].data['id'] = st.graph.nodes[node].id;  // add node id to node data
         nodes.push(st.graph.nodes[node].data);
     }
 
@@ -172,7 +174,8 @@ function addPchemDataToNode(node, pchem_data) {
             some_node.data.pchemprops.push(pchem_data);
         }
     }
-    $("#" + node_tracker.id).children('img').addClass("hasPchemProps"); // highlight node
+    $("#" + node_tracker.id).children('img')
+        .addClass("hasPchemProps"); // highlight node
 }
 
 
@@ -539,7 +542,7 @@ function blockInterface(block) {
                 "left": "" + winleft + "",
                 "padding": "30px 20px",
                 "width": "400px",
-                "height": "100px",
+                "height": "150px",
                 "border": "0 none",
                 "border-radius": "4px",
                 "-webkit-border-radius": "4px",
@@ -548,11 +551,20 @@ function blockInterface(block) {
                 "-webkit-box-shadow": "3px 3px 15px #333",
                 "-moz-box-shadow": "3px 3px 15px #333"
             },
-            message: '<div><h2 class="popup_header">Retrieving data...</h2><br><img src="/static/images/loader.gif" style="margin-top:-16px"><br><br><div id="progressbar"></div><br></div>',
+            message: '<div id="pchem_wait"><h2 class="popup_header">Retrieving data...</h2><br><img src="/static/images/loader.gif" style="margin-top:-16px" id="load_wheel"><br><br><div id="progressbar"></div><br><input onclick="cancelRequest()" type="button" value="Cancel" id="btn-pchem-cancel"><br></div>',
             fadeIn: 500
         });
     }
     else { $.unblockUI(); }
+}
+
+
+function cancelRequest() {
+    console.log("canceling request");
+    socket.emit('get_data', JSON.stringify({'cancel': true, 'pchem_request': checkedCalcsAndProps}));
+    $.unblockUI();
+    // $('#btn-pchem-cancel').trigger('click');
+    // $('#btn-pchem-cancel').click();
 }
 
 

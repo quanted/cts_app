@@ -86,7 +86,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'mod_wsgi.server',
     'filters',
-    'epi_cts'
+    'epi_cts',
+    'djcelery'
     #'test_cts'
     #'docs'
 )
@@ -103,6 +104,13 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'wsgi_apache.application'
+
+
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 
 
 # Database

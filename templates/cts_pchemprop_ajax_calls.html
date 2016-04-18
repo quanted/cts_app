@@ -51,6 +51,7 @@ $(document).ready(function() {
 
     // TODO: Cancel button, which removes pending tasks from celery queues:
     $('#btn-pchem-cancel').on('click', function () {
+        console.log("pchem cancel button selected");
         socket.emit('get_data', JSON.stringify({'cancel': true, 'pchem_request': checkedCalcsAndProps}));
     });
 
@@ -100,7 +101,7 @@ function connectToSocket() {
         if ('status' in data) {
             // either display in requested table cells, or popup message:
             alert(data.status);  // display status to user
-            $('#pchemprop_table td').not('td.colorKey, th').html('');  // clear p-chem table
+            // $('#pchemprop_table td').not('td.colorKey, th').html('');  // clear p-chem table
             return;
         }
 
@@ -117,6 +118,9 @@ function connectToSocket() {
             if (calls_tracker <= 0) {
                 console.log("All data retrieved!");
                 blockInterface(false);
+            }
+            else {
+                updateProgressBar(calls_tracker, total_calls);
             }
 
             return;

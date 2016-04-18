@@ -14,7 +14,7 @@ redis_conn = redis.StrictRedis(host='localhost', port='6379', db=0)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
 # settings.configure()
 
-app = Celery('cts_tasks', broker='redis://localhost:6379/0')
+app = Celery('cts_tasks', broker='redis://localhost:6379/0', backend='redis://')
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.
@@ -31,9 +31,11 @@ from celery.utils import LOG_LEVELS
 app.conf.CELERYD_LOG_LEVEL = LOG_LEVELS['DEBUG']
 
 
-@app.task
+@app.task(max_retries=3)
 def startCalcTask(calc, request_post):
 	from django.http import HttpRequest
+
+	# TODO: try catch that works with celery task, for retries...
 
 	calc_views = importlib.import_module('.views', calc + '_cts')  # import calculator views 
 
@@ -47,7 +49,7 @@ def startCalcTask(calc, request_post):
 
 
 @app.task
-def removeUserJobsFromQueue(sessionid, pchem_request_dict):
+def removeUserJobsFromQueue(sessionid):
 	"""
 	call flower server to stop user's queued jobs.
 	expects user_jobs as list
@@ -55,9 +57,24 @@ def removeUserJobsFromQueue(sessionid, pchem_request_dict):
 	from REST import cts_celery_monitor
 
 	logging.info("clearing celery task queues..")
-	cts_celery_monitor.removeUserJobsFromQueue(sessionid, pchem_request_dict)  # clear jobs from celery
+	cts_celery_monitor.removeUserJobsFromQueue(sessionid)  # clear jobs from celery
 	logging.info("clearing redis cache..")
 	cts_celery_monitor.removeUserJobsFromRedis(sessionid)  # clear jobs from redis
+
+
+@app.task
+def finishedJob():
+	"""
+	callback for getting p-chem data
+	from calculators. removes user jobs and
+	user from celery and redis cache once
+	data has returned
+	"""
+	logging.info("inside finished job subtask!")
+	logging.info("what inputs are here???")
+	# logging.info("is there an id? {}".format(uuid))
+	logging.info("returning now..")
+	return
 
 
 # @app.task
