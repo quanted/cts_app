@@ -103,13 +103,16 @@ $('#btn-pchem-getdata').click(function () {
     //Check  #gen-select-pchem value to determine how
     //many nodes to get pchemprops for:
     var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
+
+    var nodes = [];
+
     if (genLevel == 0) {
         total_calls = calculateTotalCalls([1], checkedCalcsAndProps);
         console.log("starting with " + total_calls + " calls");
         calls_tracker = total_calls;
         node = currentNode;
         // getPchemData(currentNode, checkedCalcsAndProps, kowPH); // pchemprops only for selected metabolite..
-        startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode);
+        startPchemPropDataCollection(node.data.smiles, checkedCalcsAndProps, kowPH, node, currentNode);
         return;
     }
 
@@ -121,7 +124,6 @@ $('#btn-pchem-getdata').click(function () {
     console.log("starting with " + total_calls + " calls");
     calls_tracker = total_calls;
 
-    nodes = [];
     for (node in st.graph.nodes) {
         st.graph.nodes[node].data['id'] = st.graph.nodes[node].id;  // add node id to node data
         nodes.push(st.graph.nodes[node].data);

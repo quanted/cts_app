@@ -107,7 +107,11 @@ function connectToSocket() {
 
         // expecting node object:
         if (data['node'] !== null) {
-            node_tracker = data['node'];
+
+            if (data.node.data.id === node_tracker.data.id) {
+                node_tracker = data.node;
+                parseResponseToPchemTable(data, node_tracker, false, true);
+            }
 
             // add pchem data to node from graph:
             addPchemDataToNode(data['node'], data);  // cts_gentrans_tree
