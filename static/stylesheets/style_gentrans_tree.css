@@ -64,6 +64,11 @@
     margin:0;
 }
 
+#reaction_pathways {
+    background-color: white;
+    padding: 6px;
+}
+
 /*TOOLTIPS*/
 .tip {
     color: #111;

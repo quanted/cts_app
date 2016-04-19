@@ -125,8 +125,11 @@ $('#btn-pchem-getdata').click(function () {
     calls_tracker = total_calls;
 
     for (node in st.graph.nodes) {
-        st.graph.nodes[node].data['id'] = st.graph.nodes[node].id;  // add node id to node data
-        nodes.push(st.graph.nodes[node].data);
+        // only get data up to selected generation limit:
+        if (node._depth < parsedNodeList.length) {
+            st.graph.nodes[node].data['id'] = st.graph.nodes[node].id;  // add node id to node data
+            nodes.push(st.graph.nodes[node].data);
+        }
     }
 
     startPchemPropDataCollection(smiles, checkedCalcsAndProps, kowPH, node, currentNode, nodes);
@@ -241,8 +244,8 @@ function init(json){
         levelDistance: 50,  //set distance between node and its children (default: 30)
         Navigation: {
           enable: true,
-          panning: true
-          // zooming: 50
+          panning: true,
+          zooming: 50
         },
         //set node and edge styles
         //set overridable=true for styling individual
@@ -270,6 +273,15 @@ function init(json){
         
         onAfterCompute: function(){
             Log.write("");
+        },
+
+
+        // adding node image adjustment when zooming:
+        onMouseWheel: function (delta, e) {
+            setLabelScaling();
+        },
+        onBeforePlotNode: function () {
+            setLabelScaling();
         },
         
         //This method is called on DOM label creation.
@@ -317,7 +329,9 @@ function init(json){
             enable: true,
             type: 'auto',
             onShow: function(tip, node) {
-                tip.innerHTML = node.data.genKey; //shows metabolite table info
+                tip.innerHTML = 'generation: ' + node.data.genKey + '<br>';
+                tip.innerHTML += 'production: ' + node.data.production + '<br>';
+                tip.innerHTML += 'accumulation: ' + node.data.accumulation + '<br>';
             }
         },
 
@@ -350,6 +364,16 @@ function init(json){
 }
 
 
+function setLabelScaling() {
+    var x = st.canvas.scaleOffsetX;
+    var y = st.canvas.scaleOffsetY;
+    $(".node").css("-moz-transform", "scale(" + x +"," +  y + ")");
+    $(".node").css("-webkit-transform", "scale(" + x +"," + y + ")");
+    $(".node").css("-ms-transform", "scale(" + x +"," +  y + ")");
+    $(".node").css("-o-transform", "scale(" + x +"," +  y + ")");
+}
+
+
 function getSpaceTree() {
     if (st !== null) { return st; }
     else { return null; }
@@ -357,6 +381,9 @@ function getSpaceTree() {
 
 
 function resizeCanvas(nodes) {
+
+    // TODO: Keep div same size, add scroll bars instead!
+
     var count = getDeepestNodeCount(nodes);
     var offset = 4 * nodeHeight;
     // need number of nodes at deepest level:
@@ -365,7 +392,7 @@ function resizeCanvas(nodes) {
     st.select(st.root);  // re-select the node to replot the tree
 
     // Increase size of containter divs as well:
-    $('#center-cont, #cont').height(height);
+    // $('#center-cont, #cont').height(height);
 
 }
 
@@ -581,7 +608,7 @@ function jsonRepack(jsonobj) {
         <!-- the canvas container -->
         <div id="infovis"></div>
     </div>
-    <div id="log"></div>
+    <div id="log"></div>git 
 </div>
 
 <script type="text/javascript">
