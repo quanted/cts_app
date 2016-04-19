@@ -84,7 +84,7 @@ $('#gen-select').change(function() {
     var genLevel = $(this).find('option:selected').val();
     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);
     st.config.levelsToShow = genLevel;
-    resizeCanvas(parsedNodeList);  // change canvas height
+    // resizeCanvas(parsedNodeList);  // change canvas height
     st.select(st.root);
 });
 
@@ -104,8 +104,6 @@ $('#btn-pchem-getdata').click(function () {
     //many nodes to get pchemprops for:
     var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
 
-    var nodes = [];
-
     if (genLevel == 0) {
         total_calls = calculateTotalCalls([1], checkedCalcsAndProps);
         console.log("starting with " + total_calls + " calls");
@@ -124,11 +122,14 @@ $('#btn-pchem-getdata').click(function () {
     console.log("starting with " + total_calls + " calls");
     calls_tracker = total_calls;
 
-    for (node in st.graph.nodes) {
+    var st_nodes = st.graph.nodes;  // actual nodes from spacetree
+    var nodes = [];
+
+    for (node in st_nodes) {
         // only get data up to selected generation limit:
-        if (node._depth < parsedNodeList.length) {
-            st.graph.nodes[node].data['id'] = st.graph.nodes[node].id;  // add node id to node data
-            nodes.push(st.graph.nodes[node].data);
+        if (st_nodes[node]._depth < parsedNodeList.length) {
+            st_nodes[node].data['id'] = st_nodes[node].id;  // add node id to node data
+            nodes.push(st_nodes[node].data);
         }
     }
 
@@ -160,6 +161,7 @@ function toggleHeaders() {
 
 
 function addPchemDataToNode(node, pchem_data) {
+    var node_index = "";
     for (node_index in st.graph.nodes) {
         var some_node = st.graph.nodes[node_index];
         // if (some_node.id === node.id) {
@@ -177,10 +179,11 @@ function addPchemDataToNode(node, pchem_data) {
             }
 
             some_node.data.pchemprops.push(pchem_data);
+
+            $("#" + some_node.id).children('img')
+                .addClass("hasPchemProps"); // highlight nodes
         }
     }
-    $("#" + node_tracker.id).children('img')
-        .addClass("hasPchemProps"); // highlight node
 }
 
 
@@ -232,8 +235,9 @@ function init(json){
         //id of viz cont element
         injectInto: 'infovis',
 
-        offsetX: 350, //TODO: make more general, i.e., dependent on canvas size
+        // offsetX: 350, //TODO: make more general, i.e., dependent on canvas size
         // offsetY: 400,
+        offsetX: 200,
 
         constrained: false,
         levelsToShow: 1,  // show all 'dem levels
@@ -358,7 +362,7 @@ function init(json){
     // st.geom.translate(new $jit.Complex(-200, 0), "current");
     //emulate a click on the root node.
     st.onClick(st.root);
-    resizeCanvas(nodeList.slice(0, st.config.levelsToShow + 1), nodeHeight);
+    // resizeCanvas(nodeList.slice(0, st.config.levelsToShow + 1), nodeHeight);
     //end
 
 }
@@ -592,8 +596,6 @@ function cancelRequest() {
     console.log("canceling request");
     socket.emit('get_data', JSON.stringify({'cancel': true, 'pchem_request': checkedCalcsAndProps}));
     $.unblockUI();
-    // $('#btn-pchem-cancel').trigger('click');
-    // $('#btn-pchem-cancel').click();
 }
 
 
@@ -608,7 +610,8 @@ function jsonRepack(jsonobj) {
         <!-- the canvas container -->
         <div id="infovis"></div>
     </div>
-    <div id="log"></div>git 
+    <div id="log"></div>
+    <div id="reactionpathways">HELLO</div>
 </div>
 
 <script type="text/javascript">

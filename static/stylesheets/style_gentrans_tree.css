@@ -27,6 +27,22 @@
     
 }
 
+/* reaction pathways ui styling */
+div#reactionpathways {
+    /*height: 80px;*/
+    width:815px;
+    /*margin: 4px;*/
+    background-color: #9AB2CB;
+    color:#ccc;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    vertical-align: bottom;
+    /*box-shadow: 3px 3px 15px #CCC;*/
+    /*-webkit-box-shadow: 3px 3px 15px #CCC;*/
+    /*-moz-box-shadow: 3px 3px 15px #CCC;*/
+}
+
 .text {
     margin: 7px;
 }
@@ -84,4 +100,10 @@
     font-size:10px;
     font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
     padding:7px;
+}
+
+/*metabolites nav directions*/
+#nav-info ul {
+    padding: 2px;
+    padding-left: 24px;
 }

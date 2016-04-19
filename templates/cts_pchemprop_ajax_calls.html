@@ -108,7 +108,8 @@ function connectToSocket() {
         // expecting node object:
         if (data['node'] !== null) {
 
-            if (data.node.data.id === node_tracker.data.id) {
+            // if (data.node.data.id === node_tracker.data.id) {
+            if (currentNode && data.node.id === currentNode.id) {
                 node_tracker = data.node;
                 parseResponseToPchemTable(data, node_tracker, false, true);
             }

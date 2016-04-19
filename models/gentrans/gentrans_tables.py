@@ -209,7 +209,7 @@ def build_pchem_table():
 	pchemHTML += str(pchemprop_parameters.form(None))  # recycling!
 
 	html = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
-	html += render_to_string('cts_gentrans_metabolite_data.html', {'pchemHtml': pchemHTML})
+	html += render_to_string('cts_gentrans_metabolites_nav.html', {'pchemHtml': pchemHTML})
 
 	return html
 
