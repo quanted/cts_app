@@ -41,6 +41,10 @@ def request_manager(request):
 
 	try:
 		filtered_smiles = parseSmilesByCalculator(structure, "epi") # call smilesfilter
+		if '[' in filtered_smiles or ']' in filtered_smiles:
+			logging.warning("EPI ignoring request due to brackets in SMILES..")
+			postData.update({'error': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
+			return HttpResponse(json.dumps(postData), content_type='application/json')
 	except Exception as err:
 		logging.warning("Error filtering SMILES: {}".format(err))
 		post_data.update({'error': "Cannot filter SMILES for Measured data"})

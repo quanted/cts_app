@@ -15,7 +15,6 @@ if __name__ == "__main__":
         # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings_apache")
         os.environ['DJANGO_SETTINGS_MODULE'] = 'settings_apache'
     else:
-        print "gets here"
         # os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
         os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
