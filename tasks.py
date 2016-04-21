@@ -15,7 +15,7 @@ redis_conn = redis.StrictRedis(host='localhost', port='6379', db=0)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_apache')
 # settings.configure()
 
-app = Celery('cts_tasks', broker='redis://localhost:6379/0', backend='redis://')
+app = Celery('cts_celery', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.
@@ -30,6 +30,11 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 from celery.utils import LOG_LEVELS
 app.conf.CELERYD_LOG_LEVEL = LOG_LEVELS['DEBUG']
+app.conf.CELERY_RESULT_BACKEND = 'redis://'
+app.conf.BROKER_URL = 'redis://localhost:6379/0'
+app.conf.CELERY_ACCEPT_CONTENT = ['json']
+app.conf.CELERY_TASK_SERIALIZER = 'json'
+app.conf.CELERY_RESULT_SERIALIZER = 'json'
 
 
 @app.task(max_retries=3)
