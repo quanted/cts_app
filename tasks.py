@@ -29,12 +29,13 @@ logging.getLogger().setLevel(logging.DEBUG)
 # app.conf.CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
 from celery.utils import LOG_LEVELS
-app.conf.CELERYD_LOG_LEVEL = LOG_LEVELS['DEBUG']
-app.conf.CELERY_RESULT_BACKEND = 'redis://'
-app.conf.BROKER_URL = 'redis://localhost:6379/0'
-app.conf.CELERY_ACCEPT_CONTENT = ['json']
-app.conf.CELERY_TASK_SERIALIZER = 'json'
-app.conf.CELERY_RESULT_SERIALIZER = 'json'
+# app.conf.CELERYD_LOG_LEVEL = LOG_LEVELS['DEBUG']
+# app.conf.CELERY_RESULT_BACKEND = 'redis://'
+# app.conf.BROKER_URL = 'redis://localhost:6379/0'
+# app.conf.CELERY_ACCEPT_CONTENT = ['json']
+# app.conf.CELERY_TASK_SERIALIZER = 'json'
+# app.conf.CELERY_RESULT_SERIALIZER = 'json'
+app.config_from_object('celery_config')
 
 
 @app.task(max_retries=3)
