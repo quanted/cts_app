@@ -11,7 +11,8 @@ import json
 redis_conn = redis.StrictRedis(host='localhost', port='6379', db=0)
 
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_apache')
 # settings.configure()
 
 app = Celery('cts_tasks', broker='redis://localhost:6379/0', backend='redis://')
