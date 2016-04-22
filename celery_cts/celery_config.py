@@ -1,10 +1,14 @@
-# Names of nodes to start
-#   most people will only start one node:
+# celery config stuff:
+
+CELERY_RESULT_BACKEND = 'redis://'
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
 CELERYD_NODES="test_worker chemaxon_worker epi_worker sparc_worker measured_worker manager_worker"
-#   but you can also start multiple and configure settings
-#   for each in CELERYD_OPTS (see `celery multi --help` for examples):
-#CELERYD_NODES="worker1 worker2 worker3"
-#   alternatively, you can specify the number of nodes to start:
+
 CELERYD_NODES=6
 
 # Absolute or relative path to the 'celery' command:
@@ -14,7 +18,7 @@ CELERY_BIN="/var/www/ubertool/virtualenv/bin/celery"
 
 # App instance to use
 # comment out this line if you don't use an app
-CELERY_APP="cts_celery"
+CELERY_APP="tasks:app"
 # or fully qualified:
 #CELERY_APP="proj.tasks:app"
 

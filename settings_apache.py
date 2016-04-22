@@ -59,6 +59,15 @@ elif MACHINE_ID == "ord-uber-vm003":
     ALLOWED_HOSTS.append('qed.epa.gov')
 
 
+# celery config stuff:
+CELERY_RESULT_BACKEND = 'redis://'
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis//'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
 APPEND_SLASH = True
 
 TEMPLATE_DIRS = (
@@ -84,10 +93,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mod_wsgi.server',
+    # 'mod_wsgi.server',
     'filters',
     'epi_cts',
-    'djcelery'
     #'test_cts'
     #'docs'
 )
@@ -104,15 +112,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'wsgi_apache.application'
-
-
-CELERY_RESULT_BACKEND = 'redis://'
-BROKER_URL = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
-
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
