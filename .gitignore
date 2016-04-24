@@ -27,5 +27,5 @@ static/marvin4js-license.cxl
 local_path.py
 settings_local.py
 settings_rubeus.py
-celery*.log
-celery*.pid
+*.log
+*.pid

@@ -21,17 +21,10 @@ app.conf.update(
     CELERY_ACCEPT_CONTENT = ['json'],
 	CELERY_TASK_SERIALIZER = 'json',
 	CELERY_RESULT_SERIALIZER = 'json',
-	# CELERYD_NODES=6,
-	CELERY_NODES="test_worker chemaxon_worker epi_worker sparc_worker measured_worker manager_worker",
+	CELERYD_NODES=6,
 	CELERY_BIN="/var/www/ubertool/virtualenv/bin/celery",
 	CELERY_APP="tasks:app",
 	CELERYD_CHDIR="/var/www/ubertool/ubertool_cts",
-	CELERYD_OPTS="-Q:1 test -c:1 1 \
-		-Q:2 chemaxon -c:2 8 \
-		-Q:3 epi -c:3 8 \
-		-Q:4 sparc -c:4 1 \
-		-Q:5 measured -c:5 1 \
-		-Q:6 manager",
 	CELERYD_USER="celery",
 	CELERYD_GROUP="celery",
 	CELERY_CREATE_DIRS=1,

@@ -1,7 +1,2 @@
 #!/bin/sh
-celery multi stop \
-	chemaxon_worker \
-	test_worker \
-	epi_worker \
-	sparc_worker \
-	measured_worker
+ps auxww | grep 'celery worker' | awk '{print $2}' | xargs kill
