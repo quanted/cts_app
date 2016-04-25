@@ -1,4 +1,8 @@
-# celery config stuff:
+"""
+celery config stuff:
+NOTE: This isn't used at the moment and is being
+kept for reference
+"""
 
 CELERY_RESULT_BACKEND = 'redis://'
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
