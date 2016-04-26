@@ -84,7 +84,8 @@ function buildCheckedCalcsAndProps () {
 function connectToSocket() {
 
     if (typeof io !== 'undefined') {
-        socket = io.connect("localhost", {port: 4000, 'force new connection': true}); // initiates user connection on node server
+        // socket = io.connect("localhost", {port: 4000, 'force new connection': true}); // initiates user connection on node server
+        socket = io.connect("/cts/socket.io", {'force new connection': true});
     }
     else {
         socket = null;
