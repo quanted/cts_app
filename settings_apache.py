@@ -57,9 +57,6 @@ if MACHINE_ID == "ord-uber-vm001":
 elif MACHINE_ID == "ord-uber-vm003":
     ALLOWED_HOSTS.append('134.67.114.3')
     ALLOWED_HOSTS.append('qed.epa.gov')
-elif MACHINE_ID == 'cts':
-    # TODO: remove this one, using for testing on vm:
-    ALLOWED_HOSTS.append('192.168.1.13')
 
 # # celery config stuff:
 # CELERY_RESULT_BACKEND = 'redis://'

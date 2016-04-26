@@ -1,6 +1,7 @@
 var http = require('http');
 var server = http.createServer().listen(4000);
 var io = require('socket.io').listen(server);
+
 var cookie_reader = require('cookie');
 var querystring = require('querystring');
 var redis = require('redis');
@@ -8,7 +9,17 @@ var redis = require('redis');
 // client = redis.createClient();
 // console.log("node redis client established: " + client);
 
-var caching_client = redis.createClient();
+var express = require('express');
+var app = express();
+
+app.get('/test', function (req, res) {
+    res.send("i'm up and running!");
+});
+
+app.listen(4001, function () {
+    console.log("listening on 4001");
+});
+
 
 //Configure socket.io to store cookie set by Django
 io.configure(function(){
@@ -21,6 +32,8 @@ io.configure(function(){
     });
     io.set('log level', 1);
 });
+
+
 
 io.sockets.on('connection', function (socket) {
 
@@ -71,8 +84,6 @@ io.sockets.on('connection', function (socket) {
         console.log("user " + socket.id + " disconnected..");
         message_client.unsubscribe(socket.id); // unsubscribe from channel
         //console.log("user " + socket.id + " unsubscribed from redis channel..");
-
-        // caching_client.del(socket.id);  // remove user job ids from redis queue
 
         var message_obj = {'cancel': true};
 
