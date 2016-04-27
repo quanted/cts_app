@@ -32,7 +32,8 @@ class Urls:
     standardizerUrl = '/rest-v0/util/convert/standardizer'
 
     # homegrown metabolizer ws:
-    efsBase = cts_efs_server + '/efsws/rest'
+    # efsBase = cts_efs_server + '/efsws/rest'
+    efsBase = cts_efs_server + '/ctsws/rest'
     metabolizerUrl = efsBase + '/metabolizer'
     standardizerUrlEFS = efsBase + '/standardizer'
 
