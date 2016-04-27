@@ -45,13 +45,13 @@ def filterSMILES(smiles):
     """
     request = requests.Request(data={'smiles': smiles}) # wrap smiles in http request
     response = jchem_rest.filterSMILES(request)
-    logging.info("FILTER RESPONSE: {}".format(response.content))
+    logging.warning("FILTER RESPONSE: {}".format(response.content))
     try:
         filtered_smiles = json.loads(response.content)['results'][-1] # picks out smiles from efs???
-        logging.info("NEW SMILES: {}".format(filtered_smiles))
+        logging.warning("NEW SMILES: {}".format(filtered_smiles))
         return filtered_smiles
     except Exception as e:
-        logging.info("> error in filterSMILES: {}".format(e))
+        logging.warning("> error in filterSMILES: {}".format(e))
         raise e
 
 
