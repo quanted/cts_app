@@ -91,10 +91,10 @@ def getChemicalEditorData(request):
 		logging.warning(error)
 		wrapped_post = {'status': False, 'error': 'Error validating chemical'}
 		return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
-	# except Exception as error:
-	# 	logging.warning(error)
-	# 	wrapped_post = {'status': False, 'error': 'Error getting chemical information'}
-	# 	return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
+	except Exception as error:
+		logging.warning(error)
+		wrapped_post = {'status': False, 'error': error}
+		return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
 
 
 # class Metabolite(Molecule):

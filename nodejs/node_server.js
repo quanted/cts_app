@@ -6,8 +6,6 @@ var cookie_reader = require('cookie');
 var querystring = require('querystring');
 var redis = require('redis');
 
-// client = redis.createClient();
-// console.log("node redis client established: " + client);
 
 var express = require('express');
 var app = express();
