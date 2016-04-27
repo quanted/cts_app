@@ -69,8 +69,12 @@ def getChemicalEditorData(request):
 		response = jchem_rest.convertToSMILES(request)  # convert chemical to smiles
 		response = json.loads(response.content)  # get json data
 
+		logging.info("Converted SMILES: {}".format(response))
+
 		orig_smiles = response['structure']
 		filtered_smiles = filterSMILES(orig_smiles)  # call CTS REST SMILES filter
+
+		logging.info("Filtered SMILES: {}".format(filtered_smiles))
 
 		request.data = {'chemical': filtered_smiles}
 		jchem_response = jchem_rest.getChemDetails(request)  # get chemical details
