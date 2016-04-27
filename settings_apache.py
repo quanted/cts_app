@@ -179,3 +179,4 @@ STATIC_ROOT = '/var/www/ubertool/static/'
 DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
+
