@@ -6,9 +6,8 @@ webservices proxy (i.e., test-cts or jchem_rest).
 from django.http import HttpResponse, HttpRequest
 import json
 import logging
-import tasks  # CTS tasks.py
+from celery_cts import tasks  # CTS tasks.py
 import redis
-import cts_celery_monitor
 
 
 redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)

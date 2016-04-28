@@ -1,10 +1,16 @@
 from __future__ import absolute_import
 from celery import shared_task
-from celery_cts.celery import app
+from celery_cts._celery import app
 
 import logging
 import importlib
 import json
+import sys, os
+
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), 
+    os.pardir))
+logging.info("adding path {} to sys for imports".format(path))
+sys.path.append(path)
 
 
 # @shared_task
@@ -32,9 +38,10 @@ def removeUserJobsFromQueue(sessionid):
 	call flower server to stop user's queued jobs.
 	expects user_jobs as list
 	"""
-	from REST import cts_celery_monitor
+	# from REST import cts_celery_manager
+	from . import cts_celery_manager
 
 	logging.info("clearing celery task queues..")
-	cts_celery_monitor.removeUserJobsFromQueue(sessionid)  # clear jobs from celery
+	cts_celery_manager.removeUserJobsFromQueue(sessionid)  # clear jobs from celery
 	logging.info("clearing redis cache..")
-	cts_celery_monitor.removeUserJobsFromRedis(sessionid)  # clear jobs from redis
+	cts_celery_manager.removeUserJobsFromRedis(sessionid)  # clear jobs from redis

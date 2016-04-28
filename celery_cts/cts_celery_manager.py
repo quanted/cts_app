@@ -2,12 +2,14 @@
 Monitors celery tasks on calculator queues
 using flower
 """
-
+from __future__ import absolute_import
 import requests
 import json
 import redis
 import logging
 from django.http import HttpRequest
+# from celery.app.control import revoke
+# from celery.task.control import revoke
 
 redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 
@@ -100,7 +102,10 @@ def removeUserJobsFromQueue(sessionid):
 	call flower server to stop user's queued jobs.
 	expects user_jobs as list
 	"""
+	import celery
+	logging.info("celery dir: {}".format(dir(celery.app)))
 	from celery.task.control import revoke
+	# from celery.app.control import revoke
 
 
 	# TODO: Add a retry if task isn't revoked!!!!
@@ -117,9 +122,9 @@ def removeUserJobsFromQueue(sessionid):
 	user_jobs = json.loads(user_jobs_json)
 	for job_id in user_jobs['jobs']:
 		# will this job object be recognized by celery instance "app"?
+		logging.info("revoking job {}".format(job_id))
 		revoke(job_id, terminate=True)  # stop user job
-		revoked_job = logging.info("supposedly revoked {} task".format(job_id))
-		logging.info("what revoke() returns: {}".format(revoked_job))
+		logging.info("revoked {} job".format(job_id))
 
 	redis_conn.publish(sessionid, json.dumps({'status': "p-chem data request canceled"}))
 

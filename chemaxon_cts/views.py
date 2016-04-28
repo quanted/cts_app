@@ -1,5 +1,4 @@
 from django.http import HttpResponse, HttpRequest
-from django.core.cache import cache
 import requests
 import jchem_rest as jrest
 import logging
