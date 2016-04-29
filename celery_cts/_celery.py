@@ -8,8 +8,8 @@ import logging
 import importlib
 import json
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_apache')
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_apache')
 from django.conf import settings
 
 # app = Celery('celery', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
