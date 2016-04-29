@@ -29,6 +29,7 @@ io.configure(function(){
         return accept('error', false);
     });
     io.set('log level', 1);
+    // io.set('resource', 'cts/socket');  // not sure about this one
 });
 
 
