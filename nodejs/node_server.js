@@ -116,8 +116,10 @@ io.sockets.on('connection', function (socket) {
 
 function passRequestToCTS (values) {
     var options = {
+        // host: 'localhost',
+        // port: 8000,
         host: 'localhost',
-        port: 8000,
+        port: 8081,
         path: '/cts/portal',
         method: 'POST',
         headers: {
