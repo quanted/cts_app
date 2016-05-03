@@ -8,6 +8,7 @@ import chemaxon_cts
 # The previous urlpatterns is using views as a prefix breaking the use of django apps 
 urlpatterns = patterns('',
     # url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
+    (r'^cts/wstest/?$', 'REST.portal.test_sockets'),
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
     # url(r'^cts/portal/?$', 'REST.portal.parseRequestByCalculator'),
     url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js" type="text/javascript"></script>
+		<script>
+		$(document).ready(function () {
+			
+			var socket = io.connect('http://134.67.114.1');
+
+			socket.on('message', function (data) {
+				console.log("data returned: ");
+				console.log(data);
+			});
+
+			$('#send-receive-node').on('click', function () {
+				// send message to node through nginx:
+				socket.emit('say_hello', 'hey node');
+			});
+		});
+		</script>
+	</head>
+
+	<body>
+		Test web socket connection from client to node server through nginx reverse proxy.<br><br>
+		Click here to sent message to node server and hopefully receive one back:<br>
+		<input id="send-receive-node" type="button" value="send and receive"/>
+	</body>
+
+</html>

@@ -101,3 +101,10 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 				return HttpResponse(json.dumps(error_response), content_type='application/json')
 
 	return user_jobs
+
+
+def test_sockets(request):
+	from django.template.loader import render_to_string
+	
+	html = render_to_string('cts_socket_test.html')
+	return HttpResponse(html)
