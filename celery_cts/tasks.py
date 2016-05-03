@@ -45,3 +45,13 @@ def removeUserJobsFromQueue(sessionid):
 	cts_celery_manager.removeUserJobsFromQueue(sessionid)  # clear jobs from celery
 	logging.info("clearing redis cache..")
 	cts_celery_manager.removeUserJobsFromRedis(sessionid)  # clear jobs from redis
+
+
+@app.task
+def test_celery(sessionid, message):
+	from django.http import HttpResponse
+	from . import cts_celery_manager
+
+	logging.info("received message: {}".format(message))
+	cts_celery_manager.test_celery(sessionid, "hello from celery")
+	# return HttpResponse("hello from celery!");

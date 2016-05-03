@@ -7,16 +7,16 @@ var querystring = require('querystring');
 var redis = require('redis');
 
 
-var express = require('express');
-var app = express();
+// var express = require('express');
+// var app = express();
 
-app.get('/test', function (req, res) {
-    res.send("i'm up and running!");
-});
+// app.get('/test', function (req, res) {
+//     res.send("i'm up and running!");
+// });
 
-app.listen(4001, function () {
-    console.log("listening on 4001");
-});
+// app.listen(4001, function () {
+//     console.log("listening on 4001");
+// });
 
 
 //Configure socket.io to store cookie set by Django
@@ -50,6 +50,23 @@ io.sockets.on('connection', function (socket) {
     });
 
     console.log("session id: " + socket.id);
+
+    // for web socket testing:
+    socket.on('say_hello', function (message) {
+        console.log("node received message: ");
+        console.log(message);
+        socket.send("hello client");
+    });
+
+    socket.on('test_celery', function (message) {
+        console.log("received message: " + message);
+        var query = querystring.stringify({
+            sessionid: socket.id, // cts will now publish to session channel
+            message: message
+        });
+
+        passRequestToCTS(query);
+    });
     
     // checked calcs/props sent from front-end:
     socket.on('get_data', function (message) {

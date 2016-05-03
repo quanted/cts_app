@@ -20,7 +20,11 @@ def directAllTraffic(request):
 	message = request.POST.get('message')  # list of json string data
 
 	pchem_request = {}
-	if message:
+	if message == "hello celery":
+		# call test celery task:
+		job = tasks.test_celery.delay(sessionid, message)
+		return HttpResponse("hello celery test started")
+	elif message:
 		pchem_request = json.loads(message)
 	else:
 		pchem_request = json.loads(request.body)
@@ -41,7 +45,6 @@ def directAllTraffic(request):
 	user_jobs = []
 
 	if 'nodes' in pchem_request.keys():
-		# loop calculator p-chem loop
 		# TODO: consider more efficient ways to parse up calls,
 		# some calcs can process data for multiple smiles in one request
 		for node in pchem_request['nodes']:

@@ -72,6 +72,10 @@ def removeUserJobsFromRedis(sessionid):
 		raise e
 
 
+def test_celery(sessionid, message):
+	redis_conn.publish(sessionid, message)  # async push to user
+
+
 # def getAllNonSuccessfulTasks():
 
 # 	# TODO: turn into one call (e.g., ?state=PENDING&state=STARTED...)

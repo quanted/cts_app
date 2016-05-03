@@ -7,25 +7,39 @@
 		$(document).ready(function () {
 			
 			// var socket = io.connect('http://134.67.114.1');
-			var socket = io.connect('http://192.168.1.14');
+			// var socket = io.connect('http://192.168.1.14');
+			var socket = io.connect('http://localhost:4000');
 
 			socket.on('message', function (data) {
 				console.log("data returned: ");
 				console.log(data);
+				alert(data);
 			});
 
 			$('#send-receive-node').on('click', function () {
 				// send message to node through nginx:
+				console.log("sending 'hey node' to node server...");
 				socket.emit('say_hello', 'hey node');
 			});
+
+			$('#send-receive-celery').on('click', function () {
+				// send message to node through nginx:
+				console.log("sending message to celery worker...");
+				socket.emit('test_celery', 'hello celery');
+			});
+
 		});
 		</script>
 	</head>
 
 	<body>
-		Test web socket connection from client to node server through nginx reverse proxy.<br><br>
-		Click here to sent message to node server and hopefully receive one back:<br>
-		<input id="send-receive-node" type="button" value="send and receive"/>
+		<h2> node test </h2>
+		<p>Test web socket connection from client to node server through nginx reverse proxy:</p>
+		<input id="send-receive-node" type="button" value="send and receive"/><br>
+		<br><hr>
+		<h2> celery test </h2>
+		<p>Test celery worker through node-cts-redis-node pathway/setup:</p>
+		<input id="send-receive-celery" type="button" value="send and receive"/><br>
 	</body>
 
 </html>
