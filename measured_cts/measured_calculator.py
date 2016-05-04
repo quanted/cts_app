@@ -21,7 +21,7 @@ class MeasuredCalc(Calculator):
 		Calculator.__init__(self)
 
 		self.postData = {"smiles" : ""}
-		self.name = "test"
+		self.name = "measured"
 		self.baseUrl = os.environ['CTS_EPI_SERVER']
 		self.urlStruct = "/episuiteapi/rest/episuite/measured"
 
@@ -65,7 +65,7 @@ class MeasuredCalc(Calculator):
 		post['structure'] = structure
 		url = self.baseUrl + self.urlStruct
 
-		logging.info("EPI URL: {}".format(url))
+		logging.info("Measured URL: {}".format(url))
 
 		try:
 			response = requests.post(url, data=json.dumps(post), headers=headers, timeout=30)

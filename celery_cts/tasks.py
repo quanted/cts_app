@@ -9,7 +9,7 @@ import sys, os
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), 
     os.pardir))
-logging.info("adding path {} to sys for imports".format(path))
+# logging.info("adding path {} to sys for imports".format(path))
 sys.path.append(path)
 
 
