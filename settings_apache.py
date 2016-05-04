@@ -56,6 +56,7 @@ if MACHINE_ID == "ord-uber-vm001":
     ALLOWED_HOSTS.append('134.67.114.1')
     ALLOWED_HOSTS.append('qedinternal.epa.gov')
     ALLOWED_HOSTS.append('localhost')
+    ALLOWED_HOSTS.append('127.0.0.1')
 elif MACHINE_ID == "ord-uber-vm003":
     ALLOWED_HOSTS.append('134.67.114.3')
     ALLOWED_HOSTS.append('qed.epa.gov')
