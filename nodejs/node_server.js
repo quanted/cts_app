@@ -60,12 +60,20 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('test_celery', function (message) {
         console.log("received message: " + message);
+
+        socket.send("node received message, passing to CTS");
+
         var query = querystring.stringify({
             sessionid: socket.id, // cts will now publish to session channel
             message: message
         });
 
+        socket.send("data being passed to CTS: " + query);
+
         passRequestToCTS(query);
+
+        socket.send("sent to CTS!");
+
     });
     
     // checked calcs/props sent from front-end:
