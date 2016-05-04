@@ -59,6 +59,7 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('test_celery', function (message) {
+
         console.log("received message: " + message);
 
         socket.send("node received message, passing to CTS");
@@ -124,9 +125,10 @@ io.sockets.on('connection', function (socket) {
 
 function passRequestToCTS (values) {
     var options = {
-        host: 'localhost',
+        // host: 'localhost',
+        // host: 'http://172.20.100.12',
         // port: 8000,
-        // host: '134.67.114.1',
+        host: 'http://134.67.114.1',
         port: 8081,
         path: '/cts/portal',
         method: 'POST',
