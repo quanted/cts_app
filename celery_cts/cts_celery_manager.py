@@ -76,31 +76,6 @@ def test_celery(sessionid, message):
 	redis_conn.publish(sessionid, message)  # async push to user
 
 
-# def getAllNonSuccessfulTasks():
-
-# 	# TODO: turn into one call (e.g., ?state=PENDING&state=STARTED...)
-#     pending_tasks = CTSFlower().getTasksByStatus("PENDING")
-#     started_tasks = CTSFlower().getTasksByStatus("STARTED")
-#     received_tasks = CTSFlower().getTasksByStatus("RECEIVED")
-
-#     remaining_tasks = pending_tasks.keys() + started_tasks.keys() + received_tasks.keys()  # append lists
-
-#     return remaining_tasks
-
-
-# def checkAndRemoveUnclaimedJobs():
-# 	"""
-# 	Get jobs that haven't been processed,
-# 	see if they belong to user in redis cache,
-# 	remove if they don't.
-# 	"""
-# 	pending_tasks = CTSFlower().getTasksByStatus("PENDING")
-#     started_tasks = CTSFlower().getTasksByStatus("STARTED")
-#     received_tasks = CTSFlower().getTasksByStatus("RECEIVED")
-#
-#     remaining_tasks = pending_tasks.keys() + started_tasks.keys() + received_tasks.keys()
-
-
 def removeUserJobsFromQueue(sessionid):
 	"""
 	call flower server to stop user's queued jobs.

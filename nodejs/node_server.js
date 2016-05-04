@@ -126,7 +126,7 @@ io.sockets.on('connection', function (socket) {
 function passRequestToCTS (values) {
     var options = {
         // host: 'localhost',
-        host: 'http://172.20.100.11',
+        host: '172.20.100.11',
         // port: 8000,
         // host: 'http://134.67.114.1',
         port: 8081,
