@@ -55,7 +55,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('say_hello', function (message) {
         console.log("node received message: ");
         console.log(message);
-        socket.send("hello client");
+        socket.send("hello client " + socket.id);
     });
 
     socket.on('test_celery', function (message) {
@@ -116,9 +116,9 @@ io.sockets.on('connection', function (socket) {
 
 function passRequestToCTS (values) {
     var options = {
-        // host: 'localhost',
+        host: 'localhost',
         // port: 8000,
-        host: '134.67.114.1',
+        // host: '134.67.114.1',
         port: 8081,
         path: '/cts/portal',
         method: 'POST',
