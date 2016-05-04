@@ -19,7 +19,7 @@ class EpiCalc(Calculator):
         self.postData = {"smiles" : ""}
         self.name = "epi"
         self.baseUrl = os.environ['CTS_EPI_SERVER']
-        self.urlStruct = "/rest/episuite/{}/estimated"
+        self.urlStruct = "/episuiteapi/rest/episuite/{}/estimated"
         self.methods = None
         self.propMap = {
             'melting_point': {
