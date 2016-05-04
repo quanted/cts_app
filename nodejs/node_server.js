@@ -62,18 +62,18 @@ io.sockets.on('connection', function (socket) {
 
         console.log("received message: " + message);
 
-        socket.send("node received message, passing to CTS");
+        // socket.send("node received message, passing to CTS");
 
         var query = querystring.stringify({
             sessionid: socket.id, // cts will now publish to session channel
             message: message
         });
 
-        socket.send("data being passed to CTS: " + query);
+        // socket.send("data being passed to CTS: " + query);
 
         passRequestToCTS(query);
 
-        socket.send("sent to CTS!");
+        // socket.send("sent to CTS!");
 
     });
     
@@ -126,9 +126,9 @@ io.sockets.on('connection', function (socket) {
 function passRequestToCTS (values) {
     var options = {
         // host: 'localhost',
-        // host: 'http://172.20.100.12',
+        host: 'http://172.20.100.12',
         // port: 8000,
-        host: 'http://134.67.114.1',
+        // host: 'http://134.67.114.1',
         port: 8081,
         path: '/cts/portal',
         method: 'POST',
