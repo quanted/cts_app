@@ -118,7 +118,7 @@ function passRequestToCTS (values) {
     var options = {
         // host: 'localhost',
         // port: 8000,
-        host: 'localhost',
+        host: '134.67.114.1',
         port: 8081,
         path: '/cts/portal',
         method: 'POST',

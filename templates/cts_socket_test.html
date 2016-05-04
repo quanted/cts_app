@@ -6,8 +6,8 @@
 		<script>
 		$(document).ready(function () {
 			
-			var socket = io.connect('http://134.67.114.1');
-			// var socket = io.connect('http://192.168.1.14');
+			// var socket = io.connect('http://134.67.114.1');
+			var socket = io.connect('http://192.168.1.14');
 			// var socket = io.connect('http://localhost:4000');
 
 			socket.on('message', function (data) {
