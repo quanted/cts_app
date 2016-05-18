@@ -22,6 +22,7 @@ var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
 var nodeWidth = 100; //default node width (image)
 var block_ui = false; // blocking UI load window boolean
+var arrow_html = '<div id="arrow_wrap"><img class="reactpath_arrow" src="/static/images/arrow-right.jpg"/></div>';
 // ################################################
 
 (function() {
@@ -346,6 +347,54 @@ function init(json){
                     getMolecularInfo(node);
                     currentNode = node;  // set global node tracking var
                 }
+            },
+            onClick: function (node, eventInfo, e) {
+                // left click event:
+                if (node) {
+
+                    var st_nodes = st.graph.nodes;  // actual nodes from spacetree
+                    var node_gen = node.data.genKey;
+
+                    $('#reactionpathways').html("");
+
+                    for (var i = node_gen.length; i >= 0; i-=2) {
+                        
+                        // var gen = node_gen.substring(0, 2*i + 1);  // "1", "1.x", "1.x.x", ..
+                        var gen = node_gen.substring(0, i)
+                        var current_node = searchForNodeByGenKey(gen, st_nodes);
+
+                        // add image to reaction pathways div:
+                        var img_obj = $.parseHTML(current_node.name);
+                        $(img_obj).css({'height': 60, 'width': 50});
+                        $('#reactionpathways').prepend(img_obj);
+
+                        if (i > 1) {
+                            var routes = current_node.data.routes;
+                            var arrow_obj = $.parseHTML(arrow_html);  //<div><img></div>
+                            if (routes) {
+                                var latest_node_route = routes.split(',').pop();
+                                $(arrow_obj).append('<p>' + latest_node_route + '</p>');  // add "routes"
+                            }
+                            $('#reactionpathways').prepend(arrow_obj);
+                        }
+                    }
+
+
+
+                    // this works but doesn't redraw from latest to 1st gen:
+                    // var routes = node.data.routes;
+                    // var routes_array = routes.split(',');
+                    // var latest_node_route = routes_array.pop();
+
+                    // // get route of node, insert underneath arrow
+                    // var arrow_obj = $.parseHTML(arrow_html);  //<div><img></div>
+                    // $(arrow_obj).append('<p>' + latest_node_route + '</p>');  // add "routes"
+                    // $('#reactionpathways').append(arrow_obj);
+
+                    // var img_obj = $.parseHTML(node.name);
+                    // $(img_obj).css({'height': 60, 'width': 50});
+                    // $('#reactionpathways').append(img_obj); // insert selected node into rp div
+                }
             }
         }
 
@@ -365,6 +414,16 @@ function init(json){
     // resizeCanvas(nodeList.slice(0, st.config.levelsToShow + 1), nodeHeight);
     //end
 
+}
+
+
+function searchForNodeByGenKey(genKey, nodes) {
+    for (node in nodes) {
+        if (nodes[node].data.genKey === genKey) {
+            return nodes[node];
+        }
+    }
+    return false;
 }
 
 
@@ -611,14 +670,19 @@ function jsonRepack(jsonobj) {
         <div id="infovis"></div>
     </div>
     <div id="log"></div>
-    <div id="reactionpathways">
-        <div id="rp-parent"></div>
-    </div>
+</div>
+<div id="reactionpathways">
 </div>
 
 <script type="text/javascript">
 $(document).ready(function () {
     var json = $.parseJSON($('#hiddenJson').val());
-    init(json);
+    init(json);  // paint tree to canvas
+
+    // insert parent and following arrow into reaction pathways div:
+    var parent_image = $.parseHTML(json.name);
+    $(parent_image).css({'height': 60, 'width': 50});
+    $('#reactionpathways').append(parent_image);
+
 });
 </script>

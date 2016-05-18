@@ -29,19 +29,54 @@
 
 /* reaction pathways ui styling */
 div#reactionpathways {
-    /*height: 80px;*/
+    height: 80px;
     width:815px;
     /*margin: 4px;*/
-    background-color: #9AB2CB;
+    /*background-color: #9AB2CB;*/
+    background-color: #FFFFFF;
     color:#ccc;
     border-radius: 4px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     vertical-align: bottom;
-    /*box-shadow: 3px 3px 15px #CCC;*/
-    /*-webkit-box-shadow: 3px 3px 15px #CCC;*/
-    /*-moz-box-shadow: 3px 3px 15px #CCC;*/
+    box-shadow: 3px 3px 15px #CCC;
+    -webkit-box-shadow: 3px 3px 15px #CCC;
+    -moz-box-shadow: 3px 3px 15px #CCC;
 }
+#reactionpathways img {
+    float: left;
+    display: inline-block;
+    margin-top: 10px;
+    vertical-align: middle;
+}
+.reactpath_arrow {
+    margin-top: 15px
+}
+#arrow_wrap {
+    height: 60px;
+    /*width: 60px;*/
+    float: left;
+    text-align: center;
+    padding: 15px 0px 0px 15px;
+    /*max-width: 80px;*/
+    /*display: inline-table;*/
+}
+#arrow_wrap p {
+    /*float:left;*/
+    /*display: inline-block;*/
+    color: #000000;
+    font-size: 12px;
+    margin: auto;
+}
+#arrow_wrap img {
+    /*float: left;*/
+    /*margin: 15px 0 0 0;*/
+    /*margin: 0 auto;*/
+    width:30px;
+    height:15px;
+    /*display: inline-block;*/
+}
+
 
 .text {
     margin: 7px;

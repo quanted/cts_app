@@ -55,3 +55,16 @@ def test_celery(sessionid, message):
 	logging.info("received message: {}".format(message))
 	cts_celery_manager.test_celery(sessionid, "hello from celery")
 	# return HttpResponse("hello from celery!");
+
+
+# @app.task
+# def redis_garbage_collection():
+# 	"""
+# 	Scheduled celery task that's a temporary
+# 	patch for a redis memory leak (pre 3.0), which
+# 	is storing "celery-task-meta-*" keys in redis
+# 	"""
+# 	import subprocess
+	
+# 	# remove celery task metadata that's leaking into redis:
+# 	subprocess.call('redis-cli keys "celery-task-meta-*" | xargs redis-cli del', shell=True)
