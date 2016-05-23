@@ -335,8 +335,8 @@ function init(json){
             type: 'auto',
             onShow: function(tip, node) {
                 tip.innerHTML = 'generation: ' + node.data.genKey + '<br>';
-                tip.innerHTML += 'production: ' + node.data.production + '<br>';
-                tip.innerHTML += 'accumulation: ' + node.data.accumulation + '<br>';
+                // tip.innerHTML += 'production: ' + node.data.production + '<br>';
+                // tip.innerHTML += 'accumulation: ' + node.data.accumulation + '<br>';
             }
         },
 
@@ -359,7 +359,6 @@ function init(json){
 
                     for (var i = node_gen.length; i >= 0; i-=2) {
                         
-                        // var gen = node_gen.substring(0, 2*i + 1);  // "1", "1.x", "1.x.x", ..
                         var gen = node_gen.substring(0, i)
                         var current_node = searchForNodeByGenKey(gen, st_nodes);
 
@@ -377,23 +376,9 @@ function init(json){
                             }
                             $('#reactionpathways').prepend(arrow_obj);
                         }
+
                     }
 
-
-
-                    // this works but doesn't redraw from latest to 1st gen:
-                    // var routes = node.data.routes;
-                    // var routes_array = routes.split(',');
-                    // var latest_node_route = routes_array.pop();
-
-                    // // get route of node, insert underneath arrow
-                    // var arrow_obj = $.parseHTML(arrow_html);  //<div><img></div>
-                    // $(arrow_obj).append('<p>' + latest_node_route + '</p>');  // add "routes"
-                    // $('#reactionpathways').append(arrow_obj);
-
-                    // var img_obj = $.parseHTML(node.name);
-                    // $(img_obj).css({'height': 60, 'width': 50});
-                    // $('#reactionpathways').append(img_obj); // insert selected node into rp div
                 }
             }
         }
@@ -676,13 +661,20 @@ function jsonRepack(jsonobj) {
 
 <script type="text/javascript">
 $(document).ready(function () {
+
     var json = $.parseJSON($('#hiddenJson').val());
+    var parent_image = $.parseHTML(json.name.trim());  // returns array of elements
+
+    // set node height and width by getting it from parent node image (no scale popupBuilder one)
+    nodeHeight = parent_image[0].height;
+    nodeWidth = parent_image[0].width;
+
     init(json);  // paint tree to canvas
 
     // insert parent and following arrow into reaction pathways div:
-    var parent_image = $.parseHTML(json.name);
-    $(parent_image).css({'height': 60, 'width': 50});
-    $('#reactionpathways').append(parent_image);
+    // $(parent_image).css({'height': 60, 'width': 50});
+    // $('#reactionpathways').append(parent_image);
+
 
 });
 </script>

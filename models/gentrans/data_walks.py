@@ -30,6 +30,7 @@ def recursive(jsonStr):
 
 metID = 0  # unique id for each node
 metabolite_keys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation', 'routes']
+image_scale = 50
 
 def traverse(root):
     """
@@ -46,7 +47,7 @@ def traverse(root):
 
     if metID == 1:
         parent = root.keys()[0]
-        newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, 28), "data": {}, "children": []})
+        newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, image_scale), "data": {}, "children": []})
         # newDict.update({"id": metID, "name": nodeWrapper(parent, None, 100, 28), "data": {}, "children": []})
         newDict['data'].update(popupBuilder({"smiles": parent, "generation": "0"}, metabolite_keys, "{}".format(metID),
                                             "Metabolite Information"))
@@ -56,7 +57,7 @@ def traverse(root):
         
     else:
         if root['generation'] > 0:
-            newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, 28), "data": {}, "children": []})
+            newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, image_scale), "data": {}, "children": []})
             # newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], None, 100, 28), "data": {}, "children": []})
             newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
 
@@ -109,6 +110,12 @@ def imgTmpl():
 		width={{width}} height={{height}} /> 
 	"""
     return Template(imgTmpl)
+# def imgTmpl():
+#     imgTmpl = """
+#     <img class="metabolite" id="{{key|default:""}}"
+#         alt="{{smiles}}" src="data:image/png;base64,{{img}}" />
+#     """
+#     return Template(imgTmpl)
 
 
 def popupBuilder(root, paramKeys, molKey=None, header=None):
@@ -131,8 +138,8 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
     dataProps = {key: None for key in paramKeys}  # metabolite properties
 
     html = '<div id="{}_div" class="nodeWrapDiv"><div class="metabolite_img" style="float:left;">'.format(molKey)
-    html += nodeWrapper(root['smiles'], None, 250, 150)
-    # html += nodeWrapper(root['smiles'], None, 250, 70)  # Molecular Info image, metabolites output
+    # html += nodeWrapper(root['smiles'], None, 250, 150)
+    html += nodeWrapper(root['smiles'], None, 250, image_scale)  # Molecular Info image, metabolites output
     html += '</div>'
 
     if molKey:
@@ -204,41 +211,3 @@ def roundValue(val, n):
                         pkaList.append(round(pka, n))
                     roundedDict[key] = pkaList
             return roundedDict
-
-
-# htmlList = []
-# def buildTableValues(nodeList, props, nRound):
-#     """
-#     Builds list of dictionary items with
-#     nodes' key:values for pdf
-#     """
-#     for node in nodeList:
-#         htmlListItem = {}
-#         for key in props:
-#             if key in node:
-#                 htmlListItem.update({
-#                     key: roundValue(node[key], nRound)
-#                 })
-#
-#             elif 'data' in node and key in node['data']:
-#                 htmlListItem.update({
-#                     key: roundValue(node['data'][key], nRound)
-#                 })
-#
-#             elif 'data' in node and 'pchemprops' in node['data']:
-#                 for prop in node['data']['pchemprops']:
-#                     calculator = prop['calc']
-#                     if key in prop['prop']:
-#                         if calculator in htmlListItem:
-#                             htmlListItem[calculator].update({
-#                                 key: roundValue(prop['data'], nRound)
-#                             })
-#                         else:
-#                             htmlListItem.update({
-#                                 calculator: {key: roundValue(prop['data'], nRound)}
-#                             })
-#
-#             else:
-#                 htmlListItem.update({key: ''})
-#         htmlList.append(htmlListItem)
-#     return htmlList

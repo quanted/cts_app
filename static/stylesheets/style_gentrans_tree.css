@@ -54,27 +54,18 @@ div#reactionpathways {
 }
 #arrow_wrap {
     height: 60px;
-    /*width: 60px;*/
     float: left;
     text-align: center;
     padding: 15px 0px 0px 15px;
-    /*max-width: 80px;*/
-    /*display: inline-table;*/
 }
 #arrow_wrap p {
-    /*float:left;*/
-    /*display: inline-block;*/
     color: #000000;
     font-size: 12px;
     margin: auto;
 }
 #arrow_wrap img {
-    /*float: left;*/
-    /*margin: 15px 0 0 0;*/
-    /*margin: 0 auto;*/
     width:30px;
     height:15px;
-    /*display: inline-block;*/
 }
 
 
