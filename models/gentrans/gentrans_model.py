@@ -78,6 +78,16 @@ class gentrans(object):
         data_walks.metID = 0
         self.results = data_walks.recursive(response.content)
 
+
+
+
+        fileout = open('c:\\Users\\nickpope\\Desktop\\pathways.txt', 'w')
+        fileout.write(self.results)
+        fileout.close()
+
+
+
+
         # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
         self.test_results = []
 

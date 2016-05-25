@@ -115,16 +115,19 @@ def smilesToImage(request):
 			"include": ["image"],
 			"parameters": {
 				"image": {
-					"scale": imgScale  # only scale for metabolites and popup images
+					# "scale": imgScale,  # only scale for metabolites and popup images
+					# "type": "svg"
+					"type": "png"
 				}
 			}
 		}
 	}
 
-	# if imgHeight:
-	# 	# these are metabolites in the space tree:
-	# 	request['display']['parameters']['image'].update({"width": imgWidth, "height": imgHeight})
-	# else:
+	if imgHeight:
+		# these are metabolites in the space tree:
+		request['display']['parameters']['image'].update({"width": imgWidth, "height": imgHeight})
+	else:
+		request['display']['parameters']['image'].update({'width': imgWidth, 'scale': imgScale})
 	# 	# these are the popup image ones (large):
 	# 	request['display']['parameters']['image'].update({'scale': imgScale})  # trying just a scale no width (may need width)
 

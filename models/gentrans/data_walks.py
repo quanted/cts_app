@@ -3,6 +3,7 @@ import json
 from django.http import HttpRequest
 from chemaxon_cts import jchem_rest
 from django.template import Context, Template, defaultfilters
+from bs4 import BeautifulSoup
 
 """
 10-31-14 (np)
@@ -99,7 +100,15 @@ def nodeWrapper(smiles, height, width, scale, key=None):
             img = root['image']
 
     # 3. Wrap imageUrl with <img>
+    
+    # <img> wrapper for image byte string:
     html = imgTmpl().render(Context(dict(smiles=smiles, img=img, height=height, width=width, scale=scale, key=key)))
+
+    # wrapper for SVG type images:
+    # html = data['data'][0]['image']['image']  # expecting svg type now (could affect popups)
+
+    # do the <svg> elements need class and id like imgTmpl below???
+
     return html
 
 
