@@ -112,7 +112,13 @@ function connectToSocket() {
             // if (data.node.data.id === node_tracker.data.id) {
             if (currentNode && data.node.id === currentNode.id) {
                 node_tracker = data.node;
-                parseResponseToPchemTable(data, node_tracker, false, true);
+                // parseResponseToPchemTable(data, node_tracker, false, true);
+                if ('props' in data) {
+                    parseListDataFromResults(data, node_tracker, addDataToTable_tracker);
+                }
+                else {
+                    parseResponseToPchemTable(data, node_tracker, false, addDataToTable_tracker); // expecting prop data object as usual
+                }
             }
 
             // add pchem data to node from graph:
