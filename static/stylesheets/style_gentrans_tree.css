@@ -29,7 +29,8 @@
 
 /* reaction pathways ui styling */
 div#reactionpathways {
-    height: 80px;
+    /*height: 80px;*/
+    height: 100px;
     width:815px;
     /*margin: 4px;*/
     /*background-color: #9AB2CB;*/
@@ -66,6 +67,16 @@ div#reactionpathways {
 #arrow_wrap img {
     width:30px;
     height:15px;
+}
+.rp-image {
+    height: 60px;
+    float: left;
+    text-align: center;
+}
+.rp-image p {
+    color: #000000;
+    font-size: 12px;
+    margin: auto;
 }
 
 

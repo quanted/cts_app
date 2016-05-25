@@ -312,7 +312,7 @@ function init(json){
             };
 
             //set label styles
-            var style = label.style;
+            // var style = label.style;
             // style.width = 60 + 'px';
             // style.height = 17 + 'px';
             // style.width = nodeWidth;
@@ -390,9 +390,16 @@ function init(json){
                         var current_node = searchForNodeByGenKey(gen, st_nodes);
 
                         // add image to reaction pathways div:
-                        var img_obj = $.parseHTML(current_node.name);
+                        var img_obj = $.parseHTML(current_node.name.trim())[0];
                         $(img_obj).css({'height': 60, 'width': 50});
-                        $('#reactionpathways').prepend(img_obj);
+                        
+                        var image_with_gen = '<div class="rp-image">' +
+                        // var image_with_gen = '<div class="arrow_wrap">' + 
+                                                img_obj.outerHTML + 
+                                                '<p>' + current_node.data.genKey + '</p>' +
+                                                '</div>';
+
+                        $('#reactionpathways').prepend(image_with_gen);
 
                         if (i > 1) {
                             var routes = current_node.data.routes;
@@ -690,11 +697,6 @@ function jsonRepack(jsonobj) {
 $(document).ready(function () {
 
     var json = $.parseJSON($('#hiddenJson').val());
-
-    // add "metabolite" class to svg nodes?
-    var all_node_names = $(json).find('name');
-
-
     var parent_image = $.parseHTML(json.name.trim());  // returns array of elements
 
     // set node height and width by getting it from parent node image (no scale popupBuilder one)
