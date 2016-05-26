@@ -1864,3 +1864,8 @@ div#pchem_wait {
   width: 64px;
   /*margin-bottom: 6px;*/
 }
+
+/* run type dropdown */
+div.run_type {
+  /*padding-left: 8px;*/
+}

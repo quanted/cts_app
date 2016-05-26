@@ -100,6 +100,21 @@ $( document ).ready(function() {
 
 
 
+	// Single user ("normal") and batch mode templates:
+	$('#run_type').change(function () {
+		var run_type = $(this).val();
+		if (run_type === "batch") {
+			// load batch divs, hide single mode chemical editor:
+			console.log("batch mode boyzzz");
+			$('.tab:visible, .back, .submit, #metaDataToggle, #metaDataText').hide();
+			$("#batchChemEdit").show();
+		}
+		else {
+			// load normal chemical editor divs
+		}
+	});
+
+
 });
 
 // Tabbed Nav

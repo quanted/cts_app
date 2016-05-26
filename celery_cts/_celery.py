@@ -7,6 +7,7 @@ from celery import Celery
 import logging
 import importlib
 import json
+from datetime import timedelta
 
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_apache')
@@ -21,6 +22,18 @@ app.conf.update(
     CELERY_ACCEPT_CONTENT = ['json'],
 	CELERY_TASK_SERIALIZER = 'json',
 	CELERY_RESULT_SERIALIZER = 'json',
+	CELERYBEAT_SCHEDULE = {
+		# executes daily at midnight:
+		'clean-meta-leak-every-day': {
+			'task': 'tasks.redis_garbage_collection',
+			'schedule': crontab(minute=0, hour=0)
+		}
+		# executes every 5 seconds:
+		'clean-meta-leak-test': {
+			'task': 'tasks.redis_garbage_collection',
+			'schedule': timedelta(seconds=5)
+		}
+	}
 	# CELERYD_NODES=6,
 	# CELERY_BIN="/var/www/ubertool/virtualenv/bin/celery",
 	# CELERY_APP="tasks:app",
