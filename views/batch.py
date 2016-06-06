@@ -4,9 +4,13 @@ import importlib
 import linksLeft
 import os
 import logging
+from models.pchemprop import pchemprop_tables
+from chemaxon_cts import jchem_rest
+import datetime
 
 def batchInputPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'models.'+model)
+    inputmodule = importlib.import_module('.'+model+'_batch', 'models.'+model)
     header = viewmodule.header
     
     html = render_to_string('01cts_uberheader.html', {'title': header+' Batch'})
@@ -15,11 +19,17 @@ def batchInputPage(request, model='none', header='none'):
     html = html + render_to_string('04uberbatchinput.html', {
             'model': model,
             'model_attributes': header+' Batch Run'})
-    if model == 'przm':
-        html = html + render_to_string('04uberbatchinput_jquery_przm_batch.html', {'model':model, 'header':header})
-    else:
-        html = html + render_to_string('04uberbatchinput_jquery.html', {'model':model, 'header':header})
-    html = html + render_to_string('05cts_ubertext_links_right.html', {})
+
+    html += render_to_string('04uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
+
+
+    inputPageFunc = getattr(inputmodule, model+'BatchInputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
+    html = html + inputPageFunc(request, model, header)
+
+
+    html = html + render_to_string('04uberbatchinput_jquery.html', {'model':model, 'header':header})
+    
+    # html = html + render_to_string('05cts_ubertext_links_right.html', {})
     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
 
     response = HttpResponse()
@@ -28,28 +38,46 @@ def batchInputPage(request, model='none', header='none'):
 
 def batchOutputPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'models.'+model)
-    batchoutputmodule = importlib.import_module('.'+model+'_batchoutput', 'models.'+model)
-    from REST import rest_funcs
+    batchoutputmodule = importlib.import_module('.'+model+'_batch', 'models.'+model)
     header = viewmodule.header
-    linksleft = linksLeft.linksLeft()
+    
+    # linksleft = linksLeft.linksLeft()
 
-    html = render_to_string('04uberbatch_start.html', {
+    html = render_to_string('01cts_uberheader.html', {'title': header+' Batch'})
+    # html += render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'batchinput'})
+    html += render_to_string('02cts_uberintroblock_wmodellinks.html', 
+        {'model':model,'page':'output'})
+    html += linksLeft.linksLeft()
+
+    html += render_to_string('04uberbatch_start.html', {
             'model': model,
             'model_attributes': header+' Batch Output'})
 
-    batchOutputPageFunc = getattr(batchoutputmodule, model+'BatchOutputPage')  # function name = 'model'BatchOutputPage  (e.g. 'sipBatchOutputPage')
-    batchOutputTuple = batchOutputPageFunc(request)
-    if model == 'przm':
-        logging.info(batchOutputTuple)
-        html = html + ''
-    else:
-        html = html + batchOutputTuple[0]
-        html = html + render_to_string('export.html', {})
-        html = html + render_to_string('04uberoutput_end.html', {})
+    # timestamp / version section
+    st = datetime.datetime.strptime(jchem_rest.gen_jid(), 
+        '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
+    html += """
+    <div class="out_">
+        <b>{} Batch Version 1.0</a> (Beta)<br>
+    """.format(header)
+    html += st
+    html += " (EST)</b>"
+    html += """
+    </div><br><br>"""
 
-        model_all = batchOutputTuple[1]
-        jid_batch = batchOutputTuple[2]
-        rest_funcs.batch_save_dic(html, [x.__dict__ for x in model_all], model, 'batch', jid_batch[0], linksleft)
+    html = html + render_to_string('export.html', {})
+
+    # html += pchemprop_tables.timestamp(None, jchem_rest.gen_jid())
+
+    batchOutputPageFunc = getattr(batchoutputmodule, model+'BatchOutputPage')  # function name = 'model'BatchOutputPage  (e.g. 'sipBatchOutputPage')
+    # batchOutputTuple = batchOutputPageFunc(request)
+
+    # html = html + batchOutputTuple[0]
+
+    html += batchOutputPageFunc(request)
+
+    # html = html + render_to_string('export.html', {})
+    html = html + render_to_string('04uberoutput_end.html', {})
 
     response = HttpResponse()
     response.write(html)

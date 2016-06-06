@@ -683,29 +683,36 @@ function jsonRepack(jsonobj) {
 
 </script>
 
-<div id="cont">
-    <div id="center-cont">
+<!-- <div id="cont"> -->
+    <!-- <div id="center-cont"> -->
         <!-- the canvas container -->
-        <div id="infovis"></div>
-    </div>
-    <div id="log"></div>
-</div>
-<div id="reactionpathways">
-</div>
+        <!-- <div id="infovis"></div> -->
+    <!-- </div> -->
+    <!-- <div id="log"></div> -->
+<!-- </div> -->
+<!-- <div id="reactionpathways"> -->
+<!-- </div> -->
 
 <script type="text/javascript">
 $(document).ready(function () {
 
-    var json = $.parseJSON($('#hiddenJson').val());
-    var parent_image = $.parseHTML(json.name.trim());  // returns array of elements
+    var hidden_json = $('#hiddenJson').val();
 
-    // set node height and width by getting it from parent node image (no scale popupBuilder one)
-    // nodeHeight = parent_image[0].height;
-    // nodeWidth = parent_image[0].width;
-    nodeHeight = 114
-    nodeWidth = 100
+    if (hidden_json != null) {
+        // expecting gentrans metabolites output to draw on jit canvas
 
-    init(json);  // paint tree to canvas
+        var json = $.parseJSON($('#hiddenJson').val());
+        var parent_image = $.parseHTML(json.name.trim());  // returns array of elements
+
+        // set node height and width by getting it from parent node image (no scale popupBuilder one)
+        // nodeHeight = parent_image[0].height;
+        // nodeWidth = parent_image[0].width;
+        nodeHeight = 114
+        nodeWidth = 100
+
+        init(json);  // paint tree to canvas
+
+    }
 
     // insert parent and following arrow into reaction pathways div:
     // $(parent_image).css({'height': 60, 'width': 50});

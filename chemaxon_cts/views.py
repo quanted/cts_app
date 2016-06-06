@@ -38,6 +38,7 @@ def request_manager(request):
 	ph = request.POST.get('ph')
 	node = request.POST.get('node') # TODO: keep track of nodes without bringing node obj along for the ride!
 	calc = request.POST.get('calc')
+	run_type = request.POST.get('run_type')
 
 	try:
 		props = request.POST.get("props[]")
@@ -60,6 +61,9 @@ def request_manager(request):
 			logging.info("requesting chemaxon {} data".format(prop))
 
 			data_obj = {'calc': calc, 'prop':prop, 'node': node}
+
+			if run_type:
+				data_obj.update({'run_type': run_type})
 
 			try:
 				if prop == 'kow_wph' or prop == 'kow_no_ph':

@@ -16,7 +16,7 @@ redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 # @csrf_exempt
 def directAllTraffic(request):
 
-	sessionid = request.POST.get('sessionid') 
+	sessionid = request.POST.get('sessionid')
 	message = request.POST.get('message')  # list of json string data
 
 	pchem_request = {}
@@ -43,6 +43,12 @@ def directAllTraffic(request):
 	pchem_request_dict = pchem_request['pchem_request']
 
 	user_jobs = []
+
+
+	# TODO: Account for 'nodes' being list of chemicals from batch, and
+	# check for new run_type key for batch mode. When all values are
+	# returned, build a CSV with them and display link on batch output page!
+
 
 	if 'nodes' in pchem_request.keys():
 		# TODO: consider more efficient ways to parse up calls,

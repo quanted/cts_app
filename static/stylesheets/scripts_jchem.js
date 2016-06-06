@@ -2,17 +2,22 @@ var marvinSketcherInstance;
 var portalUrl = "/cts/portal";
 
 $(document).ready(function handleDocumentReady (e) {
+  // var MarvinJSUtil;
+  // if (MarvinJSUtil) {
 
-  var p = MarvinJSUtil.getEditor("#sketch");
-  p.then(function (sketcherInstance) {
-    marvinSketcherInstance = sketcherInstance;
-    
-    loadCachedChemical();
-
-    // initControl(); //binds action to initControl() function
-  }, function (error) {
-    alert("Cannot retrieve sketcher instance from iframe:"+error);
-  });
+  try {
+    MarvinJSUtil.getEditor("#sketch").then(function (sketcherInstance) {
+      marvinSketcherInstance = sketcherInstance;
+      loadCachedChemical();
+      // initControl(); //binds action to initControl() function
+    }, function (error) {
+      alert("Cannot retrieve sketcher instance from iframe:"+error);
+    });
+  }
+  catch (e) {
+    console.log("no marvin sketch instance here");
+    return;
+  }
 
   $('#setSmilesButton').on('click', importMol); // map button click to function
   $('#getSmilesButton').on('click', importMolFromCanvas);
@@ -116,7 +121,7 @@ function populateChemEditDOM(data) {
 function displayErrorInTextbox(errorMessage) {
   //Displays error message in Lookup Chemical textbox
   if (typeof errorMessage === 'undefined' || errorMessage == "") {
-    errorMessage = "error retrieving chemical information...";
+    errorMessage = "error retrieving chemical information...please try again...";
   }
   $('#id_chem_struct').addClass("formError");
   $('#id_chem_struct').val(errorMessage); //Enter SMILES txtbox
@@ -125,7 +130,12 @@ function displayErrorInTextbox(errorMessage) {
   $('#formula').val(""); //Formula txtbox - results table
   $('#weight').val(""); //Mass txtbox - results table
   $('#orig-molecule').val("");
-  marvinSketcherInstance.clear(); //clear marvin sketch
+  try {
+    marvinSketcherInstance.clear(); //clear marvin sketch
+  }
+  catch (e) {
+    return;
+  }
 }
 
 

@@ -185,12 +185,25 @@ def table_metabolites(gentrans_obj):
 	html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
 	html += build_pchem_table() # build pchem workflow's pchem table
 
+	html += """
+			<div id="cont">
+			    <div id="center-cont">
+			        <!-- the canvas container -->
+			        <div id="infovis"></div>
+			    </div>
+			    <div id="log"></div>
+			</div>
+			<div id="reactionpathways">
+			</div>
+			"""
+
 	html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
 	html += render_to_string('cts_pchemprop_ajax_calls.html', {
 									"kow_ph": "null",
 									"structure": "null",
 									"checkedCalcsAndProps": "null",
-									"test_results": gentrans_obj.test_results})
+									"test_results": gentrans_obj.test_results,
+									'nodes': 'null'})
 	html += """
 	</div>
 	"""

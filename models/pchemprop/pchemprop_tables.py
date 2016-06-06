@@ -81,7 +81,7 @@ def output_pchem_table(pchemprop_obj):
     """
     html = """
     <br>
-    <H3 class="out_1 collapsible" id="section1"><span></span>p-Chem Properties Results</H3>
+    <H3 class="out_1 collapsible" id="section1"><span></span>P-Chem Properties Results</H3>
     <div class="out_">
     <script>
     $(document).ready(function() {
@@ -109,6 +109,7 @@ def output_pchem_table(pchemprop_obj):
                                     "mass": pchemprop_obj.mass,
                                     "formula": pchemprop_obj.formula,
                                     "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
+                                    'nodes': 'null'
                                     # "test_results": mark_safe(json.dumps(pchemprop_obj.test_results))
                             })
     html += """
@@ -139,7 +140,7 @@ def timestamp(pchemprop_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div class="out_">
-        <b>Calculate p-Chem Properties Version 1.0</a> (Beta)<br>
+        <b>Calculate P-Chem Properties Version 1.0</a> (Beta)<br>
     """
     html = html + st
     html = html + " (EST)</b>"

@@ -2,39 +2,48 @@
 
 $(document).ready(function () {
 
-	var run_data = {{run_data}};  // TODO: make sure this will work with metabolites data size!!!
+	var run_data = {{run_data}};
 	var json_data = {};
 
 	function parseOutputForCSV() {
 		var workflow = getWorkflow(); // get current workflow name
     	if (workflow == "pchemprop") {
     		// todo: loop props, then calcs so the csv can be ordered by props
-    		json_data['checkedCalcsAndProps'] = {};
-    		for (var calc in checkedCalcsAndProps) {
-    			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
 
-    				json_data['checkedCalcsAndProps'][calc] = {};
-
-    				for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
-    					// looping props of calc..
-    					var calc_prop = checkedCalcsAndProps[calc][i];
-						var data = $('.' + calc + '.' + calc_prop).html(); // get data from corresponding cell
-						if (calc_prop == "ion_con") {
-							data = pickOutPka(data);
-						}
-						if (data != null) {
-							json_data['checkedCalcsAndProps'][calc][calc_prop] = data;
-						}
-    				}
-    			}
+    		// todo: use run_type key from response as conditional..
+    		if (window.location.href.indexOf('batch') < 0) {
+    			// regular single pchem workflow
+    			json_data['checkedCalcsAndProps'] = {};
+	    		for (var calc in checkedCalcsAndProps) {
+	    			if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+	    				json_data['checkedCalcsAndProps'][calc] = {};
+	    				for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+	    					// looping props of calc..
+	    					var prop = checkedCalcsAndProps[calc][i];
+	    					var data = $('.' + calc + '.' + prop).html();
+							if (prop == "ion_con") {
+								data = pickOutPka(data);
+							}
+							if (data != null) {
+								json_data['checkedCalcsAndProps'][calc][prop] = data;
+							}
+	    				}
+	    			}
+	    		}
     		}
+    		else {
+    			json_data['batch_data'] = batch_data;
+    			json_data['checkedCalcsAndProps'] = checkedCalcsAndProps;
+    			json_data['batch_chems'] = batch_chems;
+    		}
+
+    		
     	}
     	else if (workflow == "gentrans") {
     		json_data['data'] = buildMetabolitesArray();
     	}
 
     	json_data['run_data'] = run_data;
-		// json_data = JSON.stringify(json_data);
 		var cache = [];
 		json_data = JSON.stringify(json_data, function(key, value) {
 		    if (typeof value === 'object' && value !== null) {
@@ -87,8 +96,6 @@ $(document).ready(function () {
 			});
 			cache = null; // Enable garbage collection
 
-
-            // jsonData = JSON.stringify(nodeArray); // spacetree data (cts_gentrans_tree)
         }
 
 		jq_html = $('<div />').append($(elements).clone()).html();
@@ -123,6 +130,11 @@ $(document).ready(function () {
 
 		$('form').attr({'action': 'csv', 'method': 'POST'}).submit();
 
+	});
+
+
+	$('#csv_batch').click(function () {
+		$('#csvExport').trigger('click');
 	});
 
 

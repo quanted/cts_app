@@ -5,9 +5,9 @@ from collections import OrderedDict
 # 03ubertext_links_left:
 def linksLeft():
     link_dict = OrderedDict([
-        ('Execute CTS Workflow', OrderedDict([
+        ('CTS Workflows', OrderedDict([
                 ('Calculate Chemical Speciation', 'chemspec'),
-                ('Calculate p-Chem Properties', 'pchemprop'),
+                ('Calculate P-Chem Properties', 'pchemprop'),
                 ('Generate Transformation Products', 'gentrans'),
             ])
         ),

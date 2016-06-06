@@ -30,7 +30,7 @@ class CSV(object):
 			self.model = model  # model name
 		else:
 			raise KeyError("Model - {} - not accepted..".format(model))
-		self.molecular_info = ['smiles', 'name', 'mass', 'formula']  # original user sructure
+		self.molecular_info = ['smiles', 'iupac', 'formula', 'mass']  # original user sructure
 
 	def parseToCSV(self, run_data):
 
@@ -47,18 +47,34 @@ class CSV(object):
 		writer.writerow([run_data['run_data']['time']])
 		writer.writerow([""])
 
-		# rows = [[], []] # initialized with header and first row..
-		rows = {
-		'headers': [],
-			'1': []
-		}
+		rows = []
+		headers = []
+
+		if 'batch_data' in run_data:
+			for i in range(0, len(run_data['batch_chems'])):
+				rows.append([])
+		else:
+			rows.append([])
 
 		# write parent info first and in order..
 		for prop in self.molecular_info:
-			for key, val in run_data['run_data'].items():
-				if key == prop:
-					rows['headers'].append(key)
-					rows['1'].append(val)
+
+			if not 'batch_data' in run_data:
+				for key, val in run_data['run_data'].items():
+					if key == prop:
+						headers.append(key)
+						rows[0].append(val)
+			else:
+				headers.append(prop)
+				i = 0
+				# for chem_data in run_data['batch_data']:
+				for chem_data in run_data['batch_chems']:
+					# fill out all the batch chemicals' molecular info..
+					# data = chem_data['node'][prop]
+					data = chem_data[prop]
+					rows[i].append(data)
+					i += 1
+
 
 		if self.model == 'chemspec':
 			run_data = run_data['run_data']
@@ -89,16 +105,59 @@ class CSV(object):
 							i+=1
 
 		elif self.model == 'pchemprop':
-			for prop in self.props:
-				for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-					if prop in calc_props:
-						if prop == "ion_con":
-							for pka_key, pka_val in calc_props[prop].items():
-								rows['headers'].append("{} ({})".format(pka_key, calc))
-								rows['1'].append(pka_val)
-						else:
-							rows['headers'].append("{} ({})".format(prop, calc))
-							rows['1'].append(calc_props[prop])
+			# build columns, then fill with data?
+
+			if 'batch_data' in run_data:
+
+				for calc, props in run_data['checkedCalcsAndProps'].items():
+					for prop in props:
+						for chem_data in run_data['batch_data']:
+							# order columns by calc-prop
+							if chem_data['calc'] == calc and chem_data['prop'] == prop:
+								# loop all data of calc
+
+								if calc == 'chemaxon' and prop == 'ion_con':
+									j = 1
+									for pka in chem_data['data']['pKa']:
+										header = "{} (pka_{})".format(calc, j)
+										j += 1
+										if not header in headers:
+											headers.append(header)
+											for i in range(0, len(rows)):
+												rows[i].append("")
+										
+										header_index = headers.index(header)
+										
+										for i in range(0, len(rows)):
+											if rows[i][0] == chem_data['node']['smiles']:
+												rows[i].insert(header_index, pka)
+								else:
+									if 'method' in chem_data:
+										header = "{} ({}, {})".format(calc, prop, chem_data['method'])
+									else:
+										header = "{} ({})".format(calc, prop)
+
+									if not header in headers:
+										headers.append(header)
+
+									header_index = headers.index(header)
+
+									for i in range(0, len(rows)):
+										if rows[i][0] == chem_data['node']['smiles']:
+											# rows[i].append(chem_data['data'])
+											rows[i].insert(header_index, chem_data['data'])
+
+			else:
+				for prop in self.props:
+					for calc, calc_props in run_data['checkedCalcsAndProps'].items():
+						if prop in calc_props:
+							if prop == "ion_con":
+								for pka_key, pka_val in calc_props[prop].items():
+									headers.append("{} ({})".format(pka_key, calc))
+									rows[0].append(calc_props[prop])
+							else:
+								headers.append("{} ({})".format(prop, calc))
+								rows[0].append(calc_props[prop])
 
 
 		elif self.model == 'gentrans':
@@ -195,20 +254,27 @@ class CSV(object):
 								rows[new_key][header_index] = data
 
 		# might have to add code to keep row order..
-		writer.writerow(rows['headers'])
+		# writer.writerow(rows['headers'])
+		writer.writerow(headers)
 
 		# todo: remove blank columns before writing to csv..
 		# write data rows to csv file:
 		if self.model == 'gentrans':
 			for gen in gen_list: writer.writerow(rows[gen])
 		else:
-			for row, row_data in rows.items():
-				# add checking for character encoding..
+			for row in rows:
 				encoded_row_data = []
-				for datum in row_data:
+				for datum in row:
 					if isinstance(datum, unicode): datum = datum.encode('utf8')
 					encoded_row_data.append(datum)
-				if row != "headers": writer.writerow(encoded_row_data)
+				writer.writerow(encoded_row_data)
+			# for row, row_data in rows.items():
+			# 	# add checking for character encoding..
+			# 	encoded_row_data = []
+			# 	for datum in row_data:
+			# 		if isinstance(datum, unicode): datum = datum.encode('utf8')
+			# 		encoded_row_data.append(datum)
+			# 	if row != "headers": writer.writerow(encoded_row_data)
 
 		return response
 

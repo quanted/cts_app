@@ -396,7 +396,7 @@ class LogP(JchemProperty):
         JchemProperty.__init__(self)
         self.name = 'logP'
         self.url = '/webservices/rest-v0/util/calculate/logP'
-        self.methods = ['KLOP', 'VG', 'PHYS', 'WEIGHTED']
+        self.methods = ['KLOP', 'VG', 'PHYS']
         # logging.info("METHOD: {}".format(method))
         # if not method:
         #     logging.info("using WEIGHTED method for logP..")
@@ -430,7 +430,7 @@ class LogD(JchemProperty):
         JchemProperty.__init__(self)
         self.name = 'logD'
         self.url = '/webservices/rest-v0/util/calculate/logD'
-        self.methods = ['KLOP', 'VG', 'PHYS', 'WEIGHTED']
+        self.methods = ['KLOP', 'VG', 'PHYS']
         self.postData = {
             "pHLower": 0.0,
             "pHUpper": 14.0,

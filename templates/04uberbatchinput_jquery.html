@@ -1,4 +1,4 @@
-<script type="text/javascript" src=" static/stylesheets/jquery.validate.js"></script>
+<script type="text/javascript" src="/static/stylesheets/jquery.validate.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -9,43 +9,91 @@ $(document).ready(function() {
 			}
 	});
 
-	$('.submit_button').click(function (event) {
-		var validator_out = validator.form()
-		var form_data = new FormData();
-		$.each($('input[name^="upfile"]')[0].files, function(i, file) {
-		    form_data.append('file-'+i, file);
-		});
+	var nodes = [];  // array of batch chems with modecular info
 
-		if (validator_out) {
-			$(document).ajaxStart(function(){
-				$.blockUI({
-					css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "60px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
-					message: '<h2 class="popup_header">Computing...</h2><br><img src="/static/images/loader.gif" style="margin-top:-16px">'
-				});
+	// Do this stuff once file is uploaded:
+	$('#upfile1').change(function () {
+
+		var file = this.files[0];
+		var textType = /text.*/;
+
+		if (file.type.match(textType)) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				displayBatchFileChemicals(reader.result);			
+			}
+			reader.readAsText(file);
+		}
+		else {
+			$('#fileDisplayArea').html("File not supported!");
+		}
+
+	});
+
+	$('.submit').click(function (event) {
+		
+		// append nodes array to form for submission:
+		var nodes_input = $.parseHTML('<input type="hidden" name="nodes"/>');
+		$(nodes_input).val(JSON.stringify(nodes));
+		$('#form1').append(nodes_input);  // sends nodes array to backend
+
+		$('#form1').append('<input type="hidden" name="run_type" value="batch" />');
+
+		// $('form').parsley().validate("validate");
+		// var valid = $('form').parsley().isValid();
+
+	});
+
+
+	function displayBatchFileChemicals(file_content) {
+
+		// TODO: Get SMILES, and if already a part of the same call, get chem deats:
+
+		var batch_chems = file_content.replace(/\n/g, ",").split(",");  // chemicals in array
+		getMolecularInfoForBatchChemicals(batch_chems);
+
+		$('#fileDisplayArea').html(file_content);
+		$('#batchfilewrap').show();
+
+		// display p-chem table and submit button once file uploaded/displayed:
+		$('#pchem_batch_wrap, #pchemprop_table').show();
+		$('#cont, #reactionpathways').hide();  // todo: separate html and js in cts_gentrans_tree.html
+
+	}
+
+
+	function getMolecularInfoForBatchChemicals(batch_chems) {
+		
+		for (chem in batch_chems) {
+
+			var chemical = batch_chems[chem];
+
+			$.ajax({
+			    url: '/cts/rest/molecule',
+			    type: 'POST',
+			    data: {'chemical': chemical},
+			    dataType: 'json',
+			    timeout: 10000,
+			    success: function(data) {
+					console.log(data);
+					if ('data' in data) {
+						nodes.push(data['data']);
+					}
+					else {
+						nodes.push(data);
+					}
+			    },
+			    error: function(jqXHR, textStatus, errorThrown) {
+					console.log(textStatus);
+			    }
 			});
 
-				$.ajax({
-					type: "post",
-					url: "/{{ model }}_batchoutput.html",
-					data: form_data,
-					cache: false,
-				    contentType: false,
-				    processData: false,
-					success: function(url) {
-						$.unblockUI();
-						$("div.articles").replaceWith(url);
-						$("div.right").remove();
-						location.hash = "output";
-						},
-					error: function() {
-						$.unblockUI();
-						alert('There is a problem about your submission.')
-						window.location = '/{{ model }}_batchinput.html';
-						}
-				});
 		}
-	});
+
+	}
+
 });
 
 </script>
+</form> <!-- end submit form -->
 </div> <!-- End "articles" div -->

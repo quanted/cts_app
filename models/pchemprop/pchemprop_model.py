@@ -13,7 +13,7 @@ from requests import Request
 from django.http import HttpRequest
 
 
-n = 3  # number of decimal places to round values
+n = 2  # number of decimal places to round values
 
 
 class PChemProp(object):
@@ -120,7 +120,7 @@ class PChemProp(object):
                 self.checkedCalcsAndPropsDict.update({calcKey: propList})
                 
         self.run_data = {
-            'title': "p-Chem Properties Output",
+            'title': "P-Chem Properties Output",
             'jid': self.jid,
             'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
             'chem_struct': self.chem_struct,

@@ -1,16 +1,14 @@
 <!-- selection between single and batch mode -->
-<br><br>
-<div class="run_type_wrap">
-	<b>Select a run type:</b>
-	<select id="run_type">
-		<option value="single">single (default)</option>
-		<option value="batch">batch mode</option>
-	</select>
-</div>
+<!-- <br><br> -->
+<!-- <div class="run_type_wrap"> -->
+	<!-- <b>Select a run type:</b> -->
+	<!-- <select id="run_type"> -->
+		<!-- <option value="single">single (default)</option> -->
+		<!-- <option value="batch">batch mode</option> -->
+	<!-- </select> -->
+<!-- </div> -->
 
-
-
-<br><br><br>
+<!-- <br><br><br> -->
 
 <div class="input_nav">
 	<ul>{% for item_className in nav_dict.class_name %}{% with forloop.counter0 as index_className %}{% for item_tabLabel in nav_dict.tab_label %}{% with forloop.counter0 as index_tabLabel %}{% ifequal index_className index_tabLabel %}{% if index_className == 0 %}
@@ -26,10 +24,9 @@
 
 
 <!-- batch mode chemical editor tab stuff -->
-<div class="batchChemEdit tab_batchChemical">
-	<p><i>Upload a text file of SMILES organized as a single column:</i></p>
-
-</div>
+<!-- <div class="batchChemEdit tab_batchChemical"> -->
+	<!-- <p><i>Upload a text file of SMILES organized as a single column:</i></p> -->
+<!-- </div> -->
 
 
 

@@ -3,16 +3,16 @@
 var kowPH; // pH for logD
 var smiles, name, mass, formula, time;
 
-var sparcPropMap = {
-    "water_sol" : "SOLUBILITY",
-    "vapor_press" : "VAPOR_PRESSURE",
-    "mol_diss" : "WATER_DIFFUSION",
-    "ion_con": "FULL_SPECIATION",
-    "henrys_law_con" : "HENRYS_CONSTANT",
-    "kow_no_ph" : "DISTRIBUTION",
-    "kow_wph" : "LOGD",
-    "boiling_point": "BOILING_POINT"
-};
+// var sparcPropMap = {
+//     "water_sol" : "SOLUBILITY",
+//     "vapor_press" : "VAPOR_PRESSURE",
+//     "mol_diss" : "WATER_DIFFUSION",
+//     "ion_con": "FULL_SPECIATION",
+//     "henrys_law_con" : "HENRYS_CONSTANT",
+//     "kow_no_ph" : "DISTRIBUTION",
+//     "kow_wph" : "LOGD",
+//     "boiling_point": "BOILING_POINT"
+// };
 
 var jchem_methods = ['KLOP', 'PHYS', 'VG'];
 var checkedCalcsAndProps, structure; // format --> {'calc': ['checked_prop', ..], ..}
@@ -22,6 +22,8 @@ var total_calls = 0;  // used for metabolite pchem data progress
 var socket = null; // web socket global var
 var node_tracker = null;
 var addDataToTable_tracker = null;
+var batch_data = [];  // list of data for csv, incoming responses
+var batch_chems = [];  // list of batch chemicals with molecular info
 
 $(document).ready(function() {
     // Some global and local variable delcarations:
@@ -33,10 +35,29 @@ $(document).ready(function() {
     mass = "{{mass}}";
     formula = "{{formula}}";
     time = "{{time}}";
-    sparcPropMap['kow_ph'] = kowPH;
+    // nodes = "{{nodes}}";  // defaults to ""
+    batch_chems = {{nodes}};
+
+    // sparcPropMap['kow_ph'] = kowPH;
 
     connectToSocket();
-    startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null); // get pchem data..
+
+    if (batch_chems != null) {
+        startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
+
+        // calls_tracker = batch_chems.length;
+        calls_tracker = calculateTotalCalls([batch_chems.length], checkedCalcsAndProps);
+        total_calls = calls_tracker;
+
+        // block UI with progress bar
+        blockInterface(true);
+
+        $('#pdfExport, #htmlExport').hide();
+
+    }
+    else {
+        startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null);
+    }
 
     // Get Data button (pchem workflow) for gathering pchem props:
     $('#btn-pchem-data').on('click', function() {
@@ -53,6 +74,7 @@ $(document).ready(function() {
     $('#btn-pchem-cancel').on('click', function () {
         console.log("pchem cancel button selected");
         socket.emit('get_data', JSON.stringify({'cancel': true, 'pchem_request': checkedCalcsAndProps}));
+        blockInterface(false);
     });
 
 });
@@ -84,8 +106,8 @@ function buildCheckedCalcsAndProps () {
 function connectToSocket() {
 
     if (typeof io !== 'undefined') {
-        // socket = io.connect("localhost", {port: 4000, 'force new connection': true});
-        socket = io.connect('http://134.67.114.1', {'force new connection': true});
+        socket = io.connect("localhost", {port: 4000, 'force new connection': true});
+        // socket = io.connect('http://134.67.114.1', {'force new connection': true});
     }
     else {
         socket = null;
@@ -106,11 +128,13 @@ function connectToSocket() {
             return;
         }
 
-        // expecting node object:
-        if (data['node'] !== null) {
+
+        // expecting node object for gentrans workflow:
+        // this conditional may ALWAYS be true! should be !=
+        if (data['node'] != null) {
 
             // if (data.node.data.id === node_tracker.data.id) {
-            if (currentNode && data.node.id === currentNode.id) {
+            if (currentNode != null && data.node.id === currentNode.id) {
                 node_tracker = data.node;
                 // parseResponseToPchemTable(data, node_tracker, false, true);
                 if ('props' in data) {
@@ -122,7 +146,12 @@ function connectToSocket() {
             }
 
             // add pchem data to node from graph:
-            addPchemDataToNode(data['node'], data);  // cts_gentrans_tree
+            // if (!('run_type' in data)) {
+            //     addPchemDataToNode(data['node'], data);  // cts_gentrans_tree
+            // }
+            if (window.location.href.indexOf('batch') > -1) {
+                batch_data.push(data);
+            }
 
             calls_tracker--;
             console.log("calls tracker: " + calls_tracker);
@@ -130,6 +159,23 @@ function connectToSocket() {
             if (calls_tracker <= 0) {
                 console.log("All data retrieved!");
                 blockInterface(false);
+
+                // if batch, display link for CSV:
+                if (window.location.href.indexOf('batch') > -1) {
+
+                    // link.innerHTML = "<h3> Export to CSV </h3>";
+                    // document.body.appendChild(link);
+                    // $('div.articles_output').append(link);
+
+                    // var link = '<a id="csv_batch"><h3> Export batch results to CSV </h3></a>';
+
+                    // $('div.articles_output').append(link);  
+
+                    $('#export_menu').css('position', 'relative');
+                    $('#export_menu').prepend('<h3>Batch results ready for download</h3>');                  
+
+                }
+
             }
             else {
                 updateProgressBar(calls_tracker, total_calls);
@@ -149,7 +195,7 @@ function connectToSocket() {
 }
 
 
-function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node, currentNode, nodes) {
+function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node, currentNode, nodes, run_type) {
     
     if (checkedCalcsAndProps == null) { return; }
 
@@ -157,7 +203,7 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     var addDataToTable = false; // whether to plot on visible pchem table or not..
 
     // Determine whether data should be inserted into pchem table:
-    if (isPchemWorkflow()) { 
+    if (isPchemWorkflow() && window.location.href.indexOf('batch') < 0) { 
         addDataToTable = true;
     }
     else if (currentNode != null && node.id == currentNode.id) { 
@@ -181,8 +227,12 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 
 
     // adding new nodes stuff:
-    if (nodes !== null) {
+    if (nodes != null) {
         pchem_data['nodes'] = nodes;  // add nodes key (list of nodes)
+    }
+
+    if (run_type != null) {
+        pchem_data['run_type'] = run_type
     }
 
     // pchem_data['calc'] = calc;

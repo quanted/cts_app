@@ -6,19 +6,6 @@ var cookie_reader = require('cookie');
 var querystring = require('querystring');
 var redis = require('redis');
 
-
-// var express = require('express');
-// var app = express();
-
-// app.get('/test', function (req, res) {
-//     res.send("i'm up and running!");
-// });
-
-// app.listen(4001, function () {
-//     console.log("listening on 4001");
-// });
-
-
 //Configure socket.io to store cookie set by Django
 io.configure(function(){
     io.set('authorization', function(data, accept){
@@ -126,10 +113,8 @@ io.sockets.on('connection', function (socket) {
 function passRequestToCTS (values) {
     var options = {
         host: 'localhost',
-        // host: '172.20.100.11',
-        // port: 8000,
-        // host: 'http://134.67.114.1',
-        port: 8081,
+        // port: 8081,  // this along with localhost is for cgi server 1
+        port: 8000,
         path: '/cts/portal',
         method: 'POST',
         headers: {

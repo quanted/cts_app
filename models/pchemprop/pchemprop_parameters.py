@@ -31,7 +31,7 @@ def tmpl_pchemTableCTS():
 			<td id="id_kow_TEST" class="{{form.kow_wph|color_filter:"test"}} test kow_wph"></td>
 			<td id="id_kow_SPARC" class="{{form.kow_wph|color_filter:"sparc"}} sparc kow_wph"></td>
 			<td id="id_kow_Measured" class="{{form.kow_wph|color_filter:"measured"}} measured kow_wph"></td>
-		{% else %}
+		{% elif field.id_for_label != "id_nodes" %}
 			<tr>
 			<th class="chemprop">{{ field }} <span>{{ field.label }}</span></th>
 			<td id="{{ field.id_for_label }}_ChemAxon" class="{{ field | color_filter:"chemaxon" }} chemaxon {{field.name}}"></td>
@@ -48,6 +48,7 @@ def tmpl_pchemTableCTS():
 			<td class="ChemCalcs_unavailable colorKey">Unavailable</td>
 		</tr>
 	</table>
+
 	"""
 	return tmpl_pchemTableCTS
 

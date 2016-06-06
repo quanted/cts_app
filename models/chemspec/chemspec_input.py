@@ -11,7 +11,7 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
     import chemspec_parameters
 
     html = render_to_string('04uberinput_jquery.html', { 'model': model }) # Loads scripts_chemspec.js
-    html = html + render_to_string('cts-jquery.html', {}) # js for cts (across workflows)
+    # html = html + render_to_string('cts-jquery.html', {}) # js for cts (across workflows)
     html = html + render_to_string('04uberinput_start_tabbed.html', {
             'model': model,
             'model_attributes': header
