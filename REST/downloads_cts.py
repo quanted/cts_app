@@ -38,7 +38,11 @@ class CSV(object):
 		time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
 		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + jid + '.csv'
+
+		if 'batch_data' in run_data:
+			response['Content-Disposition'] = 'attachment; filename=' + self.model + '_batch_' + jid + '.csv'	
+		else:
+			response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + jid + '.csv'
 
 		writer = csv.writer(response)  # bind writer to http response
 
@@ -81,41 +85,36 @@ class CSV(object):
 			for key, val in run_data.items():
 				if key not in self.molecular_info:
 					if key == 'isoelectricPoint':
-						rows['headers'].append(key)
-						rows['1'].append(val)
+						headers.append(key)
+						rows[0].append(val)
 					elif key == 'pka' or key == 'pkb':
 						i = 0 # pka counter
 						for item in val:
-							rows['headers'].append(key + str(i))
-							rows['1'].append(item)
+							headers.append(key + "_" + str(i))
+							rows[0].append(item)
 							i+=1
-					elif key == 'pka_parent' or key == 'majorMicrospecies':
-						rows['headers'].append(key + '-smiles')
-						rows['1'].append(val['smiles'])
+					elif key == 'majorMicrospecies':
+						headers.append(key + '-smiles')
+						rows[0].append(val['smiles'])
 					elif key == 'pka-micospecies':
 						for ms in val.items():
 							# each ms is a jchem_structure object
-							rows['headers'].append(key + '-smiles')
-							rows['1'].append(val['smiles'])
-					elif key == 'stereoisomers' or key == 'tautomers':
+							headers.append(key + '-smiles')
+							rows[0].append(val['smiles'])
+					# elif key == 'stereoisomers' or key == 'tautomers':
+					elif key == 'tautomers':
 						i = 0
 						for item in val:
-							rows['headers'].append(item['key'] + str(i))
-							rows['1'].append(item['smiles'])
+							headers.append(item['key'] + "_" + str(i))
+							rows[0].append(item['smiles'])
 							i+=1
 
 		elif self.model == 'pchemprop':
-			# build columns, then fill with data?
-
 			if 'batch_data' in run_data:
-
 				for calc, props in run_data['checkedCalcsAndProps'].items():
 					for prop in props:
 						for chem_data in run_data['batch_data']:
-							# order columns by calc-prop
 							if chem_data['calc'] == calc and chem_data['prop'] == prop:
-								# loop all data of calc
-
 								if calc == 'chemaxon' and prop == 'ion_con':
 									j = 1
 									for pka in chem_data['data']['pKa']:
@@ -125,9 +124,7 @@ class CSV(object):
 											headers.append(header)
 											for i in range(0, len(rows)):
 												rows[i].append("")
-										
 										header_index = headers.index(header)
-										
 										for i in range(0, len(rows)):
 											if rows[i][0] == chem_data['node']['smiles']:
 												rows[i].insert(header_index, pka)
@@ -136,25 +133,31 @@ class CSV(object):
 										header = "{} ({}, {})".format(calc, prop, chem_data['method'])
 									else:
 										header = "{} ({})".format(calc, prop)
-
 									if not header in headers:
 										headers.append(header)
-
 									header_index = headers.index(header)
-
 									for i in range(0, len(rows)):
 										if rows[i][0] == chem_data['node']['smiles']:
-											# rows[i].append(chem_data['data'])
 											rows[i].insert(header_index, chem_data['data'])
-
 			else:
 				for prop in self.props:
 					for calc, calc_props in run_data['checkedCalcsAndProps'].items():
 						if prop in calc_props:
 							if prop == "ion_con":
 								for pka_key, pka_val in calc_props[prop].items():
-									headers.append("{} ({})".format(pka_key, calc))
-									rows[0].append(calc_props[prop])
+									pka_num = str(int(pka_key[-1:]) + 1)
+									new_pka_key = pka_key[:-1] + "_" + pka_num
+									headers.append("{} ({})".format(new_pka_key, calc))
+									rows[0].append(pka_val)
+							elif calc == 'chemaxon' and prop == 'kow_no_ph' or calc == 'chemaxon' and prop == 'kow_wph':
+								# e.g., "-1.102 (KLOP)<br>-1.522 (VG)<br>-1.344 (PHYS)<br>"
+								method_data = calc_props[prop].split('<br>')
+								method_data.remove('')  # remove trailing '' list item
+								for method_datum in method_data:
+									value = method_datum.split()[0]  # value, method
+									method = method_datum.split()[1]
+									headers.append("{} ({}, {})".format(prop, calc, method))
+									rows[0].append(value)
 							else:
 								headers.append("{} ({})".format(prop, calc))
 								rows[0].append(calc_props[prop])
@@ -192,11 +195,11 @@ class CSV(object):
 							# build max pka and pkb columns..
 							if len(met_pkas) > 0:
 								for i in range (0, max(met_pkas)):
-									col_header = "pKa{} ({})".format(i, calc) # e.g., pka1 (chemaxon)
+									col_header = "pKa_{} ({})".format(i, calc) # e.g., pka1 (chemaxon)
 									rows['headers'].append(col_header)
 							if len(met_pkbs) > 0:
 								for i in range (0, max(met_pkbs)):
-									col_header = "pKb{} ({})".format(i, calc)
+									col_header = "pKb_{} ({})".format(i, calc)
 									rows['headers'].append(col_header)
 						else:
 							col_header = "{} ({})".format(prop, calc) # e.g., water_sol (epi)

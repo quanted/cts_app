@@ -406,7 +406,7 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         var has_spinner = $(table_cell).children('img#spinner').length;
         if (has_spinner > 0) { $(table_cell).html(""); }
         if (addDataToTable) {
-            $(table_cell).append(organizeData(calc, prop, data) + " (" + method + ")<br>"); // append method to cell..
+            $(table_cell).append(organizeData(calc, prop, data) + " " + method + "<br>"); // append method to cell..
         }
     }
     else { 
@@ -446,7 +446,7 @@ function organizeData(calc, prop, data) {
             }
             else {
                 for (var i = 0; i < itemVals.length; i++) {
-                    var label = item + String(i).sub() +  ': ';
+                    var label = item + String(i + 1).sub() +  ': ';
                     parsedData += '<div class="pka-wrapper">' + label + itemVals[i].toFixed(3) + '</div>';
                 }
             }

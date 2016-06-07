@@ -1869,3 +1869,7 @@ div#pchem_wait {
 div.run_type {
   /*padding-left: 8px;*/
 }
+
+.pchem_label {
+  background-color: #EEF0E6;
+}

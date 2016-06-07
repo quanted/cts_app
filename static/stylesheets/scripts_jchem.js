@@ -162,7 +162,7 @@ function ajaxCall(data_obj, callback) {
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      displayErrorInTextbox("Error getting data for chemical");
+      displayErrorInTextbox("Error getting data for chemical..please try again..");
     }
   });
 }

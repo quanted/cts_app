@@ -55,8 +55,8 @@ def displayPDF(request, reactionLib=None):
 		title = 'Abiotic Hydrolysis Reaction Library'
 		# pdfHTML = '<embed src="file_name.pdf" width=800px height=2100px>'
 		pdfHTML = """
-		<h3> Click <a href="/static/docs/HydrolysisRxnLib_ver1-5.pdf" download="HydrolysisRxnLib_ver1-5.pdf">here</a> to download if file doesn't load</h3>
-		<embed src="/static/docs/HydrolysisRxnLib_ver1-5.pdf" class="libPDF">
+		<h3> Click <a href="/static/docs/HydrolysisRxnLib_ver1-6.pdf" download="HydrolysisRxnLib_ver1-6.pdf">here</a> to download if file doesn't load</h3>
+		<embed src="/static/docs/HydrolysisRxnLib_ver1-6.pdf" class="libPDF">
 		"""
 	elif 'areduction' in request.path:
 		logging.info('areduction in path!')

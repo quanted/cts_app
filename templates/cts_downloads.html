@@ -48,15 +48,13 @@ $(document).ready(function () {
 		json_data = JSON.stringify(json_data, function(key, value) {
 		    if (typeof value === 'object' && value !== null) {
 		        if (cache.indexOf(value) !== -1) {
-		            // Circular reference found, discard key
-		            return;
+		            return;  // Circular reference found, discard key
 		        }
-		        // Store value in our collection
 		        cache.push(value);
 		    }
 		    return value;
 		});
-		cache = null; // Enable garbage collection
+		cache = null;  // Enable garbage collection
 
     	return json_data;
 	}
@@ -216,18 +214,18 @@ function collectDOM(workflow) {
 			elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
 	        elements = elements.add('table#inputsTable'); // user inputs
 	        elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
-	        var parentTitle = $('table#msMain td:first h4');
-	        var parentImage = $('#parent_div img'); // parent species
-	        var parentTable = $('#parent_div table');
-	        elements = elements.add(parentTitle).add(parentImage).add(parentTable);
+	        // var parentTitle = $('table#msMain td:first h4');
+	        // var parentImage = $('#parent_div img'); // parent species
+	        // var parentTable = $('#parent_div table');
+	        // elements = elements.add(parentTitle).add(parentImage).add(parentTable);
 	        var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
 	        elements = elements.add(ms);
 	        var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
 	        elements = elements.add(majorMS);
 	        var taut = $('h4#taut, p.taut-percent, #taut_div img, #taut_div table');
 	        elements = elements.add(taut);
-	        var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
-	        elements = elements.add(stereo);
+	        // var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
+	        // elements = elements.add(stereo);
 	        return elements;
 	    case "pchemprop":
 	    	elements = $('div.articles_output').children().not(':hidden, div#export_menu');

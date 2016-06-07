@@ -58,9 +58,10 @@ tmpl_pchemTableCTS = Template(tmpl_pchemTableCTS())
 
 # Method(s) called from *_inputs.py
 def form(formData):
-	form_cts_ChemCalcs_props = CTS_ChemCalcs_Props(formData)
-	html = tmpl_pchemTableCTS.render(Context(dict(form=form_cts_ChemCalcs_props)))
-	return html
+	# form_cts_ChemCalcs_props = CTS_ChemCalcs_Props(formData)
+	# html = tmpl_pchemTableCTS.render(Context(dict(form=form_cts_ChemCalcs_props)))
+	# return html
+	return ""
 
 
 @parsleyfy
