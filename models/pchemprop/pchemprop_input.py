@@ -24,9 +24,9 @@ def pchempropInputPage(request, model='', header='P-Chem Properties', formData=N
     html = html + render_to_string('04uberinput_tabbed_nav.html', {
             'nav_dict': {
                 'class_name': ['Chemical', 'ChemCalcs'],
-                'tab_label': ['Chemical Editor', 'P-Chem Calculator']
+                'tab_label': ['Chemical Editor', 'P-Chem Calculators']
                 },
-            'nextTabName': 'P-Chem Calculator'
+            'nextTabName': 'P-Chem Calculators'
             })
 
     # chemspec inputs

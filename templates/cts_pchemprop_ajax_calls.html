@@ -184,13 +184,14 @@ function connectToSocket() {
             return;
         }
 
+        parseResponseToPchemTable(data, node_tracker, false, addDataToTable_tracker);
 
-        if ('props' in data) {
-            parseListDataFromResults(data, node_tracker, addDataToTable_tracker);
-        }
-        else {
-            parseResponseToPchemTable(data, node_tracker, false, addDataToTable_tracker); // expecting prop data object as usual
-        }
+        // if ('props' in data) {
+        //     parseListDataFromResults(data, node_tracker, addDataToTable_tracker);
+        // }
+        // else {
+        //     parseResponseToPchemTable(data, node_tracker, false, addDataToTable_tracker); // expecting prop data object as usual
+        // }
     });
 }
 

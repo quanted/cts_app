@@ -56,26 +56,34 @@ def request_manager(request):
     # don't need this loop, just do "if 'ion_con' in prop: make request"
     for prop in props:
 
+        sparc_response = {
+            'calc': 'sparc',
+            'prop': prop,
+            'node': node
+        }
+
         try:
             if prop == 'ion_con':
                 response = calcObj.makeCallForPka() # response as d ict returned..
                 pka_data = calcObj.getPkaResults(response)
-                ion_con_response = {
-                    'calc': 'sparc',
-                    'prop': 'ion_con',
-                    'data': pka_data
-                }
-                sparc_results.append(ion_con_response)
+                sparc_response.update({'data': pka_data})
+                # sparc_results.append(ion_con_response)
+                result_json = json.dumps(sparc_response)
+                if redis_conn and sessionid:
+                    redis_conn.publish(sessionid, result_json)
+                else:
+                    HttpResponse(result_json, content_type='application/json')
 
             if prop == 'kow_wph':
                 ph = request.POST.get('ph') # get PH for logD calculation..
                 response = calcObj.makeCallForLogD() # response as dict returned..
-                kow_wph_response = {
-                    'calc': 'sparc',
-                    'prop': 'kow_wph',
-                    'data': calcObj.getLogDForPH(response, ph)
-                }
-                sparc_results.append(kow_wph_response)
+                sparc_response.update({'data': calcObj.getLogDForPH(response, ph)})
+                # sparc_results.append(kow_wph_response)
+                result_json = json.dumps(sparc_response)
+                if redis_conn and sessionid:
+                    redis_conn.publish(sessionid, result_json)
+                else:
+                    HttpResponse(result_json, content_type='application/json')
 
             prop_map = calcObj.propMap.keys()
             if any(prop in prop_map for prop in props):
@@ -83,16 +91,24 @@ def request_manager(request):
                 if 'calculationResults' in multi_response:
                     multi_response = calcObj.parseMultiPropResponse(multi_response['calculationResults'])
                     for prop_obj in multi_response:
-                        if prop_obj['prop'] in props:
-                            sparc_results.append(prop_obj)
+                        # if prop_obj['prop'] in props:
+                        if prop_obj['prop'] == prop:
+                            prop_obj.update({'node': node})
+                            result_json = json.dumps(prop_obj) 
+                            if redis_conn and sessionid:
+                                redis_conn.publish(sessionid, result_json)
+                            else:
+                                HttpResponse(result_json, content_type='application/json')
+                            # could send each calc-prop-data instead of list of them..
 
-            post_data.update({'data': sparc_results})
-            result_json = json.dumps(post_data)
 
-            if redis_conn and sessionid:
-                redis_conn.publish(sessionid, result_json)
-            else:
-                return HttpResponse(result_json, content_type='application/json')
+            # post_data.update({'data': sparc_results})
+            # result_json = json.dumps(post_data)
+
+            # if redis_conn and sessionid:
+            #     redis_conn.publish(sessionid, result_json)
+            # else:
+            #     return HttpResponse(result_json, content_type='application/json')
 
 
         except Exception as err:

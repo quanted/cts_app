@@ -111,14 +111,17 @@ class CSV(object):
 
 		elif self.model == 'pchemprop':
 			if 'batch_data' in run_data:
-				for calc, props in run_data['checkedCalcsAndProps'].items():
-					for prop in props:
+				# for calc, props in run_data['checkedCalcsAndProps'].items():
+				for prop in self.props:
+					for calc, props in run_data['checkedCalcsAndProps'].items():
 						for chem_data in run_data['batch_data']:
 							if chem_data['calc'] == calc and chem_data['prop'] == prop:
-								if calc == 'chemaxon' and prop == 'ion_con':
+								# if calc == 'chemaxon' and prop == 'ion_con':
+								if prop == 'ion_con':
 									j = 1
 									for pka in chem_data['data']['pKa']:
-										header = "{} (pka_{})".format(calc, j)
+										# header = "{} (pka_{})".format(calc, j)
+										header = "pka_{} ({})".format(j, calc)
 										j += 1
 										if not header in headers:
 											headers.append(header)
@@ -130,9 +133,9 @@ class CSV(object):
 												rows[i].insert(header_index, pka)
 								else:
 									if 'method' in chem_data:
-										header = "{} ({}, {})".format(calc, prop, chem_data['method'])
+										header = "{} ({}, {})".format(prop, calc, chem_data['method'])
 									else:
-										header = "{} ({})".format(calc, prop)
+										header = "{} ({})".format(prop, calc)
 									if not header in headers:
 										headers.append(header)
 									header_index = headers.index(header)
