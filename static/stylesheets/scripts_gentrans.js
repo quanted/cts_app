@@ -14,11 +14,13 @@ $(document).ready(function() {
         'select[name=ftt_selection] option[value=3], select[name=pop_limit], ' +
         '#id_aerobic_biodegrad, #id_anaerobic_biodegrad';
 
-    uberNavTabs(
-        ["Chemical", "ReactionPathSim"],
-        {   "isSubTabs":true,
-        	"Chemical": [".tab_chemicalButtons"] }
-    );
+    if (typeof uberNavTabs == 'function') {
+        uberNavTabs(
+            ["Chemical", "ReactionPathSim"],
+            {   "isSubTabs":true,
+            	"Chemical": [".tab_chemicalButtons"] }
+        );
+    }
 
     $('#chemEditDraw_button').click(function() {
     	$('#chemEditDraw').show();

@@ -1405,6 +1405,7 @@ th {
 /* Input table structures for model inputs */
 .input_table {
   font-size:12px;
+  margin-top: 12px;
 }
 
 #alignLibAndOptions {

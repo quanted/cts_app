@@ -112,6 +112,14 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 	return user_jobs
 
 
+def getTransformationProducts(request):
+	"""
+	CTS front web socket version of transformation products,
+	initially intended for gentrans batch mode.
+	
+	"""
+
+
 def test_sockets(request):
 	from django.template.loader import render_to_string
 	

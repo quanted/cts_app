@@ -13,25 +13,22 @@ def pchempropBatchInputPage(request, model='', header='P-Chem Properties', formD
     """
 
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
-    html = '<div id="pchem_batch_wrap" hidden>'
-    html += '<h3>Select p-chem properties for batch chemicals</h3>'
+    html = """
+    <div id="pchem_batch_wrap" hidden>
+        <h3>1. Select p-chem properties for batch chemicals</h3>
+    """
 
-    pchem_html = render_to_string('cts_pchem.html', {})
-    pchem_html += str(pchemprop_parameters.form(None))  # display defaults to hidden
-    # pchem_html = pchemHtmlTemplate().render(Context(dict(pchemHtml=pchem_html)))
-
-    html += pchem_html
+    html += render_to_string('cts_pchem.html', {})
 
     html += """
-    <div class="input_nav">
-        <div class="input_right">
-            <input type="button" value="Clear" id="clearbutton" class="input_button">
-            <input class="submit input_button" type="submit" value="Submit">
+        <div class="input_nav">
+            <div class="input_right">
+                <input type="button" value="Clear" id="clearbutton" class="input_button">
+                <input class="submit input_button" type="submit" value="Submit">
+            </div>
         </div>
     </div>
     """
-
-    html += '</div>'
 
     return html
 
@@ -53,6 +50,8 @@ def pchempropBatchOutputPage(request, model='', header='P-Chem Properties', form
 
     html = render_to_string('cts_downloads.html', 
         {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
+
+    html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
     html +=  render_to_string('cts_pchemprop_ajax_calls.html', 

@@ -64,10 +64,12 @@ def request_manager(request):
 			data_obj = calcObj.getPropertyValue(prop, measured_data)
 			data_obj.update({'node': node})
 
+			# push one result at a time if node/redis:
 			if redis_conn and sessionid:
 				result_json = json.dumps(data_obj)
 				redis_conn.publish(sessionid, result_json)
 			else:
+				# otherwise send as list
 				measured_results.append(data_obj)
 
 	except Exception as err:

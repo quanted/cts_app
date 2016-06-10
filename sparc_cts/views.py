@@ -67,6 +67,7 @@ def request_manager(request):
                 response = calcObj.makeCallForPka() # response as d ict returned..
                 pka_data = calcObj.getPkaResults(response)
                 sparc_response.update({'data': pka_data})
+                logging.info("response: {}".format(sparc_response))
                 # sparc_results.append(ion_con_response)
                 result_json = json.dumps(sparc_response)
                 if redis_conn and sessionid:
@@ -78,6 +79,7 @@ def request_manager(request):
                 ph = request.POST.get('ph') # get PH for logD calculation..
                 response = calcObj.makeCallForLogD() # response as dict returned..
                 sparc_response.update({'data': calcObj.getLogDForPH(response, ph)})
+                logging.info("response: {}".format(sparc_response))
                 # sparc_results.append(kow_wph_response)
                 result_json = json.dumps(sparc_response)
                 if redis_conn and sessionid:
@@ -94,6 +96,7 @@ def request_manager(request):
                         # if prop_obj['prop'] in props:
                         if prop_obj['prop'] == prop:
                             prop_obj.update({'node': node})
+                            logging.info("response: {}".format(prop_obj))
                             result_json = json.dumps(prop_obj) 
                             if redis_conn and sessionid:
                                 redis_conn.publish(sessionid, result_json)
@@ -115,23 +118,12 @@ def request_manager(request):
             logging.warning("Exception occurred getting SPARC data: {}".format(err))
             logging.info("session id: {}".format(sessionid))
 
-            post_data.update({'error': "data request timed out"})
+            post_data.update({
+                'error': "data request timed out",
+                'prop': prop
+            })
 
             if redis_conn and sessionid: 
                 redis_conn.publish(sessionid, json.dumps(post_data))
             else:
                 return HttpResponse(json.dumps(post_data), content_type='application/json')
-
-        # except requests.HTTPError as e:
-        #     logging.warning("HTTP Error occurred: {}".format(e))
-        #     return HttpResponse(e.msg, status=e.code, content_type='text/plain')
-
-        # except ValueError as ve:
-        #     logging.warning("POST data is incorrect: {}".format(ve))
-        #     post_data.update({"error": "{}".format(ve)})
-        #     return HttpResponse(json.dumps(post_data), content_type='application/json')
-
-        # except requests.exceptions.ConnectionError as ce:
-        #     logging.warning("Connection error occurred: {}".format(ce))
-        #     post_data.update({"error": "connection error"})
-        #     return HttpResponse(json.dumps(post_data), content_type='application/json')

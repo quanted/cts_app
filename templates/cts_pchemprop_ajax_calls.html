@@ -24,6 +24,7 @@ var node_tracker = null;
 var addDataToTable_tracker = null;
 var batch_data = [];  // list of data for csv, incoming responses
 var batch_chems = [];  // list of batch chemicals with molecular info
+var workflow;
 
 $(document).ready(function() {
     // Some global and local variable delcarations:
@@ -35,6 +36,7 @@ $(document).ready(function() {
     mass = "{{mass}}";
     formula = "{{formula}}";
     time = "{{time}}";
+    workflow = "{{workflow}}";
     // nodes = "{{nodes}}";  // defaults to ""
     batch_chems = {{nodes}};
 
@@ -43,16 +45,23 @@ $(document).ready(function() {
     connectToSocket();
 
     if (batch_chems != null) {
-        startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
 
-        // calls_tracker = batch_chems.length;
-        calls_tracker = calculateTotalCalls([batch_chems.length], checkedCalcsAndProps);
-        total_calls = calls_tracker;
+        if (workflow == "gentrans") {
+            // get transformation products, then pchem props for those products...
+            console.log("ok");
+        }
+        else {
+            startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
 
-        // block UI with progress bar
-        blockInterface(true);
+            // calls_tracker = batch_chems.length;
+            calls_tracker = calculateTotalCalls([batch_chems.length], checkedCalcsAndProps);
+            total_calls = calls_tracker;
 
-        $('#pdfExport, #htmlExport').hide();
+            // block UI with progress bar
+            blockInterface(true);
+
+            $('#pdfExport, #htmlExport').hide();
+        }
 
     }
     else {
@@ -426,10 +435,10 @@ function organizeData(calc, prop, data) {
     if (typeof data === "number") {
         if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss" || prop == "henrys_law_con") {
             if (calc == "test" && prop == "vapor_press") { data = Math.pow(10, data); }
-            return data.toExponential(3);
+            return data.toExponential(2);
         }
         else {
-            return data.toFixed(3);
+            return data.toFixed(2);
         }
     }
 
@@ -448,7 +457,7 @@ function organizeData(calc, prop, data) {
             else {
                 for (var i = 0; i < itemVals.length; i++) {
                     var label = item + String(i + 1).sub() +  ': ';
-                    parsedData += '<div class="pka-wrapper">' + label + itemVals[i].toFixed(3) + '</div>';
+                    parsedData += '<div class="pka-wrapper">' + label + itemVals[i].toFixed(2) + '</div>';
                 }
             }
         }

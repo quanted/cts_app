@@ -133,14 +133,26 @@ def getChemicalSpeciationData(request):
 	# return HttpResponse(json.dumps(wrapped_post), content_type='application/json')
 
 
-def getPchemPropData(request):
-	"""
-	CTS web service for getting p-chem
-	data from various calculators
-	"""
+# def getPchemPropData(request):
+	# """
+	# CTS web service for getting p-chem
+	# data from various calculators
+	# """
 	# Should this call the calculator views?
 	# Is this parallel and doubling code from portal/views?
 	# Is portal 
+
+
+# def getTransformationProducts(request):
+	# """
+	# CTS web service for calling metabolizer gentrans_model,
+	# which organizes the data and adds a genKey.
+	# """
+
+	# check run type and decide whether to push to redis
+	# or return an http response (if it's the api)
+
+	
 
 
 def booleanize(value):
