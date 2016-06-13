@@ -23,8 +23,8 @@ class MeasuredCalc(Calculator):
 		self.postData = {"smiles" : ""}
 		self.name = "measured"
 		self.baseUrl = os.environ['CTS_EPI_SERVER']
-		# self.urlStruct = "/episuiteapi/rest/episuite/measured"
-		self.urlStruct = "/rest/episuite/measured"
+		self.urlStruct = "/episuiteapi/rest/episuite/measured"
+		# self.urlStruct = "/rest/episuite/measured"
 
 		# map workflow parameters to test
 		self.propMap = {
