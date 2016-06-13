@@ -23,7 +23,8 @@ class MeasuredCalc(Calculator):
 		self.postData = {"smiles" : ""}
 		self.name = "measured"
 		self.baseUrl = os.environ['CTS_EPI_SERVER']
-		self.urlStruct = "/episuiteapi/rest/episuite/measured"
+		# self.urlStruct = "/episuiteapi/rest/episuite/measured"
+		self.urlStruct = "/rest/episuite/measured"
 
 		# map workflow parameters to test
 		self.propMap = {
@@ -103,7 +104,7 @@ class MeasuredCalc(Calculator):
 			if sparc_requested_property in properties_dict.keys():
 				data_obj['data'] = properties_dict[sparc_requested_property]['propertyvalue']
 			else:
-				data_obj['error'] = "property not available".format(sparc_requested_property)
+				data_obj['data'] = "property not available".format(sparc_requested_property)
 
 			return data_obj
 

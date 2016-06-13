@@ -130,7 +130,7 @@ class CSV(object):
 										header_index = headers.index(header)
 										for i in range(0, len(rows)):
 											if rows[i][0] == chem_data['node']['smiles']:
-												rows[i].insert(header_index, pka)
+												rows[i].insert(header_index, roundData(pka))
 								else:
 									if 'method' in chem_data:
 										header = "{} ({}, {})".format(prop, calc, chem_data['method'])
@@ -141,7 +141,13 @@ class CSV(object):
 									header_index = headers.index(header)
 									for i in range(0, len(rows)):
 										if rows[i][0] == chem_data['node']['smiles']:
-											rows[i].insert(header_index, chem_data['data'])
+											# temporary error handling...
+											if 'error' in chem_data:
+												rows[i].insert(header_index, chem_data['data'])
+											elif 'method' in chem_data:	
+												rows[i].insert(header_index, roundData(chem_data['data']))
+											else:
+												rows[i].insert(header_index, chem_data['data'])
 			else:
 				for prop in self.props:
 					for calc, calc_props in run_data['checkedCalcsAndProps'].items():
@@ -151,7 +157,7 @@ class CSV(object):
 									pka_num = str(int(pka_key[-1:]) + 1)
 									new_pka_key = pka_key[:-1] + "_" + pka_num
 									headers.append("{} ({})".format(new_pka_key, calc))
-									rows[0].append(pka_val)
+									rows[0].append(roundData(pka_val))
 							elif calc == 'chemaxon' and prop == 'kow_no_ph' or calc == 'chemaxon' and prop == 'kow_wph':
 								# e.g., "-1.102 (KLOP)<br>-1.522 (VG)<br>-1.344 (PHYS)<br>"
 								method_data = calc_props[prop].split('<br>')
@@ -160,7 +166,7 @@ class CSV(object):
 									value = method_datum.split()[0]  # value, method
 									method = method_datum.split()[1]
 									headers.append("{} ({}, {})".format(prop, calc, method))
-									rows[0].append(value)
+									rows[0].append(roundData(value))
 							else:
 								headers.append("{} ({})".format(prop, calc))
 								rows[0].append(calc_props[prop])
@@ -299,3 +305,15 @@ def getCalcMapKeys(calc):
 		return SparcCalc().propMap.keys()
 	else:
 		return None
+
+
+def roundData(datum):
+	try:
+		logging.warning("rounding {}".format(datum))
+		return round(datum, 2)
+	except ValueError as err:
+		logging.warning("downloads_cts, didn't round {}: {}".format(datum, err))
+		return datum
+	except TypeError as err:
+		logging.warning("downloads_cts, datum: {}, err: {}".format(datum, err))
+		return datum
