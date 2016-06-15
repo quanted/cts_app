@@ -19,7 +19,8 @@ class EpiCalc(Calculator):
         self.postData = {"smiles" : ""}
         self.name = "epi"
         self.baseUrl = os.environ['CTS_EPI_SERVER']
-        self.urlStruct = "/episuiteapi/rest/episuite/{}/estimated"
+        self.urlStruct = "/episuiteapi/rest/episuite/{}/estimated"  # new way
+        # self.urlStruct = "/rest/episuite/{}/estimated"  # old way
         self.methods = None
         self.propMap = {
             'melting_point': {
@@ -92,3 +93,20 @@ class EpiCalc(Calculator):
         else:
             self.results = response
             return response
+
+    def parsePropResults(self, chemical, prop, response):
+        """
+        parses results from epi response.
+        builds cts data obj of calc, prop, and data (with status)
+        """
+        epi_result = json.loads(response.content)
+
+        cts_data_obj = {
+            'calc': 'epi',
+            'prop': prop
+        }
+
+        if 'propertyvalue' in epi_result:
+            cts_data_obj.update({'data': epi_result['propertyvalue']})
+
+        return cts_data_obj

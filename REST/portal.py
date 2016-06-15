@@ -52,10 +52,10 @@ def directAllTraffic(request):
 
 	if 'nodes' in pchem_request.keys():
 		# TODO: consider more efficient ways to parse up calls,
-		# some calcs can process data for multiple smiles in one request
 		for node in pchem_request['nodes']:
 			pchem_request['node'] = node
 			pchem_request['chemical'] = node['smiles']
+		# some calcs can process data for multiple smiles in one request
 			jobs = parseOutPchemCallsToWorkers(sessionid, pchem_request)
 			user_jobs = user_jobs + jobs  # build single-level list of jobs
 

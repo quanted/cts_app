@@ -6,7 +6,7 @@
 		<h2 class="model_header">{{ model_attributes }}</h2>
 		<ul class="nobullet">
 			<!-- <li><a href="/csvs/{{model}}_batch.csv">Please download, fill, and upload this CSV file for batch calculation. </a></li> -->
-			<li><i>Upload a text file of chemicals organized into a single column:</i></li>
+			<li><i>Upload a text file of chemicals organized into a single column </i>(<a href="/static/docs/sample_batch.txt" download>sample batch input</a>):</li>
 		</ul>
 		<ul class="nobullet">
 		<li>
@@ -20,7 +20,7 @@
 				<br><br>
 				
 				<h3> List of chemicals from file: </h3>
-				<pre id="fileDisplayArea"></pre>
+				<pre id="fileDisplayArea"><ol id="batch_list"></ol></pre>
 				
 				<!-- get chemical details for each, list in thumnail table view way -->
 				<!-- <div id="batchChemDisplay"></div> -->

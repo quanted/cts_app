@@ -76,7 +76,16 @@ def request_manager(request):
 
 		try:
 			response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
-			data_obj.update({"data": json.loads(response.content)}) # add that data
+
+			# need to build cts data obj from epi response!
+			# data_obj = calcObj.parsePropResults(filtered_smiles, prop, response)
+
+			result_obj = json.loads(response.content)
+
+			if 'propertyvalue' in result_obj:
+				data_obj.update({'data': result_obj['propertyvalue']})
+			else:
+				data_obj.update({"data": json.loads(response.content)}) # add that data
 
 			# node/redis stuff:
 			if redis_conn and sessionid:
@@ -87,7 +96,7 @@ def request_manager(request):
 
 		except Exception as err:
 			logging.warning("Exception occurred getting {} data: {}".format(err, calc))
-			data_obj.update({'error': "cannot reach {} calculator".format(calc)})
+			data_obj.update({'data': "cannot reach {} calculator".format(calc)})
 
 			logging.info("##### session id: {}".format(sessionid))
 
