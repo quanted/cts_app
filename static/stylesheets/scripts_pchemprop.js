@@ -98,29 +98,34 @@ $(document).ready(function() {
 
 
 function submitButtonLogic() {
-    //Enable submit only when a calculator is 
-    //checked AND an available property:
+    // Enable submit only when a calculator is 
+    // checked AND an available property:
 
-    //disable submit if no calculator is checked
-    if ($('input[type=checkbox].calc_checkbox').is(':not(:checked)')) {
+    var calc_checkbox = $('input[type=checkbox].calc_checkbox');
+
+    // disable submit if no calculator is checked (and not gentrans/batch)
+    if ($(calc_checkbox).is(':not(:checked)') && window.location.href.indexOf('gentrans') < 0) {
         $('.submit.input_button').prop('disabled', true).removeClass('brightBorders');
     }
-    //loop through calculators' checkboxes
-    $('input[type=checkbox].calc_checkbox').each(function() {
-        if ($(this).is(':checked')) {
-            var calcName = $(this).attr('name');
-            var availableProps = $('td.ChemCalcs_available.' + calcName);
-            //enable submit if checked calculator has checked properties
-            if ($(availableProps).parent().find('input[type=checkbox]').is(':checked')) {
-                $('.submit.input_button').prop('disabled', false).addClass('brightBorders');
+
+    if (window.location.href.indexOf('pchemprop') > -1) {
+        // loop through calculators' checkboxes
+        $(calc_checkbox).each(function() {
+            if ($(this).is(':checked')) {
+                var calcName = $(this).attr('name');
+                var availableProps = $('td.ChemCalcs_available.' + calcName);
+                //enable submit if checked calculator has checked properties
+                if ($(availableProps).parent().find('input[type=checkbox]').is(':checked')) {
+                    $('.submit.input_button').prop('disabled', false).addClass('brightBorders');
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 
 function pchempropTableLogic() {
-    //Highlight column of selected calculator:
+    // Highlight column of selected calculator:
     $('input.calc_checkbox').change(function() {
         var colClass = $(this).attr('name');
         if ($(this).is(':checked')) { $('td.' + colClass).fadeTo(0, 1); }

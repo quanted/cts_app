@@ -81,13 +81,13 @@ $('#tabs-1').on('click', 'table th', function() {
     $(this).parent().nextUntil('tr.header').toggle();
 });
 
-$('#gen-select').change(function() {
-    var genLevel = $(this).find('option:selected').val();
-    var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);
-    st.config.levelsToShow = genLevel;
-    // resizeCanvas(parsedNodeList);  // change canvas height
-    st.select(st.root);
-});
+// $('#gen-select').change(function() {
+//     var genLevel = $(this).find('option:selected').val();
+//     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);
+//     st.config.levelsToShow = genLevel;
+//     // resizeCanvas(parsedNodeList);  // change canvas height
+//     st.select(st.root);
+// });
 
 // Get Data button for gathering pchem props for node:
 $('#btn-pchem-getdata').click(function () {
@@ -311,35 +311,7 @@ function init(json){
                 });
             };
 
-            //set label styles
-            // var style = label.style;
-            // style.width = 60 + 'px';
-            // style.height = 17 + 'px';
-            // style.width = nodeWidth;
-            // style.height = nodeHeight;        
-            // style.cursor = 'pointer';
-            // style.color = '#333';
-            // style.fontSize = '0.8em';
-            // style.textAlign= 'center';
-            // style.paddingTop = '3px';
         },
-
-        // onPlaceLabel: function(label, node) {
-
-
-        //     // ID 1 is looping several times for some reason...
-        //     // And images are blank rectangles of correct height and width...
-
-
-        //     var pos = node.getPos(),
-        //         // width = node.getData('width').baseVal.value;
-        //         // height = node.getData('height').baseVal.value;
-        //         width = node.getData('width'),
-        //         height = node.getData('height'),
-        //         size = st.canvas.getSize();
-        //     label.setAttribute("x", pos.x + size.width/2 - width/2);
-        //     label.setAttribute("y", pos.y + size.height/2);
-        // },
 
         //This method is called right before plotting
         //an edge. It's useful for changing an individual edge
@@ -377,6 +349,11 @@ function init(json){
             },
             onClick: function (node, eventInfo, e) {
                 // left click event:
+
+                // var test = node.collapsed;
+
+                // find node 
+
                 if (node) {
 
                     var st_nodes = st.graph.nodes;  // actual nodes from spacetree
@@ -683,7 +660,7 @@ function jsonRepack(jsonobj) {
 
 
 function handleTransformationProductsBatchRequest() {
-    
+
 }
 
 </script>

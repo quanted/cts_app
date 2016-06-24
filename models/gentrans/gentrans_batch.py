@@ -63,7 +63,7 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     # for chemical in batch_chemicals:
     #     # get transformation products (synchronous!):
 
-    request.POST.set('run_type', 'batch')
+    # request.POST.update({'run_type': "batch"})
 
     gentrans_obj = gentrans_output.gentransOutputPage(request)
 

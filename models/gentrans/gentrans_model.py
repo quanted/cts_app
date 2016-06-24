@@ -67,21 +67,24 @@ class gentrans(object):
 
         request = HttpRequest()
         request.POST = dataDict
-        try:
-            response = jchem_rest.getTransProducts(request)
-        except Exception as e:
-            logging.warning("error making data request: {}".format(e))
-            raise
 
-        # reformat data for outputting to tree structure:
-        data_walks.j = 0
-        data_walks.metID = 0
-        self.results = data_walks.recursive(response.content)
 
-        # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
-        self.test_results = []
+        if self.run_type != 'batch':
+            try:
+                response = jchem_rest.getTransProducts(request)
+            except Exception as e:
+                logging.warning("error making data request: {}".format(e))
+                raise
 
-        self.rawData = response.content
+            # reformat data for outputting to tree structure:
+            data_walks.j = 0
+            data_walks.metID = 0
+            self.results = data_walks.recursive(response.content)
+
+            # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
+            self.test_results = []
+
+            self.rawData = response.content
 
         # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING ++++++++++++++
         self.run_data = {

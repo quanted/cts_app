@@ -53,15 +53,25 @@ def request_manager(request):
 
 		if '[' in filtered_smiles or ']' in filtered_smiles:
 			logging.warning("EPI ignoring request due to brackets in SMILES..")
-			postData.update({'error': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
-			return HttpResponse(json.dumps(postData), content_type='application/json')
+			# postData.update({'error': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
+			postData.update({'data': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
+			# return HttpResponse(json.dumps(postData), content_type='application/json')
+			if redis_conn and sessionid:
+				for prop in props:
+					postData['prop'] = prop
+					postData['node'] = node
+					redis_conn.publish(sessionid, json.dumps(postData))
+				return
 
 		logging.info("EPI Filtered SMILES: {}".format(filtered_smiles))
 		# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	except Exception as err:
 		logging.warning("Error filtering SMILES: {}".format(err))
-		postData.update({'error': "Cannot filter SMILES for TEST data"})
-		return HttpResponse(json.dumps(postData), content_type='application/json')
+		# postData.update({'error': "Cannot filter SMILES for EPI data"})
+		postData.update({'data': "Cannot filter SMILES for EPI data"})
+		# return HttpResponse(json.dumps(postData), content_type='application/json')
+		if redis_conn and sessionid:
+			redis_conn.publish(sessionid, json.dumps(postData))
 
 	calcObj = EpiCalc()
 	epi_results = []
