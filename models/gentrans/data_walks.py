@@ -30,7 +30,7 @@ def recursive(jsonStr):
 
 
 metID = 0  # unique id for each node
-metabolite_keys = ['smiles', 'accumulation', 'production', 'transmissivity', 'generation', 'routes']
+metabolite_keys = ['smiles', 'formula', 'iupac', 'mass', 'accumulation', 'production', 'transmissivity', 'generation', 'routes']
 image_scale = 50
 
 def traverse(root):
@@ -57,10 +57,22 @@ def traverse(root):
         root = root[parent]['metabolites'][second_parent]
         
     else:
+        logging.warning("ROOT: {} ".format(root))
+        logging.warning("ROOT ABOVE ^^^^")
         if root['generation'] > 0:
             newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, image_scale), "data": {}, "children": []})
             # newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], None, 100, 28), "data": {}, "children": []})
             newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
+
+            request = HttpRequest()
+            request.POST = {'chemical': root['smiles']}
+            mol_info = json.loads(jchem_rest.getChemDetails(request).content)
+            if 'data' in mol_info:
+                for key, val in mol_info['data'][0].items():
+                    if key in metabolite_keys:
+                        newDict['data'].update({key: val})
+            # newDict['data'].update(json.loads(mol_info.content))
+
 
     for key, value in root.items():
         if isinstance(value, dict):
@@ -220,3 +232,14 @@ def roundValue(val, n):
                         pkaList.append(round(pka, n))
                     roundedDict[key] = pkaList
             return roundedDict
+
+
+# def collapseNest(nestedJson):
+    # """
+    # walks through n-nested results from
+    # recursive function and returns a list
+    # of products with a genKey for keeping
+    # track of position in tree (e.g., 1.3.1)
+    # """
+    
+    

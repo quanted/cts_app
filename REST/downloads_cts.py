@@ -54,31 +54,59 @@ class CSV(object):
 		rows = []
 		headers = []
 
+		# Build rows for chemicals:
 		if 'batch_data' in run_data:
-			for i in range(0, len(run_data['batch_chems'])):
-				rows.append([])
+			if 'workflow' in run_data and run_data['workflow'] == 'gentrans':
+				for i in range(0, len(run_data['batch_data'])):
+					parent_products = run_data['batch_data'][i]
+					for j in range(0, len(parent_products)):
+						rows.append([])
+			else:
+				for i in range(0, len(run_data['batch_chems'])):
+					rows.append([])
 		else:
-			rows.append([])
+			if 'workflow' in run_data and run_data['workflow'] == 'gentrans':
+				for i in range(0, len(run_data['data'])):
+					rows.append([])
+			else:
+				rows.append([])
 
 		# write parent info first and in order..
 		for prop in self.molecular_info:
 
 			if not 'batch_data' in run_data:
-				for key, val in run_data['run_data'].items():
-					if key == prop:
-						headers.append(key)
-						rows[0].append(val)
+
+				if run_data['workflow'] == 'gentrans':
+					headers.append(prop)
+					i = 0
+					for metabolite in run_data['data']:
+						for key, val in metabolite.items():
+							if key == prop:
+								# headers.append(key)
+								rows[i].append(val)
+								i += 1
+				else:
+					for key, val in run_data['run_data'].items():
+						if key == prop:
+							headers.append(key)
+							rows[0].append(val)
 			else:
 				headers.append(prop)
 				i = 0
 				# for chem_data in run_data['batch_data']:
-				for chem_data in run_data['batch_chems']:
+				for chem_data in run_data['batch_data']:
 					# fill out all the batch chemicals' molecular info..
 					# data = chem_data['node'][prop]
-					data = chem_data[prop]
-					rows[i].append(data)
-					i += 1
-
+					if run_data['workflow'] == 'gentrans':
+						for product in chem_data:
+							data = product[prop]
+							rows[i].append(data)
+							i += 1
+						
+					else:
+						data = chem_data[prop]
+						rows[i].append(data)
+						i += 1
 
 		if self.model == 'chemspec':
 			run_data = run_data['run_data']
@@ -174,96 +202,51 @@ class CSV(object):
 
 		elif self.model == 'gentrans':
 			# TODO: class this, e.g., Metabolizer (jchem_rest)
-			metabolites_data = run_data['data']
+			if 'batch_data' in run_data:
+				metabolites_data = run_data['batch_data']
+			else:
+				metabolites_data = run_data['data']
 
 			if not metabolites_data:
 				return HttpResponse("error building csv for metabolites..")
 
-			rows['headers'].insert(0, 'gen') # insert generation headers first
+			headers.insert(0, 'genKey') # insert generation headers first
 
-			met_pkas, met_pkbs = [], []
-			# determine max # pkas for all metabolites, then create columns...
-			for metabolite in metabolites_data:
-				if 'pchemprops' in metabolite:
-					for data_obj in metabolite['pchemprops']:
-						if data_obj['prop'] == 'ion_con':
-							try:
-								met_pkas.append(len(data_obj['data']['pKa']))
-								met_pkbs.append(len(data_obj['data']['pKb']))
-							except TypeError:
-								pass  # pKa and/or pKb is None, ignore..
-							except KeyError:
-								pass  # pKa and/or pKb is None, ignore..
+			
 
-			# build csv columns.. TODO: only build columns with props and calcs that are available!
-			for prop in self.props:
-				for calc in self.calcs:
-					# only add header if prop exist for given calc..
-					if prop in getCalcMapKeys(calc):
-						if prop == 'ion_con':
-							# build max pka and pkb columns..
-							if len(met_pkas) > 0:
-								for i in range (0, max(met_pkas)):
-									col_header = "pKa_{} ({})".format(i, calc) # e.g., pka1 (chemaxon)
-									rows['headers'].append(col_header)
-							if len(met_pkbs) > 0:
-								for i in range (0, max(met_pkbs)):
-									col_header = "pKb_{} ({})".format(i, calc)
-									rows['headers'].append(col_header)
-						else:
-							col_header = "{} ({})".format(prop, calc) # e.g., water_sol (epi)
-							rows['headers'].append(col_header)
-					# else:
-					#     logging.info("{} not available for {}".format(prop, calc))
+			if 'batch_data' in run_data:
 
-			# m = 1 # detabolite indexer
-			logging.info("HEADERS: {}".format(rows['headers']))
+				parent_index = 0
+				for parent in metabolites_data:
 
-			# list size out of whack because metabolites' gen, smiles, etc. isn't being declared,
-			# just the props!!!!!
+					products_index = 0
+					for product in parent:
+						header_index = headers.index('genKey')
 
-			gen_list = []
+						# make new gen key to keep track of parents
+						parent_genkey = int(product['genKey'][:1])  # first value of genKey
+						remaining_genkey = product['genKey'][1:]
+						new_genkey = str(parent_genkey + parent_index) + remaining_genkey
 
-			# loop metabolite data, one per row, insert data at index of matching header:
-			# (this builds the rows as list)
-			for metabolite in metabolites_data:
+						rows[products_index].insert(header_index, new_genkey)
+						products_index += 1
 
-				# predefine row because code below will insert data at index of its column header..
-				new_row = [None]*len(rows['headers']) # todo: get this variable above, one time
-				new_key = metabolite['genKey']
-				rows[new_key] = new_row # add new row to rows object
+					parent_index += 1
 
-				# logging.info(">>> NEW ROW: {}".format(new_key))
-				gen_list.append(new_key)
+			else:
+				products_index = 0
+				for metabolite in metabolites_data:
+					header_index = headers.index('genKey')
+					rows[products_index].insert(header_index, metabolite['genKey'])
+					products_index += 1
 
-				# insert metabolite gen key:value..
-				header_index = rows['headers'].index('gen')
-				rows[new_key][header_index] = metabolite['genKey']
 
-				# insert metabolite smiles key:value..
-				header_index = rows['headers'].index('smiles')
-				rows[new_key][header_index] = metabolite['smiles']
+			# above just inserts genKey..way above inserts mol info..
+			# below should call pchem stuff functional to build p-chem cols..
 
-				if 'pchemprops' in metabolite:
-					for data_obj in metabolite['pchemprops']:
 
-						calc, prop, data = data_obj['calc'], data_obj['prop'], data_obj['data']
 
-						# insert data at index of matching header..
-						if data_obj['prop'] == 'ion_con':
-							for key, val in data.items():
-								i = 0
-								for pka in val:
-									col_header = "{}{} ({})".format(key, i, calc)
-									if col_header in rows['headers']:
-										header_index = rows['headers'].index(col_header) # get index of col_header
-										rows[new_key][header_index] = pka
-									i+=1
-						else:
-							col_header = "{} ({})".format(prop, calc)
-							if col_header in rows['headers']:
-								header_index = rows['headers'].index(col_header)
-								rows[new_key][header_index] = data
+
 
 		# might have to add code to keep row order..
 		# writer.writerow(rows['headers'])
@@ -271,8 +254,14 @@ class CSV(object):
 
 		# todo: remove blank columns before writing to csv..
 		# write data rows to csv file:
+		
+		# if self.model == 'gentrans':
+		# 	for gen in gen_list: writer.writerow(rows[gen])
+
 		if self.model == 'gentrans':
-			for gen in gen_list: writer.writerow(rows[gen])
+			for row in rows:
+				writer.writerow(row)
+
 		else:
 			for row in rows:
 				encoded_row_data = []
@@ -280,13 +269,7 @@ class CSV(object):
 					if isinstance(datum, unicode): datum = datum.encode('utf8')
 					encoded_row_data.append(datum)
 				writer.writerow(encoded_row_data)
-			# for row, row_data in rows.items():
-			# 	# add checking for character encoding..
-			# 	encoded_row_data = []
-			# 	for datum in row_data:
-			# 		if isinstance(datum, unicode): datum = datum.encode('utf8')
-			# 		encoded_row_data.append(datum)
-			# 	if row != "headers": writer.writerow(encoded_row_data)
+
 
 		return response
 

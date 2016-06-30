@@ -1,12 +1,13 @@
 from django.http import HttpResponse, HttpRequest
 import requests
-import jchem_rest as jrest
+import jchem_rest
 import logging
 import json
 import redis
-from jchem_calculator import JchemProperty as jp
+from jchem_calculator import JchemProperty
 from REST.smilesfilter import filterSMILES
 from requests_futures.sessions import FuturesSession
+from models.gentrans import data_walks
 
 
 # TODO: get these from the to-be-modified jchem_rest class..
@@ -39,6 +40,7 @@ def request_manager(request):
 	node = request.POST.get('node') # TODO: keep track of nodes without bringing node obj along for the ride!
 	calc = request.POST.get('calc')
 	run_type = request.POST.get('run_type')
+	workflow = request.POST.get('workflow')
 
 	try:
 		props = request.POST.get("props[]")
@@ -54,6 +56,53 @@ def request_manager(request):
 
 	session = FuturesSession()
 
+	# logging.warning("inside chemaxon views, workflow = {}".format(workflow))
+	# logging.warning("run type: {}".format(run_type))
+
+	if workflow == 'gentrans' and run_type == 'batch':
+		# getTransProducts chemaxon service..
+		logging.warning("k here we are at gentrans batch..")
+
+		request = HttpRequest()
+		# from gentrans model:
+		request.POST = {
+            'structure': chemical,
+            'generationLimit': 1,  # make sure to get this from front end
+            'populationLimit': 0,
+            'likelyLimit': 0.001,
+            'transformationLibraries': ['human_biotransformation'],  # get from front end as well!!!
+            'excludeCondition': ""  # 'generateImages': False
+		}
+		response = jchem_rest.getTransProducts(request)
+		data_walks.j = 0
+		data_walks.metID = 0
+		results = data_walks.recursive(response.content)
+		# results = json.loads(response.content)
+
+		# logging.warning("metabolizer results: {}".format(results))
+
+		data_obj = {
+			'calc': "chemaxon", 
+			'prop': "products",
+			'node': node,
+			'data': json.loads(results),
+			'chemical': chemical,
+			'workflow': 'gentrans',
+			'run_type': 'batch'
+		}
+
+		if redis_conn:
+			result_json = json.dumps(data_obj)
+			redis_conn.publish(sessionid, result_json)
+		else:
+			return HttpResponse(json.dumps(data_obj), content_type='application/json')
+
+	else:
+		getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
+
+
+
+def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session):
 	if props:
 		chemaxon_results = []
 		for prop in props:
@@ -114,11 +163,7 @@ def request_manager(request):
 			# send response over http (for accessing as REST service)
 			return HttpResponse(json.dumps(postData), content_type='application/json')
 
-
-# def asyncResults(sess, rep):
-# 	# parse the json storing the result on the reponse object:
-# 	resp.data = resp.json()
-
+	return
 
 def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None, node=None, session=None):
 	"""
@@ -128,21 +173,21 @@ def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None
 	response = None
 	if service == 'getChemDetails':
 		try:
-			response = jrest.convertToSMILES(request)  # convert chemical to smiles
+			response = jchem_rest.convertToSMILES(request)  # convert chemical to smiles
 			response = json.loads(response.content)  # get json data
 			filtered_smiles = filterSMILES(response['structure'])  # call CTS REST SMILES filter
 			request.data = {'chemical': filtered_smiles}
-			response = jrest.getChemDetails(request)  # get chemical details
+			response = jchem_rest.getChemDetails(request)  # get chemical details
 			response = json.loads(response.content)
 		except Exception as e:
 			raise e # TODO: build HTTP-code-specific error handling at portal.py
-		response = jrest.getChemDetails(request).content
+		response = jchem_rest.getChemDetails(request).content
 	elif service == 'getChemSpecData':
-		response = jrest.getChemSpecData(request).content
+		response = jchem_rest.getChemSpecData(request).content
 	elif service == 'smilesToImage':
-		response = jrest.smilesToImage(request).content
+		response = jchem_rest.smilesToImage(request).content
 	elif service == 'convertToSMILES':
-		response = jrest.convertToSMILES(request).content
+		response = jchem_rest.convertToSMILES(request).content
 	elif service == 'getPchemProps':
 		response = getJchemPropData(chemical, prop, phForLogD, method, sessionid, node, session)
 	return response
@@ -158,11 +203,11 @@ def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None
 
 	result = ""
 	if prop == 'water_sol':
-		propObj = jp.getPropObject('solubility')
+		propObj = JchemProperty.getPropObject('solubility')
 		propObj.makeDataRequest(chemical, None, session)
 		result = propObj.getSolubility()
 	elif prop == 'ion_con':
-		propObj = jp.getPropObject('pKa')
+		propObj = JchemProperty.getPropObject('pKa')
 		propObj.makeDataRequest(chemical, None, session)
 
 		pkas = propObj.getMostAcidicPka() + propObj.getMostBasicPka()
@@ -171,11 +216,11 @@ def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None
 		result = {'pKa': pkas}
 		# result = {'pKa': propObj.getMostAcidicPka(), 'pKb': propObj.getMostBasicPka()}
 	elif prop == 'kow_no_ph':
-		propObj = jp.getPropObject('logP')
+		propObj = JchemProperty.getPropObject('logP')
 		propObj.makeDataRequest(chemical, method, session)
 		result = propObj.getLogP()
 	elif prop == 'kow_wph':
-		propObj = jp.getPropObject('logD')
+		propObj = JchemProperty.getPropObject('logD')
 		propObj.makeDataRequest(chemical, method, session)
 		result = propObj.getLogD(phForLogD)
 	else:

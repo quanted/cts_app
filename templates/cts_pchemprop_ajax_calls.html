@@ -25,6 +25,7 @@ var addDataToTable_tracker = null;
 var batch_data = [];  // list of data for csv, incoming responses
 var batch_chems = [];  // list of batch chemicals with molecular info
 var workflow;
+var run_type;
 
 $(document).ready(function() {
     // Some global and local variable delcarations:
@@ -39,6 +40,7 @@ $(document).ready(function() {
     workflow = "{{workflow}}";
     // nodes = "{{nodes}}";  // defaults to ""
     batch_chems = {{nodes}};
+    run_type = "{{run_type}}";
 
     // sparcPropMap['kow_ph'] = kowPH;
 
@@ -46,22 +48,19 @@ $(document).ready(function() {
 
     if (batch_chems != null) {
 
-        if (workflow == "gentrans") {
-            // get transformation products, then pchem props for those products...
-            console.log("ok");
-        }
-        else {
-            startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
 
-            // calls_tracker = batch_chems.length;
-            calls_tracker = calculateTotalCalls([batch_chems.length], checkedCalcsAndProps);
-            total_calls = calls_tracker;
 
-            // block UI with progress bar
-            blockInterface(true);
+        startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
 
-            $('#pdfExport, #htmlExport').hide();
-        }
+        // calls_tracker = batch_chems.length;
+        calls_tracker = calculateTotalCalls([batch_chems.length], checkedCalcsAndProps);
+        total_calls = calls_tracker;
+
+        // block UI with progress bar
+        blockInterface(true);
+
+        $('#pdfExport, #htmlExport').hide();
+
 
     }
     else {
@@ -159,7 +158,36 @@ function connectToSocket() {
             //     addPchemDataToNode(data['node'], data);  // cts_gentrans_tree
             // }
             if (window.location.href.indexOf('batch') > -1) {
-                batch_data.push(data);
+
+                if (workflow == 'gentrans') {
+
+                    // walk through n-nested results...
+                    // or do this on the backend, maybe
+                    // refactoring data_walks, or adding a 
+                    // new function..
+
+                    init(data.data);
+                    st_array.push(st);  // add spacetree instance to array
+                    // nodeList = addGenKey($jit.json, data.data);
+
+                    var products = st.graph.nodes;
+                    var product_data = [];
+                    for (product in products) {
+
+                        var product_gen = parseFloat(products[product]['data']['generation']);
+
+                        if (product_gen <= genMax) {
+                            product_data.push(products[product]['data']);
+                        }
+                    }
+
+                    batch_data.push(product_data);
+
+                }
+                else {
+                    batch_data.push(data);
+                }
+
             }
 
             calls_tracker--;
@@ -205,7 +233,7 @@ function connectToSocket() {
 }
 
 
-function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node, currentNode, nodes, run_type) {
+function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, node, currentNode, nodes) {
     
     if (checkedCalcsAndProps == null) { return; }
 
@@ -243,6 +271,12 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
 
     if (run_type != null) {
         pchem_data['run_type'] = run_type
+    }
+
+    if (workflow == 'gentrans') {
+        pchem_data['service'] = 'getTransProducts';
+        pchem_data['calc'] = 'chemaxon';
+        pchem_data['workflow'] = 'gentrans';
     }
 
     // pchem_data['calc'] = calc;

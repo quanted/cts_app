@@ -78,36 +78,53 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 	pchem_request_dict = pchem_request['pchem_request']
 
 	user_jobs = []
-	# loop calcs and run them as separate processes:
-	for calc, props in pchem_request_dict.items():
 
-		pchem_request.update({'calc': calc, 'props': props})
-
+	if 'service' in pchem_request and pchem_request['service'] == 'getTransProducts':
 		calc_request = HttpRequest()
 		calc_request.POST = pchem_request
-
-		logging.info("requesting {} props from {} calculator..".format(props, calc))
-
 		try:
-			# put job on calc queue:
-			# job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc, link=tasks.cleanQueues.s(sessionid))
-			# this one works:
-
-			# NOTE: have to enable backend for celery to have linked callbacks for results
-			job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc)  # use session for ID
+			job = tasks.startCalcTask.apply_async(args=["chemaxon", pchem_request], queue="chemaxon")
 			user_jobs.append(job.id)
-
 		except Exception as error:
-			logging.warning("error requesting {} props from {} calculator..\n {}".format(props, calc, error))
-			if redis_conn and sessionid:
-				error_response = {
-					'calc': calc,
-					'props': props,
-					'error': "error requesting props for {}".format(calc)
-				}
-				redis_conn.publish(sessionid, json.dumps(error_response))
-			else:
-				return HttpResponse(json.dumps(error_response), content_type='application/json')
+			# logging.warning("error requesting {} props from {} calculator..\n {}".format(props, calc, error))
+			error_response = {
+				'calc': "chemaxon",
+				'service': "getTransProducts",
+				'error': "error requesting products from chemaxon"
+			}
+			redis_conn.publish(sessionid, json.dumps(error_response))
+
+	else:
+		# loop calcs and run them as separate processes:
+		for calc, props in pchem_request_dict.items():
+
+			pchem_request.update({'calc': calc, 'props': props})
+
+			calc_request = HttpRequest()
+			calc_request.POST = pchem_request
+
+			logging.info("requesting {} props from {} calculator..".format(props, calc))
+
+			try:
+				# put job on calc queue:
+				# job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc, link=tasks.cleanQueues.s(sessionid))
+				# this one works:
+
+				# NOTE: have to enable backend for celery to have linked callbacks for results
+				job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc)  # use session for ID
+				user_jobs.append(job.id)
+
+			except Exception as error:
+				logging.warning("error requesting {} props from {} calculator..\n {}".format(props, calc, error))
+				if redis_conn and sessionid:
+					error_response = {
+						'calc': calc,
+						'props': props,
+						'error': "error requesting props for {}".format(calc)
+					}
+					redis_conn.publish(sessionid, json.dumps(error_response))
+				else:
+					return HttpResponse(json.dumps(error_response), content_type='application/json')
 
 	return user_jobs
 

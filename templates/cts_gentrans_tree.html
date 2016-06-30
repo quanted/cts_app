@@ -17,6 +17,7 @@ var labelType, useGradients, nativeTextSupport, animate;
 var currentNode = null; //keeps up with selected node
 var genMax = {{ gen_max }};  // max generation limit
 var st = null; //spacetree instance globalized
+var st_array = []; // array of spacetree instances (batch)
 var json = null;  // spacetree json
 var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)

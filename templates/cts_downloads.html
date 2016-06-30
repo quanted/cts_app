@@ -7,6 +7,9 @@ $(document).ready(function () {
 
 	function parseOutputForCSV() {
 		var workflow = getWorkflow(); // get current workflow name
+
+		json_data['workflow'] = workflow;
+
     	if (workflow == "pchemprop") {
     		// todo: loop props, then calcs so the csv can be ordered by props
 
@@ -40,7 +43,15 @@ $(document).ready(function () {
     		
     	}
     	else if (workflow == "gentrans") {
-    		json_data['data'] = buildMetabolitesArray();
+    		if (run_type == 'batch') {
+    			json_data['batch_data'] = batch_data;
+    			json_data['checkedCalcsAndProps'] = checkedCalcsAndProps;
+    			json_data['batch_chems'] = batch_chems;
+    		}
+    		else {
+    			// buildMetabolitesArray() is for spacetree (i.e., not batch mode)
+    			json_data['data'] = buildMetabolitesArray();
+    		}
     	}
 
     	json_data['run_data'] = run_data;
