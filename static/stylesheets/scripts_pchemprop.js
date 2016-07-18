@@ -104,7 +104,8 @@ function submitButtonLogic() {
     var calc_checkbox = $('input[type=checkbox].calc_checkbox');
 
     // disable submit if no calculator is checked (and not gentrans/batch)
-    if ($(calc_checkbox).is(':not(:checked)') && window.location.href.indexOf('gentrans') < 0) {
+    // if ($(calc_checkbox).is(':not(:checked)') && window.location.href.indexOf('gentrans') < 0) {
+    if ($(calc_checkbox).is(':not(:checked)')) {
         $('.submit.input_button').prop('disabled', true).removeClass('brightBorders');
     }
 
