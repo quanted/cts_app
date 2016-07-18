@@ -109,6 +109,7 @@ function submitButtonLogic() {
     }
 
     // if (window.location.href.indexOf('pchemprop') > -1) {
+    if (window.location.href.indexOf('gentrans/batch') < 0) {
         // loop through calculators' checkboxes
         $(calc_checkbox).each(function() {
             if ($(this).is(':checked')) {
@@ -120,7 +121,7 @@ function submitButtonLogic() {
                 }
             }
         });
-    // }
+    }
 }
 
 
