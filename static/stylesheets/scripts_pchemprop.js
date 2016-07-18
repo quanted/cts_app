@@ -67,7 +67,7 @@ $(document).ready(function() {
         var workflow_url = window.location.href;
 
         // abandon if not in gentrans workflow to begin with:
-        if (workflow_url.indexOf("gentrans") < 0) { return; }
+        // if (workflow_url.indexOf("gentrans") < 0) { return; }
 
         var is_checked = this.checked;
         var is_TEST = false;
@@ -108,7 +108,7 @@ function submitButtonLogic() {
         $('.submit.input_button').prop('disabled', true).removeClass('brightBorders');
     }
 
-    if (window.location.href.indexOf('pchemprop') > -1) {
+    // if (window.location.href.indexOf('pchemprop') > -1) {
         // loop through calculators' checkboxes
         $(calc_checkbox).each(function() {
             if ($(this).is(':checked')) {
@@ -120,7 +120,7 @@ function submitButtonLogic() {
                 }
             }
         });
-    }
+    // }
 }
 
 
