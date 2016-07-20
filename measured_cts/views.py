@@ -77,17 +77,21 @@ def request_manager(request):
 		measured_results = []
 		for prop in props:
 			data_obj = {
-				'error': "cannot find measured data for structure",
+				'data': "error - cannot find measured data for structure",
 				'calc': "measured",
-				'prop': prop
+				'prop': prop,
+				'node': node
 			}
 			measured_results.append(data_obj)
+			if redis_conn and sessionid:
+				redis_conn.publish(sessionid, json.dumps(data_obj))
 
-		post_data.update({'data': measured_results})
+		if not sessionid or not redis_conn:
+			post_data.update({'data': measured_results})
 
-		if redis_conn and sessionid: 
-			redis_conn.publish(sessionid, json.dumps(post_data))
-		else:
+		# if redis_conn and sessionid: 
+		# 	redis_conn.publish(sessionid, json.dumps(post_data))
+		# else:
 			HttpResponse(json.dumps(post_data), content_type='application/json')
 
 	if not redis_conn and not sessionid:

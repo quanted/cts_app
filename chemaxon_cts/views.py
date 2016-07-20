@@ -49,11 +49,6 @@ def request_manager(request):
 	except AttributeError:
 		props = request.POST.get("props")
 
-	postData = {
-		'calc': calc,
-		'props': props
-	}
-
 	session = FuturesSession()
 
 	# logging.warning("inside chemaxon views, workflow = {}".format(workflow))
@@ -103,6 +98,12 @@ def request_manager(request):
 
 
 def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session):
+
+	postData = {
+		'calc': calc,
+		'props': props
+	}
+	
 	if props:
 		chemaxon_results = []
 		for prop in props:

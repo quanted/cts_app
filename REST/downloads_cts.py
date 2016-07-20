@@ -94,7 +94,7 @@ class CSV(object):
 				headers.append(prop)
 				i = 0
 				# for chem_data in run_data['batch_data']:
-				for chem_data in run_data['batch_data']:
+				for chem_data in run_data['batch_chems']:
 					# fill out all the batch chemicals' molecular info..
 					# data = chem_data['node'][prop]
 					if run_data['workflow'] == 'gentrans':
