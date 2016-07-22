@@ -51,6 +51,7 @@ $(document).ready(function () {
     		else {
     			// buildMetabolitesArray() is for spacetree (i.e., not batch mode)
     			json_data['data'] = buildMetabolitesArray();
+    			json_data['checkedCalcsAndProps'] = checkedCalcsAndProps;
     		}
     	}
 
@@ -183,7 +184,7 @@ function buildMetabolitesArray() {
     var nodeArray = [];
     for (var node in canvasNodes) {
         if (canvasNodes.hasOwnProperty(node)) {
-            var nodeItem = canvasNodes[node]['data']
+            var nodeItem = canvasNodes[node]['data'];
             nodeArray.push(nodeItem);
         }
     }

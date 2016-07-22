@@ -218,10 +218,10 @@ function connectToSocket() {
                 updateProgressBar(calls_tracker, total_calls);
             }
 
-            return;
+            // return;
         }
 
-        parseResponseToPchemTable(data, node_tracker, false, addDataToTable_tracker);
+        parseResponseToPchemTable(data, data['node'], false, addDataToTable_tracker);
 
         // if ('props' in data) {
         //     parseListDataFromResults(data, node_tracker, addDataToTable_tracker);
@@ -433,6 +433,15 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
 
     // Add pchemprop data to node if gentrans workflow:
     if (!isPchemWorkflow()) {
+
+        // get node object from spacetree:
+        for (node_index in st.graph.nodes) {
+            var some_node = st.graph.nodes[node_index];
+            if (some_node.data.genKey == node.genKey) {
+                node = some_node;
+            }
+        }
+
         if (!node.data.hasOwnProperty('pchemprops')) {
             node.data.pchemprops = []; // keys: calc, prop, data (single-level)..
         }
@@ -442,6 +451,8 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         }
         if (hasData == false) {
             node.data.pchemprops.push(post_data);
+            // $('')
+            addPchemDataToNode(node, post_data);
         }
     }
 
