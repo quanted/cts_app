@@ -32,7 +32,7 @@ class gentrans(object):
         self.abiotic_reduction = abiotic_reduction
         self.mamm_metabolism = mamm_metabolism
 
-        self.gen_max = gen_max
+        self.gen_max = gen_limit
         self.gen_limit = gen_limit  # generation limit
         self.pop_limit = pop_limit  # population limit
         self.likely_limit = likely_limit
@@ -79,7 +79,7 @@ class gentrans(object):
             # reformat data for outputting to tree structure:
             data_walks.j = 0
             data_walks.metID = 0
-            self.results = data_walks.recursive(response.content)
+            self.results = data_walks.recursive(response.content, int(self.gen_limit))
 
             # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
             self.test_results = []

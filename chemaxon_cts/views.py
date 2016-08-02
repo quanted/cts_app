@@ -71,7 +71,7 @@ def request_manager(request):
 		response = jchem_rest.getTransProducts(request)
 		data_walks.j = 0
 		data_walks.metID = 0
-		results = data_walks.recursive(response.content)
+		results = data_walks.recursive(response.content, 1)
 		# results = json.loads(response.content)
 
 		# logging.warning("metabolizer results: {}".format(results))

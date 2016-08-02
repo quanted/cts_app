@@ -151,7 +151,7 @@ class CSV(object):
 									pka_num = str(int(pka_key[-1:]) + 1)
 									new_pka_key = pka_key[:-1] + "_" + pka_num
 									headers.append("{} ({})".format(new_pka_key, calc))
-									rows[0].append(roundData(pka_val))
+									rows[0].append(roundData(prop, pka_val))
 							elif calc == 'chemaxon' and prop == 'kow_no_ph' or calc == 'chemaxon' and prop == 'kow_wph':
 								# e.g., "-1.102 (KLOP)<br>-1.522 (VG)<br>-1.344 (PHYS)<br>"
 								method_data = calc_props[prop].split('<br>')
@@ -160,10 +160,10 @@ class CSV(object):
 									value = method_datum.split()[0]  # value, method
 									method = method_datum.split()[1]
 									headers.append("{} ({}, {})".format(prop, calc, method))
-									rows[0].append(roundData(value))
+									rows[0].append(roundData(prop, value))
 							else:
 								headers.append("{} ({})".format(prop, calc))
-								rows[0].append(roundData(calc_props[prop]))
+								rows[0].append(roundData(prop, calc_props[prop]))
 
 
 		elif self.model == 'gentrans':
@@ -208,112 +208,71 @@ class CSV(object):
 						rows[products_index].insert(header_index, metabolite['genKey'])
 						products_index += 1
 
+				# for chem_data in metabolites_data:
+				for prop in self.props:
+					for calc, calc_props in run_data['checkedCalcsAndProps'].items():
+						if prop in calc_props:
 
-				# try doing one row at a time...
+							# for pchem in chem_data['pchemprops']:
 
-				for chem in metabolites_data:
+							for chem_data in metabolites_data:
 
-					row_index = None
-					for row in rows:
-						if chem['smiles'] in row:
-							row_index = rows.index(row)  # which row
+								for pchem in chem_data['pchemprops']:
 
-					for prop in self.props:
-						for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-							if prop in calc_props:
-								if prop == "ion_con":
-									for pchem in chem['pchemprops']:
-										if pchem['prop'] == prop and pchem['calc'] == calc:
+									if pchem['prop'] == prop and pchem['calc'] == calc:
+
+										# if prop == "ion_con":
+										if pchem['prop'] == "ion_con":
+
+											# if pchem['prop'] == prop and pchem['calc'] == calc:
 
 											j = 1
 											for pka in pchem['data']['pKa']:
-												header = "pka_{} ({})".format(j, pchem['calc'])
+												header = "pka_{} ({})".format(j, calc)
+												j += 1
 												if not header in headers:
 													headers.append(header)
-													# rows[row_index].append("")  
+													for i in range(0, len(rows)):
+														rows[i].append("")
+												header_index = headers.index(header)
+												for i in range(0, len(rows)):
+													if rows[i][1] == chem_data['smiles']:
+														rows[i].insert(header_index, roundData(prop, pka))
 
-												rows[row_index].append(roundData(pka))
-												j += 1
+										else:
 
-								elif calc == 'chemaxon' and prop == 'kow_no_ph' or calc == 'chemaxon' and prop == 'kow_wph':
-									# for method in chem['pchemprops'][calc][prop]:
-									# header = "{} ({}, {})".format(prop, calc, method)
-									for pchem in chem['pchemprops']:
-										if pchem['prop'] == prop and pchem['calc'] == calc:
-											
-											header = "{} ({}, {})".format(prop, calc, pchem['method'])
+											if 'method' in pchem:
+												header = "{} ({}, {})".format(prop, calc, pchem['method'])
+											else:
+												header = "{} ({})".format(prop, calc)
 
 											if not header in headers:
 												headers.append(header)
-											rows[row_index].append(roundData(pchem['data']))
 
-								else:
-									header = "{} ({})".format(prop, calc)
-									for pchem in chem['pchemprops']:
-										if pchem['prop'] == prop and pchem['calc'] == calc:
-											if not header in headers:
-												headers.append(header)
-											rows[row_index].append(roundData(pchem['data']))
+											header_index = headers.index(header)
 
 
-				# # ordering columns by properties...
-				# for prop in self.props:
-				# 	# for calc, props in run_data['checkedCalcsAndProps'].items():
+											for i in range(0, len(rows)):
 
-				# 	for chem_data in run_data['data']:
+												if run_data['workflow'] == 'gentrans':
+													chem_smiles = rows[i][1]  # smiles after genKey column
+												else:
+													chem_smiles = rows[i][0]
 
-				# 		# looping each node...
+												# if chem_smiles == chem_data['smiles'] and pchem['data'] not in rows[i]:
+													# temporary error handling...
+													
+												if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
 
-				# 		# get which row chem_data is on to know where to insert it in rows list..
-				# 		row_index = None
-				# 		for row in rows:
-				# 			if chem_data['smiles'] in row:
-				# 				row_index = rows.index(row)  # which row
-
-				# 		for data_obj in chem_data['pchemprops']:
-
-				# 			# looping each node's pchem data...
-
-				# 			if data_obj['prop'] == prop:
-
-				# 				if prop == "ion_con":
-				# 					j = 1
-				# 					for pka in data_obj['data']['pKa']:
-				# 						# header = "{} (pka_{})".format(calc, j)
-				# 						header = "pka_{} ({})".format(j, data_obj['calc'])
-				# 						j += 1
-				# 						if not header in headers:
-				# 							headers.append(header)
-				# 							rows[row_index].append("")  # fix pka col. align problem?
-				# 							# for i in range(0, len(rows)):
-				# 							# 	rows[i].append("")
-				# 						header_index = headers.index(header)
-				# 						if rows[row_index][1] == chem_data['smiles']:
-				# 							rows[row_index].insert(header_index, roundData(pka))
-				# 						# for i in range(0, len(rows)):
-				# 						# 	if rows[i][0] == chem_data['smiles']:
-				# 						# 		rows[i].insert(header_index, roundData(pka))
-
-				# 					if not data_obj['data']['pKa'] or len(data_obj['data']['pKa']) == 0:
-				# 						if not header in headers:
-				# 							headers.append(header)
-				# 							rows[row_index].append("")
-
-				# 				else:
-				# 					if 'method' in data_obj:
-				# 						header = "{} ({}, {})".format(prop, data_obj['calc'], data_obj['method'])
-				# 					else:
-				# 						header = "{} ({})".format(prop, data_obj['calc'])
-
-				# 					if not header in headers:
-				# 						headers.append(header)
-
-				# 					header_index = headers.index(header)
-				# 					# for i in range(0, len(rows)):
-				# 					if 'method' in data_obj:
-				# 						rows[row_index].insert(header_index, roundData(data_obj['data']))
-				# 					else:
-				# 						rows[row_index].insert(header_index, data_obj['data'])
+													if 'error' in chem_data:
+														# rows[i].insert(header_index, chem_data['data'])
+														rows[i].insert(header_index, roundData(prop, pchem['data']))
+													elif 'method' in chem_data:	
+														# rows[i].insert(header_index, roundData(chem_data['data']))
+														rows[i].insert(header_index, roundData(prop, pchem['data']))
+													else:
+														# rows[i].insert(header_index, roundData(chem_data['data']))
+														rows[i].insert(header_index, roundData(prop, pchem['data']))
 
 
 		# might have to add code to keep row order..
@@ -358,10 +317,15 @@ def getCalcMapKeys(calc):
 		return None
 
 
-def roundData(datum):
+def roundData(prop, datum):
 	try:
 		logging.warning("rounding {}".format(datum))
-		return round(datum, 2)
+
+		if prop == 'water_sol' or prop == 'vapor_press' or prop == 'mol_diss' or prop == 'henrys_law_con':
+			rounded_datum = "{:.2E}".format(datum)
+			return rounded_datum
+		else:
+			return round(datum, 2)
 	except ValueError as err:
 		logging.warning("downloads_cts, didn't round {}: {}".format(datum, err))
 		return datum
@@ -398,7 +362,7 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 							header_index = headers.index(header)
 							for i in range(0, len(rows)):
 								if rows[i][0] == chem_data['node']['smiles']:
-									rows[i].insert(header_index, roundData(pka))
+									rows[i].insert(header_index, roundData(prop, pka))
 					else:
 						if 'method' in chem_data:
 							header = "{} ({}, {})".format(prop, calc, chem_data['method'])
@@ -419,6 +383,6 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 								if 'error' in chem_data:
 									rows[i].insert(header_index, chem_data['data'])
 								elif 'method' in chem_data:	
-									rows[i].insert(header_index, roundData(chem_data['data']))
+									rows[i].insert(header_index, roundData(prop, chem_data['data']))
 								else:
-									rows[i].insert(header_index, roundData(chem_data['data']))
+									rows[i].insert(header_index, roundData(prop, chem_data['data']))

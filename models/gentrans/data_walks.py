@@ -14,7 +14,7 @@ used: jit (thejit.org)
 """
 
 
-def recursive(jsonStr):
+def recursive(jsonStr, gen_limit):
     """
 	Starting point for walking through
 	metabolites dictionary and building json
@@ -25,7 +25,7 @@ def recursive(jsonStr):
     root = jsonDict['results']
     reDict = {}
     parent = root.keys()[0]
-    reDict.update(traverse(root))
+    reDict.update(traverse(root, gen_limit))
     return json.dumps(reDict)
 
 
@@ -33,7 +33,7 @@ metID = 0  # unique id for each node
 metabolite_keys = ['smiles', 'formula', 'iupac', 'mass', 'accumulation', 'production', 'transmissivity', 'generation', 'routes']
 image_scale = 50
 
-def traverse(root):
+def traverse(root, gen_limit):
     """
 	For gentrans model output - metabolites tree
 	"""
@@ -52,6 +52,15 @@ def traverse(root):
         # newDict.update({"id": metID, "name": nodeWrapper(parent, None, 100, 28), "data": {}, "children": []})
         newDict['data'].update(popupBuilder({"smiles": parent, "generation": "0"}, metabolite_keys, "{}".format(metID),
                                             "Metabolite Information"))
+
+        request = HttpRequest()
+        request.POST = {'chemical': parent}
+        mol_info = json.loads(jchem_rest.getChemDetails(request).content)
+        if 'data' in mol_info:
+            for key, val in mol_info['data'][0].items():
+                if key in metabolite_keys:
+                    newDict['data'].update({key: val})
+
         # skipping 2nd parent metabolite:
         second_parent = root[parent]['metabolites'].keys()[0]
         root = root[parent]['metabolites'][second_parent]
@@ -59,7 +68,7 @@ def traverse(root):
     else:
         logging.warning("ROOT: {} ".format(root))
         logging.warning("ROOT ABOVE ^^^^")
-        if root['generation'] > 0:
+        if root['generation'] > 0 and root['generation'] <= gen_limit:
             newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, image_scale), "data": {}, "children": []})
             # newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], None, 100, 28), "data": {}, "children": []})
             newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
@@ -78,8 +87,8 @@ def traverse(root):
         if isinstance(value, dict):
             for key2, value2 in root[key].items():
                 root2 = root[key][key2]
-                if len(root2) > 0 and 'children' in newDict:
-                    newDict['children'].append(traverse(root2))
+                if len(root2) > 0 and 'children' in newDict and root['generation'] < gen_limit:
+                    newDict['children'].append(traverse(root2, gen_limit))
 
     return newDict
 

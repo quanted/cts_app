@@ -687,6 +687,14 @@ $(document).ready(function () {
         var json = $.parseJSON($('#hiddenJson').val());
         var parent_image = $.parseHTML(json.name.trim());  // returns array of elements
 
+
+        // var trimmed_json = json;
+        // for (var i = 0; i < genMax; i++) {
+        //     for (key in json) {
+        //         trimmed_json[key] = json[key];
+        //     }
+        // }
+
         // set node height and width by getting it from parent node image (no scale popupBuilder one)
         // nodeHeight = parent_image[0].height;
         // nodeWidth = parent_image[0].width;
