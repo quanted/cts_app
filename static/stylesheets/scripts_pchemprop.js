@@ -77,7 +77,7 @@ $(document).ready(function() {
         if (is_checked && is_TEST) {
             // warn user that TEST takes awhile:
             // TODO: maybe do a fancier popup near the TEST checkbox, not an obtrusive alert message!!!
-            alert("Note: The TEST calculator can take several minutes to run, so hang tight!");
+            alert("Note: The TEST calculator can take several minutes to run");
         }
 
     });

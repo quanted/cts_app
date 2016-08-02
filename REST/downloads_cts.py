@@ -148,10 +148,11 @@ class CSV(object):
 						if prop in calc_props:
 							if prop == "ion_con":
 								for pka_key, pka_val in calc_props[prop].items():
-									pka_num = str(int(pka_key[-1:]) + 1)
-									new_pka_key = pka_key[:-1] + "_" + pka_num
-									headers.append("{} ({})".format(new_pka_key, calc))
-									rows[0].append(roundData(prop, pka_val))
+									if pka_val and pka_val != 'none':
+										pka_num = str(int(pka_key[-1:]) + 1)
+										new_pka_key = pka_key[:-1] + "_" + pka_num
+										headers.append("{} ({})".format(new_pka_key, calc))
+										rows[0].append(roundData(prop, pka_val))
 							elif calc == 'chemaxon' and prop == 'kow_no_ph' or calc == 'chemaxon' and prop == 'kow_wph':
 								# e.g., "-1.102 (KLOP)<br>-1.522 (VG)<br>-1.344 (PHYS)<br>"
 								method_data = calc_props[prop].split('<br>')
