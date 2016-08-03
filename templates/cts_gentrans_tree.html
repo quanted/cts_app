@@ -334,7 +334,13 @@ function init(json){
             enable: true,
             type: 'auto',
             onShow: function(tip, node) {
-                tip.innerHTML = 'generation: ' + node.data.genKey + '<br>';
+
+                var node_html_obj = $.parseHTML(node.data.html)[0];
+                var node_enlarged_image = $(node_html_obj).children('div.metabolite_img');
+
+                tip.innerHTML = '<div align="left"><b>generation: </b>' + node.data.genKey + '<br></div>';
+                tip.innerHTML += '<div align="left"><b>smiles: </b>' + node.data.smiles + '<br></div>';
+                tip.innerHTML += $(node_enlarged_image)[0].innerHTML;
                 // tip.innerHTML += 'production: ' + node.data.production + '<br>';
                 // tip.innerHTML += 'accumulation: ' + node.data.accumulation + '<br>';
             }

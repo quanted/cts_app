@@ -183,6 +183,52 @@ function connectToSocket() {
 
                     batch_data.push(product_data);
 
+                    // get pchem data for products:
+                    var pchem_data = {
+                        'chemical': structure,
+                        'ph': kowPH,
+                        // 'node': node,
+                        'pchem_request': checkedCalcsAndProps
+                    };
+
+
+                    // adding new nodes stuff:
+                    // if (nodes !== undefined || nodes != null) {
+                    //     pchem_data['nodes'] = nodes;  // add nodes key (list of nodes)
+                    // }
+
+                    if (run_type != null) {
+                        pchem_data['run_type'] = run_type
+                    }
+
+                    if (workflow == 'gentrans') {
+                        // pchem_data['calc'] = 'chemaxon';
+                        pchem_data['workflow'] = 'gentrans';
+                    }
+
+                    // pchem_data['calc'] = calc;
+                    // pchem_data['props'] = checkedCalcsAndProps[calc];  // get list of requested props
+
+                    // var pchem_data_json = JSON.stringify(pchem_data);
+                    var cache = [];
+                    var pchem_data_json = JSON.stringify(pchem_data, function(key, value) {
+                        if (typeof value === 'object' && value !== null) {
+                            if (cache.indexOf(value) !== -1) {
+                                // Circular reference found, discard key
+                                return;
+                            }
+                            // Store value in our collection
+                            cache.push(value);
+                        }
+                        return value;
+                    });
+                    cache = null; // Enable garbage collection
+
+                    if (socket) {
+                        // emit data through web socket:
+                        socket.emit('get_data', pchem_data_json)
+                    }
+
                 }
                 else {
                     batch_data.push(data);
@@ -196,6 +242,12 @@ function connectToSocket() {
             if (calls_tracker <= 0) {
                 console.log("All data retrieved!");
                 blockInterface(false);
+
+
+                // if no molecule selected already, select parent and display pchem data..
+
+                // else if a molecule is selected, display its pchem results..
+
 
                 // if batch, display link for CSV:
                 if (window.location.href.indexOf('batch') > -1) {
