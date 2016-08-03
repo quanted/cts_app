@@ -140,16 +140,16 @@ function connectToSocket() {
         if (data['node'] != null) {
 
             // if (data.node.data.id === node_tracker.data.id) {
-            if (currentNode != null && data.node.id === currentNode.id) {
-                node_tracker = data.node;
-                // parseResponseToPchemTable(data, node_tracker, false, true);
-                if ('props' in data) {
-                    parseListDataFromResults(data, node_tracker, addDataToTable_tracker);
-                }
-                else {
-                    parseResponseToPchemTable(data, node_tracker, false, addDataToTable_tracker); // expecting prop data object as usual
-                }
-            }
+            // if (currentNode != null && data.node.id === currentNode.id) {
+            //     node_tracker = data.node;
+            //     // parseResponseToPchemTable(data, node_tracker, false, true);
+            //     if ('props' in data) {
+            //         parseListDataFromResults(data, node_tracker, addDataToTable_tracker);
+            //     }
+            //     else {
+            //         parseResponseToPchemTable(data, node_tracker, false, addDataToTable_tracker); // expecting prop data object as usual
+            //     }
+            // }
 
             if (window.location.href.indexOf('batch') > -1) {
 
@@ -229,6 +229,9 @@ function connectToSocket() {
                 }
 
             }
+            else {
+                batch_data.push(data);
+            }
 
             calls_tracker--;
             console.log("calls tracker: " + calls_tracker);
@@ -238,11 +241,20 @@ function connectToSocket() {
                 blockInterface(false);
 
 
+                // only unique calc-prop-data objects in batch_data:
+                // batch_data = $.unique(batch_data);
+
+
+
                 // if no molecule selected already, select parent and display pchem data..
 
                 // else if a molecule is selected, display its pchem results..
 
-                displayProductData();  // cts_gentrans_tree function
+                var pchemprop_option = $('#gen-select-pchem').val();
+
+                if (workflow == 'gentrans' && pchemprop_option != "0") {
+                    displayProductData();  // cts_gentrans_tree function
+                }
 
 
                 // if batch, display link for CSV:
@@ -269,7 +281,15 @@ function connectToSocket() {
             // return;
         }
 
-        parseResponseToPchemTable(data, data['node'], false, addDataToTable_tracker);
+        var data_node;
+        if ('data' in data['node']) {
+            data_node = data['node']['data'];
+        }
+        else {
+            data_node = data['node'];
+        }
+
+        parseResponseToPchemTable(data, data_node, false, addDataToTable_tracker);
 
         // if ('props' in data) {
         //     parseListDataFromResults(data, node_tracker, addDataToTable_tracker);
@@ -512,9 +532,40 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
 
             // make sure data isn't already there..
 
-            var node_data = 
+            var node_data = organizeData(calc, prop, data) + " " + method;
+            var cell_data = $(table_cell).html().split('<br>');  // (remove trailing blank array item)
+            cell_data.pop();
 
-            $(table_cell).append(organizeData(calc, prop, data) + " " + method + "<br>"); // append method to cell..
+            var new_cell_data = "";
+            var unique_data;
+
+            if (cell_data.length <= 0) {
+                new_cell_data = node_data + '<br>';
+            }
+            else {
+                unique_data = $.unique(cell_data);
+
+                for (item in cell_data) {
+                    new_cell_data += cell_data[item] + '<br>';
+                }
+
+                new_cell_data += node_data + '<br>';
+
+                var unique_array = new_cell_data.split('<br>');
+                unique_array.pop();
+
+                unique_array = $.unique(unique_array);
+
+                new_cell_data = "";
+                for (item in unique_array) {
+                    new_cell_data += unique_array[item] + '<br>';
+                }
+
+            }
+
+            $(table_cell).html(new_cell_data);
+
+
         }
     }
     else { 

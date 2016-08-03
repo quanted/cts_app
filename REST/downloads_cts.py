@@ -218,62 +218,64 @@ class CSV(object):
 
 							for chem_data in metabolites_data:
 
-								for pchem in chem_data['pchemprops']:
+								if 'pchemprops' in chem_data:
 
-									if pchem['prop'] == prop and pchem['calc'] == calc:
+									for pchem in chem_data['pchemprops']:
 
-										# if prop == "ion_con":
-										if pchem['prop'] == "ion_con":
+										if pchem['prop'] == prop and pchem['calc'] == calc:
 
-											# if pchem['prop'] == prop and pchem['calc'] == calc:
+											# if prop == "ion_con":
+											if pchem['prop'] == "ion_con":
 
-											j = 1
-											for pka in pchem['data']['pKa']:
-												header = "pka_{} ({})".format(j, calc)
-												j += 1
+												# if pchem['prop'] == prop and pchem['calc'] == calc:
+
+												j = 1
+												for pka in pchem['data']['pKa']:
+													header = "pka_{} ({})".format(j, calc)
+													j += 1
+													if not header in headers:
+														headers.append(header)
+														for i in range(0, len(rows)):
+															rows[i].append("")
+													header_index = headers.index(header)
+													for i in range(0, len(rows)):
+														if rows[i][1] == chem_data['smiles']:
+															rows[i].insert(header_index, roundData(prop, pka))
+
+											else:
+
+												if 'method' in pchem:
+													header = "{} ({}, {})".format(prop, calc, pchem['method'])
+												else:
+													header = "{} ({})".format(prop, calc)
+
 												if not header in headers:
 													headers.append(header)
-													for i in range(0, len(rows)):
-														rows[i].append("")
+
 												header_index = headers.index(header)
+
+
 												for i in range(0, len(rows)):
-													if rows[i][1] == chem_data['smiles']:
-														rows[i].insert(header_index, roundData(prop, pka))
 
-										else:
-
-											if 'method' in pchem:
-												header = "{} ({}, {})".format(prop, calc, pchem['method'])
-											else:
-												header = "{} ({})".format(prop, calc)
-
-											if not header in headers:
-												headers.append(header)
-
-											header_index = headers.index(header)
-
-
-											for i in range(0, len(rows)):
-
-												if run_data['workflow'] == 'gentrans':
-													chem_smiles = rows[i][1]  # smiles after genKey column
-												else:
-													chem_smiles = rows[i][0]
-
-												# if chem_smiles == chem_data['smiles'] and pchem['data'] not in rows[i]:
-													# temporary error handling...
-													
-												if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
-
-													if 'error' in chem_data:
-														# rows[i].insert(header_index, chem_data['data'])
-														rows[i].insert(header_index, roundData(prop, pchem['data']))
-													elif 'method' in chem_data:	
-														# rows[i].insert(header_index, roundData(chem_data['data']))
-														rows[i].insert(header_index, roundData(prop, pchem['data']))
+													if run_data['workflow'] == 'gentrans':
+														chem_smiles = rows[i][1]  # smiles after genKey column
 													else:
-														# rows[i].insert(header_index, roundData(chem_data['data']))
-														rows[i].insert(header_index, roundData(prop, pchem['data']))
+														chem_smiles = rows[i][0]
+
+													# if chem_smiles == chem_data['smiles'] and pchem['data'] not in rows[i]:
+														# temporary error handling...
+														
+													if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
+
+														if 'error' in chem_data:
+															# rows[i].insert(header_index, chem_data['data'])
+															rows[i].insert(header_index, roundData(prop, pchem['data']))
+														elif 'method' in chem_data:	
+															# rows[i].insert(header_index, roundData(chem_data['data']))
+															rows[i].insert(header_index, roundData(prop, pchem['data']))
+														else:
+															# rows[i].insert(header_index, roundData(chem_data['data']))
+															rows[i].insert(header_index, roundData(prop, pchem['data']))
 
 
 		# might have to add code to keep row order..
