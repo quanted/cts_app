@@ -482,11 +482,11 @@ function getMolecularInfo(node) {
     //on the gentrans tree structure output, and display
     //pchemprops if node has any
 
-    if (currentNode === node) {
-        var scrollPos = $(molInfoDiv).offset().top;
-        $(window).scrollTop(scrollPos);
-        return;  // do nothing if selecting already-selected node
-    }
+    // if (currentNode === node) {
+    //     var scrollPos = $(molInfoDiv).offset().top;
+    //     $(window).scrollTop(scrollPos);
+    //     return;  // do nothing if selecting already-selected node
+    // }
 
     var molInfo = $('#mol-info-wrapper');
 
@@ -572,7 +572,11 @@ function addImageToMolInfo(node) {
 
 
 function buildMolInfoTable(molTable, node, data) {
-    var acceptedKeys = ['smiles', 'mass', 'name', 'formula', 'iupac', 'routes'];
+    var acceptedKeys = ['generation', 'smiles', 'mass', 'name', 'formula', 'iupac', 'routes'];
+
+    // add genKey and routes from node to data:
+    data['generation'] = node.data.genKey;
+    data['routes'] = node.data.routes;
 
     //Clear existing table data..
     $(molTable).children().empty();
@@ -618,6 +622,43 @@ function tabDisplayLogic(event) {
         else { $(divs).hide(); }
 
     }
+}
+
+
+function displayProductData() {
+    // After p-chem data for product(s) is returned,
+    // this function display mol info and p-chem results
+    // of either the parent if no product is displayed, or
+    // the right-clicked (displayed) product if there is one
+
+    // check if selected product exist on the frontend:
+    var product_mol_info = $('table.mol-info-table')[0];
+
+    if ($('#mol-info-wrapper').is(':visible')) {
+        // get node of selected product (2nd cell value of row containing "generation"):
+        var selected_product = $('.mol-info-table tr:contains(generation)').children()[1].innerHTML;
+
+        for (node in st.graph.nodes) {
+            var node_gen = st.graph.nodes[node].data.genKey;
+            if (node_gen == selected_product) {
+                getMolecularInfo(st.graph.nodes[node]);
+                return;
+            }
+        }
+
+    }
+    else {
+        // get node of parent molecular:
+        for (node in st.graph.nodes) {
+            var node_gen = st.graph.nodes[node].data.generation;
+            if (node_gen == 0) {
+                getMolecularInfo(st.graph.nodes[node]);
+                return;
+            }
+        }
+
+    }
+
 }
 
 

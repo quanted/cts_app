@@ -124,8 +124,6 @@ function connectToSocket() {
 
     // incoming data pushed to client from redis:
     socket.on('message', function(data) {
-        // calls_tracker--;
-        // console.log("calls tracker: " + calls_tracker);
         
         data = JSON.parse(data);
 
@@ -153,10 +151,6 @@ function connectToSocket() {
                 }
             }
 
-            // add pchem data to node from graph:
-            // if (!('run_type' in data)) {
-            //     addPchemDataToNode(data['node'], data);  // cts_gentrans_tree
-            // }
             if (window.location.href.indexOf('batch') > -1) {
 
                 if (workflow == 'gentrans') {
@@ -201,7 +195,7 @@ function connectToSocket() {
                         pchem_data['run_type'] = run_type
                     }
 
-                    if (workflow == 'gentrans') {
+                    if (workflow == 'gentrans' && run_type == 'batch') {
                         // pchem_data['calc'] = 'chemaxon';
                         pchem_data['workflow'] = 'gentrans';
                     }
@@ -247,6 +241,8 @@ function connectToSocket() {
                 // if no molecule selected already, select parent and display pchem data..
 
                 // else if a molecule is selected, display its pchem results..
+
+                displayProductData();  // cts_gentrans_tree function
 
 
                 // if batch, display link for CSV:
@@ -325,9 +321,9 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
         pchem_data['run_type'] = run_type
     }
 
-    if (workflow == 'gentrans') {
+    if (workflow == 'gentrans' && run_type == 'batch') {
         pchem_data['service'] = 'getTransProducts';
-        pchem_data['calc'] = 'chemaxon';
+        pchem_data['calc'] = '';
         pchem_data['workflow'] = 'gentrans';
     }
 
@@ -513,6 +509,11 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
         var has_spinner = $(table_cell).children('img#spinner').length;
         if (has_spinner > 0) { $(table_cell).html(""); }
         if (addDataToTable) {
+
+            // make sure data isn't already there..
+
+            var node_data = 
+
             $(table_cell).append(organizeData(calc, prop, data) + " " + method + "<br>"); // append method to cell..
         }
     }

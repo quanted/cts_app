@@ -42,6 +42,12 @@ def request_manager(request):
 	run_type = request.POST.get('run_type')
 	workflow = request.POST.get('workflow')
 
+
+
+	logging.warning("workflow: {}".format(workflow))
+	logging.warning("run_type: {}".format(run_type))
+
+
 	try:
 		props = request.POST.get("props[]")
 		if not props:
@@ -93,6 +99,7 @@ def request_manager(request):
 			return HttpResponse(json.dumps(data_obj), content_type='application/json')
 
 	else:
+		logging.warning("getting pchem props..")
 		getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
 
 
@@ -103,6 +110,8 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 		'calc': calc,
 		'props': props
 	}
+
+	logging.warning("post data: {}".format(postData))
 	
 	if props:
 		chemaxon_results = []

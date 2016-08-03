@@ -203,7 +203,9 @@ def table_metabolites(gentrans_obj):
 									"structure": "null",
 									"checkedCalcsAndProps": "null",
 									"test_results": gentrans_obj.test_results,
-									'nodes': 'null'})
+									'nodes': 'null',
+									'run_type': 'single',
+									'workflow': 'gentrans'})
 	html += """
 	</div>
 	"""
