@@ -279,14 +279,15 @@ function connectToSocket() {
             }
 
             // return;
-        }
 
-        var data_node;
-        if ('data' in data['node']) {
-            data_node = data['node']['data'];
-        }
-        else {
-            data_node = data['node'];
+            var data_node;
+            if ('data' in data['node']) {
+                data_node = data['node']['data'];
+            }
+            else {
+                data_node = data['node'];
+            }
+            
         }
 
         parseResponseToPchemTable(data, data_node, false, addDataToTable_tracker);
