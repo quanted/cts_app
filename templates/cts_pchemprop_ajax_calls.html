@@ -278,8 +278,6 @@ function connectToSocket() {
                 updateProgressBar(calls_tracker, total_calls);
             }
 
-            // return;
-
             var data_node;
             if ('data' in data['node']) {
                 data_node = data['node']['data'];
@@ -287,7 +285,7 @@ function connectToSocket() {
             else {
                 data_node = data['node'];
             }
-            
+
         }
 
         parseResponseToPchemTable(data, data_node, false, addDataToTable_tracker);
