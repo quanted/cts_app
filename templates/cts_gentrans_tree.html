@@ -108,7 +108,7 @@ $('#btn-pchem-getdata').click(function () {
     // var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
 
     var selected_product = $('#mol-info-wrapper').is(':visible');
-    if (!selected_product) {
+    if (!selected_product && genLevel == 0) {
         $('.gentransError').show();
         return;
     }
