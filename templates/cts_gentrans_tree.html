@@ -107,6 +107,15 @@ $('#btn-pchem-getdata').click(function () {
     var genLevel = $('#gen-select-pchem')[0].selectedIndex;
     // var genLevel = parseFloat($('#gen-select-pchem').find('option:selected').val());
 
+    var selected_product = $('#mol-info-wrapper').is(':visible');
+    if (!selected_product) {
+        $('.gentransError').show();
+        return;
+    }
+    else {
+        $('.gentransError').hide();
+    }
+
     if (genLevel == 0) {
         total_calls = calculateTotalCalls([1], checkedCalcsAndProps);
         console.log("starting with " + total_calls + " calls");
