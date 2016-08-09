@@ -60,7 +60,8 @@ def request_manager(request):
 	# logging.warning("inside chemaxon views, workflow = {}".format(workflow))
 	# logging.warning("run type: {}".format(run_type))
 
-	if workflow == 'gentrans' and run_type == 'batch':
+	# if workflow == 'gentrans' and run_type == 'batch':
+	if service == 'getTransProducts':
 		# getTransProducts chemaxon service..
 		logging.warning("k here we are at gentrans batch..")
 
