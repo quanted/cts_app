@@ -115,9 +115,9 @@ function connectToSocket() {
 
     if (typeof io !== 'undefined') {
         // socket = io.connect("localhost", {port: 4000, 'force new connection': true});
-        // socket = io.connect('http://134.67.114.1', {'force new connection': true});  // works with socket.io at / on nginx
+        socket = io.connect('http://134.67.114.1', {'force new connection': true});  // works with socket.io at / on nginx
         // socket = io.connect('http://134.67.114.1/sockets', {'force new connection': true});
-        socket = io.connect('http://134.67.114.1', {'force new connection': true, path: '/sockets'})
+        // socket = io.connect('http://134.67.114.1', {'force new connection': true, path: '/sockets'})
     }
     else {
         socket = null;
