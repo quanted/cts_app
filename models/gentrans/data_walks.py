@@ -93,7 +93,7 @@ def traverse(root, gen_limit):
     return newDict
 
 
-def nodeWrapper(smiles, height, width, scale, key=None):
+def nodeWrapper(smiles, height, width, scale, key=None, img_type=None):
     """
 	Wraps image html tag around
 	the molecule's image source
@@ -108,6 +108,10 @@ def nodeWrapper(smiles, height, width, scale, key=None):
         "height": height,
         "width": width
     }
+
+    if img_type:
+        post.update({'type': img_type})
+
     request = HttpRequest()
     request.POST = post
     results = jchem_rest.smilesToImage(request)
@@ -121,9 +125,12 @@ def nodeWrapper(smiles, height, width, scale, key=None):
             img = root['image']
 
     # 3. Wrap imageUrl with <img>
-    
     # <img> wrapper for image byte string:
-    html = imgTmpl().render(Context(dict(smiles=smiles, img=img, height=height, width=width, scale=scale, key=key)))
+    if img_type:
+        html = img
+        # html = svgTmpl().render(Context(dict(key=key, svg=img)))
+    else:
+        html = imgTmpl().render(Context(dict(smiles=smiles, img=img, height=height, width=width, scale=scale, key=key)))
 
     # wrapper for SVG type images:
     # html = data['data'][0]['image']['image']  # expecting svg type now (could affect popups)
@@ -140,6 +147,15 @@ def imgTmpl():
 		width={{width}} height={{height}} /> 
 	"""
     return Template(imgTmpl)
+
+def svgTmpl():
+    svgTmpl = """
+    <div id="{{key|default:""}}">
+        {{svg}}
+    </div>
+    """
+    return Template(svgTmpl)
+
 # def imgTmpl():
 #     imgTmpl = """
 #     <img class="metabolite" id="{{key|default:""}}"

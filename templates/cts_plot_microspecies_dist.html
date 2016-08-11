@@ -58,12 +58,22 @@ function plotMicroDist() {
 
   // Get series colors to make microspecies image border
   // the same as its series color
+  var ms_num = 1;
+  $('td#ms-cell').find('svg').each(function () {
+      // add metabolites class:
+      // $(this).addClass("metabolite");  // doesn't work with svg
+      $(this).attr('class', "metabolite");
+      $(this).attr('id', "microspecies" + ms_num);
+      ms_num += 1;
+  });
+
   for (var series in plot['series']) {
     var color = plot['series'][series]['color']; // series color..
     var name = plot['series'][series]['label']; // series name..
     $('#' + name).parent('div').css('border', '2px solid ' + color); // color parent div..
-    $('#' + name).css('border', 'none'); // remove image border..
+    $('#' + name).css({'border': 'none', 'margin': '0px'}); // remove image border..
   }
+  
 }
 </script>
 

@@ -101,6 +101,7 @@ def smilesToImage(request):
 	imgScale = request.POST.get('scale')
 	imgWidth = request.POST.get('width')
 	imgHeight = request.POST.get('height')
+	imgType = request.POST.get('type')
 
 	# NOTE: Requesting image without width or height but scale
 	# returns an image that just fits the molecule with nice resoltuion.
@@ -115,13 +116,18 @@ def smilesToImage(request):
 			"include": ["image"],
 			"parameters": {
 				"image": {
-					# "scale": imgScale,  # only scale for metabolites and popup images
-					# "type": "svg"
-					"type": "png"
+				# 	# "scale": imgScale,  # only scale for metabolites and popup images
+				# 	# "type": "svg"
+				# 	"type": "png"
 				}
 			}
 		}
 	}
+
+	if imgType:
+		request['display']['parameters']['image'].update({'type': imgType})
+	else:
+		request['display']['parameters']['image'].update({'type': 'png'})
 
 	if imgHeight:
 		# these are metabolites in the space tree:

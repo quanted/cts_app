@@ -145,6 +145,9 @@ def table_all(chemspec_obj):
     </script>
     <script>
     tipit();
+
+    
+    
     </script>
     """
 
@@ -254,7 +257,7 @@ def getMajorMsImages(chemspec_obj):
         html = """
         <H4 class="out_1 collapsible" id="majorMS"><span></span>Major Microspecies at pH: {}</H4>
         <div class="out_ shiftRight">""".format(chemspec_obj.pH_microspecies)
-        html += wrap_molecule(majorMsDict, None, mdWidth, scale)
+        html += wrap_molecule(majorMsDict, None, lgWidth, scale)
         html += """
         </div>
         """
@@ -295,7 +298,8 @@ def getPkaResults(chemspec_obj):
     microspeciesList = chemspec_obj.jchemPropObjects['pKa'].getMicrospecies()
     try:
         for item in microspeciesList:
-            html += wrap_molecule(item, None, smWidth, scale)
+            # html += wrap_molecule(item, None, smWidth, scale)
+            html += wrap_molecule(item, None, mdWidth, scale)
     except TypeError as te:
         logging.info("no microspecies to plot..moving on")
         html += 'No microspecies to plot'
@@ -333,7 +337,7 @@ def getStereoisomersResults(chemspec_obj):
         html += '<dl style="display:inline-block">'
         for item in stereoList:
             html += '<dd style="float:left;">'
-            html += wrap_molecule(item, None, mdWidth, scale)
+            html += wrap_molecule(item, None, lgWidth, scale)
             html += '</dd>'
         html += "</dl>"
 
@@ -370,7 +374,7 @@ def getTautomerResults(chemspec_obj):
         for item in tautStructs:
             html += '<dd style="float:left;">'
             if item:
-                html += wrap_molecule(item, None, mdWidth, scale)
+                html += wrap_molecule(item, None, lgWidth, scale)
             else:
                 html += "No tautomers"
             # if item and 'dist' in item:
@@ -406,7 +410,9 @@ def wrap_molecule(propDict, height, width, scale):
     if 'key' in propDict:
         key = propDict['key']
 
-    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
+    # this builds the ms image for the output page:
+    # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
+    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key, 'svg')) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
     mass = "{} g/mol".format(propDict['mass'])
@@ -420,6 +426,7 @@ def wrap_molecule(propDict, height, width, scale):
         "smiles": smiles
     }
 
+    # this is the actual image on the chemspec output, wrapped in a div:
     html = """
     <div class="chemspec_molecule nopdf">
     """
@@ -427,6 +434,8 @@ def wrap_molecule(propDict, height, width, scale):
     html += """
     </div>
     """
+
+    # this builds the larger-image popup:
     wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key, 'Molecular Information') # popup table image
     html += '<div class="tooltiptext ' + iupac + '">'
     html += wrappedDict['html']
@@ -435,10 +444,10 @@ def wrap_molecule(propDict, height, width, scale):
     return html
 
 
-def makeLogFile(chemspec_obj):
-    """
-    Gathers data for log file and
-    puts it in a hidden div to be downloaded
-    by the user
-    """
+# def makeLogFile(chemspec_obj):
+    # """
+    # Gathers data for log file and
+    # puts it in a hidden div to be downloaded
+    # by the user
+    # """
     
