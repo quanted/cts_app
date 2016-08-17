@@ -48,7 +48,7 @@ def traverse(root, gen_limit):
 
     if metID == 1:
         parent = root.keys()[0]
-        newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, image_scale), "data": {}, "children": []})
+        newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, image_scale, None, 'png', True), "data": {}, "children": []})
         # newDict.update({"id": metID, "name": nodeWrapper(parent, None, 100, 28), "data": {}, "children": []})
         newDict['data'].update(popupBuilder({"smiles": parent, "generation": "0"}, metabolite_keys, "{}".format(metID),
                                             "Metabolite Information"))
@@ -66,10 +66,8 @@ def traverse(root, gen_limit):
         root = root[parent]['metabolites'][second_parent]
         
     else:
-        logging.warning("ROOT: {} ".format(root))
-        logging.warning("ROOT ABOVE ^^^^")
         if root['generation'] > 0 and root['generation'] <= gen_limit:
-            newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, image_scale), "data": {}, "children": []})
+            newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, image_scale, None, 'png', True), "data": {}, "children": []})
             # newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], None, 100, 28), "data": {}, "children": []})
             newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
 
@@ -80,8 +78,6 @@ def traverse(root, gen_limit):
                 for key, val in mol_info['data'][0].items():
                     if key in metabolite_keys:
                         newDict['data'].update({key: val})
-            # newDict['data'].update(json.loads(mol_info.content))
-
 
     for key, value in root.items():
         if isinstance(value, dict):
@@ -93,7 +89,7 @@ def traverse(root, gen_limit):
     return newDict
 
 
-def nodeWrapper(smiles, height, width, scale, key=None, img_type=None):
+def nodeWrapper(smiles, height, width, scale, key=None, img_type=None, isProduct=None):
     """
 	Wraps image html tag around
 	the molecule's image source
@@ -106,7 +102,8 @@ def nodeWrapper(smiles, height, width, scale, key=None, img_type=None):
         "smiles": smiles,
         "scale": scale,
         "height": height,
-        "width": width
+        "width": width,
+        # "type": img_type
     }
 
     if img_type:
@@ -126,11 +123,11 @@ def nodeWrapper(smiles, height, width, scale, key=None, img_type=None):
 
     # 3. Wrap imageUrl with <img>
     # <img> wrapper for image byte string:
-    if img_type:
+    if img_type and img_type == 'svg':
         html = img
         # html = svgTmpl().render(Context(dict(key=key, svg=img)))
     else:
-        html = imgTmpl().render(Context(dict(smiles=smiles, img=img, height=height, width=width, scale=scale, key=key)))
+        html = imgTmpl(isProduct).render(Context(dict(smiles=smiles, img=img, height=height, width=width, scale=scale, key=key)))
 
     # wrapper for SVG type images:
     # html = data['data'][0]['image']['image']  # expecting svg type now (could affect popups)
@@ -140,12 +137,19 @@ def nodeWrapper(smiles, height, width, scale, key=None, img_type=None):
     return html
 
 
-def imgTmpl():
-    imgTmpl = """
-	<img class="metabolite" id="{{key|default:""}}"
-		alt="{{smiles}}" src="data:image/png;base64,{{img}}"
-		width={{width}} height={{height}} /> 
-	"""
+def imgTmpl(isProduct):
+    if isProduct:
+        imgTmpl = """
+        <img class="metabolite" id="{{key|default:""}}"
+            alt="{{smiles}}" src="data:image/png;base64,{{img}}"
+            width={{width}} height={{height}} /> 
+        """        
+    else:
+        imgTmpl = """
+    	<img class="metabolite" id="{{key|default:""}}"
+    		alt="{{smiles}}" src="data:image/png;base64,{{img}}"
+    		width={{width}} height={{height}} hidden /> 
+    	"""
     return Template(imgTmpl)
 
 def svgTmpl():
@@ -164,10 +168,11 @@ def svgTmpl():
 #     return Template(imgTmpl)
 
 
-def popupBuilder(root, paramKeys, molKey=None, header=None):
+def popupBuilder(root, paramKeys, molKey=None, header=None, isProduct=False):
     """
 	Wraps molecule data (e.g., formula, iupac, mass, 
-	smiles, image) in table
+	smiles, image) for hover-over popups in chemspec
+    and gentrans outputs.
 
 	Inputs:
 	root - dictionary of items to wrap in table
@@ -185,7 +190,16 @@ def popupBuilder(root, paramKeys, molKey=None, header=None):
 
     html = '<div id="{}_div" class="nodeWrapDiv"><div class="metabolite_img" style="float:left;">'.format(molKey)
     # html += nodeWrapper(root['smiles'], None, 250, 150)
-    html += nodeWrapper(root['smiles'], None, 250, image_scale)  # Molecular Info image, metabolites output
+
+    # smiles, height, width, scale, key=None, img_type=None
+
+    if isProduct:
+        html += nodeWrapper(root['smiles'], None, 250, image_scale, molKey, 'png')  # hidden png for pdf    
+    else:
+        # html += nodeWrapper(root['smiles'], None, 250, image_scale)  # Molecular Info image, metabolites output
+        html += nodeWrapper(root['smiles'], None, 250, image_scale, molKey, 'svg')  # svg popups for chemspec and gentrans outputs
+        html += nodeWrapper(root['smiles'], None, 250, image_scale, molKey, None)  # hidden png for pdf
+
     html += '</div>'
 
     if molKey:

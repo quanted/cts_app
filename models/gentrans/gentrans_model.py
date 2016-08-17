@@ -65,11 +65,11 @@ class gentrans(object):
             'excludeCondition': ""  # 'generateImages': False
         }
 
-        request = HttpRequest()
-        request.POST = dataDict
-
-
         if self.run_type != 'batch':
+
+            request = HttpRequest()
+            request.POST = dataDict
+
             try:
                 response = jchem_rest.getTransProducts(request)
             except Exception as e:
@@ -86,7 +86,6 @@ class gentrans(object):
 
             self.rawData = response.content
 
-        # ++++ NEW STUFF FOR CSV DOWNLOADS, USES DJANGO CACHING ++++++++++++++
         self.run_data = {
             'title': "Transformation Products Output",
             'jid': self.jid,

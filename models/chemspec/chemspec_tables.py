@@ -298,7 +298,6 @@ def getPkaResults(chemspec_obj):
     microspeciesList = chemspec_obj.jchemPropObjects['pKa'].getMicrospecies()
     try:
         for item in microspeciesList:
-            # html += wrap_molecule(item, None, smWidth, scale)
             html += wrap_molecule(item, None, mdWidth, scale)
     except TypeError as te:
         logging.info("no microspecies to plot..moving on")
@@ -410,7 +409,6 @@ def wrap_molecule(propDict, height, width, scale):
     if 'key' in propDict:
         key = propDict['key']
 
-    # this builds the ms image for the output page:
     # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
     image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key, 'svg')) # displayed image
     formula = propDict['formula']
@@ -418,12 +416,20 @@ def wrap_molecule(propDict, height, width, scale):
     mass = "{} g/mol".format(propDict['mass'])
     smiles = propDict['smiles']
 
+
+    # call nodeWrapper again with 'png' image format and add it to infoDict
+    # with a image_pdf key or something....
+
+    # pdf_image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key, None))
+
+
     infoDict = {
         "image": image,
         "formula": formula,
         "iupac": iupac,
         "mass": mass,
-        "smiles": smiles
+        "smiles": smiles,
+        # 'pdf_image': pdf_image
     }
 
     # this is the actual image on the chemspec output, wrapped in a div:
@@ -431,6 +437,7 @@ def wrap_molecule(propDict, height, width, scale):
     <div class="chemspec_molecule nopdf">
     """
     html += infoDict['image']
+    # html += infoDict['pdf_image']
     html += """
     </div>
     """

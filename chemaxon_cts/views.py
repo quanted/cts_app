@@ -42,12 +42,6 @@ def request_manager(request):
 	run_type = request.POST.get('run_type')
 	workflow = request.POST.get('workflow')
 
-
-
-	logging.warning("workflow: {}".format(workflow))
-	logging.warning("run_type: {}".format(run_type))
-
-
 	try:
 		props = request.POST.get("props[]")
 		if not props:
@@ -57,13 +51,9 @@ def request_manager(request):
 
 	session = FuturesSession()
 
-	# logging.warning("inside chemaxon views, workflow = {}".format(workflow))
-	# logging.warning("run type: {}".format(run_type))
-
 	# if workflow == 'gentrans' and run_type == 'batch':
 	if service == 'getTransProducts':
 		# getTransProducts chemaxon service..
-		logging.warning("k here we are at gentrans batch..")
 
 		request = HttpRequest()
 		# from gentrans model:
@@ -75,13 +65,11 @@ def request_manager(request):
             'transformationLibraries': ['human_biotransformation'],  # get from front end as well!!!
             'excludeCondition': ""  # 'generateImages': False
 		}
+
 		response = jchem_rest.getTransProducts(request)
 		data_walks.j = 0
 		data_walks.metID = 0
 		results = data_walks.recursive(response.content, 1)
-		# results = json.loads(response.content)
-
-		# logging.warning("metabolizer results: {}".format(results))
 
 		data_obj = {
 			'calc': "chemaxon", 
@@ -100,7 +88,6 @@ def request_manager(request):
 			return HttpResponse(json.dumps(data_obj), content_type='application/json')
 
 	else:
-		logging.warning("getting pchem props..")
 		getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
 
 

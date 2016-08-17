@@ -93,16 +93,22 @@ class CSV(object):
 			else:
 				headers.append(prop)
 				i = 0
+				j = 0  # trying it here for gentrans batch mode!
 				# for chem_data in run_data['batch_data']:
 				for chem_data in run_data['batch_chems']:
 					# fill out all the batch chemicals' molecular info..
 					# data = chem_data['node'][prop]
+					# j = 0  # worked for gentrans single mode!!!
 					if run_data['workflow'] == 'gentrans':
-						for product in chem_data:
+						# loop through products of parent chemical:
+						for product in run_data['batch_data'][i]:
+
 							data = product[prop]
-							rows[i].append(data)
-							i += 1
-						
+							rows[j].append(data)
+							j += 1
+
+						i += 1
+
 					else:
 						data = chem_data[prop]
 						rows[i].append(data)
@@ -184,9 +190,10 @@ class CSV(object):
 			if 'batch_data' in run_data:
 
 				parent_index = 0
+				products_index = 0
 				for parent in metabolites_data:
 
-					products_index = 0
+					# products_index = 0
 					for product in parent:
 						header_index = headers.index('genKey')
 
@@ -211,71 +218,72 @@ class CSV(object):
 
 				# for chem_data in metabolites_data:
 				for prop in self.props:
-					for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-						if prop in calc_props:
+					if run_data['checkedCalcsAndProps']:
+						for calc, calc_props in run_data['checkedCalcsAndProps'].items():
+							if prop in calc_props:
 
-							# for pchem in chem_data['pchemprops']:
+								# for pchem in chem_data['pchemprops']:
 
-							for chem_data in metabolites_data:
+								for chem_data in metabolites_data:
 
-								if 'pchemprops' in chem_data:
+									if 'pchemprops' in chem_data:
 
-									for pchem in chem_data['pchemprops']:
+										for pchem in chem_data['pchemprops']:
 
-										if pchem['prop'] == prop and pchem['calc'] == calc:
+											if pchem['prop'] == prop and pchem['calc'] == calc:
 
-											# if prop == "ion_con":
-											if pchem['prop'] == "ion_con":
+												# if prop == "ion_con":
+												if pchem['prop'] == "ion_con":
 
-												# if pchem['prop'] == prop and pchem['calc'] == calc:
+													# if pchem['prop'] == prop and pchem['calc'] == calc:
 
-												j = 1
-												for pka in pchem['data']['pKa']:
-													header = "pka_{} ({})".format(j, calc)
-													j += 1
+													j = 1
+													for pka in pchem['data']['pKa']:
+														header = "pka_{} ({})".format(j, calc)
+														j += 1
+														if not header in headers:
+															headers.append(header)
+															for i in range(0, len(rows)):
+																rows[i].append("")
+														header_index = headers.index(header)
+														for i in range(0, len(rows)):
+															if rows[i][1] == chem_data['smiles']:
+																rows[i].insert(header_index, roundData(prop, pka))
+
+												else:
+
+													if 'method' in pchem:
+														header = "{} ({}, {})".format(prop, calc, pchem['method'])
+													else:
+														header = "{} ({})".format(prop, calc)
+
 													if not header in headers:
 														headers.append(header)
-														for i in range(0, len(rows)):
-															rows[i].append("")
+
 													header_index = headers.index(header)
+
+
 													for i in range(0, len(rows)):
-														if rows[i][1] == chem_data['smiles']:
-															rows[i].insert(header_index, roundData(prop, pka))
 
-											else:
-
-												if 'method' in pchem:
-													header = "{} ({}, {})".format(prop, calc, pchem['method'])
-												else:
-													header = "{} ({})".format(prop, calc)
-
-												if not header in headers:
-													headers.append(header)
-
-												header_index = headers.index(header)
-
-
-												for i in range(0, len(rows)):
-
-													if run_data['workflow'] == 'gentrans':
-														chem_smiles = rows[i][1]  # smiles after genKey column
-													else:
-														chem_smiles = rows[i][0]
-
-													# if chem_smiles == chem_data['smiles'] and pchem['data'] not in rows[i]:
-														# temporary error handling...
-														
-													if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
-
-														if 'error' in chem_data:
-															# rows[i].insert(header_index, chem_data['data'])
-															rows[i].insert(header_index, roundData(prop, pchem['data']))
-														elif 'method' in chem_data:	
-															# rows[i].insert(header_index, roundData(chem_data['data']))
-															rows[i].insert(header_index, roundData(prop, pchem['data']))
+														if run_data['workflow'] == 'gentrans':
+															chem_smiles = rows[i][1]  # smiles after genKey column
 														else:
-															# rows[i].insert(header_index, roundData(chem_data['data']))
-															rows[i].insert(header_index, roundData(prop, pchem['data']))
+															chem_smiles = rows[i][0]
+
+														# if chem_smiles == chem_data['smiles'] and pchem['data'] not in rows[i]:
+															# temporary error handling...
+
+														if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
+
+															if 'error' in chem_data:
+																# rows[i].insert(header_index, chem_data['data'])
+																rows[i].insert(header_index, roundData(prop, pchem['data']))
+															elif 'method' in chem_data:
+																# rows[i].insert(header_index, roundData(chem_data['data']))
+																rows[i].insert(header_index, roundData(prop, pchem['data']))
+															else:
+																# rows[i].insert(header_index, roundData(chem_data['data']))
+																rows[i].insert(header_index, roundData(prop, pchem['data']))
 
 
 		# might have to add code to keep row order..

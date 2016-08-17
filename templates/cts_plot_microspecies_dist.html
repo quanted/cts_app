@@ -59,7 +59,7 @@ function plotMicroDist() {
   // Get series colors to make microspecies image border
   // the same as its series color
   var ms_num = 1;
-  $('td#ms-cell').find('svg').each(function () {
+  $('td#ms-cell div.chemspec_molecule').find('svg').each(function () {
       // add metabolites class:
       // $(this).addClass("metabolite");  // doesn't work with svg
       $(this).attr('class', "metabolite");
@@ -73,7 +73,7 @@ function plotMicroDist() {
     $('#' + name).parent('div').css('border', '2px solid ' + color); // color parent div..
     $('#' + name).css({'border': 'none', 'margin': '0px'}); // remove image border..
   }
-  
+
 }
 </script>
 

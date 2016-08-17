@@ -9,6 +9,7 @@ $(document).ready(function () {
 		var workflow = getWorkflow(); // get current workflow name
 
 		json_data['workflow'] = workflow;
+		json_data['run_type'] = run_type;
 
     	if (workflow == "pchemprop") {
     		// todo: loop props, then calcs so the csv can be ordered by props
@@ -227,15 +228,15 @@ function collectDOM(workflow) {
 	        elements = elements.add('table#inputsTable'); // user inputs
 	        elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
 
-	        
-
 	        // var parentTitle = $('table#msMain td:first h4');
 	        // var parentImage = $('#parent_div img'); // parent species
 	        // var parentTable = $('#parent_div table');
 	        // elements = elements.add(parentTitle).add(parentImage).add(parentTable);
+	        
 	        var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
 	        elements = elements.add(ms);
 	        var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
+	        // var majorMS = $('h4#majorMS, #majorMS_div svg, #majorMS_div table');
 	        elements = elements.add(majorMS);
 	        var taut = $('h4#taut, p.taut-percent, #taut_div img, #taut_div table');
 	        elements = elements.add(taut);

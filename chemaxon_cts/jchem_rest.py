@@ -103,6 +103,8 @@ def smilesToImage(request):
 	imgHeight = request.POST.get('height')
 	imgType = request.POST.get('type')
 
+	img_type = request.POST.get('type')
+
 	# NOTE: Requesting image without width or height but scale
 	# returns an image that just fits the molecule with nice resoltuion.
 	# Providing width and height without scale might return a higher
@@ -116,9 +118,6 @@ def smilesToImage(request):
 			"include": ["image"],
 			"parameters": {
 				"image": {
-				# 	# "scale": imgScale,  # only scale for metabolites and popup images
-				# 	# "type": "svg"
-				# 	"type": "png"
 				}
 			}
 		}

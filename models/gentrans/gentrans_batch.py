@@ -20,12 +20,17 @@ def gentransBatchInputPage(request, model='', header='Transformation Products', 
 
     html += str(gentrans_parameters.form(formData))
 
+    # html += """
+    #     <br>
+    #     <h3>2. Select any p-chem properties for transformation products</h3>
+    # """
+
     html += """
         <br>
-        <h3>2. Select any p-chem properties for transformation products</h3>
+        <h3>2. P-Chem properties for transformation products coming soon..</h3>
     """
 
-    html += render_to_string('cts_pchem.html', {})
+    # html += render_to_string('cts_pchem.html', {})
 
     html += """
         <div class="input_nav">
@@ -74,7 +79,10 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
 
     html = render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
 
+    html += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript" ></script>'
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
+
+    html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_limit})
 
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
     html +=  render_to_string('cts_pchemprop_ajax_calls.html', 
@@ -94,7 +102,5 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
         <div id="log"></div>
     </div>
     """
-
-    html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_limit})
 
     return html

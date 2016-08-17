@@ -44,12 +44,6 @@ def directAllTraffic(request):
 
 	user_jobs = []
 
-
-	# TODO: Account for 'nodes' being list of chemicals from batch, and
-	# check for new run_type key for batch mode. When all values are
-	# returned, build a CSV with them and display link on batch output page!
-
-
 	if 'nodes' in pchem_request.keys():
 		# TODO: consider more efficient ways to parse up calls,
 		for node in pchem_request['nodes']:
@@ -106,10 +100,6 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 			logging.info("requesting {} props from {} calculator..".format(props, calc))
 
 			try:
-				# put job on calc queue:
-				# job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc, link=tasks.cleanQueues.s(sessionid))
-				# this one works:
-
 				# NOTE: have to enable backend for celery to have linked callbacks for results
 				job = tasks.startCalcTask.apply_async(args=[calc, pchem_request], queue=calc)  # use session for ID
 				user_jobs.append(job.id)
@@ -127,14 +117,6 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 					return HttpResponse(json.dumps(error_response), content_type='application/json')
 
 	return user_jobs
-
-
-def getTransformationProducts(request):
-	"""
-	CTS front web socket version of transformation products,
-	initially intended for gentrans batch mode.
-	
-	"""
 
 
 def test_sockets(request):

@@ -320,8 +320,8 @@ class Tautomerization(JchemProperty):
         self.name = 'tautomerization'
         self.url = '/webservices/rest-v0/util/calculate/tautomerization'
         self.postData = {
-            # "calculationType": "DOMINANT",
-            "calculationType": "MAJOR",
+            "calculationType": "DOMINANT",
+            # "calculationType": "MAJOR",
             "maxStructureCount": 1000,
             "considerPH": False,
             "enableMaxPathLength": True,
@@ -349,7 +349,14 @@ class Tautomerization(JchemProperty):
             # expecting list of result objects:
             # for taut in self.results['result']:
             taut = self.results['result']  # single result object
+
+            logging.warning("taut instance: {}".format(isinstance(taut, list)))
+
+            if isinstance(taut, list):
+                taut = taut[0]
+                
             tautStructDict = {'image': taut['image']['image'], 'key': 'taut'}
+            
             structInfo = getStructInfo(taut['structureData']['structure'])
             tautStructDict.update(structInfo)
             # tautStructDict.update({'dist': 100 * round(taut['dominantTautomerDistribution'], 4)})
