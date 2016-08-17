@@ -35,17 +35,18 @@ $(document).ready(function() {
 
     if (batch_chems != null) {
 
-        startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
-
         // calls_tracker = batch_chems.length;
         calls_tracker = calculateTotalCalls([batch_chems.length], checkedCalcsAndProps);
         total_calls = calls_tracker;
+        sessionStorage.setItem('calls_tracker', calls_tracker);
+        sessionStorage.setItem('total_calls', total_calls);
 
         // block UI with progress bar
         blockInterface(true);
 
         $('#pdfExport, #htmlExport').hide();
 
+        startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
 
     }
     else {
@@ -200,9 +201,10 @@ function connectToSocket() {
             calls_tracker--;
             console.log("calls tracker: " + calls_tracker);
 
-            if (data['workflow'] == 'gentrans' && run_type == 'batch') {
-                sessionStorage.setItem('calls_tracker', calls_tracker);
-            }
+            // if (data['workflow'] == 'gentrans' && run_type == 'batch') {
+            // if (data['run_type'] == 'batch') {
+            sessionStorage.setItem('calls_tracker', calls_tracker);
+            // }
 
             if (calls_tracker <= 0) {
                 console.log("All data retrieved!");
@@ -440,7 +442,7 @@ function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
 
     // Add pchemprop data to node if gentrans workflow:
     // if (!isPchemWorkflow()) {
-    if (workflow = 'gentrans' && run_type != 'batch') {
+    if (workflow == 'gentrans' && run_type != 'batch') {
 
         // get node object from spacetree:
         for (node_index in st.graph.nodes) {

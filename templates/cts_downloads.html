@@ -9,7 +9,13 @@ $(document).ready(function () {
 		var workflow = getWorkflow(); // get current workflow name
 
 		json_data['workflow'] = workflow;
-		json_data['run_type'] = run_type;
+
+		try {
+			json_data['run_type'] = run_type;
+		}
+		catch (e) {
+			console.log("no run_type variable in this workflow");
+		}
 
     	if (workflow == "pchemprop") {
     		// todo: loop props, then calcs so the csv can be ordered by props
