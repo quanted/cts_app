@@ -542,7 +542,12 @@ function getMolecularInfo(node) {
                 }
                 node.data.molecularInfo = data['data'];  // add mol info to node data
                 buildMolInfoTable(molInfoTable, node, data['data']);  // build mol info table
-                $("#" + node.id).children('img').addClass("selectedMetabolite");  // highlight node
+
+                var product_node = $('img#' + node.id + '.metabolite[height=114]');  // node height (todo: us variable, don't hard code )
+                $(product_node).addClass("selectedMetabolite");
+                // $("#" + node.id).children('img').addClass("selectedMetabolite");  // highlight node
+
+
                 var molInfoHeader = $(molInfo).siblings('h3')[0];
                 if ($(molInfoHeader).hasClass('collapse-close')) {
                     $(molInfoHeader).removeClass('collapse-close').addClass('collapse-open');
