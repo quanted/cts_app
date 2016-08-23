@@ -11,11 +11,13 @@ from REST import cts_rest
 
 
 class chemspec(object):
-    def __init__(self, chem_struct, smiles, orig_smiles, name, formula, mass, get_pka, get_taut,
+    def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass, get_pka, get_taut,
                  get_stereo, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
                  isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
         self.jid = jchem_rest.gen_jid()  # timestamp
+
+        self.run_type = run_type
 
         # Chemical Editor Tab
         self.chem_struct = chem_struct  # SMILE of chemical on 'Chemical Editor' tab
@@ -48,52 +50,75 @@ class chemspec(object):
         # Output stuff:
         self.jchemPropObjects = {}
         self.jchemDictResults = {}
+        self.speciation_inputs = {}  # for batch mode use
 
 
         pkaObj, majorMsObj, isoPtObj, tautObj, stereoObj = None, None, None, None, None
 
-        if self.get_pka:
-            # make call for pKa:
-            pkaObj = JchemProperty.getPropObject('pKa')
-            pkaObj.setPostDataValues({
-                "pHLower": self.pKa_pH_lower,
-                "pHUpper": self.pKa_pH_upper,
-                "pHStep": self.pKa_pH_increment,
-            })
-            pkaObj.makeDataRequest(self.smiles)
+        if self.run_type != 'batch':
 
-            # make call for majorMS:
-            majorMsObj = JchemProperty.getPropObject('majorMicrospecies')
-            majorMsObj.setPostDataValue('pH', self.pH_microspecies)
-            majorMsObj.makeDataRequest(self.smiles)
+            logging.info("Making calls inside chemspec model, single mode...")
 
-            # make call for isoPt:
-            isoPtObj = JchemProperty.getPropObject('isoelectricPoint')
-            isoPtObj.setPostDataValue('pHStep', self.isoelectricPoint_pH_increment)
-            isoPtObj.makeDataRequest(self.smiles)
+            if self.get_pka:
+                # make call for pKa:
+                pkaObj = JchemProperty.getPropObject('pKa')
+                pkaObj.setPostDataValues({
+                    "pHLower": self.pKa_pH_lower,
+                    "pHUpper": self.pKa_pH_upper,
+                    "pHStep": self.pKa_pH_increment,
+                })
+                pkaObj.makeDataRequest(self.smiles)
 
-        if self.get_taut:
-            tautObj = JchemProperty.getPropObject('tautomerization')
-            tautObj.setPostDataValues({
-                "maxStructureCount": self.tautomer_maxNoOfStructures,
-                "pH": self.tautomer_pH,
-                "considerPH": True
-            })
-            tautObj.makeDataRequest(self.smiles)
+                # make call for majorMS:
+                majorMsObj = JchemProperty.getPropObject('majorMicrospecies')
+                majorMsObj.setPostDataValue('pH', self.pH_microspecies)
+                majorMsObj.makeDataRequest(self.smiles)
 
-        if self.get_stereo:
-            # TODO: set values for max stereos!!!
-            stereoObj = JchemProperty.getPropObject('stereoisomer')
-            stereoObj.setPostDataValue('maxStructureCount', self.stereoisomers_maxNoOfStructures)
-            stereoObj.makeDataRequest(self.smiles)
+                # make call for isoPt:
+                isoPtObj = JchemProperty.getPropObject('isoelectricPoint')
+                isoPtObj.setPostDataValue('pHStep', self.isoelectricPoint_pH_increment)
+                isoPtObj.makeDataRequest(self.smiles)
 
-        self.jchemPropObjects = {
-            'pKa': pkaObj,
-            'majorMicrospecies': majorMsObj,
-            'isoelectricPoint': isoPtObj,
-            'tautomerization': tautObj,
-            'stereoisomers': stereoObj
-        }
+            if self.get_taut:
+                tautObj = JchemProperty.getPropObject('tautomerization')
+                tautObj.setPostDataValues({
+                    "maxStructureCount": self.tautomer_maxNoOfStructures,
+                    "pH": self.tautomer_pH,
+                    "considerPH": True
+                })
+                tautObj.makeDataRequest(self.smiles)
+
+            if self.get_stereo:
+                # TODO: set values for max stereos!!!
+                stereoObj = JchemProperty.getPropObject('stereoisomer')
+                stereoObj.setPostDataValue('maxStructureCount', self.stereoisomers_maxNoOfStructures)
+                stereoObj.makeDataRequest(self.smiles)
+
+            self.jchemPropObjects = {
+                'pKa': pkaObj,
+                'majorMicrospecies': majorMsObj,
+                'isoelectricPoint': isoPtObj,
+                'tautomerization': tautObj,
+                'stereoisomers': stereoObj
+            }
+
+        else:
+
+            # for batch mode, get inputs but don't get
+            # data until output page loads. this is because batch
+            # speciation calls are done through nodejs/socket.io
+            # using cts_pchemprop_ajax_calls.html
+
+            self.speciation_inputs = {
+                'pKa_decimals': pKa_decimals,
+                'pKa_decimals': pKa_decimals,
+                'pKa_pH_lower': pKa_pH_lower,
+                'pKa_pH_upper': pKa_pH_upper,
+                'pKa_pH_increment': pKa_pH_increment,
+                'pH_microspecies': pH_microspecies,
+                'isoelectricPoint_pH_increment': isoelectricPoint_pH_increment
+            }
+            self.speciation_inputs = json.dumps(self.speciation_inputs)
 
         self.run_data = {
             'title': "Chemical Speciation Output",

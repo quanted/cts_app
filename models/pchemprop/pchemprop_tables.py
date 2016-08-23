@@ -109,7 +109,8 @@ def output_pchem_table(pchemprop_obj):
                                     "mass": pchemprop_obj.mass,
                                     "formula": pchemprop_obj.formula,
                                     "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
-                                    'nodes': 'null'
+                                    'nodes': 'null',
+                                    'speciation_inputs': 'null'
                                     # "test_results": mark_safe(json.dumps(pchemprop_obj.test_results))
                             })
     html += """

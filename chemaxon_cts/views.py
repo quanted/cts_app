@@ -51,6 +51,10 @@ def request_manager(request):
 
 	session = FuturesSession()
 
+
+	logging.info("SERVICE: {}".format(service))
+
+
 	# if workflow == 'gentrans' and run_type == 'batch':
 	if service == 'getTransProducts':
 		# getTransProducts chemaxon service..
@@ -86,6 +90,60 @@ def request_manager(request):
 			redis_conn.publish(sessionid, result_json)
 		else:
 			return HttpResponse(json.dumps(data_obj), content_type='application/json')
+
+	elif service == 'getSpeciationData':
+		from models.chemspec import chemspec_output
+
+		spec_inputs = request.POST.get('speciation_inputs')
+
+		model_params = {
+			'run_type': 'single',
+    		'chem_struct': None,
+    		'smiles': chemical,
+    		'orig_smiles': None,
+    		'iupac': None,
+    		'formula': None,
+    		'mass': None,
+    		'get_pka': True,
+    		'get_taut': None,
+    		'get_stereo': None,
+    		'pKa_decimals': None,
+    		'pKa_pH_lower': None,
+    		'pKa_pH_upper': None,
+    		'pKa_pH_increment': None,
+    		'pH_microspecies': None,
+    		'isoelectricPoint_pH_increment': None,
+    		'tautomer_maxNoOfStructures': None,
+    		'tautomer_pH': None,
+    		'stereoisomers_maxNoOfStructures': None
+		}
+
+		for key, value in model_params.items():
+			if key in spec_inputs:
+				# will it matter than spec_inputs key:val are unicode????
+				model_params.update({key: spec_inputs[key]})
+
+		# here's where calling chemspec model would be gud...
+
+		request = HttpRequest()
+		request.POST = model_params
+		request.method = "POST"  # required because of chemspec_output @request_POST???
+
+		chemspec_obj = chemspec_output.chemspecOutputPage(request)
+
+		data_obj = {
+			'calc': "chemaxon", 
+			'prop': "speciation_results",
+			'node': node,
+			'data': chemspec_obj.jchemDictResults,
+			'chemical': chemical,
+			'workflow': 'chemaxon',
+			'run_type': 'batch'
+		}
+
+		if redis_conn:
+			result_json = json.dumps(data_obj)
+			redis_conn.publish(sessionid, result_json)
 
 	else:
 		getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)

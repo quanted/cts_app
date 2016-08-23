@@ -88,6 +88,18 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 			}
 			redis_conn.publish(sessionid, json.dumps(error_response))
 
+	elif 'service' in pchem_request and pchem_request['service'] == 'getSpeciationData':
+		try:
+			job = tasks.startCalcTask.apply_async(args=["chemaxon", pchem_request], queue="chemaxon")
+			user_jobs.append(job.id)
+		except Exception as error:
+			error_response = {
+				'calc': 'chemaxon',
+				'service': "getSpeciationData",
+				'error': "error requesting speciation data from chemaxon"
+			}
+			redis_conn.publish(sessionid, json.dumps(error_response))
+
 	else:
 		# loop calcs and run them as separate processes:
 		for calc, props in pchem_request_dict.items():

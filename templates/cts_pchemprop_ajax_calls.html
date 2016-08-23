@@ -15,10 +15,12 @@ var batch_data = [];  // list of data for csv, incoming responses
 var batch_chems = [];  // list of batch chemicals with molecular info
 var workflow;
 var run_type;
+var speciation_inputs;
 
 $(document).ready(function() {
     // Some global and local variable delcarations:
     checkedCalcsAndProps = {{checkedCalcsAndProps}};
+    speciation_inputs = {{speciation_inputs}};
     structure = "{{structure}}";
     kowPH = "{{kow_ph}}";
     smiles = "{{structure}}";
@@ -297,6 +299,26 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
         pchem_data['calc'] = '';
         pchem_data['workflow'] = 'gentrans';
     }
+
+
+    if (workflow == 'chemspec' && run_type == 'batch' ) {
+
+        for (node in nodes) {
+            calls_tracker++;
+        }
+        total_calls = calls_tracker;
+
+        sessionStorage.setItem('calls_tracker', calls_tracker);  //calls for products!
+        sessionStorage.setItem('total_calls', total_calls);
+
+        pchem_data['service'] = 'getSpeciationData';
+        pchem_data['calc'] = 'chemaxon';
+        pchem_data['workflow'] = 'chemspec';
+        // pchem_data['checkedCalcsAndProps'] = checkedCalcsAndProps;  // speciation inputs!   
+        pchem_data['speciation_inputs'] = speciation_inputs;
+
+    }
+
 
     // pchem_data['calc'] = calc;
     // pchem_data['props'] = checkedCalcsAndProps[calc];  // get list of requested props

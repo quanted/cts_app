@@ -17,7 +17,15 @@ $(document).ready(function () {
 			console.log("no run_type variable in this workflow");
 		}
 
-    	if (workflow == "pchemprop") {
+		if (workflow == "chemspec") {
+			// get batch_data for chemspec batch mode...
+			if (window.location.href.indexOf('batch') > -1) {
+				json_data['batch_data'] = batch_data;
+				json_data['batch_chems'] = batch_chems;
+			}
+		}
+
+    	else if (workflow == "pchemprop") {
     		// todo: loop props, then calcs so the csv can be ordered by props
 
     		// todo: use run_type key from response as conditional..

@@ -40,9 +40,6 @@ $(document).ready(function() {
 		$('#form1').append('<input type="hidden" name="run_type" value="batch" />');
 		$('#form1').append('<input type="hidden" name="workflow" value="gentrans" />');
 
-		// $('form').parsley().validate("validate");
-		// var valid = $('form').parsley().isValid();
-
 	});
 
 
@@ -96,6 +93,24 @@ $(document).ready(function() {
 		}
 
 		$('#batchfilewrap').show();
+
+
+		// for chemspec batch mode:
+	    if (window.location.href.indexOf('chemspec/batch') > -1) {
+	        	
+	      	var pka_table = $('.input_table[name=CTS_Speciation_Pka]');
+	      	var pka_chkbox = $(pka_table).find('input#id_get_pka');
+
+	        $('.input_table.tab_Speciation, div#chemEditLookup').hide();
+	        $(pka_table).show();
+
+	        $('input[type="submit"]').prop('disabled', false).addClass('brightBorders');
+	        pka_table.find('input[type=number], input[type=text]').prop('readonly', false);
+            pka_table.removeClass('darken');
+            pka_chkbox.hide();
+	    }
+
+
 
 	}
 

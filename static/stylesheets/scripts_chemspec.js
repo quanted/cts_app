@@ -18,11 +18,13 @@ var chemspec_params = ["pKa_decimals", "pKa_pH_lower", "pKa_pH_upper", "pKa_pH_i
 
 $(document).ready(function() {
 
-    uberNavTabs(
-        ["Chemical", "Speciation"],
-        {   "isSubTabs":true,
-        	"Chemical": [".tab_chemicalButtons"] }
-    );
+    if ( typeof uberNavTabs == 'function' ) {
+        uberNavTabs(
+            ["Chemical", "Speciation"],
+            {   "isSubTabs":true,
+            	"Chemical": [".tab_chemicalButtons"] }
+        );
+    }
 
     $('#chemEditDraw_button').click(function() {
     	$('#chemEditDraw').show();

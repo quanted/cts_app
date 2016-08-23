@@ -25,7 +25,8 @@ class CSV(object):
 		self.models = ['chemspec', 'pchemprop', 'gentrans']
 		self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
 		self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss',
-					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc']
+					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc'],
+		self.speciation_props = ['isoelectricPoint', 'pka', 'pkb', 'majorMicrospecies', 'pka_microspecies']
 		if model and (model in self.models):
 			self.model = model  # model name
 		else:
@@ -96,17 +97,12 @@ class CSV(object):
 				j = 0  # trying it here for gentrans batch mode!
 				# for chem_data in run_data['batch_data']:
 				for chem_data in run_data['batch_chems']:
-					# fill out all the batch chemicals' molecular info..
-					# data = chem_data['node'][prop]
-					# j = 0  # worked for gentrans single mode!!!
-					if run_data['workflow'] == 'gentrans':
-						# loop through products of parent chemical:
-						for product in run_data['batch_data'][i]:
 
+					if run_data['workflow'] == 'gentrans':
+						for product in run_data['batch_data'][i]:
 							data = product[prop]
 							rows[j].append(data)
 							j += 1
-
 						i += 1
 
 					else:
@@ -115,33 +111,86 @@ class CSV(object):
 						i += 1
 
 		if self.model == 'chemspec':
-			run_data = run_data['run_data']
-			for key, val in run_data.items():
-				if key not in self.molecular_info:
-					if key == 'isoelectricPoint':
-						headers.append(key)
-						rows[0].append(val)
-					elif key == 'pka' or key == 'pkb':
-						i = 0 # pka counter
-						for item in val:
-							headers.append(key + "_" + str(i))
-							rows[0].append(item)
-							i+=1
-					elif key == 'majorMicrospecies':
-						headers.append(key + '-smiles')
-						rows[0].append(val['smiles'])
-					elif key == 'pka-micospecies':
-						for ms in val.items():
-							# each ms is a jchem_structure object
+
+			if 'run_type' in run_data and run_data['run_type'] == 'batch':
+
+				for spec_prop in self.speciation_props:
+					for chem_data in run_data['batch_data']:
+
+						if spec_prop == 'isoelectricPoint':
+							header = "isoelectric point"
+							if not header in headers:
+								headers.append(header)
+
+							header_index = headers.index(header)
+
+							for i in range(0, len(rows)):
+								if rows[i][0] == chem_data['node']['smiles']:
+									rows[i].insert(header_index, chem_data['data'][spec_prop])
+
+						elif spec_prop == 'pka' or spec_prop == 'pkb':
+							j = 1
+							for item in chem_data['data'][spec_prop]:
+								header = "pka_{}".format(j)
+								j += 1
+								if not header in headers:
+									headers.append(header)
+									for n in range(0, len(rows)):
+										rows[n].append("")
+								header_index = headers.index(header)
+								for n in range(0, len(rows)):
+									if rows[n][0] == chem_data['node']['smiles']:
+										rows[n].insert(header_index, item)
+
+						elif spec_prop == 'majorMicrospecies':
+							if not spec_prop in headers:
+								headers.append(spec_prop)
+							header_index = headers.index(spec_prop)
+							for i in range(0, len(rows)):
+								if rows[i][0] == chem_data['node']['smiles']:
+									rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
+
+						elif spec_prop == 'pka-micospecies':
+							j = 1
+							for ms in chem_data['data'][spec_prop].items():
+								header = "microspecies_{}".format(j)
+								j += 1
+								if not header in headers:
+									headers.append(header)
+								header_index = headers.index(header)
+								for i in range(0, len(rows)):
+									if rows[i][0] == chem_data['node']['smiles']:
+										rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
+						# i += 1					
+
+			else:
+				run_data = run_data['run_data']
+				for key, val in run_data.items():
+					if key not in self.molecular_info:
+						if key == 'isoelectricPoint':
+							headers.append(key)
+							rows[0].append(val)
+						elif key == 'pka' or key == 'pkb':
+							i = 0 # pka counter
+							for item in val:
+								headers.append(key + "_" + str(i))
+								rows[0].append(item)
+								i+=1
+						elif key == 'majorMicrospecies':
 							headers.append(key + '-smiles')
 							rows[0].append(val['smiles'])
-					# elif key == 'stereoisomers' or key == 'tautomers':
-					elif key == 'tautomers':
-						i = 0
-						for item in val:
-							headers.append(item['key'] + "_" + str(i))
-							rows[0].append(item['smiles'])
-							i+=1
+						elif key == 'pka-micospecies':
+							for ms in val.items():
+								# each ms is a jchem_structure object
+								headers.append(key + '-smiles')
+								rows[0].append(val['smiles'])
+						# elif key == 'stereoisomers' or key == 'tautomers':
+						elif key == 'tautomers':
+							i = 0
+							for item in val:
+								headers.append(item['key'] + "_" + str(i))
+								rows[0].append(item['smiles'])
+								i+=1
 
 		elif self.model == 'pchemprop':
 			if 'batch_data' in run_data:
@@ -235,8 +284,6 @@ class CSV(object):
 												# if prop == "ion_con":
 												if pchem['prop'] == "ion_con":
 
-													# if pchem['prop'] == prop and pchem['calc'] == calc:
-
 													j = 1
 													for pka in pchem['data']['pKa']:
 														header = "pka_{} ({})".format(j, calc)
@@ -289,12 +336,6 @@ class CSV(object):
 		# might have to add code to keep row order..
 		# writer.writerow(rows['headers'])
 		writer.writerow(headers)
-
-		# todo: remove blank columns before writing to csv..
-		# write data rows to csv file:
-		
-		# if self.model == 'gentrans':
-		# 	for gen in gen_list: writer.writerow(rows[gen])
 
 		if self.model == 'gentrans':
 			for row in rows:

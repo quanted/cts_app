@@ -15,7 +15,7 @@ def pchempropBatchInputPage(request, model='', header='P-Chem Properties', formD
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
     html = """
     <div id="pchem_batch_wrap" hidden>
-        <h3>1. Select p-chem properties for batch chemicals</h3>
+        <h3>Select p-chem properties for batch chemicals</h3>
     """
 
     html += render_to_string('cts_pchem.html', {})
@@ -57,6 +57,7 @@ def pchempropBatchOutputPage(request, model='', header='P-Chem Properties', form
     html +=  render_to_string('cts_pchemprop_ajax_calls.html', 
         {'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
         'kow_ph': pchemprop_obj.kow_ph,
+        'speciation_inputs': 'null',
         'nodes': mark_safe(batch_chemicals)})
 
     html += render_to_string('cts_gentrans_tree.html', {'gen_max': 0})

@@ -91,7 +91,8 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
         'nodes': mark_safe(batch_chemicals),
         'workflow': "gentrans",
         'run_type': "batch",
-        'run_data': pchemprop_obj.run_data})
+        'run_data': pchemprop_obj.run_data,
+        'speciation_inputs': 'null'})
 
     html += """
     <div id="cont" hidden>

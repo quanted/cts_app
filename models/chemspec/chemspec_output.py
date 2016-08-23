@@ -4,7 +4,12 @@ import logging
 
 @require_POST
 def chemspecOutputPage(request):
+    logging.info("is the require_POST messing everthing up")
     import chemspec_model
+
+    logging.info("Request POST coming into chemspec output: {}".format(request.POST))
+
+    run_type = request.POST.get('run_type')
 
     # Chemical Editor tab
     chemStruct = request.POST.get('chem_struct')
@@ -32,7 +37,7 @@ def chemspecOutputPage(request):
     
     sterMaxNumStructs = request.POST.get('stereoisomers_maxNoOfStructures')
 
-    chemspec_obj = chemspec_model.chemspec(chemStruct, smiles, orig_smiles, name, formula, 
+    chemspec_obj = chemspec_model.chemspec(run_type, chemStruct, smiles, orig_smiles, name, formula, 
                     mass, get_pka, get_taut, get_stereo, pKaDecs, pKaPhLow, 
                     pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
                     tautMaxNumStructs, tautMaxNumStructsPh, sterMaxNumStructs)
