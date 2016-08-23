@@ -1,5 +1,5 @@
 """
-CTS workflow/module-oriented endpoints
+CTS workflow/module-oriented REST endpoints
 
 For Chemical Editor, p-chem table, chemical speciation,
 and reaction pathways.
@@ -12,8 +12,6 @@ from django.http import HttpResponse, HttpRequest
 
 from chemaxon_cts import jchem_rest
 from smilesfilter import filterSMILES
-# from models.chemspec.chemspec_model import chemspec as ChemSpec
-# from models.chemspec import chemspec_model
 from models.chemspec import chemspec_output
 
 

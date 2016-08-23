@@ -247,7 +247,15 @@ function collectDOM(workflow) {
 	        // var parentTable = $('#parent_div table');
 	        // elements = elements.add(parentTitle).add(parentImage).add(parentTable);
 	        
+	        var test = $('table#msMain td#ms-cell').children();
+
 	        var ms = $('table#msMain td#ms-cell').children().not($('div.chemspec_molecule'));
+
+	        // removes SVG (keeps hidden img version) for PDF
+	        $(ms).each(function () {
+	        	$(this).find('div.metabolite_img svg').remove();
+	        });
+
 	        elements = elements.add(ms);
 	        var majorMS = $('h4#majorMS, #majorMS_div img, #majorMS_div table');
 	        // var majorMS = $('h4#majorMS, #majorMS_div svg, #majorMS_div table');
