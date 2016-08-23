@@ -28,9 +28,11 @@ def parsePOST(request):
     if 'gentrans' in request.path:
         # TODO: class this, e.g., Metabolizer (jchem_rest)
         # headings = ['genKey', 'smiles', 'water_sol', 'ion_con', 'kow_no_ph', 'kow_wph', 'image']
-        headings = ['genKey', 'smiles', 'melting_point', 'boiling_point', 'water_sol', 'vapor_press',
-                    'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc', 'image']
-        metaboliteList = data_walks.buildTableValues(pdf_json, headings, 3)  # List of dicts, which are node data
+        # headings = ['genKey', 'smiles', 'melting_point', 'boiling_point', 'water_sol', 'vapor_press',
+        #             'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc', 'image']
+        headings = ['genKey', 'smiles', 'iupac', 'formula', 'mass']
+        metaboliteList = data_walks.buildTableValues(
+            pdf_json['nodes'], pdf_json['checkedCalcsAndProps'], headings, 3)  # List of dicts, which are node data
         final_str += buildMetaboliteTableForPDF().render(Context(dict(headings=headings, metaboliteList=metaboliteList)))
 
     final_str += """<br>"""

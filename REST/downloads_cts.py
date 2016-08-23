@@ -270,18 +270,12 @@ class CSV(object):
 					if run_data['checkedCalcsAndProps']:
 						for calc, calc_props in run_data['checkedCalcsAndProps'].items():
 							if prop in calc_props:
-
-								# for pchem in chem_data['pchemprops']:
-
 								for chem_data in metabolites_data:
-
 									if 'pchemprops' in chem_data:
-
 										for pchem in chem_data['pchemprops']:
 
 											if pchem['prop'] == prop and pchem['calc'] == calc:
 
-												# if prop == "ion_con":
 												if pchem['prop'] == "ion_con":
 
 													j = 1

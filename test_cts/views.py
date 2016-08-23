@@ -87,7 +87,9 @@ def request_manager(request):
 			if response.status_code != 200:
 				postData['data'] = "TEST could not process structure"
 			else:
-				data_obj['data'] = response_json['properties'][calcObj.propMap[prop]['urlKey']]
+				test_data = response_json['properties'][calcObj.propMap[prop]['urlKey']]
+				# data_obj['data'] = response_json['properties'][calcObj.propMap[prop]['urlKey']]
+				data_obj['data'] = 1000 * 18.01528 * 10**test_data  # moles of h20, Log(mol/L) --> mg/L
 				
 			result_json = json.dumps(data_obj)
 

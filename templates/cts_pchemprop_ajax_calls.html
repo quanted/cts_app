@@ -547,7 +547,9 @@ function organizeData(calc, prop, data) {
 
     if (typeof data === "number") {
         if (prop == "water_sol" || prop == "vapor_press" || prop == "mol_diss" || prop == "henrys_law_con") {
-            if (calc == "test" && prop == "vapor_press") { data = Math.pow(10, data); }
+            if (calc == "test" && prop == "vapor_press") { 
+                data = Math.pow(10, data);
+            }
             return data.toExponential(2);
         }
         else {

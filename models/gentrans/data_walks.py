@@ -230,24 +230,46 @@ def popupBuilder(root, paramKeys, molKey=None, header=None, isProduct=False):
 
 
 htmlList = []
-def buildTableValues(nodeList, keys, nRound):
+def buildTableValues(nodeList, checkedCalcsAndProps, mol_info, nRound):
     """
     Builds list of dictionary items with
     nodes' key:values for pdf
     """
     for node in nodeList:
         htmlListItem = {}
-        for key in keys:
+        for key in mol_info:
+            # molecular information conditional
             if key in node:
                 htmlListItem.update({key: roundValue(node[key], nRound)})
-            elif 'data' in node and key in node['data']:
-                htmlListItem.update({key: roundValue(node['data'][key], nRound)})
-            elif 'data' in node and 'pchemprops' in node['data']:
-                for prop in node['data']['pchemprops']:
-                    if key in prop['prop']:
-                        htmlListItem.update({key: roundValue(prop['data'], nRound)})
+            # elif 'data' in node and key in node['data']:
+            #     htmlListItem.update({key: roundValue(node['data'][key], nRound)})
+            # elif 'data' in node and 'pchemprops' in node['data']:
+            #     for prop in node['data']['pchemprops']:
+            #         if key in prop['prop']:
+            #             htmlListItem.update({key: roundValue(prop['data'], nRound)})
             else:
                 htmlListItem.update({key: ''})
+
+
+    for calc, props in checkedCalcsAndProps.items():
+        for prop in props:
+            for node in nodeList:
+                for chem_data in node['pchemprops']:
+                    if prop == 'ion_con':
+                        j = 1
+                        for pka in chem_data['data']['pKa']:
+                            header = "pka_{} ({})".format(j, calc)
+                            htmlListItem.update({header: pka})
+                            j += 1
+                    else:
+                        
+                        if 'method' in chem_data:
+                            header = "{} ({}, {})".format(prop, calc, chem_data['method'])
+                        else:
+                            header = "{} ({})".format(prop, calc)
+
+                        htmlListItem.update({header: chem_data['data']})
+
         htmlList.append(htmlListItem)
     logging.info("TABLE VALUES FOR PDF: {}".format(htmlList))
     return htmlList

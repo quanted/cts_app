@@ -107,8 +107,11 @@ $(document).ready(function () {
         else if (workflow == "gentrans") {
             var nodeArray = buildMetabolitesArray(); // (cts_gentrans_tree)
 
+            var data_obj = {'nodes': nodeArray, 'checkedCalcsAndProps': checkedCalcsAndProps};
+
             var cache = [];
-			jsonData = JSON.stringify(nodeArray, function(key, value) {
+			// jsonData = JSON.stringify(nodeArray, function(key, value) {
+			jsonData = JSON.stringify(data_obj, function(key, value) {
 			    if (typeof value === 'object' && value !== null) {
 			        if (cache.indexOf(value) !== -1) {
 			            // Circular reference found, discard key
