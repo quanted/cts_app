@@ -267,6 +267,9 @@ function collectDOM(workflow) {
 	        return elements;
 	    case "pchemprop":
 	    	elements = $('div.articles_output').children().not(':hidden, div#export_menu');
+	    	var ph = $(elements).find('#id_kow_ph').val();
+	    	$(elements).find('#id_kow_ph').parent('h3').append(ph);
+	    	$(elements).find('p, td.colorKey').remove();
 	    	return elements;
 	   	case "gentrans":
 	   		elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
