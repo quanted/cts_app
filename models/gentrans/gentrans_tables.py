@@ -230,43 +230,90 @@ def build_pchem_table():
 	return html
 
 
+# def buildMetaboliteTableForPDF():
+# 	metTableTmpl = """
+# 	<table id="gentrans_table">
+# 	<tr>
+# 	{% for heading in headings %}
+# 		<th>{{heading}}</th>
+# 	{% endfor %}
+# 	</tr>
+# 	{% for metabolite in metaboliteList %}
+# 		<tr>
+# 		{% for heading in headings %}
+
+# 			<td>
+# 			{% for key, value in metabolite.items %}
+
+# 				{% if key == heading %}
+
+# 					{% if key != "ion_con" %}
+# 						{% autoescape off %}{{value}}{% endautoescape %}
+# 					{% else %}
+# 						{% for pkaKey, pkaVals in value.items %}
+# 							{% for pka in pkaVals %}
+# 								{% autoescape off %}
+# 								{{pkaKey}}<sub>{{forloop.counter}}</sub>: {{pka}} <br>
+# 								{% endautoescape %}
+# 							{% endfor %}
+# 						{% endfor %}
+# 					{% endif %}
+
+# 				{% endif %}
+
+# 			{% endfor %}
+# 			</td>
+
+# 		{% endfor %}
+# 		</tr>
+# 	{% endfor %}
+# 	</table>
+# 	"""
+# 	return Template(metTableTmpl)
+
+
 def buildMetaboliteTableForPDF():
+
+	# cts_pchem.html is pchem table, just remove checkbox inputs.
+	# what other templates can be used??
+
 	metTableTmpl = """
-	<table id="gentrans_table">
-	<tr>
-	{% for heading in headings %}
-		<th>{{heading}}</th>
+
+	{% for product in products %}
+
+		<div class="metaboliteInfo">
+			<div class="mol-info-wrapper">
+
+
+
+				<div class="nodeWrapDiv"></div>
+		        <table class="mol-info-table ctsTableStylin">
+		        	{% for heading in headings %}
+		        		<tr><td>{{heading}}</td><td>product.heading</td>
+		        	{% endfor %}
+		        </table>
+
+			</div>
+
+			<div class="pchem-wrapper">
+
+				<table id="pchemprop_table" class="input_table">
+
+					<tr><td></td></tr>
+
+				</table>
+
+			</div>
+
+		</div>
+
 	{% endfor %}
-	</tr>
-	{% for metabolite in metaboliteList %}
-		<tr>
-		{% for heading in headings %}
-
-			<td>
-			{% for key, value in metabolite.items %}
-
-				{% if key == heading %}
-
-					{% if key != "ion_con" %}
-						{% autoescape off %}{{value}}{% endautoescape %}
-					{% else %}
-						{% for pkaKey, pkaVals in value.items %}
-							{% for pka in pkaVals %}
-								{% autoescape off %}
-								{{pkaKey}}<sub>{{forloop.counter}}</sub>: {{pka}} <br>
-								{% endautoescape %}
-							{% endfor %}
-						{% endfor %}
-					{% endif %}
-
-				{% endif %}
-
-			{% endfor %}
-			</td>
-
-		{% endfor %}
-		</tr>
-	{% endfor %}
-	</table>
 	"""
+
+	# metTableTmpl += pchem_table_html
+
+	# metTableTmpl += """
+	# </div>
+	# """
+
 	return Template(metTableTmpl)

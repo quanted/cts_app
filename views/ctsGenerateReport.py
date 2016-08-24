@@ -30,10 +30,19 @@ def parsePOST(request):
         # headings = ['genKey', 'smiles', 'water_sol', 'ion_con', 'kow_no_ph', 'kow_wph', 'image']
         # headings = ['genKey', 'smiles', 'melting_point', 'boiling_point', 'water_sol', 'vapor_press',
         #             'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc', 'image']
+
+        # the nodes need to have images of their smiles in 250 width x ? height!!!!
+
         headings = ['genKey', 'smiles', 'iupac', 'formula', 'mass']
-        metaboliteList = data_walks.buildTableValues(
-            pdf_json['nodes'], pdf_json['checkedCalcsAndProps'], headings, 3)  # List of dicts, which are node data
-        final_str += buildMetaboliteTableForPDF().render(Context(dict(headings=headings, metaboliteList=metaboliteList)))
+        checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
+        products = pdf_json['nodes']
+
+        final_str += buildMetaboliteTableForPDF().render(
+            Context(dict(headings=headings, checkedCalcsAndProps=checkedCalcsAndProps, products=products)))  
+
+        # metaboliteList = data_walks.buildTableValues(
+        #     pdf_json['nodes'], pdf_json['checkedCalcsAndProps'], headings, 3)  # List of dicts, which are node data
+        # final_str += buildMetaboliteTableForPDF().render(Context(dict(headings=headings, metaboliteList=metaboliteList)))
 
     final_str += """<br>"""
     if (int(pdf_nop)>0):

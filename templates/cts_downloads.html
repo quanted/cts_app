@@ -245,10 +245,11 @@ function collectDOM(workflow) {
 	        elements = elements.add('table#inputsTable'); // user inputs
 	        elements = elements.add('h4#pka, dl#pkaValues'); // pKa values
 
-	        // var parentTitle = $('table#msMain td:first h4');
-	        // var parentImage = $('#parent_div img'); // parent species
+	        var parentTitle = $('table#msMain td:first h4');
+	        var parentImage = $('#parent_div img'); // parent species
 	        // var parentTable = $('#parent_div table');
 	        // elements = elements.add(parentTitle).add(parentImage).add(parentTable);
+	        elements = elements.add(parentTitle).add(parentImage);
 	        
 	        var test = $('table#msMain td#ms-cell').children();
 
@@ -265,15 +266,20 @@ function collectDOM(workflow) {
 	        elements = elements.add(majorMS);
 	        var taut = $('h4#taut, p.taut-percent, #taut_div img, #taut_div table');
 	        elements = elements.add(taut);
-	        // var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
-	        // elements = elements.add(stereo);
+	        var stereo = $('h4#stereo, #stereo_div img, #stereo_div table');
+	        elements = elements.add(stereo);
 	        return elements;
 	    case "pchemprop":
-	    	elements = $('div.articles_output').children().not(':hidden, div#export_menu');
-	    	var ph = $(elements).find('#id_kow_ph').val();
-	    	$(elements).find('#id_kow_ph').parent('h3').append(ph);
-	    	$(elements).find('p, td.colorKey').remove();
-	    	return elements;
+
+	    	var pchem_elements = $('div.articles_output').children().not(':hidden, div#export_menu').clone();
+	    	// elements = $('div.articles_output').children().not(':hidden, div#export_menu');
+	    	var ph = $(pchem_elements).find('#id_kow_ph').val();
+	    	$(pchem_elements).find('#id_kow_ph').parent('h3').append(ph);
+	    	$(pchem_elements).find('p, td.colorKey, input').remove();
+
+	    	// elements.add(pchem_elements);
+
+	    	return pchem_elements;
 	   	case "gentrans":
 	   		elements = $("div.articles_output").children('h2[class="model_header"], div#timestamp, h3#userInputs');
 	        elements = elements.add('table#inputsTable'); // user inputs
