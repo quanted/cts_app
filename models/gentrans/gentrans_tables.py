@@ -280,34 +280,44 @@ def buildMetaboliteTableForPDF():
 	metTableTmpl = """
 
 	{% for product in products %}
-
 		<div class="metaboliteInfo">
 			<div class="mol-info-wrapper">
 
-
+				{{product.image}}
 
 				<div class="nodeWrapDiv"></div>
 		        <table class="mol-info-table ctsTableStylin">
-		        	{% for heading in headings %}
-		        		<tr><td>{{heading}}</td><td>product.heading</td>
+		        	{% for key, val in product.items %}
+		        		{% if key in headings %}
+		        			<tr><td>{{key}}</td><td>{{val}}</td>
+		        		{% endif %}
 		        	{% endfor %}
 		        </table>
 
 			</div>
 
+			<br>
+
 			<div class="pchem-wrapper">
 
 				<table id="pchemprop_table" class="input_table">
+					<tr><td></td><td>ChemAxon</td><td>EPI Suite</td><td>TEST</td><td>SPARC</td><td>Measured</td></tr>
 
-					<tr><td></td></tr>
+					{% for data_row in product.data %}
+						<tr>
+						{% for row_item in data_row %}
+							<td>{{row_item}}</td>
+						{% endfor %}
+						</tr>
+					{% endfor %}
 
 				</table>
 
 			</div>
-
 		</div>
-
+		<br>
 	{% endfor %}
+
 	"""
 
 	# metTableTmpl += pchem_table_html

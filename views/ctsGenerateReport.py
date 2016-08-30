@@ -26,23 +26,100 @@ def parsePOST(request):
     final_str = pdf_t
 
     if 'gentrans' in request.path:
-        # TODO: class this, e.g., Metabolizer (jchem_rest)
-        # headings = ['genKey', 'smiles', 'water_sol', 'ion_con', 'kow_no_ph', 'kow_wph', 'image']
-        # headings = ['genKey', 'smiles', 'melting_point', 'boiling_point', 'water_sol', 'vapor_press',
-        #             'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc', 'image']
-
-        # the nodes need to have images of their smiles in 250 width x ? height!!!!
 
         headings = ['genKey', 'smiles', 'iupac', 'formula', 'mass']
+        calcs = ['chemaxon', 'epi', 'test', 'sparc', 'measured']
         checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
         products = pdf_json['nodes']
+        props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press',
+                    'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc']
+
+        for product in products:
+            product_image = data_walks.nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
+            product.update({'image': product_image})
+
+            # build object that's easy to make pchem table in template..
+            if 'pchemprops' in product:
+
+                rows = []
+                for prop in props:
+
+                    data_row = []
+                    kow_no_ph_list = []
+                    kow_wph_list = []
+                    data_row.append(prop)
+
+                    calc_index = 1
+                    for calc in calcs:
+                        # pick out data by key, make sure not already there..
+                        for data_obj in product['pchemprops']:
+                            if data_obj['prop'] == prop and data_obj['calc'] == calc:
+                                if prop == 'kow_no_ph' and calc == 'chemaxon':
+                                    # expecting same calc/prop with 3 methods..\
+                                    already_there = False
+                                    for item in kow_no_ph_list:
+                                        if data_obj['method'] == item['method']:
+                                            already_there = True
+                                    if not already_there:
+                                        kow_no_ph_list.append({
+                                            'method': data_obj['method'],
+                                            'data': round(data_obj['data'], 2)
+                                        })
+                                elif prop == 'kow_wph' and calc == 'chemaxon':
+                                    # expecting same calc/prop with 3 methods..
+                                    already_there = False
+                                    for item in kow_no_ph_list:
+                                        if data_obj['method'] == item['method']:
+                                            already_there = True
+                                    if not already_there:
+                                        kow_wph_list.append({
+                                            'method': data_obj['method'],
+                                            'data': round(data_obj['data'], 2)
+                                        })
+                                    # account for kow_wph too!!!!!
+                                # elif prop == 'ion_con' and calc == 'chemaxon':
+                                elif prop == 'ion_con':
+                                    # is there also pKb?????
+                                    pka_string = ""
+                                    pka_index = 1
+                                    for pka in data_obj['data']['pKa']:
+                                        pka_string += "pka_{}: {} \n".format(pka_index, round(pka, 2))
+                                        pka_index += 1
+                                    data_row.append(pka_string)
+                                else:
+                                    data_row.append(data_obj['data'])
+
+                        if len(data_row) <= calc_index:
+                            # should mean there wasn't data for calc-prop combo:
+                            data_row.append('')
+
+                        calc_index += 1
+
+                        if prop == 'kow_no_ph' and calc == 'chemaxon':
+                            # insert chemaxon's kow values if they exist:
+                            kow_string = ""
+                            for kow in kow_no_ph_list:
+                                kow_string += "{} ({}) \n".format(kow['data'], kow['method'])
+                            # data_row.insert(1, kow_string)
+                            data_row[1] = kow_string
+                            # kow_values = []
+
+                        if prop == 'kow_wph' and calc == 'chemaxon':
+                            # insert chemaxon's kow values if they exist:
+                            kow_string = ""
+                            for kow in kow_wph_list:
+                                kow_string += "{} ({}) \n".format(kow['data'], kow['method'])
+                            # data_row.insert(1, kow_string)
+                            data_row[1] = kow_string
+                            # kow_values = []
+
+                    rows.append(data_row)
+
+            product['data'] = rows
 
         final_str += buildMetaboliteTableForPDF().render(
-            Context(dict(headings=headings, checkedCalcsAndProps=checkedCalcsAndProps, products=products)))  
+            Context(dict(headings=headings, checkedCalcsAndProps=checkedCalcsAndProps, products=products, props=props, calcs=calcs)))
 
-        # metaboliteList = data_walks.buildTableValues(
-        #     pdf_json['nodes'], pdf_json['checkedCalcsAndProps'], headings, 3)  # List of dicts, which are node data
-        # final_str += buildMetaboliteTableForPDF().render(Context(dict(headings=headings, metaboliteList=metaboliteList)))
 
     final_str += """<br>"""
     if (int(pdf_nop)>0):
