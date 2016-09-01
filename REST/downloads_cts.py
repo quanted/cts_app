@@ -25,7 +25,7 @@ class CSV(object):
 		self.models = ['chemspec', 'pchemprop', 'gentrans']
 		self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
 		self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss',
-					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc'],
+					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc']
 		self.speciation_props = ['isoelectricPoint', 'pka', 'pkb', 'majorMicrospecies', 'pka_microspecies']
 		if model and (model in self.models):
 			self.model = model  # model name
@@ -383,8 +383,8 @@ def roundData(prop, datum):
 def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 
 	for prop in props:
-		for calc, props in run_data['checkedCalcsAndProps'].items():
-			
+		for calc, calc_props in run_data['checkedCalcsAndProps'].items():
+			# for prop in calc_props:  # works, but columns aren't together by prop
 			data = None
 			if 'batch_data' in run_data:
 				data = run_data['batch_data']

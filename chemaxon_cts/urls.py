@@ -10,12 +10,18 @@ from chemaxon_cts import jchem_rest
 urlpatterns = patterns('chemaxon_cts',
     # url(r'^docs/', include('docs.urls')),
     # (r'^$', 'jchem_rest.doc'),  # Landing page
+    (r'/?$', 'jchem_rest.listChemaxonEndpoints'),
+    (r'^inputs/?$', 'jchem_rest.chemaxonInputSchema'),
     (r'^docs/?$', 'jchem_rest.doc'),
-    ('ws/getChemDetails/?$', 'jchem_rest.getChemDetails'),
-    (r'^ws/convertToSMILES/?$', 'jchem_rest.convertToSMILES'),
-    (r'^ws/getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
-    (r'^ws/smilesToImage/?$', 'jchem_rest.smilesToImage'),
-    (r'^ws/getpchemprops/?$', 'jchem_rest.getpchemprops'),
+    ('getChemDetails/?$', 'jchem_rest.getChemDetails'),
+    (r'^convertToSMILES/?$', 'jchem_rest.convertToSMILES'),
+    (r'^getChemSpecData/?$', 'jchem_rest.getChemSpecData'),
+    (r'^smilesToImage/?$', 'jchem_rest.smilesToImage'),
+    # (r'^getpchemprops/?$', 'jchem_rest.getpchemprops'),
+
+    # new api following qed schema:
+
+
 )
 
 # 404 Error view (file not found)
