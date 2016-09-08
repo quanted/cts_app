@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
     # url(r'^cts/portal/?$', 'REST.portal.parseRequestByCalculator'),
     url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app
-    url(r'^jchem-cts/', include('chemaxon_cts.urls')),
+    url(r'^cts/rest/chemaxon', include('chemaxon_cts.urls')),
 )
 
 # All view functions here must be in '/views/views.py'

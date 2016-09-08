@@ -115,7 +115,7 @@ def parsePOST(request):
 
                     rows.append(data_row)
 
-            product['data'] = rows
+                product['data'] = rows
 
         final_str += buildMetaboliteTableForPDF().render(
             Context(dict(headings=headings, checkedCalcsAndProps=checkedCalcsAndProps, products=products, props=props, calcs=calcs)))
