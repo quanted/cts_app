@@ -1,0 +1,317 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "CTS REST API",
+        "description": "Endpoints for p-chem data and more.",
+        "version": "1.0.0"
+    },
+    "host": "localhost:8000",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "basePath": "/rest/cts",
+    "produces": [
+        "application/json",
+        "application/x-www-form-urlencoded"
+    ],
+    "consumes": [
+        "application/json",
+        "text/html"
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "summary": "CTS REST enpoints.",
+                "description": "This enpoint returns a list of all\ncalculator endpoints.\n",
+                "tags": [
+                    "cts"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "CTS REST endpoints",
+                        "schema": {
+                            "$ref": "#/definitions/CTS"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/chemaxon": {
+            "get": {
+                "summary": "ChemAxon REST endpoints.",
+                "description": "This endoint returns the inputs used\nfor getting p-chem data from chemaxon.\n",
+                "tags": [
+                    "chemaxon"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "chemaxon REST endpoints",
+                        "schema": {
+                            "$ref": "#/definitions/Chemaxon"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/chemaxon/inputs": {
+            "post": {
+                "summary": "ChemAxon input schema",
+                "description": "This endpoint returns the inputs used to\nget estimated values from ChemAxon.\n",
+                "tags": [
+                    "chemaxon"
+                ],
+                "parameters": [
+                    {
+                        "name": "inputs",
+                        "in": "body",
+                        "description": "Inputs for ChemAxon p-chem property request.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ChemaxonInputs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "chemaxon input schema",
+                        "schema": {
+                            "$ref": "#/definitions/ChemaxonInputs"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/chemaxon/outputs": {
+            "get": {
+                "summary": "ChemAxon output schema",
+                "description": "This endpoint returns the inputs used to\nget estimated values from ChemAxon.\n",
+                "tags": [
+                    "chemaxon"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "chemaxon output schema",
+                        "schema": {
+                            "$ref": "#/definitions/ChemaxonOutputs"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CTS": {
+            "type": "object",
+            "properties": {
+                "metaInfo": {
+                    "type": "object",
+                    "properties": {
+                        "model": {
+                            "type": "string"
+                        },
+                        "collection": {
+                            "type": "string"
+                        },
+                        "modelVersion": {
+                            "type": "string"
+                        },
+                        "timestamp": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "endpoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ChemaxonEndpoints"
+                    }
+                }
+            }
+        },
+        "Chemaxon": {
+            "type": "object",
+            "properties": {
+                "metaInfo": {
+                    "type": "object",
+                    "properties": {
+                        "model": {
+                            "type": "string"
+                        },
+                        "collection": {
+                            "type": "string"
+                        },
+                        "modelVersion": {
+                            "type": "string"
+                        },
+                        "timestamp": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "endpoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ChemaxonEndpoints"
+                    }
+                }
+            }
+        },
+        "ChemaxonInputs": {
+            "type": "object",
+            "properties": {
+                "chemical": {
+                    "type": "string",
+                    "default": "CCCC"
+                },
+                "calc": {
+                    "type": "string",
+                    "default": "chemaxon"
+                },
+                "prop": {
+                    "type": "string",
+                    "default": "water_sol"
+                },
+                "ph": {
+                    "type": "number",
+                    "description": "pH for pH-dependent p-chem properties, like KOW and KOC",
+                    "default": 7.4
+                },
+                "run_type": {
+                    "type": "string",
+                    "default": "rest"
+                },
+                "node": {
+                    "$ref": "#/definitions/Molecule"
+                }
+            }
+        },
+        "ChemaxonOutputs": {
+            "type": "object",
+            "properties": {
+                "metaInfo": {
+                    "type": "object",
+                    "properties": {
+                        "model": {
+                            "type": "string",
+                            "default": "chemaxon"
+                        },
+                        "collection": {
+                            "type": "string",
+                            "default": "qed"
+                        },
+                        "modelVersion": {
+                            "type": "string",
+                            "default": "15.3.23.0"
+                        },
+                        "timestamp": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "outputs": {
+                    "type": "object",
+                    "properties": {
+                        "chemical": {
+                            "type": "string"
+                        },
+                        "calc": {
+                            "type": "string"
+                        },
+                        "prop": {
+                            "type": "string"
+                        },
+                        "ph": {
+                            "type": "number",
+                            "description": "pH for pH-dependent p-chem properties, like KOW and KOC"
+                        },
+                        "run_type": {
+                            "type": "string",
+                            "default": "rest"
+                        },
+                        "node": {
+                            "$ref": "#/definitions/Molecule"
+                        }
+                    }
+                }
+            }
+        },
+        "ChemaxonEndpoints": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "Molecule": {
+            "type": "object",
+            "properties": {
+                "formula": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "iupac": {
+                    "type": "string"
+                },
+                "mass": {
+                    "type": "number"
+                },
+                "smiles": {
+                    "type": "string"
+                },
+                "orig_smiles": {
+                    "type": "string"
+                }
+            }
+        },
+        "ChartArray": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/ChartPair"
+            }
+        },
+        "ChartPair": {
+            "type": "number"
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

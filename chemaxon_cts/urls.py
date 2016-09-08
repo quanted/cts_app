@@ -1,6 +1,8 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import patterns, include, url
 from chemaxon_cts import jchem_rest
+# from REST.cts_rest import Chemaxon_CTS_REST
+from REST import cts_rest
 # from django.contrib import admin
 # admin.autodiscover()
 
@@ -11,8 +13,9 @@ urlpatterns = patterns('chemaxon_cts',
     # url(r'^docs/', include('docs.urls')),
     # (r'^$', 'jchem_rest.doc'),  # Landing page
     (r'/?$', 'jchem_rest.listChemaxonEndpoints'),
+    # (r'/?$', 'cts_rest.Chemaxon_CTS_REST().getChemaxonREST'),
     (r'^inputs/?$', 'jchem_rest.chemaxonInputSchema'),
-    (r'^docs/?$', 'jchem_rest.doc'),
+    # (r'^docs/?$', 'jchem_rest.doc'),
     ('getChemDetails/?$', 'jchem_rest.getChemDetails'),
     (r'^convertToSMILES/?$', 'jchem_rest.convertToSMILES'),
     (r'^getChemSpecData/?$', 'jchem_rest.getChemSpecData'),

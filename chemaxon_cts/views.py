@@ -49,13 +49,10 @@ def request_manager(request):
 	except AttributeError:
 		props = request.POST.get("props")
 
-	session = FuturesSession()
+
+	session = FuturesSession()  # currently not used..
 
 
-	logging.info("SERVICE: {}".format(service))
-
-
-	# if workflow == 'gentrans' and run_type == 'batch':
 	if service == 'getTransProducts':
 		# getTransProducts chemaxon service..
 

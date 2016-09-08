@@ -90,7 +90,8 @@ def request_manager(request):
 				test_data = response_json['properties'][calcObj.propMap[prop]['urlKey']]
 				# data_obj['data'] = response_json['properties'][calcObj.propMap[prop]['urlKey']]
 				if prop == 'water_sol':
-					data_obj['data'] = 1000 * 18.01528 * 10**test_data  # moles of h20, Log(mol/L) --> mg/L
+					# data_obj['data'] = 1000 * 18.01528 * 10**test_data  # moles of h20, Log(mol/L) --> mg/L
+					data_obj['data'] = 1000 * data_obj['data']['node']['mass'] * 10**test_data
 				else:
 					data_obj['data'] = test_data
 				

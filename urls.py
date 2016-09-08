@@ -2,6 +2,7 @@
 from django.conf.urls import patterns, include, url
 import epi_cts
 import chemaxon_cts
+import REST
 # from django.contrib import admin
 # admin.autodiscover()
 
@@ -12,7 +13,10 @@ urlpatterns = patterns('',
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
     # url(r'^cts/portal/?$', 'REST.portal.parseRequestByCalculator'),
     url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app
-    url(r'^cts/rest/chemaxon', include('chemaxon_cts.urls')),
+    url(r'^rest/cts/', include('REST.urls'))
+    # url(r'^rest/cts/?$', 'REST.cts_rest.getCTSREST'),
+    # url(r'^rest/cts/docs/?$', 'REST.cts_rest.showSwaggerPage'),
+    # url(r'^rest/cts/chemaxon', include('chemaxon_cts.urls')),
 )
 
 # All view functions here must be in '/views/views.py'
@@ -30,8 +34,8 @@ urlpatterns += patterns('',
     # (r'^cts/guide/?$', 'views.misc.downloadUserGuide'),
     (r'^cts/guide/?$', 'views.misc.displayPDF'),
 
-    (r'^cts/rest/molecule/?$', 'REST.cts_rest.getChemicalEditorData'),
-    (r'^cts/rest/speciation/?$', 'REST.cts_rest.getChemicalSpeciationData'),
+    # (r'^rest/cts/molecule/?$', 'REST.cts_rest.getChemicalEditorData'),
+    # (r'^rest/cts/speciation/?$', 'REST.cts_rest.getChemicalSpeciationData'),
 
     (r'^cts/(?P<model>.*?)/description/?$', 'views.description.descriptionPage'),
     (r'^cts/(?P<model>.*?)/input/?$', 'views.input.inputPage'),

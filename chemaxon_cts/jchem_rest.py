@@ -376,48 +376,6 @@ def filterSMILES(request):
 		return results
 
 
-def listChemaxonEndpoints(request):
-	"""
-	/rest/cts/chemaxon/
-	GET
-	List chemaxon endpoints
-	"""
-
-	# classes somewhere?
-
-	try:
-		return HttpResponse(json.dumps({
-			'metaInfo': {
-				'model': "cts",
-				'collection': "qed",
-				'modelVersion': "1.3.7",
-				'timestamp': gen_jid()
-			},
-			'endpoints': ['inputs', 'outputs', 'run']
-		}), mimetype='application/json')
-	except Exception as e:
-		logging.warning("exception occurred getting chemaxon endpoints: {}".format(e))
-		HttpResponse(json.dumps({
-			'metaInfo': {
-				'model': "cts",
-				'collection': "qed",
-				'modelVersion': "1.3.7",
-				'timestamp': gen_jid()
-			},
-			'error': "error listing chemaxon endpoints"
-		}), mimetype='application/json')
-
-
-def chemaxonInputSchema(request):
-	"""
-	/rest/cts/chemaxon/inputs
-	POST
-	Inputs: ???
-	Return: ChemAxon input schema
-	"""
-	return HttpResponse("hey")
-
-
 def web_call(url, request, data):
 	"""
 	Makes the request to a specified URL
