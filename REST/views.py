@@ -31,5 +31,5 @@ def getChemaxonInputs(request):
 	chemaxon_obj = cts_rest.Chemaxon_CTS_REST()
 	request_params = json.loads(request.body)
 	chemaxon_request = HttpRequest()
-	chemaxon_request.POST = {'chemical': request_params['chemical']}
+	chemaxon_request.POST = {'chemical': request_params['chemical']}  # need rest of POST, not just chemical
 	return chemaxon_obj.getChemaxonInputs(chemaxon_request)
