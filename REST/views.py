@@ -4,8 +4,21 @@ CTS REST URLs
 """
 
 import cts_rest
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 import json
+
+
+
+def getSwaggerJsonContent(request):
+	"""
+	Opens up swagger.json content
+	"""
+	swag = open('static/swagger.json', 'r').read()
+	swag_filtered = swag.replace('\n', '').strip()
+	swag_obj = json.loads(swag_filtered)
+	response = HttpResponse()
+	response.write(json.dumps(swag_obj))
+	return response
 
 
 def getCTSEndpoints(request):

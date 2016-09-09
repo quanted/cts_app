@@ -12,6 +12,7 @@ import cts_rest
 urlpatterns = patterns('REST',
 	(r'^/?$', 'views.getCTSEndpoints'),
 	# ('', 'cts_rest.listChemaxonEndpoints')
+	(r'^swag/?$', 'views.getSwaggerJsonContent'),
 	(r'^docs/?$', 'cts_rest.showSwaggerPage'),
 	(r'^molecule/?$', 'cts_rest.getChemicalEditorData'),
 	(r'^speciation/?$', 'cts_rest.getChemicalEditorData'),
