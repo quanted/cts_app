@@ -5,7 +5,7 @@
         "description": "Endpoints for p-chem data and more.",
         "version": "1.0.0"
     },
-    "host": "http://localhost:8000",
+    "host": "http://134.67.114.1",
     "schemes": [
         "http",
         "https"
