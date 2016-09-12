@@ -146,8 +146,8 @@ function jsonRepack(jsonobj) {
 
 function ajaxCall(data_obj, callback) {
   $.ajax({
-    // url: '/cts/rest/molecule',
-    url: '/rest/cts/molecule',
+    url: '/cts/rest/molecule',
+    // url: '/rest/cts/molecule',
     type: 'POST',
     data: data_obj,
     dataType: 'json',
