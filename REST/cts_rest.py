@@ -13,9 +13,10 @@ from django.template.loader import render_to_string
 from django.shortcuts import render_to_response
 
 
-from chemaxon_cts import jchem_rest
+from chemaxon_cts import jchem_rest, jchem_calculator
 from smilesfilter import filterSMILES
 from models.chemspec import chemspec_output
+
 
 
 # TODO: Consider putting these classes somewhere else, maybe even the *_models.py files!
@@ -72,41 +73,41 @@ class CTS_REST(object):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "https://qed.epa.gov/rest/cts"
+					'href': "https://qed.epa.gov/cts/rest"
 				}
 			},
 		}
 
 	def getCTSREST(self):
 		"""
-		Returns json for /rest/cts endpoint
+		Returns json for /cts/rest endpoint
 		(GET)
 		"""
 		self.cts_meta_info['links'] = [
 			{
 				'rel': "episuite",
 				'type': "application/json",
-				'href': "https://qed.epa.gov/rest/cts/episuite"
+				'href': "https://qed.epa.gov/cts/rest/episuite"
 			},
 			{
 				'rel': "chemaxon",
 				'type': "application/json",
-				'href': "https://qed.epa.gov/rest/cts/chemaxon"
+				'href': "https://qed.epa.gov/cts/rest/chemaxon"
 			},
 			{
 				'rel': "sparc",
 				'type': "application/json",
-				'href': "https://qed.epa.gov/rest/cts/sparc"
+				'href': "https://qed.epa.gov/cts/rest/sparc"
 			},
 			{
 				'rel': "test",
 				'type': "application/json",
-				'href': "https://qed.epa.gov/rest/cts/test"
+				'href': "https://qed.epa.gov/cts/rest/test"
 			},
 			{
 				'rel': "metabolizer",
 				'type': "application/json",
-				'href': "https://qed.epa.gov/rest/cts/metabolizer"
+				'href': "https://qed.epa.gov/cts/rest/metabolizer"
 			}
 		]
 		return HttpResponse(json.dumps(self.cts_meta_info), content_type='application/json')
@@ -127,8 +128,9 @@ class Chemaxon_CTS_REST(CTS_REST):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "https://qed.epa.gov/rest/cts/chemaxon"
-				}
+					'href': "https://qed.epa.gov/cts/rest/chemaxon"
+				},
+				'props': ['water_sol', 'ion_con', 'kow_no_ph', 'kow_wph']
 			}
 		}
 
@@ -136,55 +138,36 @@ class Chemaxon_CTS_REST(CTS_REST):
 		"""
 		List chemaxon endpoints
 		"""
-		self.chemaxon_meta_info['links'] = [
+		chemaxon_endpoints_response = self.chemaxon_meta_info
+		chemaxon_endpoints_response['links'] = [
 			{
 				'rel': "inputs",
 				'type': "application/json",
-				'href': "https://qed.epa.gov/rest/cts/chemaxon/inputs",
-				'description': "ChemAxon input schema"
+				'href': "https://qed.epa.gov/cts/rest/chemaxon/inputs",
+				'description': "ChemAxon input schema",
+				'method': "POST",
 			},
 			{
 				'rel': "outputs",
 				'type': "application/json",
-				'href': "https://qed.epa.gov/rest/cts/chemaxon/outputs",
-				'description': "ChemAxon output schema"
+				'href': "https://qed.epa.gov/cts/rest/chemaxon/outputs",
+				'description': "ChemAxon output schema",
+				'method': "POST"
 			},
 			{
 				'rel': "run",
 				'type': "application/json",
-				'href': "https://qed.epa.gov/rest/cts/chemaxon/run",
-				'description': "ChemAxon estimated values"
+				'href': "https://qed.epa.gov/cts/rest/chemaxon/run",
+				'description': "ChemAxon estimated values",
+				'method': "POST"
 			}
 
 		]
+		chemaxon_endpoints_response['props'] = jchem_calculator.JchemProperty().props
 		return HttpResponse(json.dumps(self.chemaxon_meta_info), content_type="application/json")
 
 	def getChemaxonInputs(self, request):
 		response = self.chemaxon_meta_info
-
-		# Below is chemspec workflow's inputs:
-		# response.update({
-		# 	'inputs': {
-		# 		'chem_struct': 'aspirin',
-		# 		'smiles': 'CC(=O)OC1=CC=CC=C1C(O)=O',
-		# 		'orig_smiles': 'CC(=O)OC1=CC=CC=C1C(O)=O',
-		# 		'name': '2-(acetyloxy)benzoic acid',
-		# 		'formula': 'C9H8O4',
-		# 		'mass': '180.159',
-		# 		'get_pka': True,
-		# 		'get_taut': False,
-		# 		'get_stereo': False,
-		# 		'pKa_decimals': '2',
-		# 		'pKa_pH_lower': '0',
-		# 		'pKa_pH_upper': '14',
-		# 		'pKa_pH_increment': '0.2',
-		# 		'pH_microspecies': '7.0',
-		# 		'isoelectricPoint_pH_increment': '0.5',
-		# 		'tautomer_maxNoOfStructures': '100',
-		# 		'tautomer_pH': '7.0',
-		# 		'stereoisomers_maxNoOfStructure': '100'
-		# 	}
-		# })
 
 		chemical = request.POST.get('chemical')
 

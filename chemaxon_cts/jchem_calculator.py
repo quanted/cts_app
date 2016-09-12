@@ -18,28 +18,12 @@ from django.http import HttpRequest
 
 headers = {'Content-Type': 'application/json'}
 
-# redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
-
-
-# def asyncResult(session, response):
-#     # this function is called when a pchem result comes
-#     # back from jchem
-#     response.data = response.json()
-
-#     if redis_conn:
-#         redis_conn.publish(sessionid, )
-
-#     # chemaxon views gets data out based on prop, so
-#     # call that when things come back!!!
-
-
-
-
-
 
 class JchemProperty(object):
     def __init__(self):
+        # speciation props:
         self.propsList = ['pKa', 'isoelectricPoint', 'majorMicrospecies', 'tautomerization', 'stereoisomer']
+        
         self.baseUrl = os.environ['CTS_JCHEM_SERVER']
         self.name = ''
         self.url = ''
@@ -52,6 +36,7 @@ class JchemProperty(object):
             'kow_no_ph': [],
             'kow_wph': []
         }
+        self.props = ['water_sol', 'ion_con', 'kow_no_ph', 'kow_wph']  # available pchem props
 
     def setPostDataValue(self, propKey, propValue):
         """

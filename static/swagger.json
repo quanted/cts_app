@@ -2,10 +2,10 @@
     "swagger": "2.0",
     "info": {
         "title": "CTS REST API",
-        "description": "Endpoints for p-chem data and more.",
+        "description": "Endpoints for p-chem, speciation, and transformation data.",
         "version": "1.0.0"
     },
-    "host": "134.67.114.1",
+    "host": "localhost:8000",
     "schemes": [
         "http",
         "https"
@@ -173,7 +173,7 @@
                         }
                     }
                 },
-                "endpoints": {
+                "links": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/ChemaxonEndpoints"
@@ -186,27 +186,17 @@
             "properties": {
                 "chemical": {
                     "type": "string",
-                    "default": "CCCC"
-                },
-                "calc": {
-                    "type": "string",
-                    "default": "chemaxon"
+                    "default": "CCCC",
+                    "description": "Chemical to get p-chem data for, can be in smiles, iupac, formula, or name (e.g., aspirin) format"
                 },
                 "prop": {
                     "type": "string",
-                    "default": "water_sol"
-                },
-                "ph": {
-                    "type": "number",
-                    "description": "pH for pH-dependent p-chem properties, like KOW and KOC",
-                    "default": 7.4
+                    "default": "water_sol",
+                    "description": "p-chem property from chemaxon."
                 },
                 "run_type": {
                     "type": "string",
                     "default": "rest"
-                },
-                "node": {
-                    "$ref": "#/definitions/Molecule"
                 }
             }
         },
@@ -261,9 +251,55 @@
             }
         },
         "ChemaxonEndpoints": {
-            "type": "array",
-            "items": {
-                "type": "string"
+            "type": "object",
+            "properties": {
+                "metaInfo": {
+                    "$ref": "#/definitions/ChemaxonMetaInfo"
+                },
+                "links": {
+                    "type": "object",
+                    "properties": {
+                        "rel": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "type": "string"
+                        },
+                        "href": {
+                            "type": "string"
+                        },
+                        "description": {
+                            "type": "string"
+                        },
+                        "url": {
+                            "type": "string"
+                        },
+                        "props": {
+                            "type": "string",
+                            "default": "['water_sol', 'ion_con', 'kow_no_ph', 'kow_wph']"
+                        }
+                    }
+                }
+            }
+        },
+        "ChemaxonMetaInfo": {
+            "type": "object",
+            "properties": {
+                "model": {
+                    "type": "string",
+                    "default": "chemaxon"
+                },
+                "collection": {
+                    "type": "string",
+                    "default": "qed"
+                },
+                "modelVersion": {
+                    "type": "string",
+                    "default": "15.3.23.0"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
             }
         },
         "Molecule": {
@@ -288,15 +324,6 @@
                     "type": "string"
                 }
             }
-        },
-        "ChartArray": {
-            "type": "array",
-            "items": {
-                "$ref": "#/definitions/ChartPair"
-            }
-        },
-        "ChartPair": {
-            "type": "number"
         },
         "Error": {
             "type": "object",
