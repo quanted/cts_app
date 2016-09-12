@@ -5,7 +5,7 @@
         "description": "Endpoints for p-chem, speciation, and transformation data.",
         "version": "1.0.0"
     },
-    "host": "localhost:8000",
+    "host": "134.67.114.1",
     "schemes": [
         "http",
         "https"
