@@ -82,7 +82,7 @@ def request_manager(request):
 			'run_type': 'batch'
 		}
 
-		if redis_conn:
+		if redis_conn and sessionid:
 			result_json = json.dumps(data_obj)
 			redis_conn.publish(sessionid, result_json)
 		else:
@@ -138,12 +138,18 @@ def request_manager(request):
 			'run_type': 'batch'
 		}
 
-		if redis_conn:
+		if redis_conn and sessionid:
 			result_json = json.dumps(data_obj)
 			redis_conn.publish(sessionid, result_json)
 
 	else:
-		getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
+
+		if run_type == 'rest':
+			props = [prop]
+			return getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
+		else:
+			# no return w/ web sockets?
+			getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
 
 
 
@@ -151,18 +157,18 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 
 	postData = {
 		'calc': calc,
-		'props': props
+		# 'props': props
 	}
 
 	logging.warning("post data: {}".format(postData))
-	
+
 	if props:
 		chemaxon_results = []
 		for prop in props:
 
 			logging.info("requesting chemaxon {} data".format(prop))
 
-			data_obj = {'calc': calc, 'prop':prop, 'node': node}
+			data_obj = {'calc': calc, 'prop':prop, 'node': node, 'chemical': chemical}
 
 			if run_type:
 				data_obj.update({'run_type': run_type})
@@ -171,16 +177,23 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 				if prop == 'kow_wph' or prop == 'kow_no_ph':
 					for method in methods:
 						
+						new_data_obj = {}
+						new_data_obj.update({
+							'calc': calc,
+						    'prop': prop,
+						    'chemical': chemical
+						})
+
 						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
-						data_obj.update({'data': results['data'], 'method': method})
+						new_data_obj.update({'data': results['data'], 'method': method})
 
 						logging.info("chemaxon results: {}".format(results))
 
-						if redis_conn:
-							result_json = json.dumps(data_obj)
+						if redis_conn and sessionid:
+							result_json = json.dumps(new_data_obj)
 							redis_conn.publish(sessionid, result_json)
 						else:
-							chemaxon_results.append(data_obj)
+							chemaxon_results.append(new_data_obj)
 
 				else:
 					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
@@ -188,7 +201,7 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 
 					logging.info("chemaxon results: {}".format(results))
 
-					if redis_conn:
+					if redis_conn and sessionid:
 						result_json = json.dumps(data_obj)
 						redis_conn.publish(sessionid, result_json)
 					else:
@@ -200,7 +213,7 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 
 				data_obj.update({'error': "cannot reach chemaxon calculator"})
 
-				if redis_conn: 
+				if redis_conn and sessionid: 
 					redis_conn.publish(sessionid, json.dumps(data_obj))
 				else:
 					chemaxon_results.append(data_obj)
@@ -212,7 +225,8 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 		# pack up all results to send at once if using http:
 		postData.update({'data': chemaxon_results})
 
-		if not redis_conn and not sessionid:
+		# if not redis_conn and not sessionid:
+		if not sessionid:
 			# send response over http (for accessing as REST service)
 			return HttpResponse(json.dumps(postData), content_type='application/json')
 

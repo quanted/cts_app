@@ -28,6 +28,8 @@ def request_manager(request):
 	structure = request.POST.get("chemical")
 	sessionid = request.POST.get('sessionid')
 	node = request.POST.get('node')
+	run_type = request.POST.get('run_type')
+	prop = request.POST.get('prop')
 
 	logging.info("Incoming data to Measured: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
 
@@ -43,8 +45,8 @@ def request_manager(request):
 		filtered_smiles = parseSmilesByCalculator(structure, "epi") # call smilesfilter
 		if '[' in filtered_smiles or ']' in filtered_smiles:
 			logging.warning("EPI ignoring request due to brackets in SMILES..")
-			postData.update({'error': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
-			return HttpResponse(json.dumps(postData), content_type='application/json')
+			post_data.update({'error': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
+			return HttpResponse(json.dumps(post_data), content_type='application/json')
 	except Exception as err:
 		logging.warning("Error filtering SMILES: {}".format(err))
 		post_data.update({'error': "Cannot filter SMILES for Measured data"})
@@ -58,6 +60,9 @@ def request_manager(request):
 	try:
 		response = calcObj.makeDataRequest(filtered_smiles) # make call for data!
 		measured_data = json.loads(response.content)
+
+		if run_type == 'rest':
+			props = [prop]
 		
 		# get requested properties from results:
 		for prop in props:
@@ -86,14 +91,14 @@ def request_manager(request):
 			if redis_conn and sessionid:
 				redis_conn.publish(sessionid, json.dumps(data_obj))
 
-		if not sessionid or not redis_conn:
-			post_data.update({'data': measured_results})
+		if not sessionid:
+			post_data.update({'data': measured_results, 'chemical': filtered_smiles})
 
 		# if redis_conn and sessionid: 
 		# 	redis_conn.publish(sessionid, json.dumps(post_data))
 		# else:
 			HttpResponse(json.dumps(post_data), content_type='application/json')
 
-	if not redis_conn and not sessionid:
-		post_data.update({'data': measured_results})
+	if not sessionid:
+		post_data.update({'data': measured_results, 'chemical': filtered_smiles})
 		return HttpResponse(json.dumps(post_data), content_type='application/json')

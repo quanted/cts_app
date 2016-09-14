@@ -22,6 +22,7 @@ class EpiCalc(Calculator):
         self.urlStruct = "/episuiteapi/rest/episuite/{}/estimated"  # new way (cgi server 1)
         # self.urlStruct = "/rest/episuite/{}/estimated"  # old way (local machine)
         self.methods = None
+        self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'henrys_law_con', 'kow_no_ph', 'koc']
         self.propMap = {
             'melting_point': {
                 # 'urlKey': 'meltingPtDegCEstimated',

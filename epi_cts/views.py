@@ -32,6 +32,7 @@ def request_manager(request):
 	structure = request.POST.get("chemical")
 	sessionid = request.POST.get('sessionid')
 	node = request.POST.get('node')
+	run_type = request.POST.get('run_type')
 
 	try:
 		props = request.POST.get("props[]")
@@ -42,7 +43,7 @@ def request_manager(request):
 
 	postData = {
 		'calc': calc,
-		'props': props
+		# 'props': props
 	}
 
 	try:
@@ -60,6 +61,8 @@ def request_manager(request):
 				for prop in props:
 					postData['prop'] = prop
 					postData['node'] = node
+					if run_type:
+						postData['run_type'] = run_type
 					redis_conn.publish(sessionid, json.dumps(postData))
 				return
 
@@ -76,13 +79,19 @@ def request_manager(request):
 	calcObj = EpiCalc()
 	epi_results = []
 
+	if run_type == 'rest':
+		props = [prop]  # rest api currently does single prop calls
+
 	for prop in props:
 
 		data_obj = {
-			"calc": calc,
+			"calc": "epi",
 			"prop": prop,
 			'node': node
 		}
+
+		if run_type:
+			data_obj['run_type'] = run_type
 
 		try:
 			response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
@@ -116,8 +125,8 @@ def request_manager(request):
 			else:
 				epi_results.append(data_obj)
 
-	postData.update({'data': epi_results})
+	postData.update({'data': epi_results, 'chemical': filtered_smiles})
 
-	if not redis_conn and not sessionid:
+	if not sessionid:
 		# send response over http (for accessing as REST service)
 		return HttpResponse(json.dumps(postData), content_type='application/json')

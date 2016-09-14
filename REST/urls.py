@@ -11,14 +11,31 @@ import cts_rest
 # path: serverLocation/jchem/...
 urlpatterns = patterns('REST',
 	(r'^/?$', 'views.getCTSEndpoints'),
-	# ('', 'cts_rest.listChemaxonEndpoints')
 	(r'^swag/?$', 'views.getSwaggerJsonContent'),
 	(r'^docs/?$', 'cts_rest.showSwaggerPage'),
+
 	(r'^molecule/?$', 'cts_rest.getChemicalEditorData'),
 	(r'^speciation/?$', 'cts_rest.getChemicalEditorData'),
-	(r'^chemaxon/?$', 'views.getChemaxonEndpoints'),
-	(r'^chemaxon/inputs/?$', 'views.getChemaxonInputs'),
 
+	(r'^chemaxon/?$', 'views.getCalcEndpoints'),
+	(r'^chemaxon/inputs/?$', 'views.getChemaxonInputs'),
+	(r'^chemaxon/run/?$', 'views.runChemaxon'),
+
+	(r'^epi/?$', 'views.getCalcEndpoints'),
+	(r'^epi/inputs/?$', 'views.getEpiInputs'),
+	(r'^epi/run/?$', 'views.runEpi'),
+
+	(r'^test/?$', 'views.getCalcEndpoints'),
+	(r'^test/inputs/?$', 'views.getTestInputs'),
+	(r'^test/run/?$', 'views.runTest'),
+
+	(r'^sparc/?$', 'views.getCalcEndpoints'),
+	(r'^sparc/inputs/?$', 'views.getSparcInputs'),
+	(r'^sparc/run/?$', 'views.runSparc'),
+
+	(r'^measured/?$', 'views.getCalcEndpoints'),
+	(r'^measured/inputs/?$', 'views.getMeasuredInputs'),
+	(r'^measured/run/?$', 'views.runMeasured'),	
 )
 
 # 404 Error view (file not found)

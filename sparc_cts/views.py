@@ -26,11 +26,13 @@ def request_manager(request):
     structure = request.POST.get("chemical")
     sessionid = request.POST.get('sessionid')
     node = request.POST.get('node')
+    prop = request.POST.get('prop')
+    run_type = request.POST.get('run_type')
 
     # logging.info("Incoming data to SPARC: {}, {}, {} (calc, props, chemical)".format(calc, props, structure))
 
     post_data = {
-        "calc": calc,
+        "calc": "sparc",
         "props": props,
         'node': node
     }
@@ -60,8 +62,12 @@ def request_manager(request):
     sparc_response = {
         'calc': 'sparc',
         # 'prop': prop,
-        'node': node
+        'node': node,
+        'chemical': structure
     }
+
+    if run_type == 'rest':
+        props = [prop]
 
 
     try:
@@ -76,7 +82,7 @@ def request_manager(request):
             if redis_conn and sessionid:
                 redis_conn.publish(sessionid, result_json)
             else:
-                HttpResponse(result_json, content_type='application/json')
+                return HttpResponse(result_json, content_type='application/json')
 
         # if prop == 'kow_wph':
         if 'kow_wph' in props:
@@ -89,7 +95,7 @@ def request_manager(request):
             if redis_conn and sessionid:
                 redis_conn.publish(sessionid, result_json)
             else:
-                HttpResponse(result_json, content_type='application/json')
+                return HttpResponse(result_json, content_type='application/json')
 
         prop_map = calcObj.propMap.keys()
         # if any(prop not in ['ion_con', 'kow_wph'] for prop in props):
@@ -110,76 +116,14 @@ def request_manager(request):
                 # if prop_obj['prop'] in props:
                 # if prop_obj['prop'] == prop:
                 if prop_obj['prop'] in props and prop_obj != 'ion_con' and prop_obj != 'kow_wph':
-                    prop_obj.update({'node': node})
+                    prop_obj.update({'node': node, 'chemical': structure})
                     logging.info("response: {}".format(prop_obj))
                     result_json = json.dumps(prop_obj) 
                     if redis_conn and sessionid:
                         redis_conn.publish(sessionid, result_json)
                     else:
-                        HttpResponse(result_json, content_type='application/json')
+                        return HttpResponse(result_json, content_type='application/json')
                     # could send each calc-prop-data instead of list of them..
-
-
-
-    # for prop in props:
-
-    #     sparc_response = {
-    #         'calc': 'sparc',
-    #         'prop': prop,
-    #         'node': node
-    #     }
-
-    #     try:
-    #         if prop == 'ion_con':
-    #             response = calcObj.makeCallForPka() # response as d ict returned..
-    #             pka_data = calcObj.getPkaResults(response)
-    #             sparc_response.update({'data': pka_data})
-    #             logging.info("response: {}".format(sparc_response))
-    #             # sparc_results.append(ion_con_response)
-    #             result_json = json.dumps(sparc_response)
-    #             if redis_conn and sessionid:
-    #                 redis_conn.publish(sessionid, result_json)
-    #             else:
-    #                 HttpResponse(result_json, content_type='application/json')
-
-    #         if prop == 'kow_wph':
-    #             ph = request.POST.get('ph') # get PH for logD calculation..
-    #             response = calcObj.makeCallForLogD() # response as dict returned..
-    #             sparc_response.update({'data': calcObj.getLogDForPH(response, ph)})
-    #             logging.info("response: {}".format(sparc_response))
-    #             # sparc_results.append(kow_wph_response)
-    #             result_json = json.dumps(sparc_response)
-    #             if redis_conn and sessionid:
-    #                 redis_conn.publish(sessionid, result_json)
-    #             else:
-    #                 HttpResponse(result_json, content_type='application/json')
-
-    #         prop_map = calcObj.propMap.keys()
-    #         if any(prop in prop_map for prop in props):
-    #             multi_response = calcObj.makeDataRequest()
-    #             if 'calculationResults' in multi_response:
-    #                 multi_response = calcObj.parseMultiPropResponse(multi_response['calculationResults'])
-    #                 for prop_obj in multi_response:
-    #                     # if prop_obj['prop'] in props:
-    #                     if prop_obj['prop'] == prop:
-    #                         prop_obj.update({'node': node})
-    #                         logging.info("response: {}".format(prop_obj))
-    #                         result_json = json.dumps(prop_obj) 
-    #                         if redis_conn and sessionid:
-    #                             redis_conn.publish(sessionid, result_json)
-    #                         else:
-    #                             HttpResponse(result_json, content_type='application/json')
-    #                         # could send each calc-prop-data instead of list of them..
-
-
-            # post_data.update({'data': sparc_results})
-            # result_json = json.dumps(post_data)
-
-            # if redis_conn and sessionid:
-            #     redis_conn.publish(sessionid, result_json)
-            # else:
-            #     return HttpResponse(result_json, content_type='application/json')
-
 
     except Exception as err:
         logging.warning("Exception occurred getting SPARC data: {}".format(err))

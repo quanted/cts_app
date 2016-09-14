@@ -14,6 +14,12 @@ from django.shortcuts import render_to_response
 
 
 from chemaxon_cts import jchem_rest, jchem_calculator
+from chemaxon_cts import views as chemaxon_views
+from epi_cts import views as epi_views
+from epi_cts import epi_calculator
+from measured_cts import views as measured_views
+from test_cts import views as test_views
+from sparc_cts import views as sparc_views
 from smilesfilter import filterSMILES
 from models.chemspec import chemspec_output
 
@@ -24,7 +30,6 @@ class Molecule(object):
 	"""
 	Basic molecule object for CTS
 	"""
-
 	def __init__(self):
 
 		# cts keys:
@@ -63,7 +68,8 @@ class CTS_REST(object):
 	other CTS features, like metabolizer.
 	"""
 	def __init__(self):
-		self.cts_meta_info = {
+		self.calcs = ['chemaxon', 'epi', 'test', 'sparc', 'measured']
+		self.meta_info = {
 			'metaInfo': {
 				'model': "cts",
 				'collection': "qed",
@@ -77,13 +83,7 @@ class CTS_REST(object):
 				}
 			},
 		}
-
-	def getCTSREST(self):
-		"""
-		Returns json for /cts/rest endpoint
-		(GET)
-		"""
-		self.cts_meta_info['links'] = [
+		self.links = [
 			{
 				'rel': "episuite",
 				'type': "application/json",
@@ -110,7 +110,62 @@ class CTS_REST(object):
 				'href': "https://qed.epa.gov/cts/rest/metabolizer"
 			}
 		]
-		return HttpResponse(json.dumps(self.cts_meta_info), content_type='application/json')
+		self.calc_links = [
+			{
+				'rel': "inputs",
+				'type': "application/json",
+				'href': "https://qed.epa.gov/cts/rest/{}/inputs",
+				'description': "ChemAxon input schema",
+				'method': "POST",
+			},
+			{
+				'rel': "outputs",
+				'type': "application/json",
+				'href': "https://qed.epa.gov/cts/rest/{}/outputs",
+				'description': "ChemAxon output schema",
+				'method': "POST"
+			},
+			{
+				'rel': "run",
+				'type': "application/json",
+				'href': "https://qed.epa.gov/cts/rest/{}/run",
+				'description': "ChemAxon estimated values",
+				'method': "POST"
+			}
+		]
+
+	def getCalcLinks(self, calc):
+		if calc in self.calcs:
+			_links = self.calc_links
+			for item in _links:
+				if 'href' in item:
+					item['href'] = item['href'].format(calc)  # insert calc name into href
+			return _links
+		else:
+			return None
+
+	def getCTSREST(self):
+		_response = self.meta_info
+		_response['links'] = self.links
+		return HttpResponse(json.dumps(_response), content_type='application/json')
+
+	def getCalcEndpoints(self, calc):
+		_response = {}
+		if calc == 'chemaxon':
+			calc_obj = Chemaxon_CTS_REST()
+		elif calc == 'epi':
+			calc_obj = EPI_CTS_REST()
+		elif calc == 'test':
+			calc_obj = TEST_CTS_REST()
+		elif calc == 'sparc':
+			calc_obj = SPARC_CTS_REST()
+		elif calc == 'measured':
+			calc_obj = Measured_CTS_REST()
+		_response.update({
+			'meta_info': calc_obj.meta_info,
+			'links': self.getCalcLinks(calc)
+		})
+		return HttpResponse(json.dumps(_response), content_type="application/json")
 
 
 class Chemaxon_CTS_REST(CTS_REST):
@@ -118,7 +173,7 @@ class Chemaxon_CTS_REST(CTS_REST):
 	CTS REST endpoints, etc. for ChemAxon
 	"""
 	def __init__(self):
-		self.chemaxon_meta_info = {
+		self.meta_info = {
 			'metaInfo': {
 				'model': "chemaxon",
 				'collection': "qed",
@@ -130,63 +185,394 @@ class Chemaxon_CTS_REST(CTS_REST):
 					'type': "application/json",
 					'href': "https://qed.epa.gov/cts/rest/chemaxon"
 				},
-				'props': ['water_sol', 'ion_con', 'kow_no_ph', 'kow_wph']
+				'props': ['water_sol', 'ion_con', 'kow_no_ph', 'kow_wph'],
+				'availableProps': [
+					{
+						'prop': 'water_sol',
+						'units': 'mg/L',
+						'description': "water solubility"
+					},
+					{
+						'prop': 'ion_con',
+						'description': "pKa and pKa values"
+					},
+					{
+						'prop': 'kow_no_ph',
+						'units': "log",
+						'description': "Octanol/water partition coefficient",
+						'methods': ['KLOP', 'PHYS', 'VG']
+					},
+					{
+						'prop': 'kow_wph',
+						'units': "log",
+						'description': "pH-dependent octanol/water partition coefficient",
+						'methods': ['KLOP', 'PHYS', 'VG']
+					}
+				]
 			}
 		}
 
-	def getChemaxonREST(self):
-		"""
-		List chemaxon endpoints
-		"""
-		chemaxon_endpoints_response = self.chemaxon_meta_info
-		chemaxon_endpoints_response['links'] = [
-			{
-				'rel': "inputs",
-				'type': "application/json",
-				'href': "https://qed.epa.gov/cts/rest/chemaxon/inputs",
-				'description': "ChemAxon input schema",
-				'method': "POST",
-			},
-			{
-				'rel': "outputs",
-				'type': "application/json",
-				'href': "https://qed.epa.gov/cts/rest/chemaxon/outputs",
-				'description': "ChemAxon output schema",
-				'method': "POST"
-			},
-			{
-				'rel': "run",
-				'type': "application/json",
-				'href': "https://qed.epa.gov/cts/rest/chemaxon/run",
-				'description': "ChemAxon estimated values",
-				'method': "POST"
-			}
-
-		]
-		chemaxon_endpoints_response['props'] = jchem_calculator.JchemProperty().props
-		return HttpResponse(json.dumps(self.chemaxon_meta_info), content_type="application/json")
-
 	def getChemaxonInputs(self, request):
-		response = self.chemaxon_meta_info
-
 		chemical = request.POST.get('chemical')
-
-		# get molecular info and append to inputs object:
-		mol_info_response = json.loads(getChemicalEditorData(request).content)
-
-		response.update({
+		prop = request.POST.get('prop')
+		_response = self.meta_info
+		_response.update({
 			'inputs': {
-				'chemical': '',
-				'prop': '',
-				'method': '',
-				'ph': '',
-				# 'node': '',
+				'chemical': chemical,
+				'prop': prop,
 				'calc': "chemaxon",
 				'run_type': "rest",
 			}
 		})
+		if prop == 'kow_.format(calc)wph':
+			_response['inputs'].update({'ph': "7.4"})
+		return HttpResponse(json.dumps(_response), content_type="application/json")
 
-		return HttpResponse(json.dumps(response), content_type="application/json")
+	def runChemaxon(self, request):
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		ph = request.POST.get('ph')
+		run_type = request.POST.get('run_type')
+
+		# get molecular info and append to inputs object:
+		# mol_info_response = json.loads(getChemicalEditorData(request).content)
+
+		pchem_data = chemaxon_views.request_manager(request).content
+
+		_response = self.meta_info
+		_response.update({'data': json.loads(pchem_data)})
+
+		return HttpResponse(json.dumps(_response), content_type="application/json")
+
+
+class EPI_CTS_REST(CTS_REST):
+	"""
+	CTS REST endpoints, etc. for EPI Suite
+	"""
+	def __init__(self):
+		self.meta_info = {
+			'metaInfo': {
+				'model': "epi",
+				'collection': "qed",
+				'modelVersion': "4.11",
+				'description': "EPI Suite is a Windows-based suite of physical/chemical property and environmental fate estimation programs developed by EPA and Syracuse Research Corp. (SRC).",
+				'status': '',
+				'timestamp': jchem_rest.gen_jid(),
+				'url': {
+					'type': "application/json",
+					'href': "https://qed.epa.gov/cts/rest/epi"
+				},
+				'availableProps': [
+					{
+						'prop': 'melting_point',
+						'units': 'degC',
+						'description': "melting point"
+					},
+					{
+						'prop': 'boiling_point',
+						'units': 'degC',
+						'description': "boiling point"
+					},
+					{
+						'prop': 'water_sol',
+						'units': 'mg/L',
+						'description': "water solubility"
+					},
+					{
+						'prop': 'vapor_press',
+						'units': 'mmHg',
+						'description': "vapor pressure"
+					},
+					{
+						'prop': 'henrys_law_con',
+						'units': '(atm*m^3)/mol',
+						'description': "henry's law constant"
+					},
+					{
+						'prop': 'kow_no_ph',
+						'units': "log",
+						'description': "Octanol/water partition coefficient"
+					},
+					{
+						'prop': 'koc',
+						'units': "L/kg",
+						'description': "organic carbon partition coefficient"
+					}
+				]
+			}
+		}
+
+	def getEpiInputs(self, request):
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		_response = self.meta_info
+		_response.update({
+			'inputs': {
+				'chemical': chemical,
+				'prop': prop,
+				'calc': "epi",
+				'run_type': "rest",
+			}
+		})
+		return HttpResponse(json.dumps(_response), content_type="application/json")
+
+	def runEpi(self, request):
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		ph = request.POST.get('ph')
+		run_type = request.POST.get('run_type')
+
+		# get molecular info and append to inputs object:
+		# mol_info_response = json.loads(getChemicalEditorData(request).content)
+
+		pchem_data = epi_views.request_manager(request).content
+
+		_response = self.meta_info
+		_response.update({'data': json.loads(pchem_data)})
+
+		return HttpResponse(json.dumps(_response), content_type="application/json")
+
+
+class TEST_CTS_REST(CTS_REST):
+	"""
+	CTS REST endpoints, etc. for EPI Suite
+	"""
+	def __init__(self):
+		self.meta_info = {
+			'metaInfo': {
+				'model': "test",
+				'collection': "qed",
+				'modelVersion': "4.2.1",
+				'description': "The Toxicity Estimation Software Tool (TEST) allows users to easily estimate the toxicity of chemicals using QSARs methodologies.",
+				'status': '',
+				'timestamp': jchem_rest.gen_jid(),
+				'url': {
+					'type': "application/json",
+					'href': "https://qed.epa.gov/cts/rest/test"
+				},
+				'availableProps': [
+					{
+						'prop': 'melting_point',
+						'units': 'degC',
+						'description': "melting point",
+						'method': "FDAMethod"
+					},
+					{
+						'prop': 'boiling_point',
+						'units': 'degC',
+						'description': "boiling point",
+						'method': "FDAMethod"
+					},
+					{
+						'prop': 'water_sol',
+						'units': 'mg/L',
+						'description': "water solubility",
+						'method': "FDAMethod"
+					},
+					{
+						'prop': 'vapor_press',
+						'units': 'mmHg',
+						'description': "vapor pressure",
+						'method': "FDAMethod"
+					}
+				]
+			}
+		}
+
+	def getTestInputs(self, request):
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		_response = self.meta_info
+		_response.update({
+			'inputs': {
+				'chemical': chemical,
+				'prop': prop,
+				'calc': "test",
+				'run_type': "rest",
+			}
+		})
+		return HttpResponse(json.dumps(_response), content_type="application/json")
+
+
+class SPARC_CTS_REST(CTS_REST):
+	"""
+	CTS REST endpoints, etc. for EPI Suite
+	"""
+	def __init__(self):
+		self.meta_info = {
+			'metaInfo': {
+				'model': "sparc",
+				'collection': "qed",
+				'modelVersion': "",
+				'description': "SPARC Performs Automated Reasoning in Chemistry (SPARC) is a chemical property estimator developed by UGA and the US EPA",
+				'status': '',
+				'timestamp': jchem_rest.gen_jid(),
+				'url': {
+					'type': "application/json",
+					'href': "https://qed.epa.gov/cts/rest/sparc"
+				},
+				'availableProps': [
+					{
+						'prop': 'boiling_point',
+						'units': 'degC',
+						'description': "boiling point"
+					},
+					{
+						'prop': 'water_sol',
+						'units': 'mg/L',
+						'description': "water solubility"
+					},
+					{
+						'prop': 'vapor_press',
+						'units': 'mmHg',
+						'description': "vapor pressure"
+					},
+					{
+						'prop': 'mol_diss',
+						'units': 'cm^2/s',
+						'description': "molecular diffusivity"
+					},
+					{
+						'prop': 'ion_con',
+						'description': "pKa and pKa values"
+					},
+					{
+						'prop': 'henrys_law_con',
+						'units': '(atm*m^3)/mol',
+						'description': "henry's law constant"
+					},
+					{
+						'prop': 'kow_no_ph',
+						'units': "log",
+						'description': "octanol/water partition coefficient"
+					},
+					{
+						'prop': 'kow_wph',
+						'units': "log",
+						'description': "pH-dependent octanol/water partition coefficient"
+					}
+				]
+			}
+		}
+
+	def getSparcInputs(self, request):
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		_response = self.meta_info
+		_response.update({
+			'inputs': {
+				'chemical': chemical,
+				'prop': prop,
+				'calc': "sparc",
+				'run_type': "rest",
+			}
+		})
+		return HttpResponse(json.dumps(_response), content_type="application/json")
+
+	def runSparc(self, request):
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		ph = request.POST.get('ph')
+		run_type = request.POST.get('run_type')
+
+		# get molecular info and append to inputs object:
+		# mol_info_response = json.loads(getChemicalEditorData(request).content)
+
+		pchem_data = sparc_views.request_manager(request).content
+
+		_response = self.meta_info
+		_response.update({'data': json.loads(pchem_data)})
+
+		return HttpResponse(json.dumps(_response), content_type="application/json")
+
+
+class Measured_CTS_REST(CTS_REST):
+	"""
+	CTS REST endpoints, etc. for EPI Suite
+	"""
+	def __init__(self):
+		self.meta_info = {
+			'metaInfo': {
+				'model': "measured",
+				'collection': "qed",
+				'modelVersion': "EPI Suite 4.11",
+				'description': "Measured data from EPI Suite 4.11.",
+				'status': '',
+				'timestamp': jchem_rest.gen_jid(),
+				'url': {
+					'type': "application/json",
+					'href': "https://qed.epa.gov/cts/rest/measured"
+				},
+				'availableProps': [
+					{
+						'prop': 'melting_point',
+						'units': 'degC',
+						'description': "melting point",
+						'method': "FDAMethod"
+					},
+					{
+						'prop': 'boiling_point',
+						'units': 'degC',
+						'description': "boiling point"
+					},
+					{
+						'prop': 'water_sol',
+						'units': 'mg/L',
+						'description': "water solubility"
+					},
+					{
+						'prop': 'vapor_press',
+						'units': 'mmHg',
+						'description': "vapor pressure"
+					},
+					{
+						'prop': 'henrys_law_con',
+						'units': '(atm*m^3)/mol',
+						'description': "henry's law constant"
+					},
+					{
+						'prop': 'kow_no_ph',
+						'units': "log",
+						'description': "octanol/water partition coefficient"
+					},
+					{
+						'prop': 'koc',
+						'units': "L/kg",
+						'description': "organic carbon partition coefficient"
+					}
+				]
+			}
+		}
+
+	def getMeasuredInputs(self, request):
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		_response = self.meta_info
+		_response.update({
+			'inputs': {
+				'chemical': chemical,
+				'prop': prop,
+				'calc': "measured",
+				'run_type': "rest",
+			}
+		})
+		return HttpResponse(json.dumps(_response), content_type="application/json")
+
+	def runMeasured(self, request):
+		chemical = request.POST.get('chemical')
+		prop = request.POST.get('prop')
+		ph = request.POST.get('ph')
+		run_type = request.POST.get('run_type')
+
+		# get molecular info and append to inputs object:
+		# mol_info_response = json.loads(getChemicalEditorData(request).content)
+
+		pchem_data = measured_views.request_manager(request).content
+
+		_response = self.meta_info
+		_response.update({'data': json.loads(pchem_data)})
+
+		return HttpResponse(json.dumps(_response), content_type="application/json")
 
 
 def showSwaggerPage(request):
