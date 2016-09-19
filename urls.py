@@ -11,13 +11,8 @@ urlpatterns = patterns('',
     # url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
     (r'^cts/wstest/?$', 'REST.portal.test_sockets'),
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
-    # url(r'^cts/portal/?$', 'REST.portal.parseRequestByCalculator'),
     url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app
-    # url(r'^rest/cts/', include('REST.urls'))
     url(r'^cts/rest/', include('REST.urls'))
-    # url(r'^rest/cts/?$', 'REST.cts_rest.getCTSREST'),
-    # url(r'^rest/cts/docs/?$', 'REST.cts_rest.showSwaggerPage'),
-    # url(r'^rest/cts/chemaxon', include('chemaxon_cts.urls')),
 )
 
 # All view functions here must be in '/views/views.py'

@@ -17,24 +17,23 @@ urlpatterns = patterns('REST',
 	(r'^molecule/?$', 'cts_rest.getChemicalEditorData'),
 	(r'^speciation/?$', 'cts_rest.getChemicalEditorData'),
 
-	(r'^chemaxon/?$', 'views.getCalcEndpoints'),
-	(r'^chemaxon/inputs/?$', 'views.getChemaxonInputs'),
+	(r'^(?P<calc>.*?)/inputs/?$', 'views.getCalcInputs'),
+	(r'^(?P<calc>.*?)/run/?$', 'views.runCalc'),
+	(r'^(?P<endpoint>.*?)/?$', 'views.getCalcEndpoints'),
+
+	# (r'^chemaxon/inputs/?$', 'views.getChemaxonInputs'),
 	(r'^chemaxon/run/?$', 'views.runChemaxon'),
 
-	(r'^epi/?$', 'views.getCalcEndpoints'),
-	(r'^epi/inputs/?$', 'views.getEpiInputs'),
+	# (r'^epi/inputs/?$', 'views.getEpiInputs'),
 	(r'^epi/run/?$', 'views.runEpi'),
 
-	(r'^test/?$', 'views.getCalcEndpoints'),
-	(r'^test/inputs/?$', 'views.getTestInputs'),
+	# (r'^test/inputs/?$', 'views.getTestInputs'),
 	(r'^test/run/?$', 'views.runTest'),
 
-	(r'^sparc/?$', 'views.getCalcEndpoints'),
-	(r'^sparc/inputs/?$', 'views.getSparcInputs'),
+	# (r'^sparc/inputs/?$', 'views.getSparcInputs'),
 	(r'^sparc/run/?$', 'views.runSparc'),
 
-	(r'^measured/?$', 'views.getCalcEndpoints'),
-	(r'^measured/inputs/?$', 'views.getMeasuredInputs'),
+	# (r'^measured/inputs/?$', 'views.getMeasuredInputs'),
 	(r'^measured/run/?$', 'views.runMeasured'),	
 )
 

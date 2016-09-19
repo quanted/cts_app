@@ -29,35 +29,45 @@ def getCTSEndpoints(request):
 	return cts_obj.getCTSREST()
 
 
-def getCalcEndpoints(request):
+def getCalcEndpoints(request, endpoint=None):
 
-	url = request.path
+	cts_obj = cts_rest.CTS_REST()
 
-	if 'chemaxon' in url:
-		calc = 'chemaxon'
-	elif 'epi' in url:
-		calc = 'epi'
-	elif 'test' in url:
-		calc = 'test'
-	elif 'sparc' in url:
-		calc = 'sparc'
-	elif 'measured' in url:
-		calc = 'measured'
-	else: 
-		return HttpResponse(json.dumps({'error': "calc not recognized"}), content_type='application/json')
-
-	return cts_rest.CTS_REST().getCalcEndpoints(calc)
+	if not endpoint in cts_obj.endpoints:
+		return HttpResponse(json.dumps({'error': "endpoint not recognized"}), content_type='application/json')		
+	else:
+		return cts_rest.CTS_REST().getCalcEndpoints(endpoint)
 
 
-def getChemaxonInputs(request):
-	"""
-	ChemAxon input schema for running calculator
-	"""
-	chemaxon_obj = cts_rest.Chemaxon_CTS_REST()
+def getCalcInputs(request, calc=None):
+
 	request_params = json.loads(request.body)
-	chemaxon_request = HttpRequest()
-	chemaxon_request.POST = request_params  # need rest of POST, not just chemical
-	return chemaxon_obj.getChemaxonInputs(chemaxon_request)
+
+	prop, chemical = None, None
+
+	if 'prop' in request_params:
+		prop = request_params['prop']
+
+	if 'chemical' in request_params:
+		chemical = request_params['chemical']
+
+	try:
+		return cts_rest.CTS_REST().getCalcInputs(chemical, calc, prop)
+	except Exception as e:
+		return HttpResponse(json.dumps({'error': "{}".format(e)}), content_type='application/json')
+
+
+def runCalc(request, calc=None):
+
+	request_params = json.loads(request.body)
+	calc_request = HttpRequest()
+	calc_request.POST = request_params
+
+	try:
+		return cts_rest.CTS_REST().runCalc(calc, calc_request)
+	except Exception as e:
+		return HttpResponse(json.dumps({'error': "{}".format(e)}), content_type='application/json')
+
 
 
 def runChemaxon(request):
@@ -66,17 +76,6 @@ def runChemaxon(request):
 	chemaxon_request = HttpRequest()
 	chemaxon_request.POST = request_params
 	return chemaxon_obj.runChemaxon(chemaxon_request)
-
-
-def getEpiInputs(request):
-	"""
-	EPI Suite input schema for running calculator
-	"""
-	epi_obj = cts_rest.EPI_CTS_REST()
-	request_params = json.loads(request.body)
-	epi_request = HttpRequest()
-	epi_request.POST = request_params  # need rest of POST, not just chemical
-	return epi_obj.getEpiInputs(epi_request)
 
 
 def runEpi(request):
@@ -88,38 +87,6 @@ def runEpi(request):
 	epi_request = HttpRequest()
 	epi_request.POST = request_params  # need rest of POST, not just chemical
 	return epi_obj.runEpi(epi_request)
-
-
-def getMeasuredInputs(request):
-	"""
-	EPI Suite input schema for running calculator
-	"""
-	epi_obj = cts_rest.Measured_CTS_REST()
-	request_params = json.loads(request.body)
-	epi_request = HttpRequest()
-	epi_request.POST = request_params  # need rest of POST, not just chemical
-	return epi_obj.getMeasuredInputs(epi_request)
-
-
-def getSparcInputs(request):
-	"""
-	EPI Suite input schema for running calculator
-	"""
-	epi_obj = cts_rest.SPARC_CTS_REST()
-	request_params = json.loads(request.body)
-	sparc_request = HttpRequest()
-	sparc_request.POST = request_params  # need rest of POST, not just chemical
-	return epi_obj.getSparcInputs(sparc_request)
-
-def getTestInputs(request):
-	"""
-	EPI Suite input schema for running calculator
-	"""
-	epi_obj = cts_rest.SPARC_CTS_REST()
-	request_params = json.loads(request.body)
-	test_request = HttpRequest()
-	test_request.POST = request_params  # need rest of POST, not just chemical
-	return epi_obj.getTestInputs(test_request)
 
 
 def runMeasured(request):

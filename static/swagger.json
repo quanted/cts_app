@@ -5,7 +5,7 @@
         "description": "Endpoints for p-chem, speciation, and transformation data.",
         "version": "1.0.0"
     },
-    "host": "134.67.114.1",
+    "host": "localhost:8000",
     "schemes": [
         "http",
         "https"
@@ -497,6 +497,103 @@
                     }
                 }
             }
+        },
+        "/metabolizer": {
+            "get": {
+                "summary": "Transformation pathways predictions.",
+                "description": "This endpoint makes transformation pathways predictions and is a ChemAxon metabolizer library wrapper.\n",
+                "tags": [
+                    "metabolizer"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Metabolizer REST endpoints.",
+                        "schema": {
+                            "$ref": "#/definitions/MetabolizerInputs"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/metabolizer/inputs": {
+            "post": {
+                "summary": "Metabolizer input schema",
+                "description": "This endpoint returns the inputs used to\nget estimated values from Metabolizer.\n",
+                "tags": [
+                    "metabolizer"
+                ],
+                "parameters": [
+                    {
+                        "name": "inputs",
+                        "in": "body",
+                        "description": "Inputs for Metabolizer p-chem property request.",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "chemical": {
+                                    "type": "string",
+                                    "default": "CCCC"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "metabolizer input schema",
+                        "schema": {
+                            "$ref": "#/definitions/MetabolizerInputsResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/metabolizer/run": {
+            "post": {
+                "summary": "Run metabolizer calculator for p-chem data.",
+                "description": "This endpoint runs metabolizer and returns p-chem data\nfrom requested p-chem property.\n",
+                "tags": [
+                    "metabolizer"
+                ],
+                "parameters": [
+                    {
+                        "name": "inputs",
+                        "in": "body",
+                        "description": "Outputs for Metabolizer p-chem property request.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/MetabolizerInputs"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Run metabolizer calculator for p-chem data.",
+                        "schema": {
+                            "$ref": "#/definitions/MetabolizerOutput"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -630,6 +727,32 @@
                     "type": "string",
                     "default": "water_sol",
                     "description": "An available p-chem property."
+                }
+            }
+        },
+        "MetabolizerInputs": {
+            "type": "object",
+            "properties": {
+                "structure": {
+                    "type": "string",
+                    "default": "CCCC",
+                    "description": "Chemical for metabolizer in smiles format."
+                },
+                "generationLimit": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Number of generations for structure's transformation products."
+                },
+                "transformationLibraries": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "hydrolysis",
+                        "abiotic_reduction",
+                        "human_biotransformation"
+                    ]
                 }
             }
         },
@@ -778,6 +901,17 @@
                 }
             }
         },
+        "MetabolizerInputsResponse": {
+            "type": "object",
+            "properties": {
+                "inputs": {
+                    "$ref": "#/definitions/MetabolizerInputs"
+                },
+                "metaInfo": {
+                    "$ref": "#/definitions/MetaInfo"
+                }
+            }
+        },
         "CalcOutputs": {
             "type": "object",
             "properties": {
@@ -806,6 +940,25 @@
                         },
                         "node": {
                             "$ref": "#/definitions/Molecule"
+                        }
+                    }
+                }
+            }
+        },
+        "MetabolizerOutput": {
+            "type": "object",
+            "properties": {
+                "metaInfo": {
+                    "$ref": "#/definitions/MetaInfo"
+                },
+                "outputs": {
+                    "type": "object",
+                    "properties": {
+                        "chemical": {
+                            "type": "string"
+                        },
+                        "tree": {
+                            "type": "string"
                         }
                     }
                 }
