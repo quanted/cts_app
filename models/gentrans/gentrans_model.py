@@ -13,9 +13,9 @@ import json
 
 
 class gentrans(object):
-    def __init__(self, run_type, chem_struct, smiles, name, formula, mass,
-                 abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, gen_limit,
-                 pop_limit, likely_limit):
+    def __init__(self, run_type, chem_struct, smiles, orig_smiles, iupac, formula, mass,
+                 exact_mass, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
+                 gen_limit, pop_limit, likely_limit):
 
         self.jid = jchem_rest.gen_jid()  # get time of run
         self.run_type = run_type  # single or batch
@@ -23,9 +23,11 @@ class gentrans(object):
         # Chemical Structure
         self.chem_struct = chem_struct  # chemical structure
         self.smiles = smiles
-        self.name = name
+        self.orig_smiles = orig_smiles
+        self.iupac = iupac
         self.formula = formula
         self.mass = '{} g/mol'.format(mass)
+        self.exact_mass = '{} g/mol'.format(exact_mass)
 
         # Reaction Libraries
         self.abiotic_hydrolysis = abiotic_hydrolysis  # values: on or None
@@ -92,7 +94,7 @@ class gentrans(object):
             'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
             'chem_struct': self.chem_struct,
             'smiles': self.smiles,
-            'name': self.name,
+            'iupac': self.iupac,
             'formula': self.formula,
             'mass': self.mass
         }

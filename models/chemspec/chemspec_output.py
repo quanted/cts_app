@@ -15,9 +15,10 @@ def chemspecOutputPage(request):
     chemStruct = request.POST.get('chem_struct')
     smiles = request.POST.get('smiles')
     orig_smiles = request.POST.get('orig_smiles')
-    name = request.POST.get('iupac')
+    iupac = request.POST.get('iupac')
     formula = request.POST.get('formula')
     mass = request.POST.get('mass')
+    exact_mass = request.POST.get('exactmass')
 
     # Checmial Speciation tab - checkboxes
     get_pka = request.POST.get('get_pka')
@@ -37,8 +38,8 @@ def chemspecOutputPage(request):
     
     sterMaxNumStructs = request.POST.get('stereoisomers_maxNoOfStructures')
 
-    chemspec_obj = chemspec_model.chemspec(run_type, chemStruct, smiles, orig_smiles, name, formula, 
-                    mass, get_pka, get_taut, get_stereo, pKaDecs, pKaPhLow, 
+    chemspec_obj = chemspec_model.chemspec(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
+                    mass, exact_mass, get_pka, get_taut, get_stereo, pKaDecs, pKaPhLow, 
                     pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
                     tautMaxNumStructs, tautMaxNumStructsPh, sterMaxNumStructs)
 

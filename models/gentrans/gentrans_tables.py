@@ -53,26 +53,49 @@ def getdjtemplate():
 	return dj_template
 
 
+# def getInputTemplate():
+# 	input_template = """
+# 	<th colspan="2" class="alignLeft">{{heading}}</th>
+# 	{% for label, value in data.items %}
+# 		<tr>
+# 		<td>{{label}}</td> <td>{{value|default:"none"}}</td>
+# 		</tr>
+# 	{% endfor %}
+# 	"""
+# 	return input_template
 def getInputTemplate():
-	input_template = """
-	<th colspan="2" class="alignLeft">{{heading}}</th>
-	{% for label, value in data.items %}
-		<tr>
-		<td>{{label}}</td> <td>{{value|default:"none"}}</td>
-		</tr>
-	{% endfor %}
-	"""
-	return input_template
+    input_template = """
+    <th colspan="2" class="alignLeft">{{heading}}</th>
+    {% for keyval in data %}
+        {% for label, value in keyval.items %}
+            <tr>
+            <td>{{label}}</td> <td>{{value|default:"none"}}</td>
+            </tr>
+        {% endfor %}
+    {% endfor %}
+    """
+    return input_template
 
 
-def getStructInfo(gentrans_obj):
-	data = {
-		'SMILES': gentrans_obj.smiles, 
-		'IUPAC': gentrans_obj.name, 
-		'Formula': gentrans_obj.formula, 
-		'Mass': gentrans_obj.mass
-	}
-	return data
+# def getStructInfo(gentrans_obj):
+# 	data = {
+# 		'SMILES': gentrans_obj.smiles, 
+# 		'IUPAC': gentrans_obj.iupac, 
+# 		'Formula': gentrans_obj.formula, 
+# 		'Mass': gentrans_obj.mass
+# 	}
+# 	return data
+def getInputData(pchemprop_obj):
+    data = [
+        {'Entered chemical': pchemprop_obj.chem_struct},
+        {'SMILES': pchemprop_obj.smiles},
+        {'Initial SMILES': pchemprop_obj.orig_smiles},
+        {'IUPAC': pchemprop_obj.iupac}, 
+        {'Formula': pchemprop_obj.formula}, 
+        {'Mass': pchemprop_obj.mass},
+        {'Exact Mass': pchemprop_obj.exact_mass}
+    ]
+    return data
 
 
 def getReactPathSimData(gentrans_obj):
@@ -83,12 +106,12 @@ def getReactPathSimData(gentrans_obj):
 		libs += item + ", "
 	libs = libs[:-2]
 
-	data = { 
-		'Libraries': libs, 
-		'Generation Limit': gentrans_obj.gen_limit, 
-		'Population Limit': gentrans_obj.pop_limit, 
-		'Likely Limit': gentrans_obj.likely_limit
-	}
+	data = [ 
+		{'Libraries': libs}, 
+		{'Generation Limit': gentrans_obj.gen_limit}, 
+		# {'Population Limit': gentrans_obj.pop_limit},
+		# {'Likely Limit': gentrans_obj.likely_limit}
+	]
 	return data
 
 
@@ -138,7 +161,7 @@ def table_inputs(gentrans_obj):
 	<div class="out_">
 	<table class="ctsTableStylin" id="inputsTable">
 	"""
-	html += inTmpl.render(Context(dict(data=getStructInfo(gentrans_obj), heading="Molecular Information")))
+	html += inTmpl.render(Context(dict(data=getInputData(gentrans_obj), heading="Molecular Information")))
 	html += inTmpl.render(Context(dict(data=getReactPathSimData(gentrans_obj), heading="Reaction Pathway Simulator")))
 	html += """
 	</table>

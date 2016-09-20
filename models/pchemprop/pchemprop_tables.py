@@ -8,14 +8,16 @@ import json
 
 
 
-
 def getInputData(pchemprop_obj):
-    data = {
-        'SMILES': pchemprop_obj.smiles,
-        'IUPAC': pchemprop_obj.name,
-        'Formula': pchemprop_obj.formula,
-        'Mass': pchemprop_obj.mass
-    }
+    data = [
+        {'Entered chemical': pchemprop_obj.chem_struct},
+        {'SMILES': pchemprop_obj.smiles},
+        {'Initial SMILES': pchemprop_obj.orig_smiles},
+        {'IUPAC': pchemprop_obj.name}, 
+        {'Formula': pchemprop_obj.formula}, 
+        {'Mass': pchemprop_obj.mass},
+        {'Exact Mass': pchemprop_obj.exact_mass}
+    ]
     return data
 
 
@@ -36,10 +38,12 @@ def getInputTemplate():
     input_template = """
     <table class="ctsTableStylin">
     <th colspan="2" class="alignLeft">{{heading}}</th>
-    {% for label, value in data.items %}
-        <tr>
-        <td>{{label}}</td> <td>{{value|default:"none"}}</td>
-        </tr>
+    {% for keyval in data %}
+        {% for label, value in keyval.items %}
+            <tr>
+            <td>{{label}}</td> <td>{{value|default:"none"}}</td>
+            </tr>
+        {% endfor %}
     {% endfor %}
     </table>
     """

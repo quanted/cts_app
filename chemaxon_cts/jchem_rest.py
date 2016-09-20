@@ -408,6 +408,7 @@ class DataStructures:
 					"formula": "chemicalTerms(formula)",
 					"iupac": "chemicalTerms(name)",
 					"mass": "chemicalTerms(mass)",
+					"exactMass": "chemicalTerms(exactMass)",
 					"smiles": "chemicalTerms(molString('smiles'))",
 				},
 				"parameters": {

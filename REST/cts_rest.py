@@ -43,6 +43,7 @@ class Molecule(object):
 		self.iupac = ''
 		self.mass = ''
 		self.structureData = ''
+		self.exactMass = ''
 
 	def createMolecule(self, chemical, orig_smiles, chem_details_response):
 		"""

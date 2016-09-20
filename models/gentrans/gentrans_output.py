@@ -11,9 +11,11 @@ def gentransOutputPage(request):
     # Chemical Editor tab fields
     chemStruct = request.POST.get('chem_struct')
     smiles = request.POST.get('smiles')
-    name = request.POST.get('name')
+    iupac = request.POST.get('iupac')
     formula = request.POST.get('formula')
     mass = request.POST.get('mass')
+    orig_smiles = request.POST.get('orig_smiles')
+    exact_mass = request.POST.get('exactmass')
     
     # Reaction Pathway Simulator tab fields
     abioticHydrolysis = request.POST.get('abiotic_hydrolysis')
@@ -44,7 +46,7 @@ def gentransOutputPage(request):
     # koc = request.POST.get('koc')
 
     # get pchemprop results for gentrans
-    # gentransOutputPage.pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
+    # gentransOutputPage.pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, iupac, formula, 
     #                     mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint, 
     #                     waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
     #                     kowPh, koc)
@@ -52,18 +54,18 @@ def gentransOutputPage(request):
     # NOTE: pchemprop_obj appended to gentrans_obj for computing pchemprops
     # for parent molecule on page submit event. metabolite pchemprops can be 
     # obtained on the UI via scripts within cts_gentrans_tree.html 
-    # pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, name, formula, 
+    # pchemprop_obj = pchemprop_model.pchemprop("single", chemStruct, smiles, iupac, formula, 
     #                     mass, chemaxon, epi, test, sparc, meltingPoint, boilingPoint, 
     #                     waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph, 
     #                     kowPh, koc)
 
     # get gentrans results
-    # gentrans_obj = gentrans_model.gentrans("single", chemStruct, smiles, name, formula, 
+    # gentrans_obj = gentrans_model.gentrans("single", chemStruct, smiles, iupac, formula, 
     #                                 mass, abioticHydrolysis, abioticRecuction,
     #                                 mammMetabolism, genLimit, popLimit, likelyLimit, pchemprop_obj)
 
-    gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, name, formula, 
-                                    mass, abioticHydrolysis, abioticRecuction,
+    gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
+                                    mass, exact_mass, abioticHydrolysis, abioticRecuction,
                                     mammMetabolism, genLimit, popLimit, likelyLimit)
 
     return gentrans_obj

@@ -122,8 +122,8 @@ $(document).ready(function() {
 		// 	var chemical = batch_chems[chem];
 
 		$.ajax({
-		    // url: '/cts/rest/molecule',
-		    url: '/rest/cts/molecule',
+		    url: '/cts/rest/molecule',
+		    // url: '/rest/cts/molecule',
 		    type: 'POST',
 		    data: {'chemical': chem},
 		    dataType: 'json',

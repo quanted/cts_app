@@ -106,12 +106,15 @@ function getChemDetails(chemical_obj, callback) {
 
 function populateChemEditDOM(data) {
   //Populates Results textboxes with data:
-  $('#id_chem_struct').val(data["smiles"]); //Enter SMILES txtbox
-  $('#molecule').val(data["smiles"]); //SMILES string txtbox - results table
-  $('#orig-molecule').val(data['orig_smiles']);
-  $('#IUPAC').val(data["iupac"]); //IUPAC txtbox - results table
+  $('#id_chem_struct').val(data["chemical"]); //Enter SMILES txtbox
+
+  $('#chemical').val(data['chemical']);
+  $('#smiles').val(data["smiles"]); //SMILES string txtbox - results table
+  $('#origsmiles').val(data['orig_smiles']);
+  $('#iupac').val(data["iupac"]); //IUPAC txtbox - results table
   $('#formula').val(data["formula"]); //Formula txtbox - results table
-  $('#weight').val(data["mass"]); //Mass txtbox - results table
+  $('#mass').val(data["mass"]); //Mass txtbox - results table
+  $('#exactmass').val(data['exactMass']);
 
   marvinSketcherInstance.importStructure("mrv", data.structureData.structure);
 

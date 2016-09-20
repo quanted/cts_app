@@ -11,7 +11,7 @@ from REST import cts_rest
 
 
 class chemspec(object):
-    def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass, get_pka, get_taut,
+    def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass, exact_mass, get_pka, get_taut,
                  get_stereo, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
                  isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
@@ -26,6 +26,7 @@ class chemspec(object):
         self.name = name
         self.formula = formula
         self.mass = "{} g/mol".format(mass)
+        self.exact_mass = "{} g/mol".format(exact_mass)
 
         # Checkboxes:
         self.get_pka = cts_rest.booleanize(get_pka)  # convert 'on'/'off' to bool

@@ -181,7 +181,8 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 						new_data_obj.update({
 							'calc': calc,
 						    'prop': prop,
-						    'chemical': chemical
+						    'chemical': chemical,
+						    'node': node
 						})
 
 						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
