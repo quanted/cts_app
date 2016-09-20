@@ -533,7 +533,7 @@ function getMolecularInfo(node) {
     else {
         // add mol info to node.data.molecularInfo:
         $.ajax({
-            // url: '/cts/rest/molecule',
+            // url: '/api/cts/molecule',
             url: '/rest/cts/molecule',
             type: 'POST',
             data: {'chemical': node.data.smiles},

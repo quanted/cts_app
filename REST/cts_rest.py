@@ -81,7 +81,7 @@ class CTS_REST(object):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "http://qedinternal.epa.gov/cts/rest"
+					'href': "http://qedinternal.epa.gov/api/cts"
 				}
 			},
 		}
@@ -89,48 +89,48 @@ class CTS_REST(object):
 			{
 				'rel': "episuite",
 				'type': "application/json",
-				'href': "http://qedinternal.epa.gov/cts/rest/episuite"
+				'href': "http://qedinternal.epa.gov/api/cts/episuite"
 			},
 			{
 				'rel': "chemaxon",
 				'type': "application/json",
-				'href': "http://qedinternal.epa.gov/cts/rest/chemaxon"
+				'href': "http://qedinternal.epa.gov/api/cts/chemaxon"
 			},
 			{
 				'rel': "sparc",
 				'type': "application/json",
-				'href': "http://qedinternal.epa.gov/cts/rest/sparc"
+				'href': "http://qedinternal.epa.gov/api/cts/sparc"
 			},
 			{
 				'rel': "test",
 				'type': "application/json",
-				'href': "http://qedinternal.epa.gov/cts/rest/test"
+				'href': "http://qedinternal.epa.gov/api/cts/test"
 			},
 			{
 				'rel': "metabolizer",
 				'type': "application/json",
-				'href': "http://qedinternal.epa.gov/cts/rest/metabolizer"
+				'href': "http://qedinternal.epa.gov/api/cts/metabolizer"
 			}
 		]
 		self.calc_links = [
 			{
 				'rel': "inputs",
 				'type': "application/json",
-				'href': "http://qedinternal.epa.gov/cts/rest/{}/inputs",
+				'href': "http://qedinternal.epa.gov/api/cts/{}/inputs",
 				'description': "ChemAxon input schema",
 				'method': "POST",
 			},
 			{
 				'rel': "outputs",
 				'type': "application/json",
-				'href': "http://qedinternal.epa.gov/cts/rest/{}/outputs",
+				'href': "http://qedinternal.epa.gov/api/cts/{}/outputs",
 				'description': "ChemAxon output schema",
 				'method': "POST"
 			},
 			{
 				'rel': "run",
 				'type': "application/json",
-				'href': "http://qedinternal.epa.gov/cts/rest/{}/run",
+				'href': "http://qedinternal.epa.gov/api/cts/{}/run",
 				'description': "ChemAxon estimated values",
 				'method': "POST"
 			}
@@ -257,7 +257,7 @@ class Chemaxon_CTS_REST(CTS_REST):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "http://qedinternal.epa.gov/cts/rest/chemaxon"
+					'href': "http://qedinternal.epa.gov/api/cts/chemaxon"
 				},
 				'props': ['water_sol', 'ion_con', 'kow_no_ph', 'kow_wph'],
 				'availableProps': [
@@ -314,7 +314,7 @@ class EPI_CTS_REST(CTS_REST):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "http://qedinternal.epa.gov/cts/rest/epi"
+					'href': "http://qedinternal.epa.gov/api/cts/epi"
 				},
 				'availableProps': [
 					{
@@ -388,7 +388,7 @@ class TEST_CTS_REST(CTS_REST):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "http://qedinternal.epa.gov/cts/rest/test"
+					'href': "http://qedinternal.epa.gov/api/cts/test"
 				},
 				'availableProps': [
 					{
@@ -435,7 +435,7 @@ class SPARC_CTS_REST(CTS_REST):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "http://qedinternal.epa.gov/cts/rest/sparc"
+					'href': "http://qedinternal.epa.gov/api/cts/sparc"
 				},
 				'availableProps': [
 					{
@@ -513,7 +513,7 @@ class Measured_CTS_REST(CTS_REST):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "http://qedinternal.epa.gov/cts/rest/measured"
+					'href': "http://qedinternal.epa.gov/api/cts/measured"
 				},
 				'availableProps': [
 					{
@@ -588,7 +588,7 @@ class Metabolizer_CTS_REST(CTS_REST):
 				'timestamp': jchem_rest.gen_jid(),
 				'url': {
 					'type': "application/json",
-					'href': "http://qedinternal.epa.gov/cts/rest/metabolizer"
+					'href': "http://qedinternal.epa.gov/api/cts/metabolizer"
 				},
 
 			}

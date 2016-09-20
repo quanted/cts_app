@@ -20,21 +20,6 @@ urlpatterns = patterns('REST',
 	(r'^(?P<calc>.*?)/inputs/?$', 'views.getCalcInputs'),
 	(r'^(?P<calc>.*?)/run/?$', 'views.runCalc'),
 	(r'^(?P<endpoint>.*?)/?$', 'views.getCalcEndpoints'),
-
-	# (r'^chemaxon/inputs/?$', 'views.getChemaxonInputs'),
-	(r'^chemaxon/run/?$', 'views.runChemaxon'),
-
-	# (r'^epi/inputs/?$', 'views.getEpiInputs'),
-	(r'^epi/run/?$', 'views.runEpi'),
-
-	# (r'^test/inputs/?$', 'views.getTestInputs'),
-	(r'^test/run/?$', 'views.runTest'),
-
-	# (r'^sparc/inputs/?$', 'views.getSparcInputs'),
-	(r'^sparc/run/?$', 'views.runSparc'),
-
-	# (r'^measured/inputs/?$', 'views.getMeasuredInputs'),
-	(r'^measured/run/?$', 'views.runMeasured'),	
 )
 
 # 404 Error view (file not found)

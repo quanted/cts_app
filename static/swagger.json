@@ -10,7 +10,7 @@
         "http",
         "https"
     ],
-    "basePath": "/cts/rest",
+    "basePath": "/api/cts",
     "produces": [
         "application/json",
         "application/x-www-form-urlencoded"

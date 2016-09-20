@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     (r'^cts/wstest/?$', 'REST.portal.test_sockets'),
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
     url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app
-    url(r'^cts/rest/', include('REST.urls'))
+    url(r'^api/cts/', include('REST.urls'))
 )
 
 # All view functions here must be in '/views/views.py'
