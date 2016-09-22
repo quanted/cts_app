@@ -108,7 +108,7 @@ def output_pchem_table(pchemprop_obj):
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "time": pchemprop_obj.jid,
                                     "kow_ph": kow_ph,
-                                    "structure": mark_safe(pchemprop_obj.chem_struct),
+                                    "structure": mark_safe(pchemprop_obj.smiles),
                                     "name": mark_safe(pchemprop_obj.name),
                                     "mass": pchemprop_obj.mass,
                                     "formula": pchemprop_obj.formula,
