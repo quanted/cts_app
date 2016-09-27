@@ -588,7 +588,7 @@ function addImageToMolInfo(node) {
 
 
 function buildMolInfoTable(molTable, node, data) {
-    var acceptedKeys = ['generation', 'smiles', 'mass', 'name', 'formula', 'iupac', 'routes'];
+    var acceptedKeys = ['generation', 'smiles', 'mass', 'name', 'formula', 'iupac', 'routes', 'exactMass'];
 
     // add genKey and routes from node to data:
     data['generation'] = node.data.genKey;

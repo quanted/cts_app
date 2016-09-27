@@ -417,6 +417,7 @@ def wrap_molecule(propDict, height, width, scale):
     iupac = propDict['iupac']
     mass = "{} g/mol".format(propDict['mass'])
     smiles = propDict['smiles']
+    exactMass = "{} g/mol".format(propDict['exactMass'])
 
 
     # call nodeWrapper again with 'png' image format and add it to infoDict
@@ -431,6 +432,7 @@ def wrap_molecule(propDict, height, width, scale):
         "iupac": iupac,
         "mass": mass,
         "smiles": smiles,
+        "exactMass": exactMass
         # 'pdf_image': pdf_image
     }
 
@@ -445,7 +447,14 @@ def wrap_molecule(propDict, height, width, scale):
     """
 
     # this builds the larger-image popup:
-    wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key, 'Molecular Information') # popup table image
+
+    # the Molecular/Structure class/object needs to be used as well
+    # as its location in CTS considered. Is it being in REST make sense?
+    # the following list needs to be in that class:
+    mol_props = ['formula', 'iupac', 'mass', 'smiles', 'exactMass']
+
+    # wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key, 'Molecular Information') # popup table image
+    wrappedDict = data_walks.popupBuilder(infoDict, mol_props, key, 'Molecular Information') # popup table image
     html += '<div class="tooltiptext ' + iupac + '">'
     html += wrappedDict['html']
     html += '</div>'

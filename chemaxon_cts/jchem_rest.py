@@ -217,7 +217,7 @@ def getStructInfo(structure):
 	request = requests.Request(data={"chemical": structure, "addH": True})
 	response = getChemDetails(request)
 	structDict = json.loads(response.content)
-	infoDictKeys = ['formula', 'iupac', 'mass', 'smiles']
+	infoDictKeys = ['formula', 'iupac', 'mass', 'smiles','exactMass']
 	infoDict = {key: None for key in infoDictKeys}  # init dict with infoDictKeys and None vals
 	struct_root = {}  # root of data in structInfo
 	if 'data' in structDict:
@@ -226,6 +226,7 @@ def getStructInfo(structure):
 		infoDict.update({"iupac": struct_root['iupac']})
 		infoDict.update({"mass": struct_root['mass']})
 		infoDict.update({"smiles": struct_root['smiles']})
+		infoDict.update({'exactMass': struct_root['exactMass']})
 	return infoDict
 
 

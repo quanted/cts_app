@@ -30,7 +30,7 @@ def recursive(jsonStr, gen_limit):
 
 
 metID = 0  # unique id for each node
-metabolite_keys = ['smiles', 'formula', 'iupac', 'mass', 'accumulation', 'production', 'transmissivity', 'generation', 'routes']
+metabolite_keys = ['smiles', 'formula', 'iupac', 'mass', 'accumulation', 'production', 'transmissivity', 'generation', 'routes', 'exactMass']
 image_scale = 50
 
 def traverse(root, gen_limit):
@@ -215,7 +215,11 @@ def popupBuilder(root, paramKeys, molKey=None, header=None, isProduct=False):
 
             # Convert other types (e.g., float, int) to string
             if not isinstance(value, unicode) and not (isinstance(value, str)):
-                value = str(round(float(value), 3))
+                
+                if key == 'exactMass':
+                    value = str(value)
+                else:
+                    value = str(round(float(value), 3))
             # value = str(value)
 
             dataProps[key] = value

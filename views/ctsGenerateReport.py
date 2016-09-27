@@ -27,7 +27,7 @@ def parsePOST(request):
 
     if 'gentrans' in request.path:
 
-        headings = ['genKey', 'smiles', 'iupac', 'formula', 'mass']
+        headings = ['genKey', 'smiles', 'iupac', 'formula', 'mass', 'exactMass', 'routes']
         calcs = ['chemaxon', 'epi', 'test', 'sparc', 'measured']
         checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
         products = pdf_json['nodes']
