@@ -135,7 +135,8 @@ def getColor(value, default=Color(1,1,1)):
     if isinstance(value, Color):
         return value
     value = str(value).strip().lower()
-    if value == "transparent" or value == "none":
+    if value == "transparent" or value == "none" or value == None:
+        logging.info("using default color")
         return default
     if value in COLOR_BY_NAME:
         return COLOR_BY_NAME[value]

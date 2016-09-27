@@ -188,6 +188,11 @@ def pdfReceiver(request, model=''):
     # else:
     #     options = {'orientation': 'Portrait'}
 
+
+
+    # would putting the below code in a finally not trigger the error page????
+
+
     jid = gen_jid()  # create timestamp
     response = HttpResponse(packet.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
