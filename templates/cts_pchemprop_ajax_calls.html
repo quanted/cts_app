@@ -102,8 +102,8 @@ function buildCheckedCalcsAndProps () {
 function connectToSocket() {
 
     if (typeof io !== 'undefined') {
-        socket = io.connect("localhost", {port: 4000, 'force new connection': true});
-        // socket = io.connect('http://134.67.114.1', {'force new connection': true});
+        // socket = io.connect("localhost", {port: 4000, 'force new connection': true});
+        socket = io.connect('http://134.67.114.1', {'force new connection': true});
     }
     else {
         socket = null;

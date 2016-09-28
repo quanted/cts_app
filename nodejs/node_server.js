@@ -105,8 +105,8 @@ io.sockets.on('connection', function (socket) {
 function passRequestToCTS (values) {
     var options = {
         host: 'localhost',
-        // port: 8081,  // this along with localhost is for cgi server 1
-        port: 8000,
+        port: 8081,  // this along with localhost is for cgi server 1
+        // port: 8000,
         path: '/cts/portal',
         method: 'POST',
         headers: {
