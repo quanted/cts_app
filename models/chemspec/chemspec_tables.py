@@ -13,6 +13,7 @@ import json
 from StringIO import StringIO
 from django.utils.safestring import mark_safe
 from models.gentrans import data_walks
+import os
 
 
 # image sizes for jchem ws structures:
@@ -163,8 +164,8 @@ def timestamp(chemspec_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div id="timestamp" class="out_">
-        <b>Chemical Speciation - Version 1.0 (Beta)<br>
-    """
+        <b>Chemical Speciation - Version {} (Beta)<br>
+    """.format(os.environ['CTS_VERSION'])
     html += st
     html += " (EST)</b>"
     html += """

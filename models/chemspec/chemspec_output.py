@@ -4,10 +4,8 @@ import logging
 
 @require_POST
 def chemspecOutputPage(request):
-    logging.info("is the require_POST messing everthing up")
     import chemspec_model
 
-    logging.info("Request POST coming into chemspec output: {}".format(request.POST))
 
     run_type = request.POST.get('run_type')
 

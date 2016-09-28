@@ -36,7 +36,8 @@ os.environ.update({
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',         # SPARC rest server (external)
     'wkhtmltopdf': PROJECT_ROOT + '/wkhtmltopdf/linux/wkhtmltopdf',
     'PROJECT_PATH': PROJECT_ROOT,
-    'SITE_SKIN': ''                          # Leave empty ('') for default skin, 'EPA' for EPA skin
+    'SITE_SKIN': '',                          # Leave empty ('') for default skin, 'EPA' for EPA skin
+    'CTS_VERSION': '1.3.29'
 })
 
 # Quick-start development settings - unsuitable for production

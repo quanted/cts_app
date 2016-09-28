@@ -14,6 +14,7 @@ from models.pchemprop import pchemprop_parameters
 from models.pchemprop import pchemprop_tables
 # import importlib
 import gentrans_output
+import os
 
 
 def getheaderpvu():
@@ -178,8 +179,8 @@ def timestamp(gentrans_obj="", batch_jid=""):
 		st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 	html="""
 	<div class="out_" id="timestamp">
-		<b>Generate Transformation Pathways Version 1.0</a> (Beta)<br>
-	"""
+		<b>Generate Transformation Pathways Version {}</a> (Beta)<br>
+	""".format(os.environ['CTS_VERSION'])
 	html = html + st
 	html = html + " (EST)</b>"
 	html = html + """

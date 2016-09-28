@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 import logging
 import pchemprop_parameters
 import json
+import os
 
 
 
@@ -145,8 +146,8 @@ def timestamp(pchemprop_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div class="out_">
-        <b>Calculate P-Chem Properties Version 1.0</a> (Beta)<br>
-    """
+        <b>Calculate P-Chem Properties Version {}</a> (Beta)<br>
+    """.format(os.environ['CTS_VERSION'])
     html = html + st
     html = html + " (EST)</b>"
     html = html + """
