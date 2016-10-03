@@ -19,7 +19,8 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.chem_struct = request.POST.get('chem_struct')
 
     pchemprop_obj.smiles = request.POST.get('smiles')
-    pchemprop_obj.iupac = request.POST.get('iupac')
+    # pchemprop_obj.iupac = request.POST.get('iupac')
+    pchemprop_obj.name = request.POST.get('iupac')
     pchemprop_obj.formula = request.POST.get('formula')
     pchemprop_obj.mass = request.POST.get('mass')
     pchemprop_obj.orig_smiles = request.POST.get('orig_smiles')

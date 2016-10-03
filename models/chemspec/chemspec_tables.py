@@ -57,7 +57,7 @@ def getMolTblData(chemspec_obj):
         {'IUPAC': chemspec_obj.name}, 
         {'Formula': chemspec_obj.formula}, 
         {'Mass': chemspec_obj.mass},
-        {'Exact Mass': chemspec_obj.exact_mass}
+        {'Exact Mass': chemspec_obj.exactMass}
     ]
     return data
 

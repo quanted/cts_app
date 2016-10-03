@@ -31,7 +31,8 @@ class CSV(object):
 			self.model = model  # model name
 		else:
 			raise KeyError("Model - {} - not accepted..".format(model))
-		self.molecular_info = ['smiles', 'iupac', 'formula', 'mass']  # original user sructure
+		# self.molecular_info = ['smiles', 'iupac', 'formula', 'mass']  # original user sructure
+		self.molecular_info = ['smiles', 'iupac', 'formula', 'mass', 'exactMass']  # original user sructure
 
 	def parseToCSV(self, run_data):
 

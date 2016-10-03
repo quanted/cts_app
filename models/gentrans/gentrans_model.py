@@ -42,12 +42,13 @@ class gentrans(object):
         # self.pchemprop_obj = pchemprop_obj # pchemprop object with inputs
 
         # Known keys for metabolizer on pnnl server (11-5-14)
-        metabolizerList = ["hydrolysis", "abiotic_reduction", "human_biotransformation"]
+        # metabolizerList = ["hydrolysis", "abiotic_reduction", "human_biotransformation"]
+        metabolizerList = ["hydrolysis", "abiotic_reduction"]
 
         reactionLibs = {
             "hydrolysis": self.abiotic_hydrolysis,
             "abiotic_reduction": self.abiotic_reduction,
-            "human_biotransformation": self.mamm_metabolism
+            # "human_biotransformation": self.mamm_metabolism
         }
 
         self.trans_libs = []
@@ -63,9 +64,12 @@ class gentrans(object):
             'populationLimit': 0,
             # 'likelyLimit': self.likely_limit,
             'likelyLimit': 0.001,
-            'transformationLibraries': self.trans_libs,
+            # 'transformationLibraries': self.trans_libs,
             'excludeCondition': ""  # 'generateImages': False
         }
+
+        if len(self.trans_libs) > 0:
+            dataDict.update({'transformationLibraries': self.trans_libs})
 
         if self.run_type != 'batch':
 

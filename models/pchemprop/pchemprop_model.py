@@ -127,5 +127,6 @@ class PChemProp(object):
             'smiles': self.smiles,
             'name': self.name,
             'formula': self.formula,
-            'mass': self.mass
+            'mass': self.mass,
+            'exactMass': self.exact_mass
         }

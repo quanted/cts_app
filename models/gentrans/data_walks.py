@@ -64,6 +64,9 @@ def traverse(root, gen_limit):
         # skipping 2nd parent metabolite:
         second_parent = root[parent]['metabolites'].keys()[0]
         root = root[parent]['metabolites'][second_parent]
+
+        # not-skipping version without 2nd parent problem:
+        # root = root[parent]
         
     else:
         if root['generation'] > 0 and root['generation'] <= gen_limit:
@@ -84,6 +87,7 @@ def traverse(root, gen_limit):
             for key2, value2 in root[key].items():
                 root2 = root[key][key2]
                 if len(root2) > 0 and 'children' in newDict and root['generation'] < gen_limit:
+                # if len(root2) > 0 and 'children' in newDict and root2['generation'] < gen_limit:
                     newDict['children'].append(traverse(root2, gen_limit))
 
     return newDict
