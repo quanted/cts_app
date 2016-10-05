@@ -306,8 +306,10 @@ function init(json){
         //your node.
         onCreateLabel: function(label, node){
 
-            // var name = document.createTextNode(node.name);  // svg stuff
-            // label.firstChild.appendChild(name);  // svg stuff
+            // SVG Stuff:
+            // var name = document.createTextNode(node.name);
+            // label.firstChild.appendChild(name);
+
 
             label.id = node.id;            
             label.innerHTML = node.name;
@@ -384,7 +386,9 @@ function init(json){
 
                         // add image to reaction pathways div:
                         var img_obj = $.parseHTML(current_node.name.trim())[0];
-                        $(img_obj).css({'height': 60, 'width': 50});
+                        // $(img_obj).css({'height': 60, 'width': 50});
+                        // $(img_obj).attr('height', 60);
+                        // $(img_obj).attr('width', 50);
                         
                         var image_with_gen = '<div class="rp-image">' +
                         // var image_with_gen = '<div class="arrow_wrap">' + 
@@ -399,7 +403,7 @@ function init(json){
                             var arrow_obj = $.parseHTML(arrow_html);  //<div><img></div>
                             if (routes) {
                                 var latest_node_route = routes.split(',').pop();
-                                $(arrow_obj).append('<p>' + latest_node_route + '</p>');  // add "routes"
+                                $(arrow_obj).append('<br><p>' + latest_node_route + '</p>');  // add "routes"
                             }
                             $('#reactionpathways').prepend(arrow_obj);
                         }

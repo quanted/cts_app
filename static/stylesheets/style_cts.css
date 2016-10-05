@@ -1587,6 +1587,7 @@ body.wait *, body.wait
   /*border: 5px solid #eed;*/
   border: 2px solid #dee7ef;
   background-color: rgba(222,231,239,1);
+  /*background-color: white;*/
 }
 
 /* style for pchemprop output table data cell */

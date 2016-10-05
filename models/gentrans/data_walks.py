@@ -48,7 +48,7 @@ def traverse(root, gen_limit):
 
     if metID == 1:
         parent = root.keys()[0]
-        newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, image_scale, metID, 'png', True), "data": {}, "children": []})
+        newDict.update({"id": metID, "name": nodeWrapper(parent, 114, 100, image_scale, metID, 'svg', True), "data": {}, "children": []})
         # newDict.update({"id": metID, "name": nodeWrapper(parent, None, 100, 28), "data": {}, "children": []})
         newDict['data'].update(popupBuilder({"smiles": parent, "generation": "0"}, metabolite_keys, "{}".format(metID),
                                             "Metabolite Information"))
@@ -70,7 +70,7 @@ def traverse(root, gen_limit):
         
     else:
         if root['generation'] > 0 and root['generation'] <= gen_limit:
-            newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, image_scale, metID, 'png', True), "data": {}, "children": []})
+            newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], 114, 100, image_scale, metID, 'svg', True), "data": {}, "children": []})
             # newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], None, 100, 28), "data": {}, "children": []})
             newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
 
@@ -128,8 +128,13 @@ def nodeWrapper(smiles, height, width, scale, key=None, img_type=None, isProduct
     # 3. Wrap imageUrl with <img>
     # <img> wrapper for image byte string:
     if img_type and img_type == 'svg':
-        html = img
+
+
+        # wrap svg in div with background-color set to white on div????
         # html = svgTmpl().render(Context(dict(key=key, svg=img)))
+        # html = img  # works but image background is grey...
+        html = '<div style="background-color:white;">' + img + '</div>'
+        
     else:
         html = imgTmpl(isProduct).render(Context(dict(smiles=smiles, img=img, height=height, width=width, scale=scale, key=key)))
 
@@ -157,8 +162,13 @@ def imgTmpl(isProduct):
     return Template(imgTmpl)
 
 def svgTmpl():
+    # svgTmpl = """
+    # <div id="{{key|default:""}}" class="metabolite">
+    #     {{svg}}
+    # </div>
+    # """
     svgTmpl = """
-    <div id="{{key|default:""}}">
+    <div class="metabolite">
         {{svg}}
     </div>
     """

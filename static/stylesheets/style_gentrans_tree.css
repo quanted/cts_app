@@ -16,7 +16,7 @@
     /*background-color: #F4F7ED;*/ /*white from site background*/
     /*background-color: #dee7ef; /*left links color*/
     background-color: #9AB2CB;
-    color:#ccc;
+    /*color:#ccc;*/
 
     border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -30,7 +30,8 @@
 /* reaction pathways ui styling */
 div#reactionpathways {
     /*height: 80px;*/
-    height: 100px;
+    /*height: 100px;*/
+    height: 150px;
     width:815px;
     /*margin: 4px;*/
     /*background-color: #9AB2CB;*/
@@ -51,17 +52,19 @@ div#reactionpathways {
     vertical-align: middle;
 }
 .reactpath_arrow {
-    margin-top: 15px
+    /*margin-top: 15px*/
+    /*margin-top: 30px*/
 }
 #arrow_wrap {
     height: 60px;
     float: left;
     text-align: center;
-    padding: 15px 0px 0px 15px;
+    /*padding: 15px 0px 0px 15px;*/
+    padding: 30px 2px 0px 2px;
 }
 #arrow_wrap p {
     color: #000000;
-    font-size: 12px;
+    font-size: 10px;
     margin: auto;
 }
 #arrow_wrap img {
@@ -69,7 +72,9 @@ div#reactionpathways {
     height:15px;
 }
 .rp-image {
-    height: 60px;
+    /*height: 60px;*/
+    /*width: 50px;*/
+    margin-top: 10px;
     float: left;
     text-align: center;
 }

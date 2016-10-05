@@ -210,16 +210,16 @@ def table_metabolites(gentrans_obj):
 	html += build_pchem_table() # build pchem workflow's pchem table
 
 	html += """
-			<div id="cont">
-			    <div id="center-cont">
-			        <!-- the canvas container -->
-			        <div id="infovis"></div>
-			    </div>
-			    <div id="log"></div>
-			</div>
-			<div id="reactionpathways">
-			</div>
-			"""
+		<div id="cont">
+		    <div id="center-cont">
+		        <!-- the canvas container -->
+		        <div id="infovis"></div>
+		    </div>
+		    <div id="log"></div>
+		</div>
+		<div id="reactionpathways">
+		</div>
+	"""
 
 	html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
 	html += render_to_string('cts_pchemprop_ajax_calls.html', {
@@ -231,6 +231,12 @@ def table_metabolites(gentrans_obj):
 									'nodes': 'null',
 									'run_type': 'single',
 									'workflow': 'gentrans'})
+
+
+	# insert d3 test page template here:
+	# html += render_to_string('d3_tree_test_page.html')
+
+
 	html += """
 	</div>
 	"""
