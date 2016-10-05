@@ -37,7 +37,7 @@ os.environ.update({
     'wkhtmltopdf': PROJECT_ROOT + '/wkhtmltopdf/linux/wkhtmltopdf',
     'PROJECT_PATH': PROJECT_ROOT,
     'SITE_SKIN': '',                          # Leave empty ('') for default skin, 'EPA' for EPA skin
-    'CTS_VERSION': '1.3.29'
+    'CTS_VERSION': '1.4.1'
 })
 
 # Quick-start development settings - unsuitable for production
