@@ -1,7 +1,7 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import patterns, include, url
 import epi_cts
-import chemaxon_cts
+# import chemaxon_cts
 import REST
 # from django.contrib import admin
 # admin.autodiscover()

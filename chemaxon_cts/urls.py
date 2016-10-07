@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, include, url
 from chemaxon_cts import jchem_rest
 # from REST.cts_rest import Chemaxon_CTS_REST
-from REST import cts_rest
+# from REST import cts_rest
 # from django.contrib import admin
 # admin.autodiscover()
 
