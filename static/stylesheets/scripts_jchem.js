@@ -89,6 +89,10 @@ function importMolFromCanvas() {
     var chemical_obj = {'chemical': mrv_chemical};
 
     getChemDetails(chemical_obj, function (molecule_info) {
+
+      // put orig smiles in "lookup chemical" box for drawn chemical:
+      molecule_info['data']['chemical'] = molecule_info['data']['orig_smiles'];
+
       sessionStorage.setItem('molecule', JSON.stringify(molecule_info.data)); // set current chemical in session cache
       populateChemEditDOM(molecule_info.data);
       // marvinSketcherInstance.importStructure("mrv", molecule_info.data.structureData.structure);

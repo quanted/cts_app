@@ -25,7 +25,7 @@ urlpatterns += patterns('',
     (r'^cts/flame/?$', 'views.misc.fileNotFound'),
     (r'^cts/ahydrolysis/?$', 'views.misc.displayPDF'),
     (r'^cts/areduction/?$', 'views.misc.displayPDF'),
-    (r'^cts/mammet/?$', 'views.misc.fileNotFound'),
+    # (r'^cts/mammet/?$', 'views.misc.fileNotFound'),
     (r'^cts/guide/?$', 'views.misc.displayPDF'),
 
     (r'^cts/(?P<model>.*?)/description/?$', 'views.description.descriptionPage'),
