@@ -31,7 +31,7 @@
 div#reactionpathways {
     /*height: 80px;*/
     /*height: 100px;*/
-    height: 150px;
+    height: 200px;
     width:815px;
     /*margin: 4px;*/
     /*background-color: #9AB2CB;*/
@@ -57,24 +57,33 @@ div#reactionpathways {
 }
 #arrow_wrap {
     height: 60px;
+    max-height: 120px;
     float: left;
     text-align: center;
+    position: relative;
+    /*width: 100px;*/
+    width: 70px;
     /*padding: 15px 0px 0px 15px;*/
-    padding: 30px 2px 0px 2px;
+    /*padding: 30px 2px 0px 2px;*/
+    padding-top: 60px;
 }
 #arrow_wrap p {
     color: #000000;
     font-size: 10px;
     margin: auto;
+    display: inline-block;
 }
 #arrow_wrap img {
-    width:30px;
+    width:70px;
     height:15px;
+    display: inline-block;
+    /*margin-left:2px;*/
+    margin: auto;
 }
 .rp-image {
     /*height: 60px;*/
     /*width: 50px;*/
-    margin-top: 10px;
+    margin-top: 20px;
     float: left;
     text-align: center;
 }
