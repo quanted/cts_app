@@ -158,7 +158,10 @@ function ajaxCall(data_obj, callback) {
     type: 'POST',
     data: data_obj,
     dataType: 'json',
-    timeout: 10000,
+    // timeout: 10000,
+    timeout: 5000,
+    tryCount: 0,
+    retryLimit: 3,
     success: function(data) {
       var data = jsonRepack(data);
       if (data.status == false) {
@@ -170,7 +173,20 @@ function ajaxCall(data_obj, callback) {
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
-      displayErrorInTextbox("Error getting data for chemical..please try again..");
+      if (textStatus == 'timeout' || textStatus == 'error') {
+        this.tryCount++;
+        if (this.tryCount <= this.retryLimit) {
+          // try again
+          $.ajax(this);
+          return;
+        }
+        displayErrorInTextbox("Error getting data for chemical..please try again..");
+        return;
+      }
+      else {
+        displayErrorInTextbox("Error getting data for chemical..please try again..");
+        return;
+      }
     }
   });
 }
