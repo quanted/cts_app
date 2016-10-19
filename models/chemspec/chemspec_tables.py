@@ -374,16 +374,16 @@ def getTautomerResults(chemspec_obj):
         """
         html += '<dl style="display:inline-block">'
         for item in tautStructs:
-            html += '<dd style="float:left;">'
-            if item:
-                html += wrap_molecule(item, None, lgWidth, scale)
-            else:
-                html += "No tautomers"
-            # if item and 'dist' in item:
-            #     html += '<p class="taut-percent" style="margin:0;">Percent Dist: {}%'.format(item['dist']) + "</p>"
-            #     html += wrap_molecule(item, None, mdWidth, scale)
+            html += '<dd class="dom-taut" style="float:left;">'
+            # if item:
+            #     html += wrap_molecule(item, None, lgWidth, scale)
             # else:
             #     html += "No tautomers"
+            if item and 'dist' in item:
+                html += '<p class="taut-percent" style="margin:0;">Percent Dist: {}%'.format(item['dist']) + "</p>"
+                html += wrap_molecule(item, None, mdWidth, scale)
+            else:
+                html += "No tautomers"
             html += '</dd>'
         html += """
                 </dl>

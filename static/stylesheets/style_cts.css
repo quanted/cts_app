@@ -1887,3 +1887,10 @@ div.run_type {
 div.info_image_wrap {
   /*display: table;*/
 }
+
+
+dd.dom-taut {
+  /*float; left;*/
+  margin-left: 4px;
+  margin-right: 4px;
+}
