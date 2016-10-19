@@ -24,7 +24,7 @@ sparc_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_availa
 
 # NOTE: Measured data is from EPI measured values
 measured_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available']
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 
 
 # value - chemical property (melting point, etc)

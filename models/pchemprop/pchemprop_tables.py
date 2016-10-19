@@ -37,7 +37,7 @@ def getStructInfoTemplate():
 
 def getInputTemplate():
     input_template = """
-    <table class="ctsTableStylin">
+    <table class="ctsTableStylin" style="display:inline-block;">
     <th colspan="2" class="alignLeft">{{heading}}</th>
     {% for keyval in data %}
         {% for label, value in keyval.items %}
@@ -72,9 +72,16 @@ def input_struct_table(pchemprop_obj):
     html = """
     <H3 class="out_1 collapsible" id="section1"><span></span>User Inputs</H3>
     <div class="out_">
+    <div class="info_image_wrap">
     """
+
+    # attempting to add image to right of user inputs table:
+    html += pchemprop_obj.parent_image
+
     html += inTmpl.render(Context(dict(data=getInputData(pchemprop_obj), heading="Molecular Information")))
+
     html += """
+    </div>
     </div>
     """
     return html

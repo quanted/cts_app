@@ -44,6 +44,15 @@ var arrow_html = '<div id="arrow_wrap"><img class="reactpath_arrow" src="/static
     nodeList = null;
     st = null;
 
+
+    // grey out the gen level options above user-selected gen limit:
+    var max_possible_gen = 4;
+    for (var i = max_possible_gen; i > genMax; i--) {
+        var select_option = $('#gen-select option[value=' + i.toString() + ']');
+        $(select_option).attr('disabled', true);
+    }
+
+
 })();
 
 var Log = {
@@ -57,21 +66,6 @@ var Log = {
 
 };
 
-//"wait" cursor during ajax events
-// NOTE: calls_tracker from pchemprop ajax calls file
-// $(document).ajaxStart(function () {
-//     if (block_ui) {
-//         blockInterface(true);
-//     }
-//     $('body').addClass('wait');
-// }).ajaxComplete(function () {
-//     if (calls_tracker == 0) {
-//         blockInterface(false);
-//         $('body').removeClass('wait');
-//         block_ui = false; // reset
-//     }
-// });
-
 $('#tabs').click(function(event) {
     tabDisplayLogic(event);
 });
@@ -82,13 +76,13 @@ $('#tabs-1').on('click', 'table th', function() {
     $(this).parent().nextUntil('tr.header').toggle();
 });
 
-// $('#gen-select').change(function() {
-//     var genLevel = $(this).find('option:selected').val();
-//     var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);
-//     st.config.levelsToShow = genLevel;
-//     // resizeCanvas(parsedNodeList);  // change canvas height
-//     st.select(st.root);
-// });
+$('#gen-select').change(function() {
+    var genLevel = $(this).find('option:selected').val();
+    var parsedNodeList = nodeList.slice(0, parseFloat(genLevel) + 1);
+    st.config.levelsToShow = genLevel;
+    // resizeCanvas(parsedNodeList);  // change canvas height
+    st.select(st.root);
+});
 
 // Get Data button for gathering pchem props for node:
 $('#btn-pchem-getdata').click(function () {

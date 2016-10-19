@@ -133,7 +133,10 @@ def nodeWrapper(smiles, height, width, scale, key=None, img_type=None, isProduct
         # wrap svg in div with background-color set to white on div????
         # html = svgTmpl().render(Context(dict(key=key, svg=img)))
         # html = img  # works but image background is grey...
-        html = '<div style="background-color:white;">' + img + '</div>'
+        if key:
+            html = '<div style="background-color:white;"' + 'id="' + str(key) + '">' + img + '</div>'            
+        else:
+            html = '<div style="background-color:white;">' + img + '</div>'
         
     else:
         html = imgTmpl(isProduct).render(Context(dict(smiles=smiles, img=img, height=height, width=width, scale=scale, key=key)))

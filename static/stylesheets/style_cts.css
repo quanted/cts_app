@@ -1875,3 +1875,15 @@ div.run_type {
 .pchem_label {
   background-color: #EEF0E6;
 }
+
+#pchem_parent_wrap {
+  width: 250px;
+  display: inline-block;
+  margin-left: 30px;
+  /*vertical-align: middle;*/
+  /*display: table-cell;*/
+}
+
+div.info_image_wrap {
+  /*display: table;*/
+}

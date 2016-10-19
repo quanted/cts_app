@@ -4,6 +4,7 @@
 
 import pchemprop_parameters  # Chemical Calculator and Transformation Pathway parameters
 from chemaxon_cts import jchem_rest
+from models.gentrans import data_walks
 import logging
 
 import datetime
@@ -102,6 +103,10 @@ class PChemProp(object):
             "sparc": self.sparc,
             "measured": self.measured
         }
+
+
+        self.parent_image = data_walks.nodeWrapper(self.smiles, None, 250, 50, 'pchem_parent_wrap', 'svg', None)
+
 
         # dict with keys of checked calculators and values of
         # checked properties that are also available for said calculators

@@ -17,30 +17,6 @@ import gentrans_output
 import os
 
 
-def getheaderpvu():
-	headings = ["Parameter", "Value"]
-	return headings
-
-def getheaderpvr():
-	headings = ["Parameter", "Acute", "Chronic","Units"]
-	return headings
-
-
-def gethtmlrowsfromcols(data, headings):
-	columns = [data[heading] for heading in headings]
-
-	# get the length of the longest column
-	max_len = len(max(columns, key=len))
-
-	for col in columns:
-		# padding the short columns with None
-		col += [None,] * (max_len - len(col))
-
-	# Then rotate the structure...
-	rows = [[col[i] for col in columns] for i in range(max_len)]
-	return rows
-
-
 def getdjtemplate():
 	dj_template ="""
 	<dl class="shiftRight">
@@ -54,16 +30,6 @@ def getdjtemplate():
 	return dj_template
 
 
-# def getInputTemplate():
-# 	input_template = """
-# 	<th colspan="2" class="alignLeft">{{heading}}</th>
-# 	{% for label, value in data.items %}
-# 		<tr>
-# 		<td>{{label}}</td> <td>{{value|default:"none"}}</td>
-# 		</tr>
-# 	{% endfor %}
-# 	"""
-# 	return input_template
 def getInputTemplate():
     input_template = """
     <th colspan="2" class="alignLeft">{{heading}}</th>
@@ -78,14 +44,6 @@ def getInputTemplate():
     return input_template
 
 
-# def getStructInfo(gentrans_obj):
-# 	data = {
-# 		'SMILES': gentrans_obj.smiles, 
-# 		'IUPAC': gentrans_obj.iupac, 
-# 		'Formula': gentrans_obj.formula, 
-# 		'Mass': gentrans_obj.mass
-# 	}
-# 	return data
 def getInputData(pchemprop_obj):
     data = [
         {'Entered chemical': pchemprop_obj.chem_struct},
@@ -260,50 +218,7 @@ def build_pchem_table():
 	return html
 
 
-# def buildMetaboliteTableForPDF():
-# 	metTableTmpl = """
-# 	<table id="gentrans_table">
-# 	<tr>
-# 	{% for heading in headings %}
-# 		<th>{{heading}}</th>
-# 	{% endfor %}
-# 	</tr>
-# 	{% for metabolite in metaboliteList %}
-# 		<tr>
-# 		{% for heading in headings %}
-
-# 			<td>
-# 			{% for key, value in metabolite.items %}
-
-# 				{% if key == heading %}
-
-# 					{% if key != "ion_con" %}
-# 						{% autoescape off %}{{value}}{% endautoescape %}
-# 					{% else %}
-# 						{% for pkaKey, pkaVals in value.items %}
-# 							{% for pka in pkaVals %}
-# 								{% autoescape off %}
-# 								{{pkaKey}}<sub>{{forloop.counter}}</sub>: {{pka}} <br>
-# 								{% endautoescape %}
-# 							{% endfor %}
-# 						{% endfor %}
-# 					{% endif %}
-
-# 				{% endif %}
-
-# 			{% endfor %}
-# 			</td>
-
-# 		{% endfor %}
-# 		</tr>
-# 	{% endfor %}
-# 	</table>
-# 	"""
-# 	return Template(metTableTmpl)
-
-
 def buildMetaboliteTableForPDF():
-
 	# cts_pchem.html is pchem table, just remove checkbox inputs.
 	# what other templates can be used??
 
@@ -349,11 +264,4 @@ def buildMetaboliteTableForPDF():
 	{% endfor %}
 
 	"""
-
-	# metTableTmpl += pchem_table_html
-
-	# metTableTmpl += """
-	# </div>
-	# """
-
 	return Template(metTableTmpl)
