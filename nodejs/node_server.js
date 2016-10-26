@@ -7,24 +7,27 @@ var cookie_reader = require('cookie');
 var querystring = require('querystring');
 var redis = require('redis');
 
-//Configure socket.io to store cookie set by Django
-io.configure(function(){
-    io.set('authorization', function(data, accept){
-        if(data.headers.cookie){
-            data.cookie = cookie_reader.parse(data.headers.cookie);
-            return accept(null, true);
-        }
-        return accept('error', false);
-    });
-    io.set('log level', 1);
-    // io.set('resource', 'cts/socket');  // not sure about this one
-});
+// // Configure socket.io to store cookie set by Django
+// io.configure(function(){
+//     io.set('authorization', function(data, accept){
+//         if(data.headers.cookie){
+//             data.cookie = cookie_reader.parse(data.headers.cookie);
+//             return accept(null, true);
+//         }
+//         return accept('error', false);
+//     });
+//     io.set('log level', 1);
+//     // io.set('resource', 'cts/socket');  // not sure about this one
+// });
 
 
-
-io.sockets.on('connection', function (socket) {
+// io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
 
     // var sessionid = socket.handshake.cookie['sessionid']; // use cookie set by django..
+
+    console.log("socket connection made...");
+
 
     var message_client = redis.createClient();
 
@@ -44,7 +47,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('say_hello', function (message) {
         console.log("node received message: ");
         console.log(message);
-        socket.send("hello client " + socket.id);
+        // socket.send("hello client " + socket.id);
+        // socket.send("hi");
+        socket.send(message);  // echo message
     });
 
     socket.on('test_celery', function (message) {
@@ -60,8 +65,17 @@ io.sockets.on('connection', function (socket) {
     socket.on('get_data', function (message) {
 
         console.log("nodejs server received message..");
+        console.log(message);
 
-        var message_obj = JSON.parse(message);
+        // is coming in as object from artillery tool..
+        var message_obj;
+        try {
+            message_obj = JSON.parse(message);
+        }
+        catch (e) {
+            console.log(e);
+            message_obj = message;
+        }
 
         var values = {};
         for (var key in message_obj) {
@@ -89,15 +103,19 @@ io.sockets.on('connection', function (socket) {
         message_client.unsubscribe(socket.id); // unsubscribe from channel
         //console.log("user " + socket.id + " unsubscribed from redis channel..");
 
-        var message_obj = {'cancel': true};
+        // var message_obj = {'cancel': true};
 
-        var query = querystring.stringify({
-            sessionid: socket.id,
-            message: JSON.stringify(message_obj)
-        });
+        // var query = querystring.stringify({
+        //     sessionid: socket.id,
+        //     message: JSON.stringify(message_obj)
+        // });
 
-        passRequestToCTS(query);
+        // passRequestToCTS(query);
 
+    });
+
+    socket.on('error', function () {
+        console.log("An error occured");
     });
 
 });
