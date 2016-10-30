@@ -167,7 +167,7 @@ def parsePOST(request):
 def pdfReceiver(request, model=''):
     """
     PDF Generation Receiver function.
-    Sends POST data as string to pdfkit library for processing
+    Sends POST data as string for processing
     """
     from ext_libs.xhtml2pdf import pisa
 

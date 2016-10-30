@@ -6,7 +6,7 @@ import json
 import redis
 from jchem_calculator import JchemProperty
 from REST.smilesfilter import filterSMILES
-from requests_futures.sessions import FuturesSession
+# from requests_futures.sessions import FuturesSession
 from models.gentrans import data_walks
 
 
@@ -50,7 +50,8 @@ def request_manager(request):
 		props = request.POST.get("props")
 
 
-	session = FuturesSession()  # currently not used..
+	# session = FuturesSession()  # currently not used..
+	session = None
 
 
 	if service == 'getTransProducts':
