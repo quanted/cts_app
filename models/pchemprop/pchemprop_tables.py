@@ -2,6 +2,7 @@ from django.template import Context, Template
 import datetime
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from django.conf import settings
 import logging
 import pchemprop_parameters
 import json
@@ -122,7 +123,9 @@ def output_pchem_table(pchemprop_obj):
                                     "formula": pchemprop_obj.formula,
                                     "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
                                     'nodes': 'null',
-                                    'speciation_inputs': 'null'
+                                    'speciation_inputs': 'null',
+                                    'nodejs_host': settings.NODEJS_HOST,
+                                    'nodejs_port': settings.NODEJS_PORT
                                     # "test_results": mark_safe(json.dumps(pchemprop_obj.test_results))
                             })
     html += """

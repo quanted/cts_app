@@ -92,7 +92,9 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
         'workflow': "gentrans",
         'run_type': "batch",
         'run_data': pchemprop_obj.run_data,
-        'speciation_inputs': 'null'})
+        'speciation_inputs': 'null',
+        'nodejs_host': settings.NODEJS_HOST,
+        'nodejs_port': settings.NODEJS_PORT})
 
     html += """
     <div id="cont" hidden>

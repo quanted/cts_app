@@ -49,3 +49,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 STATIC_ROOT = '/var/www/ubertool/static/'
+
+# nodejs settings:
+NODEJS_HOST = '134.67.114.1'
+NODEJS_PORT = None

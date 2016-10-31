@@ -58,7 +58,9 @@ def pchempropBatchOutputPage(request, model='', header='P-Chem Properties', form
         {'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
         'kow_ph': pchemprop_obj.kow_ph,
         'speciation_inputs': 'null',
-        'nodes': mark_safe(batch_chemicals)})
+        'nodes': mark_safe(batch_chemicals),
+        'nodejs_host': settings.NODEJS_HOST,
+        'nodejs_port': settings.NODEJS_PORT})
 
     html += render_to_string('cts_gentrans_tree.html', {'gen_max': 0})
 

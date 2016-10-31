@@ -188,7 +188,9 @@ def table_metabolites(gentrans_obj):
 									"test_results": gentrans_obj.test_results,
 									'nodes': 'null',
 									'run_type': 'single',
-									'workflow': 'gentrans'})
+									'workflow': 'gentrans'
+									'nodejs_host': settings.NODEJS_HOST,
+                                    'nodejs_port': settings.NODEJS_PORT})
 
 
 	# insert d3 test page template here:
