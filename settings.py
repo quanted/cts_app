@@ -100,8 +100,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-WSGI_APPLICATION = 'wsgi_local.application'
-
+# WSGI_APPLICATION = 'wsgi_local.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -166,6 +166,12 @@ STATIC_URL = '/static/'
 DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
+
+# override settings with any local settings:
+try:
+    from settings_local import *
+except ImportError as e:
+    pass
 
 if DEBUG:
    import logging
