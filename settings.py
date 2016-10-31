@@ -153,11 +153,11 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 DOCS_ACCESS = 'public'
 
 
-# Check for production settings file:
-try:
-    from settings_apache import *
-except ImportError as e:
-    pass
+# # Check for production settings file:
+# try:
+#     from settings_apache import *
+# except ImportError as e:
+#     pass
 
 
 # Check for local settings file:
