@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 import os, sys
+import socket
 import secret
-
 
 # Get machine IP address
 MACHINE_ID = socket.gethostname()
@@ -19,16 +19,25 @@ MACHINE_ID = socket.gethostname()
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
+# Boolean for if it's on Nick's local machine or not..
+NICK_LOCAL = False
+
 # Define ENVIRONMENTAL VARIABLES for project (replaces the app.yaml)
 os.environ.update({
-    'CTS_TEST_SERVER': 'http://172.20.100.16:8080',
-    'CTS_JCHEM_SERVER': 'http://172.20.100.12',
+    'UBERTOOL_BATCH_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com/',
+    'UBERTOOL_MONGO_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',
+    'UBERTOOL_SECURE_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',   
+    'UBERTOOL_REST_SERVER': 'http://172.20.100.15:7777',        # CGI Internal
+    'CTS_TEST_SERVER': 'http://172.20.100.16:8080',                   # test rest server (intranet)
+    'CTS_JCHEM_SERVER': 'http://172.20.100.12',       # jchem rest server (internal)
+    # 'CTS_EPI_SERVER': 'http://172.20.100.16:7080',
     'CTS_EPI_SERVER': 'http://172.20.100.18',
     'CTS_EFS_SERVER': 'http://172.20.100.12',
-    'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',
-    'SITE_SKIN': '',  # Leave empty ('') for default skin, 'EPA' for EPA skin
+    'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',         # SPARC rest server (external)
+    'wkhtmltopdf': PROJECT_ROOT + '/wkhtmltopdf/linux/wkhtmltopdf',
     'PROJECT_PATH': PROJECT_ROOT,
-    'CTS_VERSION': '1.4.14'
+    'SITE_SKIN': '',                          # Leave empty ('') for default skin, 'EPA' for EPA skin
+    'CTS_VERSION': '1.4.7'
 })
 
 # Quick-start development settings - unsuitable for production
@@ -37,10 +46,9 @@ os.environ.update({
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secret.SECRET_KEY
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
+# DEBUG = True
 
 TEMPLATE_DEBUG = False
 
@@ -54,6 +62,15 @@ elif MACHINE_ID == "ord-uber-vm003":
     ALLOWED_HOSTS.append('134.67.114.3')
     ALLOWED_HOSTS.append('qed.epa.gov')
 
+# # celery config stuff:
+# CELERY_RESULT_BACKEND = 'redis://'
+# # CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_BROKER_URL = 'redis//'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+
+
 APPEND_SLASH = True
 
 TEMPLATE_DIRS = (
@@ -61,7 +78,6 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_ROOT, 'templates').replace('\\','/'),
-
 )
 
 # List of callables that know how to import templates from various sources.
@@ -80,18 +96,30 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'mod_wsgi.server',
     'filters',
     'epi_cts',
-    'celery_cts'
+    'celery_cts',
+    #'test_cts'
+    #'docs'
+)
+
+MIDDLEWARE_CLASSES = (
+    # 'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
 
-WSGI_APPLICATION = 'wsgi.application'
-
+WSGI_APPLICATION = 'wsgi_apache.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -143,21 +171,7 @@ STATICFILES_FINDERS = (
 )
 
 STATIC_URL = '/static/'
-
-MIDDLEWARE_CLASSES = (
-    # 'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
-    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
-
 STATIC_ROOT = '/var/www/ubertool/static/'
-
-# nodejs settings:
-NODEJS_HOST = '134.67.114.1'
-NODEJS_PORT = None
 
 # print 'BASE_DIR = %s' %BASE_DIR
 # print 'PROJECT_ROOT = %s' %PROJECT_ROOT
@@ -168,3 +182,6 @@ NODEJS_PORT = None
 DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
+
+NODEJS_HOST = '134.67.114.1'
+NODEJS_PORT = None

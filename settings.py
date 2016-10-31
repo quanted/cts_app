@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import secret
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+
+# Boolean for if it's on Nick's local machine or not..
+NICK_LOCAL = False
 
 # Define ENVIRONMENTAL VARIABLES for project (replaces the app.yaml)
 os.environ.update({
@@ -22,10 +24,10 @@ os.environ.update({
     'CTS_EPI_SERVER': 'http://134.67.114.8',
     'CTS_JCHEM_SERVER': 'http://134.67.114.2',
     'CTS_EFS_SERVER': 'http://134.67.114.2',
-    'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',
-    'SITE_SKIN': '',  # Leave empty ('') for default skin, 'EPA' for EPA skin
+    'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',  #http://n2626ugath802:8080/sparc-integration/rest/calc/multiProperty
+    'wkhtmltopdf': PROJECT_ROOT + '\\wkhtmltopdf\\windows\\bin\\wkhtmltopdf.exe',
     'PROJECT_PATH': PROJECT_ROOT,
-    'CTS_VERSION': '1.4.14'
+    'CTS_VERSION': '1.4.19'
 })
 
 # Quick-start development settings - unsuitable for production
@@ -34,9 +36,9 @@ os.environ.update({
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = secret.SECRET_KEY
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 
 
 TEMPLATE_DEBUG = False
@@ -69,10 +71,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'docs'
     'filters',
-    'epi_cts',
-    'celery_cts'
+    # 'templatetags.my_filter'
+    'epi_cts' # Pavan added this for the TEST suite CTS app.  Not to be confused with any other test software.
 )
+
+# This breaks the pattern of a "pluggable" TEST_CTS django app, but it also makes it convenient to describe the server hosting the TEST API.
+TEST_CTS_PROXY_URL = "http://10.0.2.2:7080/"
 
 MIDDLEWARE_CLASSES = (
     # 'django.contrib.sessions.middleware.SessionMiddleware',
@@ -85,7 +91,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'wsgi_local.application'
 
 
 # Database
@@ -151,21 +157,6 @@ STATIC_URL = '/static/'
 DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
-
-
-# # Check for production settings file:
-# try:
-#     from settings_apache import *
-# except ImportError as e:
-#     pass
-
-
-# Check for local settings file:
-try:
-    from settings_local import *
-except ImportError as e:
-    pass
-
 
 if DEBUG:
    import logging
