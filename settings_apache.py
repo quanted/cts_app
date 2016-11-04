@@ -183,3 +183,6 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
 
+NODEJS_HOST = '134.67.114.1'
+NODEJS_PORT = 80
+NODEJS_URL = 'http://134.67.114.1'

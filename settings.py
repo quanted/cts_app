@@ -167,6 +167,15 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
 
+NODEJS_HOST = 'localhost'
+NODEJS_PORT = 4000
+NODEJS_URL = 'http://localhost:4000'
+
+try:
+    from settings_local import *
+except ImportError as e:
+    pass
+
 if DEBUG:
    import logging
    logging.basicConfig(

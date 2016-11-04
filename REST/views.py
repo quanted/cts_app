@@ -109,3 +109,15 @@ def runSparc(request):
 	sparc_request = HttpRequest()
 	sparc_request.POST = request_params  # need rest of POST, not just chemical
 	return sparc_obj.runSparc(sparc_request)
+
+
+def testCTSNode(request):
+	"""
+	makes request to nodejs server 
+	"""
+	import requests
+	from django.conf import settings
+
+	response = requests.get(settings.NODEJS_URL + '/test')
+	
+	return HttpResponse(response.content)
