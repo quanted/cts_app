@@ -37,6 +37,7 @@ os.environ.update({
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',  #http://n2626ugath802:8080/sparc-integration/rest/calc/multiProperty
     'wkhtmltopdf': PROJECT_ROOT + '\\wkhtmltopdf\\windows\\bin\\wkhtmltopdf.exe',
     'PROJECT_PATH': PROJECT_ROOT,
+    'CTS_VERSION': '1.4.12'
 })
 
 # Quick-start development settings - unsuitable for production
