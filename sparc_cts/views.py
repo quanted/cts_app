@@ -63,7 +63,8 @@ def request_manager(request):
         'calc': 'sparc',
         # 'prop': prop,
         'node': node,
-        'chemical': structure
+        'chemical': structure,
+        'request_post': request.POST
     }
 
     if run_type == 'rest':
@@ -133,7 +134,8 @@ def request_manager(request):
 
             post_data.update({
                 'error': "data request timed out",
-                'prop': prop
+                'prop': prop,
+                'request_post': request.POST
             })
 
             if redis_conn and sessionid: 

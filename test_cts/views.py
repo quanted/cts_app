@@ -74,7 +74,7 @@ def request_manager(request):
 	test_results = []
 	for prop in props:
 
-		data_obj = {'calc': calc, 'prop':prop, 'node': node}
+		data_obj = {'calc': calc, 'prop':prop, 'node': node, 'request_post': request.POST}
 
 		try:
 			logging.info("Calling TEST for {} data...".format(prop))

@@ -67,7 +67,7 @@ def request_manager(request):
 		# get requested properties from results:
 		for prop in props:
 			data_obj = calcObj.getPropertyValue(prop, measured_data)
-			data_obj.update({'node': node})
+			data_obj.update({'node': node, 'request_post': request.POST})
 
 			# push one result at a time if node/redis:
 			if redis_conn and sessionid:
@@ -85,7 +85,8 @@ def request_manager(request):
 				'data': "error - cannot find measured data for structure",
 				'calc': "measured",
 				'prop': prop,
-				'node': node
+				'node': node,
+				'request_post': request.POST
 			}
 			measured_results.append(data_obj)
 			if redis_conn and sessionid:
