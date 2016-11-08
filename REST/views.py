@@ -69,48 +69,6 @@ def runCalc(request, calc=None):
 		return HttpResponse(json.dumps({'error': "{}".format(e)}), content_type='application/json')
 
 
-
-def runChemaxon(request):
-	chemaxon_obj = cts_rest.Chemaxon_CTS_REST()
-	request_params = json.loads(request.body)
-	chemaxon_request = HttpRequest()
-	chemaxon_request.POST = request_params
-	return chemaxon_obj.runChemaxon(chemaxon_request)
-
-
-def runEpi(request):
-	"""
-	EPI Suite input schema for running calculator
-	"""
-	epi_obj = cts_rest.EPI_CTS_REST()
-	request_params = json.loads(request.body)
-	epi_request = HttpRequest()
-	epi_request.POST = request_params  # need rest of POST, not just chemical
-	return epi_obj.runEpi(epi_request)
-
-
-def runMeasured(request):
-	"""
-	EPI Suite input schema for running calculator
-	"""
-	measured_obj = cts_rest.Measured_CTS_REST()
-	request_params = json.loads(request.body)
-	measured_request = HttpRequest()
-	measured_request.POST = request_params  # need rest of POST, not just chemical
-	return measured_obj.runMeasured(measured_request)
-
-
-def runSparc(request):
-	"""
-	EPI Suite input schema for running calculator
-	"""
-	sparc_obj = cts_rest.SPARC_CTS_REST()
-	request_params = json.loads(request.body)
-	sparc_request = HttpRequest()
-	sparc_request.POST = request_params  # need rest of POST, not just chemical
-	return sparc_obj.runSparc(sparc_request)
-
-
 def testCTSNode(request):
 	"""
 	makes request to nodejs server 
