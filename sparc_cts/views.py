@@ -117,7 +117,7 @@ def request_manager(request):
                 # if prop_obj['prop'] in props:
                 # if prop_obj['prop'] == prop:
                 if prop_obj['prop'] in props and prop_obj != 'ion_con' and prop_obj != 'kow_wph':
-                    prop_obj.update({'node': node, 'chemical': structure})
+                    prop_obj.update({'node': node, 'chemical': structure, 'request_post': request.POST})
                     logging.info("response: {}".format(prop_obj))
                     result_json = json.dumps(prop_obj) 
                     if redis_conn and sessionid:
