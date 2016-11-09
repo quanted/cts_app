@@ -38,13 +38,6 @@ class Urls:
 	standardizerUrlEFS = efsBase + '/standardizer'
 
 
-def doc(request):
-	"""
-	API Documentation Page
-	"""
-	return render(request, 'jchem_docs.html')
-
-
 def getJchemVersion(request=None):
 	"""
 	Gets version of jchem being used.
