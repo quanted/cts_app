@@ -7,7 +7,7 @@ def qaqcPage(request, model='none'):
     viewmodule = importlib.import_module('.views', 'models.'+model)
     qaqcmodule = importlib.import_module('.'+model+'_qaqc', 'models.'+model)
     tablesmodule = importlib.import_module('.'+model+'_tables', 'models.'+model)
-    from REST import rest_funcs
+    # from REST import rest_funcs
     header = viewmodule.header
 
     html = render_to_string('01cts_uberheader.html', {'title': header+' QA/QC'})
