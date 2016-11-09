@@ -7,8 +7,6 @@ import json
 from test_calculator import TestCalc
 from REST.smilesfilter import parseSmilesByCalculator
 
-from celery import Celery
-from django.conf import settings
 import redis
 
 

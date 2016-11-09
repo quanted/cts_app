@@ -1,5 +1,3 @@
-# from django.conf import settings # This urls.py file is looking for the TEST_CTS_PROXY_URL variable in the project settings.py file.
-from django.shortcuts import render
 from django.http import HttpResponse
 
 import logging
