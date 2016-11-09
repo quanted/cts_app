@@ -80,10 +80,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'docs'
-    'filters',
-    # 'templatetags.my_filter'
-    'epi_cts' # Pavan added this for the TEST suite CTS app.  Not to be confused with any other test software.
+    'filters'
 )
 
 # This breaks the pattern of a "pluggable" TEST_CTS django app, but it also makes it convenient to describe the server hosting the TEST API.

@@ -5,7 +5,6 @@
 from django import forms
 from django.template import Context, Template
 from django.utils.safestring import mark_safe
-from models.forms import validation
 import logging
 from parsley.decorators import parsleyfy
 

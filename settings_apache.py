@@ -96,11 +96,8 @@ INSTALLED_APPS = (
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'mod_wsgi.server',
-    'filters',
-    'epi_cts',
     'celery_cts',
-    #'test_cts'
-    #'docs'
+    'filters'
 )
 
 MIDDLEWARE_CLASSES = (
