@@ -34,7 +34,6 @@ os.environ.update({
     'CTS_EPI_SERVER': 'http://172.20.100.18',
     'CTS_EFS_SERVER': 'http://172.20.100.12',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',         # SPARC rest server (external)
-    'wkhtmltopdf': PROJECT_ROOT + '/wkhtmltopdf/linux/wkhtmltopdf',
     'PROJECT_PATH': PROJECT_ROOT,
     'SITE_SKIN': '',                          # Leave empty ('') for default skin, 'EPA' for EPA skin
     'CTS_VERSION': '1.4.7'

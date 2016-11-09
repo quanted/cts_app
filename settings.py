@@ -35,7 +35,6 @@ os.environ.update({
     # 'CTS_EPI_SERVER': 'http://134.67.114.6',  # test rest server (internal)
     # 'CTS_EPI_SERVER': 'http://win.pg.gl',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',  #http://n2626ugath802:8080/sparc-integration/rest/calc/multiProperty
-    'wkhtmltopdf': PROJECT_ROOT + '\\wkhtmltopdf\\windows\\bin\\wkhtmltopdf.exe',
     'PROJECT_PATH': PROJECT_ROOT,
     'CTS_VERSION': '1.4.12'
 })
