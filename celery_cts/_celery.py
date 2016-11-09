@@ -12,8 +12,9 @@ import logging
 
 
 # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_local')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_apache')
-from django.conf import settings
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings_apache')
+# from django.conf import settings
+# logging.info("settings: {}".format(settings))
 
 
 app = Celery(broker='redis://localhost:6379/0', 

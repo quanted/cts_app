@@ -74,7 +74,7 @@ def request_manager(request):
 	test_results = []
 	for prop in props:
 
-		data_obj = {'calc': calc, 'prop':prop, 'node': node}
+		data_obj = {'calc': calc, 'prop':prop, 'node': node, 'request_post': request.POST}
 
 		try:
 			logging.info("Calling TEST for {} data...".format(prop))
@@ -105,7 +105,7 @@ def request_manager(request):
 
 		except Exception as err:
 			logging.warning("Exception occurred getting TEST data: {}".format(err))
-			data_obj.update({'error': "data request timed out"})
+			data_obj.update({'error': "data request timed out", 'request_post': request.POST})
 
 			logging.info("##### session id: {}".format(sessionid))
 

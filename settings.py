@@ -35,8 +35,8 @@ os.environ.update({
     # 'CTS_EPI_SERVER': 'http://134.67.114.6',  # test rest server (internal)
     # 'CTS_EPI_SERVER': 'http://win.pg.gl',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',  #http://n2626ugath802:8080/sparc-integration/rest/calc/multiProperty
-    'wkhtmltopdf': PROJECT_ROOT + '\\wkhtmltopdf\\windows\\bin\\wkhtmltopdf.exe',
     'PROJECT_PATH': PROJECT_ROOT,
+    'CTS_VERSION': '1.5.0'
 })
 
 # Quick-start development settings - unsuitable for production
@@ -167,8 +167,12 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
 
-# override settings with any local settings:
+NODEJS_HOST = 'localhost'
+NODEJS_PORT = 4000
+NODEJS_URL = 'http://localhost:4000'
+
 try:
+    # override any settings unique to local machine
     from settings_local import *
 except ImportError as e:
     pass

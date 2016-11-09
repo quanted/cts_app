@@ -17,6 +17,8 @@ urlpatterns = patterns('REST',
 	(r'^molecule/?$', 'cts_rest.getChemicalEditorData'),
 	(r'^speciation/?$', 'cts_rest.getChemicalEditorData'),
 
+	# (r'^hellonode/?$', 'views.testCTSNodejs')
+
 	(r'^(?P<calc>.*?)/inputs/?$', 'views.getCalcInputs'),
 	(r'^(?P<calc>.*?)/run/?$', 'views.runCalc'),
 	(r'^(?P<endpoint>.*?)/?$', 'views.getCalcEndpoints'),

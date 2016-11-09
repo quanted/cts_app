@@ -34,10 +34,9 @@ os.environ.update({
     'CTS_EPI_SERVER': 'http://172.20.100.18',
     'CTS_EFS_SERVER': 'http://172.20.100.12',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',         # SPARC rest server (external)
-    'wkhtmltopdf': PROJECT_ROOT + '/wkhtmltopdf/linux/wkhtmltopdf',
     'PROJECT_PATH': PROJECT_ROOT,
     'SITE_SKIN': '',                          # Leave empty ('') for default skin, 'EPA' for EPA skin
-    'CTS_VERSION': '1.4.7'
+    'CTS_VERSION': '1.5.0'
 })
 
 # Quick-start development settings - unsuitable for production
@@ -184,4 +183,5 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 DOCS_ACCESS = 'public'
 
 NODEJS_HOST = '134.67.114.1'
-NODEJS_PORT = None
+NODEJS_PORT = 80
+NODEJS_URL = 'http://134.67.114.1'

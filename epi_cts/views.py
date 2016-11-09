@@ -87,7 +87,8 @@ def request_manager(request):
 		data_obj = {
 			"calc": "epi",
 			"prop": prop,
-			'node': node
+			'node': node,
+			'request_post': request.POST
 		}
 
 		if run_type:

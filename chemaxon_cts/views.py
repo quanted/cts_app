@@ -6,7 +6,6 @@ import json
 import redis
 from jchem_calculator import JchemProperty
 from REST.smilesfilter import filterSMILES
-from requests_futures.sessions import FuturesSession
 from models.gentrans import data_walks
 
 
@@ -31,6 +30,7 @@ def request_manager(request):
     Format: {"service": "", "data": {usual POST data}}
     """
 
+
 	service = request.POST.get('service')
 	chemical = request.POST.get('chemical')
 	prop = request.POST.get('prop')
@@ -41,6 +41,7 @@ def request_manager(request):
 	calc = request.POST.get('calc')
 	run_type = request.POST.get('run_type')
 	workflow = request.POST.get('workflow')
+	request_post = request.POST
 
 	try:
 		props = request.POST.get("props[]")
@@ -50,7 +51,8 @@ def request_manager(request):
 		props = request.POST.get("props")
 
 
-	session = FuturesSession()  # currently not used..
+	# session = FuturesSession()  # currently not used..
+	session = None
 
 
 	if service == 'getTransProducts':
@@ -149,11 +151,11 @@ def request_manager(request):
 			return getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
 		else:
 			# no return w/ web sockets?
-			getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
+			getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session, request_post)
 
 
 
-def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session):
+def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session, request_post=None):
 
 	postData = {
 		'calc': calc,
@@ -168,12 +170,20 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 
 			logging.info("requesting chemaxon {} data".format(prop))
 
-			data_obj = {'calc': calc, 'prop':prop, 'node': node, 'chemical': chemical}
+			data_obj = {
+				'calc': calc,
+				'prop':prop,
+				'node': node,
+				'chemical': chemical
+			}
 
 			if run_type:
 				data_obj.update({'run_type': run_type})
 
 			try:
+
+				data_obj.update({'request_post': request_post})
+
 				if prop == 'kow_wph' or prop == 'kow_no_ph':
 					for method in methods:
 						
@@ -182,7 +192,8 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 							'calc': calc,
 						    'prop': prop,
 						    'chemical': chemical,
-						    'node': node
+						    'node': node,
+						    'request_post': request_post
 						})
 
 						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
@@ -212,10 +223,13 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 				logging.warning("Exception occurred getting chemaxon data: {}".format(err))
 				logging.info("session id: {}".format(sessionid))
 
-				data_obj.update({'error': "cannot reach chemaxon calculator"})
+				data_obj.update({
+					'error': "cannot reach chemaxon calculator"
+				})
 
-				if redis_conn and sessionid: 
+				if redis_conn and sessionid:
 					redis_conn.publish(sessionid, json.dumps(data_obj))
+					logging.info("published to redish")
 				else:
 					chemaxon_results.append(data_obj)
 

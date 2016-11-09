@@ -29,3 +29,4 @@ settings_local.py
 settings_rubeus.py
 *.log
 *.pid
+secret.py
