@@ -59,7 +59,11 @@ def getCalcInputs(request, calc=None):
 
 def runCalc(request, calc=None):
 
-	request_params = json.loads(request.body)
+	try:
+		request_params = json.loads(request.body)
+	except ValueError as e:
+		request_params = json.loads(request.POST.get('message'))  # yeah change this.. (for cts_stress metabolizer call)
+		
 	calc_request = HttpRequest()
 	calc_request.POST = request_params
 

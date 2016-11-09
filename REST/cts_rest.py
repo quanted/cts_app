@@ -216,13 +216,14 @@ class CTS_REST(object):
 	            'generationLimit': gen_limit,
 	            'populationLimit': 0,
 	            'likelyLimit': 0.001,
-	            'transformationLibraries': trans_libs,
+	            # 'transformationLibraries': trans_libs,
 	            'excludeCondition': ""  # 'generateImages': False
 	        }
 			response = jchem_rest.getTransProducts(metabolizer_request)
 			data_walks.j = 0
 			data_walks.metID = 0
 			_response.update({'data': json.loads(data_walks.recursive(response.content, int(gen_limit)))})
+			_response.update({'request_post': request.POST})
 
 		else:
 			pchem_data = {}
