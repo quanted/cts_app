@@ -13,7 +13,6 @@ import redis
 redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
-# @csrf_exempt
 def directAllTraffic(request):
 
 	sessionid = request.POST.get('sessionid')
@@ -33,15 +32,10 @@ def directAllTraffic(request):
 
 	# check for cancel request:
 	if 'cancel' in pchem_request.keys():
-		# default queue:
 		tasks.removeUserJobsFromQueue.apply_async(args=[sessionid], queue="manager")  # use default IDs
-		# tasks.removeUserJobsFromRedis.apply_async(args=[sessionid], queue="manager")
-		# return "success" or "failure" response
 		return HttpResponse(json.dumps({'status': "clearing user jobs from queues and redis"}), content_type='application/json')
 
-	# pchem_request['pchem_request'] is checkedCalcsAndProps,
 	pchem_request_dict = pchem_request['pchem_request']
-
 	user_jobs = []
 
 	if 'nodes' in pchem_request.keys():
@@ -49,7 +43,6 @@ def directAllTraffic(request):
 		for node in pchem_request['nodes']:
 			pchem_request['node'] = node
 			pchem_request['chemical'] = node['smiles']
-		# some calcs can process data for multiple smiles in one request
 			jobs = parseOutPchemCallsToWorkers(sessionid, pchem_request)
 			user_jobs = user_jobs + jobs  # build single-level list of jobs
 

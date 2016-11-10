@@ -1,5 +1,3 @@
-from django.http import HttpResponse
-
 import logging
 import os
 import requests
@@ -59,15 +57,11 @@ def request_manager(request):
 	except Exception as err:
 		logging.warning("Error filtering SMILES: {}".format(err))
 		postData.update({'error': "Cannot filter SMILES for TEST data"})
-		return HttpResponse(json.dumps(postData), content_type='application/json')
-	# if '[' in filtered_smiles or ']' in filtered_smiles:
-	#   logging.warning("TEST ignoring request due to brackets in SMILES..")
-	#   postData.update({'error': "TEST cannot process charged species or metals (e.g., [S+], [c+])"})
-	#   return HttpResponse(json.dumps(postData), content_type='application/json')
-	logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
+		redis_conn.publish(sessionid, json.dumps(postData))
 	# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	# test_results = tasked_calls.delay(sessionid, filtered_smiles, props)
+	logging.info("TEST Filtered SMILES: {}".format(filtered_smiles))
+
 	calcObj = TestCalc()
 	test_results = []
 	for prop in props:
@@ -87,19 +81,13 @@ def request_manager(request):
 				postData['data'] = "TEST could not process structure"
 			else:
 				test_data = response_json['properties'][calcObj.propMap[prop]['urlKey']]
-				# data_obj['data'] = response_json['properties'][calcObj.propMap[prop]['urlKey']]
 				if prop == 'water_sol':
 					data_obj['data'] = 1000 * float(mass) * 10**test_data
 				else:
 					data_obj['data'] = test_data
 				
 			result_json = json.dumps(data_obj)
-
-			# node/redis stuff:
-			if redis_conn and sessionid:
-				redis_conn.publish(sessionid, result_json)
-			else:
-				test_results.append(data_obj)
+			redis_conn.publish(sessionid, result_json)
 
 		except Exception as err:
 			logging.warning("Exception occurred getting TEST data: {}".format(err))
@@ -107,13 +95,4 @@ def request_manager(request):
 
 			logging.info("##### session id: {}".format(sessionid))
 
-			# node/redis stuff:
-			if redis_conn and sessionid: 
-				redis_conn.publish(sessionid, json.dumps(data_obj))
-			else:
-				test_results.append(data_obj)
-
-	# TODO: Track this response when using celery, where does it go?
-	postData.update({'data': test_results, 'props': props})
-	return HttpResponse(json.dumps(postData), content_type='application/json')
-	# return HttpResponse("retrieving TEST data..")
+			redis_conn.publish(sessionid, json.dumps(data_obj))
