@@ -53,9 +53,7 @@ def request_manager(request):
 
 		if '[' in filtered_smiles or ']' in filtered_smiles:
 			logging.warning("EPI ignoring request due to brackets in SMILES..")
-			# postData.update({'error': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
 			postData.update({'data': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
-			# return HttpResponse(json.dumps(postData), content_type='application/json')
 			if redis_conn and sessionid:
 				for prop in props:
 					postData['prop'] = prop
@@ -69,11 +67,8 @@ def request_manager(request):
 		# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	except Exception as err:
 		logging.warning("Error filtering SMILES: {}".format(err))
-		# postData.update({'error': "Cannot filter SMILES for EPI data"})
 		postData.update({'data': "Cannot filter SMILES for EPI data"})
-		# return HttpResponse(json.dumps(postData), content_type='application/json')
-		if redis_conn and sessionid:
-			redis_conn.publish(sessionid, json.dumps(postData))
+		redis_conn.publish(sessionid, json.dumps(postData))
 
 	calcObj = EpiCalc()
 	epi_results = []
@@ -95,10 +90,6 @@ def request_manager(request):
 
 		try:
 			response = calcObj.makeDataRequest(filtered_smiles, calc, prop) # make call for data!
-
-			# need to build cts data obj from epi response!
-			# data_obj = calcObj.parsePropResults(filtered_smiles, prop, response)
-
 			result_obj = json.loads(response.content)
 
 			if 'propertyvalue' in result_obj:
@@ -106,12 +97,8 @@ def request_manager(request):
 			else:
 				data_obj.update({"data": json.loads(response.content)}) # add that data
 
-			# node/redis stuff:
-			if redis_conn and sessionid:
-				result_json = json.dumps(data_obj)
-				redis_conn.publish(sessionid, result_json)
-			else:
-				epi_results.append(data_obj)
+			result_json = json.dumps(data_obj)
+			redis_conn.publish(sessionid, result_json)
 
 		except Exception as err:
 			logging.warning("Exception occurred getting {} data: {}".format(err, calc))
@@ -120,13 +107,6 @@ def request_manager(request):
 			logging.info("##### session id: {}".format(sessionid))
 
 			# node/redis stuff:
-			if redis_conn and sessionid: 
-				redis_conn.publish(sessionid, json.dumps(data_obj))
-			else:
-				epi_results.append(data_obj)
+			redis_conn.publish(sessionid, json.dumps(data_obj))
 
 	postData.update({'data': epi_results, 'chemical': filtered_smiles})
-
-	if not sessionid:
-		# send response over http (for accessing as REST service)
-		return HttpResponse(json.dumps(postData), content_type='application/json')
