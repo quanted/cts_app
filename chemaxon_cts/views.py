@@ -83,12 +83,9 @@ def request_manager(request):
 			'workflow': 'gentrans',
 			'run_type': 'batch'
 		}
-
-		if redis_conn and sessionid:
-			result_json = json.dumps(data_obj)
-			redis_conn.publish(sessionid, result_json)
-		else:
-			return HttpResponse(json.dumps(data_obj), content_type='application/json')
+		
+		result_json = json.dumps(data_obj)
+		redis_conn.publish(sessionid, result_json)
 
 	elif service == 'getSpeciationData':
 		from models.chemspec import chemspec_output
@@ -119,10 +116,8 @@ def request_manager(request):
 
 		for key, value in model_params.items():
 			if key in spec_inputs:
-				# will it matter than spec_inputs key:val are unicode????
 				model_params.update({key: spec_inputs[key]})
 
-		# here's where calling chemspec model would be gud...
 
 		request = HttpRequest()
 		request.POST = model_params
@@ -140,18 +135,11 @@ def request_manager(request):
 			'run_type': 'batch'
 		}
 
-		if redis_conn and sessionid:
-			result_json = json.dumps(data_obj)
-			redis_conn.publish(sessionid, result_json)
+		result_json = json.dumps(data_obj)
+		redis_conn.publish(sessionid, result_json)
 
 	else:
-
-		if run_type == 'rest':
-			props = [prop]
-			return getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session)
-		else:
-			# no return w/ web sockets?
-			getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session, request_post)
+		getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, props, session, request_post)
 
 
 
@@ -201,11 +189,8 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 
 						logging.info("chemaxon results: {}".format(results))
 
-						if redis_conn and sessionid:
-							result_json = json.dumps(new_data_obj)
-							redis_conn.publish(sessionid, result_json)
-						else:
-							chemaxon_results.append(new_data_obj)
+						result_json = json.dumps(new_data_obj)
+						redis_conn.publish(sessionid, result_json)
 
 				else:
 					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
@@ -213,37 +198,20 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 
 					logging.info("chemaxon results: {}".format(results))
 
-					if redis_conn and sessionid:
-						result_json = json.dumps(data_obj)
-						redis_conn.publish(sessionid, result_json)
-					else:
-						chemaxon_results.append(data_obj)
+					result_json = json.dumps(data_obj)
+					redis_conn.publish(sessionid, result_json)
 
 			except Exception as err:
 				logging.warning("Exception occurred getting chemaxon data: {}".format(err))
-				logging.info("session id: {}".format(sessionid))
 
 				data_obj.update({
 					'error': "cannot reach chemaxon calculator"
 				})
 
-				if redis_conn and sessionid:
-					redis_conn.publish(sessionid, json.dumps(data_obj))
-					logging.info("published to redish")
-				else:
-					chemaxon_results.append(data_obj)
+				redis_conn.publish(sessionid, json.dumps(data_obj))
 
 
 		redis_conn.delete(sessionid)  # clear user's job cache from redis
-
-
-		# pack up all results to send at once if using http:
-		postData.update({'data': chemaxon_results})
-
-		# if not redis_conn and not sessionid:
-		if not sessionid:
-			# send response over http (for accessing as REST service)
-			return HttpResponse(json.dumps(postData), content_type='application/json')
 
 	return
 
