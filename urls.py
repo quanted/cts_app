@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     (r'^cts/wstest/?$', 'REST.portal.test_sockets'),
     (r'^cts/nodetest/?$', 'REST.views.testCTSNode'),
     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
-    url(r'^cts/rest/', include('REST.urls'))
+    url(r'^cts/rest/', include('REST.urls'))  # todo: REST --> cts_api?
 )
 
 # All view functions here must be in '/views/views.py'

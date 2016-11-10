@@ -19,7 +19,7 @@
 			$('#send-receive-node').on('click', function () {
 				// send message to node through nginx:
 				console.log("sending 'hey node' to node server...");
-				socket.emit('say_hello', 'hey node');
+				socket.emit('test_socket', 'hey node');
 			});
 
 			$('#send-receive-celery').on('click', function () {
