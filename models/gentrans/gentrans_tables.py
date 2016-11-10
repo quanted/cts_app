@@ -81,15 +81,11 @@ inTmpl = Template(getInputTemplate())
 def table_all(gentrans_obj):
 
 	html_all = table_inputs(gentrans_obj)
-
-	# html_all += build_pchem_table(gentrans_obj) # included in table_metabolites() now
-
+	
 	html_all += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
 	html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(gentrans_obj.run_data))})
 	html_all += table_metabolites(gentrans_obj)
 
-	# html_all += pchemprop_input_fields(gentrans_obj)
-	# html_all += render_to_string('cts_display_raw_data.html', {'rawData': gentrans_obj.rawData})
 	return html_all
 
 

@@ -45,10 +45,6 @@ def requestTimeout(request):
 	return response
 
 
-def blankLanding(request, model=None):
-	return render(request, 'blank_landing.html')
-
-
 def displayPDF(request, reactionLib=None):
 	if 'ahydrolysis' in request.path:
 		logging.info('ahydrolysis in path!')

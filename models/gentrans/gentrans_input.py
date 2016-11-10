@@ -13,7 +13,6 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
     from models.chemspec import chemspec_parameters
 
     html = render_to_string('04uberinput_jquery.html', { 'model': model }) # loads scripts_gentrans.js
-    # html = html + render_to_string('cts-jquery.html', {})
     html = html + render_to_string('04uberinput_start_tabbed.html', {
             'model': model,
             'model_attributes': header

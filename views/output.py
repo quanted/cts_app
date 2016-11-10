@@ -10,7 +10,6 @@ def outputPageView(request, model='none', header=''):
 
     outputmodule = importlib.import_module('.'+model+'_output', 'models.'+model)
     tablesmodule = importlib.import_module('.'+model+'_tables', 'models.'+model)
-    # from REST import rest_funcs
 
     outputPageFunc = getattr(outputmodule, model+'OutputPage') # function name = 'model'OutputPage  (e.g. 'sipOutputPage')
     model_obj = outputPageFunc(request)
@@ -43,10 +42,6 @@ def outputPageView(request, model='none', header=''):
     # html = html + render_to_string('export.html', {})
     html += render_to_string('04uberoutput_end.html', {'model':model})
     html += render_to_string('06cts_uberfooter.html', {'links': ''})
-    
-    # Handle Trex, which is not objectified yet
-    # if model != 'trex':
-    #     rest_funcs.save_dic(html, model_obj.__dict__, model, "single")
 
     response = HttpResponse()
     response.write(html)

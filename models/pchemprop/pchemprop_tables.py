@@ -112,7 +112,6 @@ def output_pchem_table(pchemprop_obj):
 
     html += pchemHTML
 
-    # html += render_to_string('cts_pchemprop_cleanOutputTable.html', {"kow_ph": kow_ph})
     html += render_to_string('cts_pchemprop_ajax_calls.html', {
                                     "time": pchemprop_obj.jid,
                                     "kow_ph": kow_ph,
