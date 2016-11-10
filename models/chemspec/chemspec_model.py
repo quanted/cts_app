@@ -3,7 +3,7 @@
 """
 
 import json
-from chemaxon_cts import jchem_rest
+# from chemaxon_cts import jchem_rest
 from chemaxon_cts.jchem_calculator import JchemProperty
 import logging
 import datetime
@@ -15,7 +15,7 @@ class chemspec(object):
                  get_stereo, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
                  isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
-        self.jid = jchem_rest.gen_jid()  # timestamp
+        self.jid = cts_rest.gen_jid()  # timestamp
 
         self.run_type = run_type
 

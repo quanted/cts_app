@@ -13,7 +13,7 @@ import datetime
 import logging
 from django.http import HttpResponse
 
-from chemaxon_cts.jchem_rest import gen_jid
+import cts_rest
 from chemaxon_cts.jchem_calculator import JchemProperty
 from epi_cts.epi_calculator import EpiCalc
 from test_cts.test_calculator import TestCalc
@@ -36,7 +36,7 @@ class CSV(object):
 
 	def parseToCSV(self, run_data):
 
-		jid = gen_jid()  # create timestamp
+		jid = cts_rest.gen_jid()  # create timestamp
 		time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
 		response = HttpResponse(content_type='text/csv')

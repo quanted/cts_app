@@ -1,9 +1,5 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import patterns, include, url
-from chemaxon_cts import jchem_rest
-# from django.contrib import admin
-# admin.autodiscover()
-# from REST import cts_rest
 import cts_rest
 
 

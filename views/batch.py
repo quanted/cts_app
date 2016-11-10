@@ -5,7 +5,7 @@ import linksLeft
 import os
 import logging
 from models.pchemprop import pchemprop_tables
-from chemaxon_cts import jchem_rest
+from REST import cts_rest
 import datetime
 
 def batchInputPage(request, model='none', header='none'):
@@ -54,7 +54,7 @@ def batchOutputPage(request, model='none', header='none'):
             'model_attributes': header+' Batch Output'})
 
     # timestamp / version section
-    st = datetime.datetime.strptime(jchem_rest.gen_jid(), 
+    st = datetime.datetime.strptime(cts_rest.gen_jid(), 
         '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html += """
     <div class="out_">
@@ -66,8 +66,6 @@ def batchOutputPage(request, model='none', header='none'):
     </div><br><br>"""
 
     html = html + render_to_string('export.html', {})
-
-    # html += pchemprop_tables.timestamp(None, jchem_rest.gen_jid())
 
     batchOutputPageFunc = getattr(batchoutputmodule, model+'BatchOutputPage')  # function name = 'model'BatchOutputPage  (e.g. 'sipBatchOutputPage')
     # batchOutputTuple = batchOutputPageFunc(request)

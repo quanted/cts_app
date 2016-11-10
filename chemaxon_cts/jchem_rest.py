@@ -7,8 +7,6 @@ CTS-oriented calls to jchem web services
 import requests
 import json
 import logging
-from django.shortcuts import render
-import datetime
 import pytz
 import os
 from django.utils.safestring import mark_safe
@@ -183,21 +181,6 @@ def getTransProducts(request):
 	data = json.dumps(request.POST)
 	results = web_call(url, request, data)
 	return results
-
-
-# def getpchemprops(request):
-#     """
-# 	Calls pchemprop model to get pchem props 
-# 	for a given molecule. This ws was
-# 	originally meant for getting pchem props 
-# 	for METABOLITES on the gentrans output page.
-
-# 	This is only here for accessing pchemprop_model
-# 	via frontend ajax calls
-# 	"""
-#     from models.pchemprop import pchemprop_output
-#     pchemprop_obj = pchemprop_output.pchempropOutputPage(request, True)  # run model for metabolite
-#     return json.dumps(pchemprop_obj.checkedCalcsAndPropsDict)
 
 
 def getStructInfo(structure):
@@ -470,10 +453,3 @@ def removeExplicitH(dataDict):
 				   }]
 	dataDict['display'].update({'filterChain': filterChain})
 	return dataDict
-
-
-def gen_jid():
-	ts = datetime.datetime.now(pytz.UTC)
-	localDatetime = ts.astimezone(pytz.timezone('US/Eastern'))
-	jid = localDatetime.strftime('%Y%m%d%H%M%S%f')
-	return jid

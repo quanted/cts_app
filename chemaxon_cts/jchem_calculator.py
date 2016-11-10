@@ -11,9 +11,6 @@ import json
 import logging
 import os
 from jchem_rest import getStructInfo
-import jchem_rest
-from django.http import HttpRequest
-# import redis
 
 
 headers = {'Content-Type': 'application/json'}

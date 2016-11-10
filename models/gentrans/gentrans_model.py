@@ -3,6 +3,7 @@
 """
 
 from chemaxon_cts import jchem_rest
+from REST import cts_rest
 import logging
 from django.http import HttpRequest
 import data_walks
@@ -17,7 +18,7 @@ class gentrans(object):
                  exact_mass, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
                  gen_limit, pop_limit, likely_limit):
 
-        self.jid = jchem_rest.gen_jid()  # get time of run
+        self.jid = cts_rest.gen_jid()  # get time of run
         self.run_type = run_type  # single or batch
 
         # Chemical Structure

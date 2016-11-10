@@ -3,7 +3,7 @@
 """
 
 import pchemprop_parameters  # Chemical Calculator and Transformation Pathway parameters
-from chemaxon_cts import jchem_rest
+from REST import cts_rest
 from models.gentrans import data_walks
 import logging
 
@@ -24,7 +24,7 @@ class PChemProp(object):
                  vapor_press=None, mol_diss=None, ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None,
                  kow_ph=None, koc=None):
         self.run_type = run_type  # defaults to "single", "batch" coming soon...
-        self.jid = jchem_rest.gen_jid()  # get time of run
+        self.jid = cts_rest.gen_jid()  # get time of run
 
         # chemical structure
         self.chem_struct = chem_struct

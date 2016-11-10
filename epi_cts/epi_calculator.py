@@ -5,7 +5,6 @@ import os
 from REST.calculator import Calculator
 from REST.smilesfilter import max_weight
 from REST import smilesfilter
-# import jchem_rest
 
 headers = {'Content-Type': 'application/json'}
 

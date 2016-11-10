@@ -3,7 +3,6 @@ import json
 from django.http import HttpRequest
 from chemaxon_cts import jchem_rest
 from django.template import Context, Template, defaultfilters
-from bs4 import BeautifulSoup
 
 """
 10-31-14 (np)

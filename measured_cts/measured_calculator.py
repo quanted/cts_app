@@ -3,7 +3,6 @@ import json
 import logging
 import os
 from REST.calculator import Calculator
-# import jchem_rest
 
 headers = {'Content-Type': 'application/json'}
 

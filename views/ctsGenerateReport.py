@@ -3,11 +3,12 @@ import StringIO
 from django.http import HttpResponse
 from django.template import Context
 import json
+from xhtml2pdf import pisa
 
 import logging
 from models.gentrans import data_walks
 from models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
-from chemaxon_cts.jchem_rest import gen_jid
+from REST import cts_rest
 from django.core.cache import cache
 
 
@@ -156,6 +157,13 @@ def parsePOST(request):
             .pdfDiv {border: 1px solid #000000;}
             div.tooltiptext {display: table; border: 1px solid #333333; margin: 8px; padding: 4px}
 
+            div {
+                background-color: #FFFFFF;
+            }
+            img {
+                background-color: #FFFFFF;
+            }
+
             </style>
             """
     input_str = input_css + final_str
@@ -169,7 +177,6 @@ def pdfReceiver(request, model=''):
     PDF Generation Receiver function.
     Sends POST data as string to pdfkit library for processing
     """
-    from ext_libs.xhtml2pdf import pisa
 
     input_str = ''
     input_str += parsePOST(request)
@@ -182,18 +189,8 @@ def pdfReceiver(request, model=''):
         logging.warning("elusive invalid color value, defaulting html background-color to FFFFFF")
         pisa.CreatePDF(input_str, dest=packet, default_css="body{background-color:#FFFFFF;}")
 
-    # landscape only for metabolites output:
-    # if 'pdf_json' in request.POST and request.POST['pdf_json']:
-    #     options = {'orientation': 'Landscape'}
-    # else:
-    #     options = {'orientation': 'Portrait'}
 
-
-
-    # would putting the below code in a finally not trigger the error page????
-
-
-    jid = gen_jid()  # create timestamp
+    jid = cts_rest.gen_jid()  # create timestamp
     response = HttpResponse(packet.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
     packet.close()  # todo: figure out why this doesn't solve the 'caching problem'
@@ -208,7 +205,7 @@ def htmlReceiver(request, model=''):
     input_str = ''
     input_str += parsePOST(request)
     packet = StringIO.StringIO(input_str)  # write to memory
-    jid = gen_jid()  # create timestamp
+    jid = cts_rest.gen_jid()  # create timestamp
     response = HttpResponse(packet.getvalue(), content_type='application/html')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.html'
     # packet.truncate(0)  # clear from memory?
