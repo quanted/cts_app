@@ -1,5 +1,3 @@
-from django.http import HttpResponse
-
 import logging
 import os
 import requests
@@ -44,16 +42,15 @@ def request_manager(request):
 		if '[' in filtered_smiles or ']' in filtered_smiles:
 			logging.warning("EPI ignoring request due to brackets in SMILES..")
 			post_data.update({'error': "EPI Suite cannot process charged species or metals (e.g., [S+], [c+])"})
-			return HttpResponse(json.dumps(post_data), content_type='application/json')
+			redis_conn.publish(sessionid, json.dumps(post_data))
 	except Exception as err:
 		logging.warning("Error filtering SMILES: {}".format(err))
 		post_data.update({'error': "Cannot filter SMILES for Measured data"})
-		return HttpResponse(json.dumps(post_data), content_type='application/json')
+		redis_conn.publish(sessionid, json.dumps(post_data))
 
 	logging.info("Measured Filtered SMILES: {}".format(filtered_smiles))
 
 	calcObj = MeasuredCalc()
-	measured_results = []
 
 	try:
 		response = calcObj.makeDataRequest(filtered_smiles) # make call for data!
@@ -68,16 +65,11 @@ def request_manager(request):
 			data_obj.update({'node': node, 'request_post': request.POST})
 
 			# push one result at a time if node/redis:
-			if redis_conn and sessionid:
-				result_json = json.dumps(data_obj)
-				redis_conn.publish(sessionid, result_json)
-			else:
-				# otherwise send as list
-				measured_results.append(data_obj)
+			result_json = json.dumps(data_obj)
+			redis_conn.publish(sessionid, result_json)
 
 	except Exception as err:
 		logging.warning("Exception occurred getting Measured data: {}".format(err))
-		measured_results = []
 		for prop in props:
 			data_obj = {
 				'data': "error - cannot find measured data for structure",
@@ -86,18 +78,5 @@ def request_manager(request):
 				'node': node,
 				'request_post': request.POST
 			}
-			measured_results.append(data_obj)
-			if redis_conn and sessionid:
-				redis_conn.publish(sessionid, json.dumps(data_obj))
 
-		if not sessionid:
-			post_data.update({'data': measured_results, 'chemical': filtered_smiles})
-
-		# if redis_conn and sessionid: 
-		# 	redis_conn.publish(sessionid, json.dumps(post_data))
-		# else:
-			HttpResponse(json.dumps(post_data), content_type='application/json')
-
-	if not sessionid:
-		post_data.update({'data': measured_results, 'chemical': filtered_smiles})
-		return HttpResponse(json.dumps(post_data), content_type='application/json')
+			redis_conn.publish(sessionid, json.dumps(data_obj))
