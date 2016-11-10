@@ -1,5 +1,3 @@
-from django.http import HttpResponse
-
 import logging
 import requests
 import json
@@ -34,15 +32,8 @@ def request_manager(request):
         'node': node
     }
 
-    ############### Filtered SMILES stuff!!! ################################################
+    ############### Filtered SMILES stuff!!! ###########################
     # filtered_smiles = parseSmilesByCalculator(structure, "sparc") # call smilesfilter
-
-    # logging.info("SPARC Filtered SMILES: {}".format(filtered_smiles)) 
-
-    # if '[' in filtered_smiles or ']' in filtered_smiles:
-    #   logging.warning("SPARC ignoring request due to brackets in SMILES..")
-    #   post_data.update({'error': "SPARC cannot process charged species or metals (e.g., [S+], [c+])"})
-    #   return HttpResponse(json.dumps(post_data), content_type='application/json')
     ###########################################################################################
 
     calcObj = SparcCalc(structure)
@@ -69,63 +60,34 @@ def request_manager(request):
 
 
     try:
-        # if prop == 'ion_con':
         if 'ion_con' in props:
             response = calcObj.makeCallForPka() # response as d ict returned..
             pka_data = calcObj.getPkaResults(response)
             sparc_response.update({'data': pka_data, 'prop': 'ion_con'})
             logging.info("response: {}".format(sparc_response))
-            # sparc_results.append(ion_con_response)
             result_json = json.dumps(sparc_response)
-            if redis_conn and sessionid:
-                redis_conn.publish(sessionid, result_json)
-            else:
-                return HttpResponse(result_json, content_type='application/json')
+            redis_conn.publish(sessionid, result_json)
 
-        # if prop == 'kow_wph':
         if 'kow_wph' in props:
             ph = request.POST.get('ph') # get PH for logD calculation..
             response = calcObj.makeCallForLogD() # response as dict returned..
             sparc_response.update({'data': calcObj.getLogDForPH(response, ph), 'prop': 'kow_wph'})
             logging.info("response: {}".format(sparc_response))
-            # sparc_results.append(kow_wph_response)
             result_json = json.dumps(sparc_response)
-            if redis_conn and sessionid:
-                redis_conn.publish(sessionid, result_json)
-            else:
-                return HttpResponse(result_json, content_type='application/json')
-
-        prop_map = calcObj.propMap.keys()
-        # if any(prop not in ['ion_con', 'kow_wph'] for prop in props):
-        # for prop in props:
-
-        logging.warning("actually making multi prop call")
+            redis_conn.publish(sessionid, result_json)
 
         multi_response = calcObj.makeDataRequest()
         if 'calculationResults' in multi_response:
-
-            logging.warning("about to parse responses")
-
-            logging.warning("props: {}".format(props))
-            # logging.warning("prop: {}".format(prop))
-
             multi_response = calcObj.parseMultiPropResponse(multi_response['calculationResults'])
             for prop_obj in multi_response:
-                # if prop_obj['prop'] in props:
-                # if prop_obj['prop'] == prop:
                 if prop_obj['prop'] in props and prop_obj != 'ion_con' and prop_obj != 'kow_wph':
                     prop_obj.update({'node': node, 'chemical': structure, 'request_post': request.POST})
                     logging.info("response: {}".format(prop_obj))
                     result_json = json.dumps(prop_obj) 
-                    if redis_conn and sessionid:
-                        redis_conn.publish(sessionid, result_json)
-                    else:
-                        return HttpResponse(result_json, content_type='application/json')
-                    # could send each calc-prop-data instead of list of them..
+                    redis_conn.publish(sessionid, result_json)
 
     except Exception as err:
         logging.warning("Exception occurred getting SPARC data: {}".format(err))
-        logging.info("session id: {}".format(sessionid))
 
         for prop in props:
 
@@ -135,7 +97,4 @@ def request_manager(request):
                 'request_post': request.POST
             })
 
-            if redis_conn and sessionid: 
-                redis_conn.publish(sessionid, json.dumps(post_data))
-            else:
-                return HttpResponse(json.dumps(post_data), content_type='application/json')
+            redis_conn.publish(sessionid, json.dumps(post_data))

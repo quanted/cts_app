@@ -1,6 +1,3 @@
-
-from django.http import HttpResponse
-
 import logging
 import os
 import requests
