@@ -15,6 +15,7 @@ from models.pchemprop import pchemprop_tables
 # import importlib
 import gentrans_output
 import os
+from django.conf import settings
 
 
 def getdjtemplate():
@@ -176,7 +177,7 @@ def table_metabolites(gentrans_obj):
 	"""
 
 	html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
-	html += render_to_string('cts_pchemprop_ajax_calls.html', {
+	html += render_to_string('cts_pchemprop_requests.html', {
 									"speciation_inputs": "null",
 									"kow_ph": "null",
 									"structure": "null",
@@ -184,7 +185,11 @@ def table_metabolites(gentrans_obj):
 									"test_results": gentrans_obj.test_results,
 									'nodes': 'null',
 									'run_type': 'single',
-									'workflow': 'gentrans'})
+									'workflow': 'gentrans',
+									'nodejs_host': settings.NODEJS_HOST,
+                                    'nodejs_port': settings.NODEJS_PORT
+								}
+							)
 
 
 	# insert d3 test page template here:

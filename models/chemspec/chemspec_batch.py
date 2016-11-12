@@ -3,6 +3,7 @@ os.environ['DJANGO_SETTINGS_MODULE']='settings'
 from django.template.loader import render_to_string
 from models.pchemprop import pchemprop_parameters
 import json
+from django.conf import settings
 
 
 def chemspecBatchInputPage(request, model='', header='Chemical Speciation Properties', formData=None):
@@ -53,14 +54,18 @@ def chemspecBatchOutputPage(request, model='', header='Chemical Speciation Prope
 
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
-    html +=  render_to_string('cts_pchemprop_ajax_calls.html', 
-        # {'checkedCalcsAndProps': mark_safe(chemspec_obj.speciation_inputs),  # using checkedCalcsAndProps key for speciation inputs!!!!!
-        {'checkedCalcsAndProps': {},
-        'speciation_inputs': mark_safe(chemspec_obj.speciation_inputs),
-        'nodes': mark_safe(batch_chemicals),
-        'workflow': "chemspec",
-        'run_type': "batch",
-        'run_data': chemspec_obj.run_data})
+    html +=  render_to_string('cts_pchemprop_requests.html', 
+        {
+            'checkedCalcsAndProps': {},
+            'speciation_inputs': mark_safe(chemspec_obj.speciation_inputs),
+            'nodes': mark_safe(batch_chemicals),
+            'workflow': "chemspec",
+            'run_type': "batch",
+            'run_data': chemspec_obj.run_data,
+            'nodejs_host': settings.NODEJS_HOST,
+            'nodejs_port': settings.NODEJS_PORT
+        }
+    )
 
     html += render_to_string('cts_gentrans_tree.html', {'gen_max': 0})
 

@@ -6,7 +6,8 @@ import logging
 import pchemprop_parameters
 import json
 import os
-
+os.environ['DJANGO_SETTINGS_MODULE']='settings'
+from django.conf import settings
 
 
 def getInputData(pchemprop_obj):
@@ -112,7 +113,7 @@ def output_pchem_table(pchemprop_obj):
 
     html += pchemHTML
 
-    html += render_to_string('cts_pchemprop_ajax_calls.html', {
+    html += render_to_string('cts_pchemprop_requests.html', {
                                     "time": pchemprop_obj.jid,
                                     "kow_ph": kow_ph,
                                     "structure": mark_safe(pchemprop_obj.smiles),
@@ -121,9 +122,11 @@ def output_pchem_table(pchemprop_obj):
                                     "formula": pchemprop_obj.formula,
                                     "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
                                     'nodes': 'null',
-                                    'speciation_inputs': 'null'
-                                    # "test_results": mark_safe(json.dumps(pchemprop_obj.test_results))
-                            })
+                                    'speciation_inputs': 'null',
+                                    'nodejs_host': settings.NODEJS_HOST,
+                                    'nodejs_port': settings.NODEJS_PORT
+                                }
+                            )
     html += """
         <br>
         <input type="button" value="Get data" class="submit input_button btn-pchem" id="btn-pchem-data">

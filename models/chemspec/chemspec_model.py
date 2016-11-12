@@ -108,7 +108,7 @@ class chemspec(object):
             # for batch mode, get inputs but don't get
             # data until output page loads. this is because batch
             # speciation calls are done through nodejs/socket.io
-            # using cts_pchemprop_ajax_calls.html
+            # using cts_pchemprop_requests.html
 
             self.speciation_inputs = {
                 'pKa_decimals': pKa_decimals,

@@ -32,6 +32,8 @@ $(document).ready(function() {
     // nodes = "{{nodes}}";  // defaults to ""
     batch_chems = {{nodes}};
     run_type = "{{run_type}}";
+    nodejs_host = "{{nodejs_host}}";
+    nodejs_port = {{nodejs_port}};
 
     connectToSocket();
 
@@ -102,8 +104,12 @@ function buildCheckedCalcsAndProps () {
 function connectToSocket() {
 
     if (typeof io !== 'undefined') {
-        socket = io.connect("localhost", {port: 4000, 'force new connection': true});
-        // socket = io.connect('http://134.67.114.1', {'force new connection': true});
+        if (nodejs_port && nodejs_port != 80) {
+            socket = io.connect(nodejs_host, {port: nodejs_port, 'force new connection': true});
+        }
+        else {
+            socket = io.connect(nodejs_host, {'force new connection': true});
+        }
     }
     else {
         socket = null;
@@ -154,39 +160,40 @@ function connectToSocket() {
 
                         batch_data.push(product_data);
 
-                        if (checkedCalcsAndProps.length > 0) {
+                        // TODO: Refactor this section
+                        // if (checkedCalcsAndProps.length > 0) {
 
-                            var pchem_data = {
-                                'chemical': structure,
-                                'ph': kowPH,
-                                // 'node': node,
-                                'nodes': products,
-                                'pchem_request': checkedCalcsAndProps
-                            };
+                        //     var pchem_data = {
+                        //         'chemical': structure,
+                        //         'ph': kowPH,
+                        //         // 'node': node,
+                        //         'nodes': products,
+                        //         'pchem_request': checkedCalcsAndProps
+                        //     };
 
-                            if (run_type != null) {
-                                pchem_data['run_type'] = run_type
-                            }
+                        //     if (run_type != null) {
+                        //         pchem_data['run_type'] = run_type
+                        //     }
 
-                            var cache = [];
-                            var pchem_data_json = JSON.stringify(pchem_data, function(key, value) {
-                                if (typeof value === 'object' && value !== null) {
-                                    if (cache.indexOf(value) !== -1) {
-                                        // Circular reference found, discard key
-                                        return;
-                                    }
-                                    // Store value in our collection
-                                    cache.push(value);
-                                }
-                                return value;
-                            });
-                            cache = null; // Enable garbage collection
+                        //     var cache = [];
+                        //     var pchem_data_json = JSON.stringify(pchem_data, function(key, value) {
+                        //         if (typeof value === 'object' && value !== null) {
+                        //             if (cache.indexOf(value) !== -1) {
+                        //                 // Circular reference found, discard key
+                        //                 return;
+                        //             }
+                        //             // Store value in our collection
+                        //             cache.push(value);
+                        //         }
+                        //         return value;
+                        //     });
+                        //     cache = null; // Enable garbage collection
 
-                            if (socket) {
-                                // emit data through web socket:
-                                socket.emit('get_data', pchem_data_json)
-                            }
-                        }
+                        //     if (socket) {
+                        //         // emit data through web socket:
+                        //         socket.emit('get_data', pchem_data_json)
+                        //     }
+                        // }
 
                     }
 
@@ -203,10 +210,7 @@ function connectToSocket() {
             calls_tracker--;
             console.log("calls tracker: " + calls_tracker);
 
-            // if (data['workflow'] == 'gentrans' && run_type == 'batch') {
-            // if (data['run_type'] == 'batch') {
             sessionStorage.setItem('calls_tracker', calls_tracker);
-            // }
 
             if (calls_tracker <= 0) {
                 console.log("All data retrieved!");
@@ -314,16 +318,11 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
         pchem_data['service'] = 'getSpeciationData';
         pchem_data['calc'] = 'chemaxon';
         pchem_data['workflow'] = 'chemspec';
-        // pchem_data['checkedCalcsAndProps'] = checkedCalcsAndProps;  // speciation inputs!   
         pchem_data['speciation_inputs'] = speciation_inputs;
 
     }
 
     pchem_data['mass'] = mass;
-
-
-    // pchem_data['calc'] = calc;
-    // pchem_data['props'] = checkedCalcsAndProps[calc];  // get list of requested props
 
     // var pchem_data_json = JSON.stringify(pchem_data);
     var cache = [];
@@ -340,17 +339,12 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
     });
     cache = null; // Enable garbage collection
 
-    if (socket) {
-        // emit data through web socket:
-        socket.emit('get_data', pchem_data_json)
-    }
-    else {
-        // send pchem request through ajax calls, one calc per call:
-        makeTheCall(pchem_data_json, node, addDataToTable);
-    }
+
+    // Send data to cts_nodejs server:
+    socket.emit('get_data', pchem_data_json);
+
 
     // adds spinners to table cells
-    // todo: do this a better way!
     for (var calc in checkedCalcsAndProps) {
         for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
             var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
@@ -359,46 +353,6 @@ function startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, no
         }
     }
 
-}
-
-
-function makeTheCall(calcPropData, node, addDataToTable) {
-    calls_tracker++;
-    console.log("calls tracker: " + calls_tracker);
-    $.ajax({
-        url: "/cts/portal",
-        type: "POST",
-        dataType: "json",
-        data: calcPropData,
-        success: function(data) {
-            calls_tracker--;
-            if (node) { updateProgressBar(calls_tracker, total_calls); }
-            console.log("calls tracker: " + calls_tracker);
-            if (node) { $("#" + node.id).children('img').addClass("hasPchemProps"); } // highlight node..
-            if ('props' in data) {
-                parseListDataFromResults(data, node, addDataToTable);
-            }
-            else {
-                parseResponseToPchemTable(data, node, false, addDataToTable);
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log("Error: " + errorThrown);
-            calls_tracker--; // TODO (maybe): retry call instead of decrementing and moving on..
-            if (node) { updateProgressBar(calls_tracker, total_calls); }
-            var error = {
-                "error": textStatus,
-                "calc": calcPropData['calc'],
-                "prop": calcPropData['prop']
-            };
-            if ('props' in calcPropData) {
-                parseListDataFromResults(error, node, addDataToTable);
-            }
-            else {
-                parseResponseToPchemTable(error, node, false, addDataToTable);
-            }
-        }
-    });
 }
 
 

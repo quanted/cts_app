@@ -1,5 +1,4 @@
-import os
-os.environ['DJANGO_SETTINGS_MODULE']='settings'
+from django.conf import settings
 from django.template.loader import render_to_string
 from models.pchemprop import pchemprop_parameters
 import json
@@ -54,11 +53,16 @@ def pchempropBatchOutputPage(request, model='', header='P-Chem Properties', form
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
-    html +=  render_to_string('cts_pchemprop_ajax_calls.html', 
-        {'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
-        'kow_ph': pchemprop_obj.kow_ph,
-        'speciation_inputs': 'null',
-        'nodes': mark_safe(batch_chemicals)})
+    html +=  render_to_string('cts_pchemprop_requests.html', 
+        {
+            'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
+            'kow_ph': pchemprop_obj.kow_ph,
+            'speciation_inputs': 'null',
+            'nodes': mark_safe(batch_chemicals),
+            'nodejs_host': settings.NODEJS_HOST,
+            'nodejs_port': settings.NODEJS_PORT
+        }
+    )
 
     html += render_to_string('cts_gentrans_tree.html', {'gen_max': 0})
 

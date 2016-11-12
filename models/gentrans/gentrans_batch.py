@@ -1,5 +1,4 @@
-import os
-os.environ['DJANGO_SETTINGS_MODULE']='settings'
+from django.conf import settings
 from django.template.loader import render_to_string
 from models.gentrans import gentrans_parameters
 import json
@@ -85,14 +84,19 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_limit})
 
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
-    html +=  render_to_string('cts_pchemprop_ajax_calls.html', 
-        {'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
-        'kow_ph': pchemprop_obj.kow_ph,
-        'nodes': mark_safe(batch_chemicals),
-        'workflow': "gentrans",
-        'run_type': "batch",
-        'run_data': pchemprop_obj.run_data,
-        'speciation_inputs': 'null'})
+    html +=  render_to_string('cts_pchemprop_requests.html', 
+        {
+            'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
+            'kow_ph': pchemprop_obj.kow_ph,
+            'nodes': mark_safe(batch_chemicals),
+            'workflow': "gentrans",
+            'run_type': "batch",
+            'run_data': pchemprop_obj.run_data,
+            'speciation_inputs': 'null',
+            'nodejs_host': settings.NODEJS_HOST,
+            'nodejs_port': settings.NODEJS_PORT
+        }
+    )
 
     html += """
     <div id="cont" hidden>

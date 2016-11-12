@@ -9,11 +9,6 @@ from REST.smilesfilter import filterSMILES
 from models.gentrans import data_walks
 
 
-# TODO: get these from the to-be-modified jchem_rest class..
-services = ['getChemDetails', 'getChemSpecData', 'smilesToImage', 'convertToSMILES',
-            'getTransProducts', 'getPchemProps', 'getPchemPropDict', 'getJchemVersion',
-            'getMolecularInfo']
-
 methods = ['KLOP', 'VG', 'PHYS']
 
 redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
@@ -56,7 +51,7 @@ def request_manager(request):
 
 
 	if service == 'getTransProducts':
-		# getTransProducts chemaxon service..
+		# getTransProducts chemaxon service via ws..
 
 		request = HttpRequest()
 		# from gentrans model:
@@ -88,6 +83,7 @@ def request_manager(request):
 		redis_conn.publish(sessionid, result_json)
 
 	elif service == 'getSpeciationData':
+		# speciation data from chemspec model, for batch via ws
 		from models.chemspec import chemspec_output
 
 		spec_inputs = request.POST.get('speciation_inputs')
@@ -184,7 +180,7 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 						    'request_post': request_post
 						})
 
-						results = sendRequestToWebService("getPchemProps", chemical, prop, ph, method, sessionid, node, session)  # returns json string
+						results = getJchemPropData(chemical, prop, ph, method, sessionid, node, session)
 						new_data_obj.update({'data': results['data'], 'method': method})
 
 						logging.info("chemaxon results: {}".format(results))
@@ -193,7 +189,7 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 						redis_conn.publish(sessionid, result_json)
 
 				else:
-					results = sendRequestToWebService("getPchemProps", chemical, prop, ph, None, sessionid, node, session)  # returns json string
+					results = getJchemPropData(chemical, prop, ph, None, sessionid, node, session)
 					data_obj.update({'data': results['data']})
 
 					logging.info("chemaxon results: {}".format(results))
@@ -214,33 +210,6 @@ def getPchemPropData(chemical, sessionid, method, ph, node, calc, run_type, prop
 		redis_conn.delete(sessionid)  # clear user's job cache from redis
 
 	return
-
-def sendRequestToWebService(service, chemical, prop, phForLogD=None, method=None, sessionid=None, node=None, session=None):
-	"""
-    Makes call to jchem rest service
-    """
-	request = requests.Request(data={'chemical': chemical})
-	response = None
-	if service == 'getChemDetails':
-		try:
-			response = jchem_rest.convertToSMILES(request)  # convert chemical to smiles
-			response = json.loads(response.content)  # get json data
-			filtered_smiles = filterSMILES(response['structure'])  # call CTS REST SMILES filter
-			request.data = {'chemical': filtered_smiles}
-			response = jchem_rest.getChemDetails(request)  # get chemical details
-			response = json.loads(response.content)
-		except Exception as e:
-			raise e # TODO: build HTTP-code-specific error handling at portal.py
-		response = jchem_rest.getChemDetails(request).content
-	elif service == 'getChemSpecData':
-		response = jchem_rest.getChemSpecData(request).content
-	elif service == 'smilesToImage':
-		response = jchem_rest.smilesToImage(request).content
-	elif service == 'convertToSMILES':
-		response = jchem_rest.convertToSMILES(request).content
-	elif service == 'getPchemProps':
-		response = getJchemPropData(chemical, prop, phForLogD, method, sessionid, node, session)
-	return response
 
 
 def getJchemPropData(chemical, prop, phForLogD=None, method=None, sessionid=None, node=None, session=None):

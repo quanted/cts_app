@@ -356,7 +356,7 @@ def filterSMILES(request):
 def web_call(url, request, data):
 	"""
 	Makes the request to a specified URL
-	and POST data. Returns an http response.
+	and POST data. Returns an requests lib http response.
 	"""
 	try:
 		if data == None:
