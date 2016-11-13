@@ -189,26 +189,7 @@ class Pka(JchemProperty):
                 msList = []
                 for ms in self.results['microspecies']:
                     msStructDict = {}  # list element in msList
-
-                    # # maybe here is a good place to call smilesToImage() and get
-                    # # an SVG version of the microspecies image..
-
-                    # request = HttpRequest()
-                    # request.POST = {
-                    #     'type': 'svg',
-                    #     'width': 75,
-                    #     'scale': 50,
-                    #     'smiles': ms['structureData']['structure']  # technically mrv, not smiles
-                    # }
-                    # svg_results = json.loads(jchem_rest.smilesToImage(request).content)
-
                     msStructDict.update({'image': ms['image']['image'], 'key': ms['key']})
-
-                    # msStructDict.update({
-                    #     'image': svg_results['data'][0]['image']['image'],
-                    #     'key': ms['key']
-                    # })
-
                     structInfo = getStructInfo(ms['structureData']['structure'])
                     msStructDict.update(structInfo)
                     msList.append(msStructDict)

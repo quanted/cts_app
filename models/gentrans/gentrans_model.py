@@ -73,12 +73,8 @@ class gentrans(object):
             dataDict.update({'transformationLibraries': self.trans_libs})
 
         if self.run_type != 'batch':
-
-            request = HttpRequest()
-            request.POST = dataDict
-
             try:
-                response = jchem_rest.getTransProducts(request)
+                response = jchem_rest.getTransProducts(dataDict)
             except Exception as e:
                 logging.warning("error making data request: {}".format(e))
                 raise
@@ -86,12 +82,10 @@ class gentrans(object):
             # reformat data for outputting to tree structure:
             data_walks.j = 0
             data_walks.metID = 0
-            self.results = data_walks.recursive(response.content, int(self.gen_limit))
+            self.results = data_walks.recursive(response, int(self.gen_limit))
 
             # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
             self.test_results = []
-
-            self.rawData = response.content
 
         self.run_data = {
             'title': "Transformation Products Output",

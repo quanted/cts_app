@@ -212,8 +212,7 @@ class CTS_REST(object):
 			structure = request.POST.get('structure')
 			gen_limit = request.POST.get('generationLimit')
 			trans_libs = request.POST.get('transformationLibraries')
-			metabolizer_request = HttpRequest()
-			metabolizer_request.POST = {
+			metabolizer_request = {
 	            'structure': structure,
 	            'generationLimit': gen_limit,
 	            'populationLimit': 0,
@@ -224,7 +223,7 @@ class CTS_REST(object):
 			response = jchem_rest.getTransProducts(metabolizer_request)
 			data_walks.j = 0
 			data_walks.metID = 0
-			_response.update({'data': json.loads(data_walks.recursive(response.content, int(gen_limit)))})
+			_response.update({'data': json.loads(data_walks.recursive(response, int(gen_limit)))})
 			_response.update({'request_post': request.POST})
 
 		else:
@@ -639,23 +638,20 @@ def getChemicalEditorData(request):
 	try:
 		chemical = request.POST.get('chemical')
 
-		request = requests.Request(data={'chemical': chemical})
-		response = jchem_rest.convertToSMILES(request)  # convert chemical to smiles
-		response = json.loads(response.content)  # get json data
+		# request = requests.Request(data={'chemical': chemical})
+		# response = jchem_rest.convertToSMILES(request)  # convert chemical to smiles
+		# response = json.loads(response.content)  # get json data
+		response = jchem_rest.convertToSMILES({'chemical': chemical})
 
 		logging.warning("Converted SMILES: {}".format(response))
 
 		orig_smiles = response['structure']
-
 		filtered_smiles = filterSMILES(orig_smiles)  # call CTS REST SMILES filter
 
 		logging.warning("Filtered SMILES: {}".format(filtered_smiles))
 
-		request.data = {'chemical': filtered_smiles}
-		jchem_response = jchem_rest.getChemDetails(request)  # get chemical details
-		jchem_response = json.loads(jchem_response.content)
+		jchem_response = jchem_rest.getChemDetails({'chemical': filtered_smiles})  # get chemical details
 
-		# return this data in a standardized way for molecular info!!!!
 		molecule_obj = Molecule().createMolecule(chemical, orig_smiles, jchem_response)
 
 		wrapped_post = {

@@ -67,8 +67,6 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 	user_jobs = []
 
 	if 'service' in pchem_request and pchem_request['service'] == 'getTransProducts':
-		calc_request = HttpRequest()
-		calc_request.POST = pchem_request
 		try:
 			job = tasks.startCalcTask.apply_async(args=["chemaxon", pchem_request], queue="chemaxon")
 			user_jobs.append(job.id)
@@ -98,9 +96,6 @@ def parseOutPchemCallsToWorkers(sessionid, pchem_request):
 		for calc, props in pchem_request_dict.items():
 
 			pchem_request.update({'calc': calc, 'props': props})
-
-			calc_request = HttpRequest()
-			calc_request.POST = pchem_request
 
 			logging.info("requesting {} props from {} calculator..".format(props, calc))
 

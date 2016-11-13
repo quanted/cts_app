@@ -43,11 +43,10 @@ def filterSMILES(smiles):
     calculator-independent SMILES processing.
     uses jchem web services through jchem_rest
     """
-    request = requests.Request(data={'smiles': smiles}) # wrap smiles in http request
-    response = jchem_rest.filterSMILES(request)
-    logging.warning("FILTER RESPONSE: {}".format(response.content))
+    response = jchem_rest.filterSMILES({'smiles': smiles})
+    logging.warning("FILTER RESPONSE: {}".format(response))
     try:
-        filtered_smiles = json.loads(response.content)['results'][-1] # picks out smiles from efs???
+        filtered_smiles = response['results'][-1] # picks out smiles from efs???
         logging.warning("NEW SMILES: {}".format(filtered_smiles))
         return filtered_smiles
     except Exception as e:
@@ -55,17 +54,14 @@ def filterSMILES(smiles):
         raise e
 
 
-def checkMass(smiles):
+def checkMass(chemical):
     """
-    returns true is smiles mass is less
+    returns true if chemical mass is less
     than 1500 g/mol
     """
-    logging.info("inside check mass function..")
-    request = requests.Request(data = { 'smiles': smiles })
     logging.info("checking mass..")
     try:
-        response = jchem_rest.getMass(request) # get mass from jchem ws
-        json_obj = json.loads(response.content)
+        json_obj = jchem_rest.getMass({'chemical': chemical}) # get mass from jchem ws
     except Exception as e:
         logging.warning("!!! Error in checkMass() {} !!!".format(e))
         raise e
@@ -83,10 +79,9 @@ def clearStereos(smiles):
     """
     clears stereoisomers from smiles
     """
-    request = requests.Request(data={'smiles':smiles, 'action': "clearStereo"})
     try:
-        response = jchem_rest.singleFilter(request)
-        filtered_smiles = json.loads(response.content)['results'] # get stereoless structure
+        response = jchem_rest.singleFilter({'smiles':smiles, 'action': "clearStereo"})
+        filtered_smiles = response['results'] # get stereoless structure
     except Exception as e:
         logging.warning("!!! Error in clearStereos() {} !!!".format(e))
         raise e
@@ -97,10 +92,9 @@ def transformSMILES(smiles):
     """
     N(=O)=O >> [N+](=O)[O-]
     """
-    request = requests.Request(data={'smiles':smiles, 'action': "transform"})
     try:
-        response = jchem_rest.singleFilter(request)
-        filtered_smiles = json.loads(response.content)['results'] # get stereoless structure
+        response = jchem_rest.singleFilter({'smiles':smiles, 'action': "transform"})
+        filtered_smiles = response['results'] # get stereoless structure
     except Exception as e:
         logging.warning("!!! Error in transformSMILES() {} !!!".format(e))
         raise e
@@ -111,10 +105,9 @@ def untransformSMILES(smiles):
     """
     [N+](=O)[O-] >> N(=O)=O
     """
-    request = requests.Request(data={'smiles':smiles, 'action': "untransform"})
     try:
-        response = jchem_rest.singleFilter(request)
-        filtered_smiles = json.loads(response.content)['results'] # get stereoless structure
+        response = jchem_rest.singleFilter({'smiles':smiles, 'action': "untransform"})
+        filtered_smiles = response['results'] # get stereoless structure
     except Exception as e:
         logging.warning("!!! Error in untransformSMILES() {} !!!".format(e))
         raise e

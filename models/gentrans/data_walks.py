@@ -13,14 +13,13 @@ used: jit (thejit.org)
 """
 
 
-def recursive(jsonStr, gen_limit):
+def recursive(jsonDict, gen_limit):
     """
 	Starting point for walking through
 	metabolites dictionary and building json
 	that thejit (visualization javascript
 	library) understands
 	"""
-    jsonDict = json.loads(jsonStr)
     root = jsonDict['results']
     reDict = {}
     parent = root.keys()[0]
@@ -52,9 +51,9 @@ def traverse(root, gen_limit):
         newDict['data'].update(popupBuilder({"smiles": parent, "generation": "0"}, metabolite_keys, "{}".format(metID),
                                             "Metabolite Information"))
 
-        request = HttpRequest()
-        request.POST = {'chemical': parent}
-        mol_info = json.loads(jchem_rest.getChemDetails(request).content)
+        request_obj = {'chemical': parent}
+        mol_info = jchem_rest.getChemDetails(request_obj)
+        
         if 'data' in mol_info:
             for key, val in mol_info['data'][0].items():
                 if key in metabolite_keys:
@@ -73,9 +72,9 @@ def traverse(root, gen_limit):
             # newDict.update({"id": metID, "name": nodeWrapper(root['smiles'], None, 100, 28), "data": {}, "children": []})
             newDict['data'].update(popupBuilder(root, metabolite_keys, "{}".format(metID), "Metabolite Information"))
 
-            request = HttpRequest()
-            request.POST = {'chemical': root['smiles']}
-            mol_info = json.loads(jchem_rest.getChemDetails(request).content)
+            request_obj = {'chemical': root['smiles']}
+            mol_info = jchem_rest.getChemDetails(request_obj)
+            
             if 'data' in mol_info:
                 for key, val in mol_info['data'][0].items():
                     if key in metabolite_keys:
@@ -112,15 +111,12 @@ def nodeWrapper(smiles, height, width, scale, key=None, img_type=None, isProduct
     if img_type:
         post.update({'type': img_type})
 
-    request = HttpRequest()
-    request.POST = post
-    results = jchem_rest.smilesToImage(request)
+    results = jchem_rest.smilesToImage(post)
 
     # 2. Get imageUrl out of results
-    data = json.loads(results.content)  # json string --> dict
     img, imgScale = '', ''
-    if 'data' in data:
-        root = data['data'][0]['image']
+    if 'data' in results:
+        root = results['data'][0]['image']
         if 'image' in root:
             img = root['image']
 

@@ -5,7 +5,6 @@ import logging
 import json
 import redis
 from jchem_calculator import JchemProperty
-from REST.smilesfilter import filterSMILES
 from models.gentrans import data_walks
 
 
@@ -52,22 +51,19 @@ def request_manager(request):
 
 	if service == 'getTransProducts':
 		# getTransProducts chemaxon service via ws..
-
-		request = HttpRequest()
-		# from gentrans model:
-		request.POST = {
+		request = {
             'structure': chemical,
             'generationLimit': 1,  # make sure to get this from front end
             'populationLimit': 0,
             'likelyLimit': 0.001,
-            'transformationLibraries': ['human_biotransformation'],  # get from front end as well!!!
+            'transformationLibraries': ['human_biotransformation'],  # TODO: Use UI lib choices
             'excludeCondition': ""  # 'generateImages': False
 		}
 
 		response = jchem_rest.getTransProducts(request)
 		data_walks.j = 0
 		data_walks.metID = 0
-		results = data_walks.recursive(response.content, 1)
+		results = data_walks.recursive(response, 1)
 
 		data_obj = {
 			'calc': "chemaxon", 
