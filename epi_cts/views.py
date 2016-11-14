@@ -42,6 +42,8 @@ def request_manager(request):
 		# 'props': props
 	}
 
+	filtered_smiles = ''
+
 	try:
 		# ++++++++++++++++++++++++ smiles filtering!!! ++++++++++++++++++++
 		filtered_smiles = parseSmilesByCalculator(structure, "epi") # call smilesfilter
@@ -105,5 +107,3 @@ def request_manager(request):
 
 			# node/redis stuff:
 			redis_conn.publish(sessionid, json.dumps(data_obj))
-
-	postData.update({'data': epi_results, 'chemical': filtered_smiles})
