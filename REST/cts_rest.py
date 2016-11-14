@@ -636,11 +636,18 @@ def getChemicalEditorData(request):
 	:return: chemical details response json
 	"""
 	try:
-		chemical = request.POST.get('chemical')
 
-		# request = requests.Request(data={'chemical': chemical})
-		# response = jchem_rest.convertToSMILES(request)  # convert chemical to smiles
-		# response = json.loads(response.content)  # get json data
+		if 'message' in request.POST:
+			# receiving request from cts_stress node server..
+			# todo: should generalize and not have conditional
+			request_post = json.loads(request.POST.get('message'))
+		else:
+			request_post = request.POST
+
+
+		# chemical = request.POST.get('chemical')
+		chemical = request_post.get('chemical')
+
 		response = jchem_rest.convertToSMILES({'chemical': chemical})
 
 		logging.warning("Converted SMILES: {}".format(response))
@@ -656,7 +663,8 @@ def getChemicalEditorData(request):
 
 		wrapped_post = {
 			'status': True,  # 'metadata': '',
-			'data': molecule_obj
+			'data': molecule_obj,
+			'request_post': request_post
 		}
 		json_data = json.dumps(wrapped_post)
 
