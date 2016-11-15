@@ -1,60 +1,56 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
-from django.conf.urls import patterns, include, url
-import epi_cts
-# import chemaxon_cts
-import REST
-# from django.contrib import admin
-# admin.autodiscover()
+from django.conf.urls import include, url
+from REST import portal
+from views import misc, landing, description, input, output, batch, qaqc, ctsGenerateReport
+# from views import history, algorithms, references
 
-# The previous urlpatterns is using views as a prefix breaking the use of django apps 
-urlpatterns = patterns('',
+
+urlpatterns = [
     # url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
-    (r'^cts/wstest/?$', 'REST.portal.test_sockets'),
-    url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
-    url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app
+    url(r'^cts/wstest/?$', portal.test_sockets),
+    url(r'^cts/portal/?$', portal.directAllTraffic),
+    # url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app  # REMOVED BY JON DURING DOCKERIZATION
     url(r'^cts/rest/', include('REST.urls'))
-)
+]
 
-# All view functions here must be in '/views/views.py'
-urlpatterns += patterns('views',
+# All view functions here must be in '/views/worker.py'
+urlpatterns.extend([
     # url(r'^docs/', include('docs.urls')),
-    (r'^$', 'landing.ctsLandingPage'),  # Landing page
-    (r'^cts/?$', 'landing.ctsLandingPage'),
-    (r'^cts/contact/?$', 'misc.fileNotFound'),
-    (r'^cts/fifra/?$', 'misc.fileNotFound'),
-    (r'^cts/flame/?$', 'misc.fileNotFound'),
-    (r'^cts/ahydrolysis/?$', 'misc.displayPDF'),
-    (r'^cts/areduction/?$', 'misc.displayPDF'),
-    # (r'^cts/mammet/?$', 'misc.fileNotFound'),
-    (r'^cts/guide/?$', 'misc.displayPDF'),
+    url(r'^$', landing.ctsLandingPage),
+    url(r'^cts/?$', landing.ctsLandingPage),
+    url(r'^cts/contact/?$', misc.fileNotFound),
+    url(r'^cts/fifra/?$', misc.fileNotFound),
+    url(r'^cts/flame/?$', misc.fileNotFound),
+    url(r'^cts/ahydrolysis/?$', misc.displayPDF),
+    url(r'^cts/areduction/?$', misc.displayPDF),
+    # url(r'^cts/mammet/?$', misc.fileNotFound),
+    url(r'^cts/guide/?$', misc.displayPDF),
 
-    (r'^cts/(?P<model>.*?)/description/?$', 'description.descriptionPage'),
-    (r'^cts/(?P<model>.*?)/input/?$', 'input.inputPage'),
-    (r'^cts/(?P<model>.*?)/output/?$', 'output.outputPage'),
-    (r'^cts/(?P<model>.*?)/algorithms/?$', 'algorithms.algorithmPage'),
-    (r'^cts/(?P<model>.*?)/references/?$', 'references.referencesPage'),
-    (r'^cts/(?P<model>.*?)/batch/?$', 'batch.batchInputPage'),
-    (r'^cts/(?P<model>.*?)/batchinput/?$', 'batch.batchInputPage'),
-    (r'^cts/(?P<model>.*?)/batchoutput/?$', 'batch.batchOutputPage'),
-    (r'^cts/(?P<model>.*?)/qaqc/?$', 'qaqc.qaqcPage'),
-    (r'^cts/(?P<model>.*?)/history/?$', 'misc.fileNotFound'),
-    (r'^cts/.*?/history_revisit\.html$', 'history.historyPageRevist'),
-    (r'^cts/(?P<model>.*?)/pdf/?$', 'ctsGenerateReport.pdfReceiver'),
-    (r'^cts/(?P<model>.*?)/html/?$', 'ctsGenerateReport.htmlReceiver'),
-    (r'^cts/(?P<model>.*?)/csv/?$', 'ctsGenerateReport.csvReceiver'),
-    (r'^cts/module/(?P<module>.*?)/?$', 'misc.moduleDescriptions'),
-    (r'^cts/docs/?$', 'misc.docsRedirect'),
-    (r'^cts/(?P<model>.*?)/?$', 'description.descriptionPage'),
-)
-
-# urlpatterns += patterns('', url(r'^/', include('REST.urls')))
+    url(r'^cts/(?P<model>.*?)/description/?$', description.descriptionPage),
+    url(r'^cts/(?P<model>.*?)/input/?$', input.inputPage),
+    url(r'^cts/(?P<model>.*?)/output/?$', output.outputPage),
+    # url(r'^cts/(?P<model>.*?)/algorithms/?$', algorithms.algorithmPage),
+    # url(r'^cts/(?P<model>.*?)/references/?$', references.referencesPage),
+    url(r'^cts/(?P<model>.*?)/batch/?$', batch.batchInputPage),
+    url(r'^cts/(?P<model>.*?)/batchinput/?$', batch.batchInputPage),
+    url(r'^cts/(?P<model>.*?)/batchoutput/?$', batch.batchOutputPage),
+    url(r'^cts/(?P<model>.*?)/qaqc/?$', qaqc.qaqcPage),
+    url(r'^cts/(?P<model>.*?)/history/?$', misc.fileNotFound),
+    # url(r'^cts/.*?/history_revisit\.html$', history.historyPageRevist),
+    url(r'^cts/(?P<model>.*?)/pdf/?$', ctsGenerateReport.pdfReceiver),
+    url(r'^cts/(?P<model>.*?)/html/?$', ctsGenerateReport.htmlReceiver),
+    url(r'^cts/(?P<model>.*?)/csv/?$', ctsGenerateReport.csvReceiver),
+    url(r'^cts/module/(?P<module>.*?)/?$', misc.moduleDescriptions),
+    url(r'^cts/docs/?$', misc.docsRedirect),
+    url(r'^cts/(?P<model>.*?)/?$', description.descriptionPage),
+])
 
 # 404 Error view (file not found)
-handler404 = 'views.misc.fileNotFound'
+handler404 = misc.fileNotFound
 # 500 Error view (server error)
-handler500 = 'views.misc.fileNotFound'
+handler500 = misc.fileNotFound
 # 403 Error view (forbidden)
-handler403 = 'views.misc.fileNotFound'
+handler403 = misc.fileNotFound
 # 408 Error view (request timeout)
-handler408 = 'views.misc.requestTimeout'
+handler408 = misc.requestTimeout
 

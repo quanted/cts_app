@@ -1,7 +1,6 @@
-"""
-CTS celery instance
-"""
 from __future__ import absolute_import
+
+import importlib
 import os
 from celery import Celery
 import logging
@@ -41,3 +40,21 @@ app.conf.update(
 
 logging.getLogger('celery.task.default').setLevel(logging.DEBUG)
 logging.getLogger().setLevel(logging.DEBUG)
+
+
+# @shared_task
+@app.task
+def startCalcTask(calc, request_post):
+    from django.http import HttpRequest
+
+    # TODO: try catch that works with celery task, for retries...
+
+    calc_views = importlib.import_module('.views', calc + '_cts')  # import calculator views
+
+    # wrap post in django request:
+    request = HttpRequest()
+    request.POST = request_post
+
+    logging.info("Calling {} request_manager as celery task!".format(calc))
+
+    return calc_views.request_manager(request)

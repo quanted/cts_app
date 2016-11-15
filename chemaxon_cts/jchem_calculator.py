@@ -16,7 +16,7 @@ from django.http import HttpRequest
 # import redis
 
 
-headers = {'Content-Type': 'application/json'}
+headers ={'Content-Type': 'application/json'}
 
 
 class JchemProperty(object):

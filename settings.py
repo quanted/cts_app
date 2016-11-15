@@ -39,28 +39,28 @@ SECRET_KEY = secret.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-
 TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
 
 APPEND_SLASH = True
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_ROOT, 'templates').replace('\\','/'),
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(PROJECT_ROOT, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
 
-)
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+            ],
+        },
+    },
+]
 
 # Application definition
 
@@ -74,7 +74,7 @@ INSTALLED_APPS = (
     # 'docs'
     'filters',
     # 'templatetags.my_filter'
-    'epi_cts' # Pavan added this for the TEST suite CTS app.  Not to be confused with any other test software.
+    'epi_cts'  # Pavan added this for the TEST suite CTS app.  Not to be confused with any other test software.
 )
 
 # This breaks the pattern of a "pluggable" TEST_CTS django app, but it also makes it convenient to describe the server hosting the TEST API.
@@ -86,7 +86,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.csrf.CsrfViewMiddleware',
     # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'django.contrib.messages.middleware.MessageMiddleware',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -164,3 +164,6 @@ if DEBUG:
        level = logging.DEBUG,
        format = '%(asctime)s %(levelname)s %(message)s',
    )
+
+NODEJS_HOST = '134.67.114.1'
+NODEJS_PORT = None

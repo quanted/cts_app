@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from epi_cts import views
+from epi_cts import worker
 
 ### If you have not set the TEST_CTS_PROXY_URL variable in settings.py, you're going to be sad.  Here's an example setting you should insert:
 #   (in the project's settings.py, you'd add) TEST_CTS_PROXY_URL = "http://10.0.2.2:7080/TEST/"

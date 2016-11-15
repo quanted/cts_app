@@ -7,7 +7,7 @@ from chemaxon_cts import jchem_rest
 # admin.autodiscover()
 
 
-# All view functions here must be in '/views/views.py'
+# All view functions here must be in '/views/worker.py'
 # path: serverLocation/jchem/...
 urlpatterns = patterns('chemaxon_cts',
     # url(r'^docs/', include('docs.urls')),
