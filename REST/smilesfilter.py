@@ -65,7 +65,7 @@ def checkMass(chemical):
     except Exception as e:
         logging.warning("!!! Error in checkMass() {} !!!".format(e))
         raise e
-    logging.info("mass response data: {}".format(response.content))
+    logging.info("mass response data: {}".format(json_obj))
     struct_mass = json_obj['data'][0]['mass']
     logging.info("structure's mass: {}".format(struct_mass))
 

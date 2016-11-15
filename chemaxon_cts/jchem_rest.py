@@ -169,6 +169,7 @@ def getMass(request_obj):
 	get mass of structure from jchem ws
 	"""
 	chemical = request_obj.get('chemical')
+	logging.info("jchem_rest getting mass for {}".format(chemical))
 	post_data = {
 		"structures": [
 			{"structure": chemical}
@@ -186,7 +187,7 @@ def getMass(request_obj):
 		}
 	}
 	url = Urls.jchemBase + Urls.detailUrl
-	return web_call_new(url, request_obj)
+	return web_call_new(url, post_data)
 
 
 def singleFilter(request_obj):
