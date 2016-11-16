@@ -3,23 +3,6 @@
 from django.conf.urls import include, url
 from REST import views, cts_rest
 
-
-# All view functions here must be in '/views/views.py'
-# path: serverLocation/jchem/...
-# urlpatterns = patterns('REST',
-# 	(r'^/?$', 'views.getCTSEndpoints'),
-# 	(r'^swag/?$', 'views.getSwaggerJsonContent'),
-# 	(r'^docs/?$', 'cts_rest.showSwaggerPage'),
-
-# 	(r'^molecule/?$', 'cts_rest.getChemicalEditorData'),
-# 	(r'^speciation/?$', 'cts_rest.getChemicalSpeciationData'),
-
-# 	# (r'^hellonode/?$', 'views.testCTSNodejs')
-
-# 	(r'^(?P<calc>.*?)/inputs/?$', 'views.getCalcInputs'),
-# 	(r'^(?P<calc>.*?)/run/?$', 'views.runCalc'),
-# 	(r'^(?P<endpoint>.*?)/?$', 'views.getCalcEndpoints'),
-# )
 urlpatterns = [
 	url(r'^$', views.getCTSEndpoints),
 	url(r'^swag/?$', views.getSwaggerJsonContent),

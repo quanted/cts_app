@@ -9,12 +9,7 @@ from views import batch, ctsGenerateReport, description, input, landing, misc, o
 # admin.autodiscover()
 
 # The previous urlpatterns is using views as a prefix breaking the use of django apps 
-# urlpatterns = patterns('',
-#     (r'^cts/wstest/?$', 'REST.portal.test_sockets'),
-#     (r'^cts/nodetest/?$', 'REST.views.testCTSNode'),
-#     url(r'^cts/portal/?$', 'REST.portal.directAllTraffic'),
-#     url(r'^cts/rest/', include('REST.urls'))  # todo: REST --> cts_api?
-# )
+
 urlpatterns = [
     url(r'^cts/wstest/?$', REST.portal.test_sockets),
     url(r'^cts/nodetest/?$', REST.views.testCTSNode),
@@ -22,37 +17,6 @@ urlpatterns = [
     url(r'^cts/rest/', include(REST.urls))  # todo: REST --> cts_api?
 ]
 
-# All view functions here must be in '/views/views.py'
-# urlpatterns += patterns('',
-#     # url(r'^docs/', include('docs.urls')),
-#     (r'^$', 'views.landing.ctsLandingPage'),  # Landing page
-#     (r'^cts/?$', 'views.landing.ctsLandingPage'),
-#     (r'^cts/contact/?$', 'views.misc.fileNotFound'),
-#     (r'^cts/fifra/?$', 'views.misc.fileNotFound'),
-#     (r'^cts/flame/?$', 'views.misc.fileNotFound'),
-#     (r'^cts/ahydrolysis/?$', 'views.misc.displayPDF'),
-#     (r'^cts/areduction/?$', 'views.misc.displayPDF'),
-#     # (r'^cts/mammet/?$', 'views.misc.fileNotFound'),
-#     (r'^cts/guide/?$', 'views.misc.displayPDF'),
-
-#     (r'^cts/(?P<model>.*?)/description/?$', 'views.description.descriptionPage'),
-#     (r'^cts/(?P<model>.*?)/input/?$', 'views.input.inputPage'),
-#     (r'^cts/(?P<model>.*?)/output/?$', 'views.output.outputPage'),
-#     (r'^cts/(?P<model>.*?)/algorithms/?$', 'views.algorithms.algorithmPage'),
-#     (r'^cts/(?P<model>.*?)/references/?$', 'views.references.referencesPage'),
-#     (r'^cts/(?P<model>.*?)/batch/?$', 'views.batch.batchInputPage'),
-#     (r'^cts/(?P<model>.*?)/batchinput/?$', 'views.batch.batchInputPage'),
-#     (r'^cts/(?P<model>.*?)/batchoutput/?$', 'views.batch.batchOutputPage'),
-#     (r'^cts/(?P<model>.*?)/qaqc/?$', 'views.qaqc.qaqcPage'),
-#     (r'^cts/(?P<model>.*?)/history/?$', 'views.misc.fileNotFound'),
-#     (r'^cts/.*?/history_revisit\.html$', 'views.history.historyPageRevist'),
-#     (r'^cts/(?P<model>.*?)/pdf/?$', 'views.ctsGenerateReport.pdfReceiver'),
-#     (r'^cts/(?P<model>.*?)/html/?$', 'views.ctsGenerateReport.htmlReceiver'),
-#     (r'^cts/(?P<model>.*?)/csv/?$', 'views.ctsGenerateReport.csvReceiver'),
-#     (r'^cts/module/(?P<module>.*?)/?$', 'views.misc.moduleDescriptions'),
-#     (r'^cts/docs/?$', 'views.misc.docsRedirect'),
-#     (r'^cts/(?P<model>.*?)/?$', 'views.description.descriptionPage'),
-# )
 urlpatterns += [
     # url(r'^docs/', include('docs.urls')),
     url(r'^$', views.landing.ctsLandingPage),  # Landing page
