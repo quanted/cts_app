@@ -20,20 +20,10 @@ NICK_LOCAL = False
 
 # Define ENVIRONMENTAL VARIABLES for project (replaces the app.yaml)
 os.environ.update({
-    # 'UBERTOOL_BATCH_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com/',
-    # 'UBERTOOL_MONGO_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',
-    # 'UBERTOOL_SECURE_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',
-    # # 'UBERTOOL_REST_SERVER': 'http://localhost:80',
-    # 'UBERTOOL_REST_SERVER': 'http://54.83.18.251:80',
-    # 'CTS_TEST_SERVER': 'http://pg.gl', # test rest server (internal)
     'CTS_TEST_SERVER': 'http://134.67.114.6:8080',
-    # 'CTS_EPI_SERVER': 'http://134.67.114.6:7080',
     'CTS_EPI_SERVER': 'http://134.67.114.8',
     'CTS_JCHEM_SERVER': 'http://134.67.114.2',
     'CTS_EFS_SERVER': 'http://134.67.114.2',
-    # 'CTS_JCHEM_SERVER': 'http://localhost:8080',
-    # 'CTS_EPI_SERVER': 'http://134.67.114.6',  # test rest server (internal)
-    # 'CTS_EPI_SERVER': 'http://win.pg.gl',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',  #http://n2626ugath802:8080/sparc-integration/rest/calc/multiProperty
     'PROJECT_PATH': PROJECT_ROOT,
     'CTS_VERSION': '1.5.0'
@@ -48,53 +38,28 @@ SECRET_KEY = secret.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-
 TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
 
 APPEND_SLASH = True
 
-# TEMPLATE_DIRS = (
-#     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-#     # Always use forward slashes, even on Windows.
-#     # Don't forget to use absolute paths, not relative paths.
-#     os.path.join(PROJECT_ROOT, 'templates').replace('\\','/'),
-
-# )
-
-# List of callables that know how to import templates from various sources.
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.Loader',
-#     'django.template.loaders.app_directories.Loader',
-# #     'django.template.loaders.eggs.Loader',
-# )
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            # insert your TEMPLATE_DIRS here
-            os.path.join(PROJECT_ROOT, 'templates').replace('\\','/'),
-        ],
+        'DIRS': [os.path.join(PROJECT_ROOT, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                # Insert your TEMPLATE_CONTEXT_PROCESSORS here or use this
-                # list if you haven't customized them:
-                'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.tz',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
             ],
         },
     },
 ]
-
 
 # Application definition
 
@@ -117,7 +82,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.csrf.CsrfViewMiddleware',
     # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'django.contrib.messages.middleware.MessageMiddleware',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -189,9 +154,8 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 
 DOCS_ACCESS = 'public'
 
-NODEJS_HOST = 'localhost'
-NODEJS_PORT = 4000
-NODEJS_URL = 'http://localhost:4000'
+NODEJS_HOST = '134.67.114.1'
+NODEJS_PORT = None
 
 try:
     # override any settings unique to local machine
@@ -205,3 +169,5 @@ if DEBUG:
        level = logging.DEBUG,
        format = '%(asctime)s %(levelname)s %(message)s',
    )
+
+

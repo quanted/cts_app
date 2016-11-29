@@ -1,6 +1,6 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 # from django.conf.urls import patterns, include, url
-from django.conf.urls import include, url
+from django.conf.urls import url
 from REST import views, cts_rest
 
 urlpatterns = [
@@ -24,4 +24,3 @@ handler404 = 'views.misc.fileNotFound'
 handler500 = 'views.misc.fileNotFound'
 # 403 Error view (forbidden)
 handler403 = 'views.misc.fileNotFound'
-

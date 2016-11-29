@@ -17,7 +17,7 @@ from django.shortcuts import render_to_response
 
 from chemaxon_cts import jchem_rest, jchem_calculator
 from chemaxon_cts import views as chemaxon_views
-from epi_cts import views as epi_views
+from epi_cts import worker as epi_views
 from epi_cts import epi_calculator
 from measured_cts import views as measured_views
 from test_cts import views as test_views

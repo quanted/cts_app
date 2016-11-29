@@ -1,0 +1,68 @@
+ version: '2'
+ volumes:
+  collected_static: {}
+ services:
+  # CTS Django front-end
+  cts_django:
+    build: .
+    expose:
+    - "8080"
+    volumes:
+    - collected_static:/src/collected_static
+    environment:
+    - REDIS_HOSTNAME="redis"  # Set Redis hostname as ENV (value same as 'redis:redis' in links)
+    links:
+    - redis:redis
+    - worker_test:worker_test
+
+  # Redis (message broker)
+  redis:
+    image: redis:3.0
+    hostname: redis
+
+  # NGINX web server
+  nginx:
+#    restart: always
+    image: funkswing/nginx-uwsgi-django
+    ports:
+    - "80:80"
+    - "443:443"
+    links:  # Same as depends_on cts_django, but also sets the hostname at which this service can reach the linked service
+    - cts_django:uwsgi  # Nginx.conf can reference "cts_django" service with the hostname 'uwsgi' or 'cts_django'
+    volumes_from:
+    - cts_django:ro  # Mount all volumes from "cts_django" to NGINX, so it can access the collected static files
+
+  # Celery worker - TEST calc
+  worker_test:
+    build: .  # Reuse "cts_django" image
+    command: ./celery worker -A celery_cts -Q epi -l info -n epi_worker -c 2
+    links:
+    - redis:redis
+
+  # Celery worker - ChemAxon calc
+  worker_chemaxon:
+    build: .  # Reuse "cts_django" image
+    command: ./celery worker -A celery_cts -Q chemaxon -l info -n chemaxon_worker -c 2
+    links:
+    - redis:redis
+
+  # Celery worker - EpiSuite calc
+  worker_epi:
+    build: .  # Reuse "cts_django" image
+    command: ./celery worker -A celery_cts -Q epi -l info -n epi_worker -c 2
+    links:
+    - redis:redis
+
+  # Celery worker - SPARC calc
+  worker_sparc:
+    build: .  # Reuse "cts_django" image
+    command: ./celery worker -A celery_cts -Q sparc -l info -n sparc_worker -c 1
+    links:
+    - redis:redis
+
+  # Celery worker - Measured calc
+  worker_measured:
+    build: .  # Reuse "cts_django" image
+    command: ./celery worker -A celery_cts -Q measured -l info -n measured_worker -c 1
+    links:
+    - redis:redis

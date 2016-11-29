@@ -13,7 +13,7 @@ import os
 from jchem_rest import getStructInfo
 
 
-headers = {'Content-Type': 'application/json'}
+headers ={'Content-Type': 'application/json'}
 
 
 class JchemProperty(object):

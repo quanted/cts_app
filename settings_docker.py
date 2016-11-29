@@ -34,9 +34,10 @@ os.environ.update({
     'CTS_EPI_SERVER': 'http://172.20.100.18',
     'CTS_EFS_SERVER': 'http://172.20.100.12',
     'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',         # SPARC rest server (external)
+    'wkhtmltopdf': PROJECT_ROOT + '/wkhtmltopdf/linux/wkhtmltopdf',
     'PROJECT_PATH': PROJECT_ROOT,
     'SITE_SKIN': '',                          # Leave empty ('') for default skin, 'EPA' for EPA skin
-    'CTS_VERSION': '1.5.0'
+    'CTS_VERSION': '1.4.7'
 })
 
 # Quick-start development settings - unsuitable for production
@@ -60,6 +61,8 @@ if MACHINE_ID == "ord-uber-vm001":
 elif MACHINE_ID == "ord-uber-vm003":
     ALLOWED_HOSTS.append('134.67.114.3')
     ALLOWED_HOSTS.append('qed.epa.gov')
+else:
+    ALLOWED_HOSTS.append('*')
 
 # # celery config stuff:
 # CELERY_RESULT_BACKEND = 'redis://'
@@ -99,8 +102,11 @@ INSTALLED_APPS = (
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'mod_wsgi.server',
+    'filters',
+    'epi_cts',
     'celery_cts',
-    'filters'
+    #'test_cts'
+    #'docs'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -170,7 +176,7 @@ STATICFILES_FINDERS = (
 )
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/ubertool/static/'
+STATIC_ROOT = '/src/collected_static/'
 
 # print 'BASE_DIR = %s' %BASE_DIR
 # print 'PROJECT_ROOT = %s' %PROJECT_ROOT
@@ -183,5 +189,4 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 DOCS_ACCESS = 'public'
 
 NODEJS_HOST = '134.67.114.1'
-NODEJS_URL = 'http://134.67.114.1'
 NODEJS_PORT = None

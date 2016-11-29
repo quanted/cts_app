@@ -2,6 +2,7 @@ from django.template import Context, Template
 import datetime
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from django.conf import settings
 import logging
 import pchemprop_parameters
 import json
@@ -127,6 +128,7 @@ def output_pchem_table(pchemprop_obj):
                                     'nodejs_port': settings.NODEJS_PORT
                                 }
                             )
+
     html += """
         <br>
         <input type="button" value="Get data" class="submit input_button btn-pchem" id="btn-pchem-data">
