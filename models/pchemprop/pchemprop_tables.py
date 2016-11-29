@@ -1,4 +1,5 @@
-from django.template import Context, Template
+from django.template import Context, Template, engines
+
 import datetime
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
@@ -53,7 +54,8 @@ def getInputTemplate():
     return input_template
 
 
-structTmpl = Template(getStructInfoTemplate())
+# structTmpl = Template(getStructInfoTemplate())
+structTmpl = engines['django'].from_string(getStructInfoTemplate())
 inTmpl = Template(getInputTemplate())
 
 
@@ -80,7 +82,8 @@ def input_struct_table(pchemprop_obj):
     # attempting to add image to right of user inputs table:
     html += pchemprop_obj.parent_image
 
-    html += inTmpl.render(Context(dict(data=getInputData(pchemprop_obj), heading="Molecular Information")))
+    # html += inTmpl.render(Context(dict(data=getInputData(pchemprop_obj), heading="Molecular Information")))
+    html += inTmpl.render(Context({'data': getInputData(pchemprop_obj), heading="Molecular Information"}))
 
     html += """
     </div>
