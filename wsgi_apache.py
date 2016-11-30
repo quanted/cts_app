@@ -15,5 +15,8 @@ sys.path.insert(0, '/var/www/ubertool')
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ubertool_cts.settings_apache")
 
 # Django project entry point (Apache/mod_wsgi & app.yaml)
-import django.core.handlers.wsgi
-application = django.core.handlers.wsgi.WSGIHandler()
+# import django.core.handlers.wsgi
+# application = django.core.handlers.wsgi.WSGIHandler()
+# changed nov. 30 2016
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()

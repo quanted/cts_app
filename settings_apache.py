@@ -8,8 +8,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-import os
+import os, sys
+import socket
 import secret
+
+# Get machine IP address
+MACHINE_ID = socket.gethostname()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -20,12 +24,18 @@ NICK_LOCAL = False
 
 # Define ENVIRONMENTAL VARIABLES for project (replaces the app.yaml)
 os.environ.update({
-    'CTS_TEST_SERVER': 'http://134.67.114.6:8080',
-    'CTS_EPI_SERVER': 'http://134.67.114.8',
-    'CTS_JCHEM_SERVER': 'http://134.67.114.2',
-    'CTS_EFS_SERVER': 'http://134.67.114.2',
-    'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',  #http://n2626ugath802:8080/sparc-integration/rest/calc/multiProperty
+    'UBERTOOL_BATCH_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com/',
+    'UBERTOOL_MONGO_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',
+    'UBERTOOL_SECURE_SERVER': 'http://uberrest-topknotmeadows.rhcloud.com',   
+    'UBERTOOL_REST_SERVER': 'http://172.20.100.15:7777',        # CGI Internal
+    'CTS_TEST_SERVER': 'http://172.20.100.16:8080',                   # test rest server (intranet)
+    'CTS_JCHEM_SERVER': 'http://172.20.100.12',       # jchem rest server (internal)
+    # 'CTS_EPI_SERVER': 'http://172.20.100.16:7080',
+    'CTS_EPI_SERVER': 'http://172.20.100.18',
+    'CTS_EFS_SERVER': 'http://172.20.100.12',
+    'CTS_SPARC_SERVER': 'http://204.46.160.69:8080',         # SPARC rest server (external)
     'PROJECT_PATH': PROJECT_ROOT,
+    'SITE_SKIN': '',                          # Leave empty ('') for default skin, 'EPA' for EPA skin
     'CTS_VERSION': '1.5.0'
 })
 
@@ -37,10 +47,28 @@ SECRET_KEY = secret.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+# DEBUG = True
 
 TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
+if MACHINE_ID == "ord-uber-vm001":
+    ALLOWED_HOSTS.append('134.67.114.1')
+    ALLOWED_HOSTS.append('qedinternal.epa.gov')
+    ALLOWED_HOSTS.append('localhost')
+    ALLOWED_HOSTS.append('127.0.0.1')
+elif MACHINE_ID == "ord-uber-vm003":
+    ALLOWED_HOSTS.append('134.67.114.3')
+    ALLOWED_HOSTS.append('qed.epa.gov')
+
+# # celery config stuff:
+# CELERY_RESULT_BACKEND = 'redis://'
+# # CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_BROKER_URL = 'redis//'
+# CELERY_ACCEPT_CONTENT = ['json']
+# CELERY_TASK_SERIALIZER = 'json'
+# CELERY_RESULT_SERIALIZER = 'json'
+
 
 APPEND_SLASH = True
 
@@ -70,11 +98,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'mod_wsgi.server',
+    # 'celery_cts',
     'filters'
 )
-
-# This breaks the pattern of a "pluggable" TEST_CTS django app, but it also makes it convenient to describe the server hosting the TEST API.
-TEST_CTS_PROXY_URL = "http://10.0.2.2:7080/"
 
 MIDDLEWARE_CLASSES = (
     # 'django.contrib.sessions.middleware.SessionMiddleware',
@@ -87,11 +114,11 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-# WSGI_APPLICATION = 'wsgi_local.application'
-WSGI_APPLICATION = 'wsgi.application'
+WSGI_APPLICATION = 'wsgi_apache.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -143,6 +170,7 @@ STATICFILES_FINDERS = (
 )
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/ubertool/static/'
 
 # print 'BASE_DIR = %s' %BASE_DIR
 # print 'PROJECT_ROOT = %s' %PROJECT_ROOT
@@ -155,19 +183,5 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 DOCS_ACCESS = 'public'
 
 NODEJS_HOST = '134.67.114.1'
+NODEJS_URL = 'http://134.67.114.1'
 NODEJS_PORT = None
-
-try:
-    # override any settings unique to local machine
-    from settings_local import *
-except ImportError as e:
-    pass
-
-if DEBUG:
-   import logging
-   logging.basicConfig(
-       level = logging.DEBUG,
-       format = '%(asctime)s %(levelname)s %(message)s',
-   )
-
-
