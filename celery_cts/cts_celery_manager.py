@@ -7,7 +7,6 @@ import requests
 import json
 import redis
 import logging
-from django.http import HttpRequest
 # from celery.app.control import revoke
 # from celery.task.control import revoke
 

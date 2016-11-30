@@ -16,19 +16,58 @@ sys.path.append(path)
 # @shared_task
 @app.task
 def startCalcTask(calc, request_post):
-    from django.http import HttpRequest
 
     # TODO: try catch that works with celery task, for retries...
 
     calc_views = importlib.import_module('.views', calc + '_cts')  # import calculator views
 
-    # wrap post in django request:
-    request = HttpRequest()
+    request = NotDjangoRequest()
     request.POST = request_post
 
     logging.info("Calling {} request_manager as celery task!".format(calc))
 
     return calc_views.request_manager(request)
+
+
+@app.task
+def chemaxonTask(request_post):
+    from chemaxon_cts import views
+    request = NotDjangoRequest()
+    request.POST = request_post
+    logging.info("Request: {}".format(request_post))
+    return views.request_manager(request)
+
+
+@app.task
+def sparcTask(request_post):
+    from sparc_cts import views
+    request = NotDjangoRequest()
+    request.POST = request_post
+    return views.request_manager(request)
+
+
+@app.task
+def epiTask(request_post):
+    from epi_cts import views
+    request = NotDjangoRequest()
+    request.POST = request_post
+    return views.request_manager(request)
+
+
+@app.task
+def testTask(request_post):
+    from test_cts import views
+    request = NotDjangoRequest()
+    request.POST = request_post
+    return views.request_manager(request)
+
+
+@app.task
+def measuredTask(request_post):
+    from measured_cts import views
+    request = NotDjangoRequest()
+    request.POST = request_post
+    return views.request_manager(request)
 
 
 # @shared_task
@@ -51,6 +90,13 @@ def removeUserJobsFromQueue(sessionid):
 def test_celery(sessionid, message):
     from . import cts_celery_manager
 
-    logging.info("received message: {}".format(message))
+    logging.info("!!!received message: {}".format(message))
     cts_celery_manager.test_celery(sessionid, "hello from celery")
     # return HttpResponse("hello from celery!");
+
+
+# temp patch for freeing celery from django while calc views
+# are still relying on django.http Request...
+class NotDjangoRequest(object):
+    def __init__(self):
+        self.POST = {}

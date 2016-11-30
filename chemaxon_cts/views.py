@@ -37,6 +37,8 @@ def request_manager(request):
     workflow = request.POST.get('workflow')
     request_post = request.POST
 
+    logging.info("REQUEST: {}".format(request.POST))
+
     try:
         props = request.POST.get("props[]")
         if not props:
@@ -76,6 +78,7 @@ def request_manager(request):
         }
         
         result_json = json.dumps(data_obj)
+        logging.info("publishing to redis")
         redis_conn.publish(sessionid, result_json)
 
     elif service == 'getSpeciationData':
