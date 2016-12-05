@@ -8,7 +8,8 @@ from epi_calculator import EpiCalc
 from REST.smilesfilter import parseSmilesByCalculator
 
 
-redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis_hostname = os.environ.get('REDIS_HOSTNAME')
+redis_conn = redis.StrictRedis(host=redis_hostname, port=6379, db=0)
 
 
 def request_manager(request):

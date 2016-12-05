@@ -1,5 +1,4 @@
 var marvinSketcherInstance;
-var portalUrl = "/cts/portal";
 
 $(document).ready(function handleDocumentReady (e) {
   // var MarvinJSUtil;

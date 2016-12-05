@@ -6,11 +6,14 @@ import json
 import redis
 from jchem_calculator import JchemProperty
 from models.gentrans import data_walks
+import os
 
 
 methods = ['KLOP', 'VG', 'PHYS']
 
-redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis_hostname = os.environ.get('REDIS_HOSTNAME')
+logging.warning("CHEMAXON VIEWS REDIS HOSTNAME: {}".format(redis_hostname))
+redis_conn = redis.StrictRedis(host=redis_hostname, port=6379, db=0)
 
 
 def request_manager(request):

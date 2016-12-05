@@ -1,14 +1,13 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import include, url
-from REST import portal
 from views import misc, landing, description, input, output, batch, ctsGenerateReport
 # from views import history, algorithms, references, qaqc
 
 
 urlpatterns = [
     # url(r'^/', include('test_cts.urls')),  # Pavan added this to include the test suite django app
-    url(r'^cts/wstest/?$', portal.test_sockets),
-    url(r'^cts/portal/?$', portal.directAllTraffic),
+    # url(r'^cts/wstest/?$', portal.test_sockets),
+    # url(r'^cts/portal/?$', portal.directAllTraffic),
     # url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app  # REMOVED BY JON DURING DOCKERIZATION
     url(r'^cts/rest/', include('REST.urls'))
 ]

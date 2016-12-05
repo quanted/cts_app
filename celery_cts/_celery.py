@@ -22,8 +22,10 @@ if not os.environ.get('REDIS_HOSTNAME'):
 
 REDIS_HOSTNAME = os.environ.get('REDIS_HOSTNAME')
 
+logging.warning("REDIS HOSTNAME: {}".format(REDIS_HOSTNAME))
+
 # app = Celery('celery', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
-app = Celery(broker='redis://{}:6379/0'.format(REDIS_HOSTNAME),
+app = Celery(broker='redis://{}:6379/0'.format(REDIS_HOSTNAME),	
              backend='redis://{}:6379/0'.format(REDIS_HOSTNAME),
              include=['celery_cts.tasks'])
 

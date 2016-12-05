@@ -2,10 +2,12 @@ import logging
 import requests
 import json
 import redis
+import os
 
 from sparc_calculator import SparcCalc
 
-redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)  # instantiate redis (where should this go???)
+redis_hostname = os.environ.get('REDIS_HOSTNAME')
+redis_conn = redis.StrictRedis(host=redis_hostname, port=6379, db=0)
 
 
 def request_manager(request):
