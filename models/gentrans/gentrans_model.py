@@ -2,7 +2,8 @@
 2014-08-13 (np)
 """
 
-from chemaxon_cts import jchem_rest
+# from chemaxon_cts import jchem_rest
+from cts_calcs.chemaxon_cts import jchem_rest
 from REST import cts_rest
 import logging
 from django.http import HttpRequest

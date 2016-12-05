@@ -1,2 +1,0 @@
-requests
-flower==0.9.0

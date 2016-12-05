@@ -15,13 +15,14 @@ from django.http import HttpResponse, HttpRequest
 from django.template.loader import render_to_string
 from django.shortcuts import render_to_response
 
-from chemaxon_cts import jchem_rest, jchem_calculator
-from chemaxon_cts import views as chemaxon_views
-from epi_cts import worker as epi_views
-from epi_cts import epi_calculator
-from measured_cts import views as measured_views
-from test_cts import views as test_views
-from sparc_cts import views as sparc_views
+# from chemaxon_cts import jchem_rest, jchem_calculator
+from cts_calcs.chemaxon_cts import jchem_rest, jchem_calculator
+from cts_calcs.chemaxon_cts import views as chemaxon_views
+from cts_calcs.epi_cts import worker as epi_views
+from cts_calcs.epi_cts import epi_calculator
+from cts_calcs.measured_cts import views as measured_views
+from cts_calcs.test_cts import views as test_views
+from cts_calcs.sparc_cts import views as sparc_views
 from smilesfilter import filterSMILES
 from models.chemspec import chemspec_output
 from models.gentrans import data_walks

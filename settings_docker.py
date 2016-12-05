@@ -103,7 +103,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # 'mod_wsgi.server',
     'filters',
-    'epi_cts',
+    # 'epi_cts',
     'celery_cts',
     #'test_cts'
     #'docs'

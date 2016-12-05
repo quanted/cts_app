@@ -31,7 +31,7 @@ def startCalcTask(calc, request_post):
 
 @app.task
 def chemaxonTask(request_post):
-    from chemaxon_cts import views
+    from cts_calcs.chemaxon_cts import views
     request = NotDjangoRequest()
     request.POST = request_post
     logging.info("Request: {}".format(request_post))
@@ -40,7 +40,7 @@ def chemaxonTask(request_post):
 
 @app.task
 def sparcTask(request_post):
-    from sparc_cts import views
+    from cts_calcs.sparc_cts import views
     request = NotDjangoRequest()
     request.POST = request_post
     return views.request_manager(request)
@@ -48,7 +48,7 @@ def sparcTask(request_post):
 
 @app.task
 def epiTask(request_post):
-    from epi_cts import views
+    from cts_calcs.epi_cts import views
     request = NotDjangoRequest()
     request.POST = request_post
     return views.request_manager(request)
@@ -56,7 +56,7 @@ def epiTask(request_post):
 
 @app.task
 def testTask(request_post):
-    from test_cts import views
+    from cts_calcs.test_cts import views
     request = NotDjangoRequest()
     request.POST = request_post
     return views.request_manager(request)
@@ -64,7 +64,7 @@ def testTask(request_post):
 
 @app.task
 def measuredTask(request_post):
-    from measured_cts import views
+    from cts_calcs.measured_cts import views
     request = NotDjangoRequest()
     request.POST = request_post
     return views.request_manager(request)

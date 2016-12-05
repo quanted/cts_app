@@ -9,7 +9,7 @@ import logging
 
 import datetime
 import json
-from test_cts import views as test_views
+from cts_calcs.test_cts import views as test_views
 from requests import Request
 from django.http import HttpRequest
 

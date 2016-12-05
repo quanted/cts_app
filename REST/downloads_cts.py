@@ -14,10 +14,11 @@ import logging
 from django.http import HttpResponse
 
 import cts_rest
-from chemaxon_cts.jchem_calculator import JchemProperty
-from epi_cts.epi_calculator import EpiCalc
-from test_cts.test_calculator import TestCalc
-from sparc_cts.sparc_calculator import SparcCalc
+# from chemaxon_cts.jchem_calculator import JchemProperty
+from cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
+from cts_calcs.epi_cts.epi_calculator import EpiCalc
+from cts_calcs.test_cts.test_calculator import TestCalc
+from cts_calcs.sparc_cts.sparc_calculator import SparcCalc
 
 
 class CSV(object):

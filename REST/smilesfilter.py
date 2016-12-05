@@ -1,10 +1,12 @@
 __author__ = 'KWOLFE'
 
-from chemaxon_cts import jchem_rest
+# from chemaxon_cts import jchem_rest
+from cts_calcs.chemaxon_cts import jchem_rest
 import requests
 import logging
 import json
-from chemaxon_cts.jchem_calculator import JchemProperty as JProp
+# from chemaxon_cts.jchem_calculator import JchemProperty as JProp
+from cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty as JProp
 
 
 max_weight = 1500 # max weight [g/mol] for epi, test, and sparc
@@ -118,7 +120,6 @@ def parseSmilesByCalculator(structure, calculator):
     """
     Calculator-dependent SMILES filtering!
     """
-    from chemaxon_cts import jchem_rest
 
     logging.info("Parsing SMILES by calculator..")
     filtered_smiles = structure
