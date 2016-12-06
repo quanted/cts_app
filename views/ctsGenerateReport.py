@@ -8,7 +8,7 @@ from xhtml2pdf import pisa
 import logging
 from models.gentrans import data_walks
 from models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
-from REST import cts_rest
+from cts_api import cts_rest
 from django.core.cache import cache
 
 
@@ -218,7 +218,7 @@ def csvReceiver(request, model=''):
     """
     Save output as CSV
     """
-    from REST.downloads_cts import CSV
+    from downloads_cts import CSV
 
     try:
         run_data = json.loads(request.POST.get('run_data'))

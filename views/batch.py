@@ -5,7 +5,7 @@ import linksLeft
 import os
 import logging
 from models.pchemprop import pchemprop_tables
-from REST import cts_rest
+from cts_api import cts_rest
 import datetime
 
 def batchInputPage(request, model='none', header='none'):

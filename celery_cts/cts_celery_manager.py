@@ -13,35 +13,35 @@ import logging
 redis_conn = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 
-class CTSFlower(object):
+# class CTSFlower(object):
 
-	def __init__(self):
-		self.host = 'http://localhost'
-		self.port = 5000
-		self.baseUrl = self.host + ':' + str(self.port)
-		self.queues = ['chemaxon', 'test', 'epi', 'sparc', 'measured']
+# 	def __init__(self):
+# 		self.host = 'http://localhost'
+# 		self.port = 5000
+# 		self.baseUrl = self.host + ':' + str(self.port)
+# 		self.queues = ['chemaxon', 'test', 'epi', 'sparc', 'measured']
 
-	def getWorkers(self):
-		response = requests.get(self.baseUrl + '/api/workers')
-		return json.loads(response.content)
+# 	def getWorkers(self):
+# 		response = requests.get(self.baseUrl + '/api/workers')
+# 		return json.loads(response.content)
 
-	def getTasks(self):
-		response = requests.get(self.baseUrl + '/api/tasks')
-		return json.loads(response.content)
+# 	def getTasks(self):
+# 		response = requests.get(self.baseUrl + '/api/tasks')
+# 		return json.loads(response.content)
 
-	def getTasksByStatus(self, state):
-		# e.g., /api/tasks?state=PENDING:
-		url = self.baseUrl + '/api/tasks?taskname=tasks.startCalcTask&state=' + state
-		response = requests.get(url)
-		return json.loads(response.content)
+# 	def getTasksByStatus(self, state):
+# 		# e.g., /api/tasks?state=PENDING:
+# 		url = self.baseUrl + '/api/tasks?taskname=tasks.startCalcTask&state=' + state
+# 		response = requests.get(url)
+# 		return json.loads(response.content)
 
-	def abortRunningTask(self, task_id):
-		url = self.baseUrl + '/api/task/abort/' + task_id
-		# url = self.baseUrl + '/api/task/abort/'
-		response = requests.post(url, headers={'Host': 'localhost:5000'})
-		logging.info("abort response: {}".format(response))
-		# return json.loads(response.content)
-		return
+# 	def abortRunningTask(self, task_id):
+# 		url = self.baseUrl + '/api/task/abort/' + task_id
+# 		# url = self.baseUrl + '/api/task/abort/'
+# 		response = requests.post(url, headers={'Host': 'localhost:5000'})
+# 		logging.info("abort response: {}".format(response))
+# 		# return json.loads(response.content)
+# 		return
 
 
 def storeUserJobsToRedis(sessionid, user_jobs):

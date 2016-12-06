@@ -14,60 +14,60 @@ sys.path.append(path)
 
 
 # @shared_task
-@app.task
-def startCalcTask(calc, request_post):
+# @app.task
+# def startCalcTask(calc, request_post):
 
-    # TODO: try catch that works with celery task, for retries...
+#     # TODO: try catch that works with celery task, for retries...
 
-    calc_views = importlib.import_module('.views', calc + '_cts')  # import calculator views
+#     calc_views = importlib.import_module('.views', calc + '_cts')  # import calculator views
 
-    request = NotDjangoRequest()
-    request.POST = request_post
+#     request = NotDjangoRequest()
+#     request.POST = request_post
 
-    logging.info("Calling {} request_manager as celery task!".format(calc))
+#     logging.info("Calling {} request_manager as celery task!".format(calc))
 
-    return calc_views.request_manager(request)
+#     return calc_views.request_manager(request)
 
 
 @app.task
 def chemaxonTask(request_post):
-    from cts_calcs.chemaxon_cts import views
+    from cts_calcs.chemaxon_cts import worker
     request = NotDjangoRequest()
     request.POST = request_post
     logging.info("Request: {}".format(request_post))
-    return views.request_manager(request)
+    return worker.request_manager(request)
 
 
 @app.task
 def sparcTask(request_post):
-    from cts_calcs.sparc_cts import views
+    from cts_calcs.sparc_cts import worker
     request = NotDjangoRequest()
     request.POST = request_post
-    return views.request_manager(request)
+    return worker.request_manager(request)
 
 
 @app.task
 def epiTask(request_post):
-    from cts_calcs.epi_cts import views
+    from cts_calcs.epi_cts import worker
     request = NotDjangoRequest()
     request.POST = request_post
-    return views.request_manager(request)
+    return worker.request_manager(request)
 
 
 @app.task
 def testTask(request_post):
-    from cts_calcs.test_cts import views
+    from cts_calcs.test_cts import worker
     request = NotDjangoRequest()
     request.POST = request_post
-    return views.request_manager(request)
+    return worker.request_manager(request)
 
 
 @app.task
 def measuredTask(request_post):
-    from cts_calcs.measured_cts import views
+    from cts_calcs.measured_cts import worker
     request = NotDjangoRequest()
     request.POST = request_post
-    return views.request_manager(request)
+    return worker.request_manager(request)
 
 
 # @shared_task

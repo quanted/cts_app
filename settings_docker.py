@@ -104,7 +104,7 @@ INSTALLED_APPS = (
     # 'mod_wsgi.server',
     'filters',
     # 'epi_cts',
-    'celery_cts',
+    # 'celery_cts',
     #'test_cts'
     #'docs'
 )

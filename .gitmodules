@@ -1,3 +1,6 @@
 [submodule "cts_calcs"]
 	path = cts_calcs
 	url = https://github.com/popenc/cts_calcs.git
+[submodule "cts_api"]
+	path = cts_api
+	url = https://github.com/popenc/cts_api.git

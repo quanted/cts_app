@@ -3,7 +3,7 @@
 """
 
 import pchemprop_parameters  # Chemical Calculator and Transformation Pathway parameters
-from REST import cts_rest
+from cts_api import cts_rest
 from models.gentrans import data_walks
 import logging
 
