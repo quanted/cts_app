@@ -6,7 +6,7 @@ import json
 from xhtml2pdf import pisa
 
 import logging
-from models.gentrans import data_walks
+from cts_calcs import data_walks
 from models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
 from cts_api import cts_rest
 from django.core.cache import cache

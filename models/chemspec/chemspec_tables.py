@@ -12,7 +12,7 @@ import logging
 import json
 from StringIO import StringIO
 from django.utils.safestring import mark_safe
-from models.gentrans import data_walks
+from cts_calcs import data_walks
 import os
 
 

@@ -7,7 +7,7 @@ from cts_calcs.chemaxon_cts import jchem_rest
 from cts_api import cts_rest
 import logging
 from django.http import HttpRequest
-import data_walks
+from cts_calcs import data_walks
 from gentrans_parameters import gen_limit_max as gen_max
 import datetime
 from django.core.cache import cache
