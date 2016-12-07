@@ -13,7 +13,7 @@ import datetime
 import logging
 from django.http import HttpResponse
 
-import cts_rest
+from cts_api import cts_rest
 # from chemaxon_cts.jchem_calculator import JchemProperty
 from cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
 from cts_calcs.epi_cts.epi_calculator import EpiCalc
