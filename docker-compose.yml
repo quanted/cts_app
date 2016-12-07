@@ -51,8 +51,9 @@
   # # Celery worker - ChemAxon calc
   worker_chemaxon:
     # build: .  # Reuse "cts_django" image
-    image: cts-uwsgi-django:latest
-    command: celery worker -A celery_cts -Q chemaxon -l info -n chemaxon_worker -c 2
+    # image: cts-uwsgi-django:latest
+    image: cts-celery:latest
+    command: celery worker -A tasks -Q chemaxon -l info -n chemaxon_worker -c 2
     # command: bash -c "sleep 3 && celery -A celery_cts worker -Q chemaxon --loglevel=info --concurrency=1 -n chemaxon_worker"
     links:
     - redis
