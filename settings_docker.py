@@ -189,4 +189,11 @@ DOCS_ROOT = os.path.join(PROJECT_ROOT, 'docs', '_build', 'html')
 DOCS_ACCESS = 'public'
 
 NODEJS_HOST = '134.67.114.1'
-NODEJS_PORT = None
+NODEJS_PORT = 80
+
+
+try:
+    # override any settings unique to local machine
+    from settings_local import *
+except ImportError as e:
+    pass

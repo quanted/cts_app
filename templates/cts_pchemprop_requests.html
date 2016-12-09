@@ -105,15 +105,19 @@ function buildCheckedCalcsAndProps () {
 function connectToSocket() {
 
     if (typeof io !== 'undefined') {
-        if (nodejs_port && nodejs_port != 80) {
-            // socket.io 0.9
-            // socket = io.connect(nodejs_host, {port: nodejs_port, 'force new connection': true});
-            // socket.io 1+
-            socket = io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
-        }
-        else {
-            socket = io.connect(nodejs_host, {'force new connection': true});
-        }
+        
+        // Troubleshooting docker socket.io connection (worked!):
+        socket = io.connect();  // todo: test locally (sans docker)
+
+        // if (nodejs_port && nodejs_port != 80) {
+        //     // socket.io 0.9
+        //     // socket = io.connect(nodejs_host, {port: nodejs_port, 'force new connection': true});
+        //     // socket.io 1+
+        //     socket = io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
+        // }
+        // else {
+        //     socket = io.connect(nodejs_host, {'force new connection': true});
+        // }
     }
     else {
         socket = null;
@@ -225,6 +229,18 @@ function connectToSocket() {
                 if (workflow == 'gentrans' && pchemprop_option != "0" && pchemprop_option != undefined) {
                     displayProductData();  // cts_gentrans_tree function
                 }
+
+
+                // if cts testing, use batch_data to compare to
+                // input csv values. this could maybe be a call to
+                // backend? or should it stay up here?
+                
+                // batch_chems is the object of input chemicals
+                // with chemical information for each (batch mode).
+                // this is where input csv values can be populated, using
+                // the same array of chemicals with pchem and mol
+
+
 
                 // if batch, display link for CSV:
                 if (window.location.href.indexOf('batch') > -1) {

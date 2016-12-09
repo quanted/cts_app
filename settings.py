@@ -70,7 +70,8 @@ INSTALLED_APPS = (
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
     'filters',
-    'cts_api'
+    'cts_api',
+    'cts_testing',
 )
 
 # This breaks the pattern of a "pluggable" TEST_CTS django app, but it also makes it convenient to describe the server hosting the TEST API.
