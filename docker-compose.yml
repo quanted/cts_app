@@ -26,7 +26,7 @@
   # NGINX web server
   nginx:
 #    restart: always
-    build: ../cts_nginx
+    build: /home/npope/CTS/cts_nginx
     image: cts-nginx:stable
     # image: popenc/cts-nginx:stable
     ports:
@@ -39,7 +39,7 @@
     - cts_django:ro  # Mount all volumes from "cts_django" to NGINX, so it can access the collected static files
 
   cts_nodejs:
-    build: ../cts_nodejs
+    build: /home/npope/CTS/cts_nodejs
     image: cts-nodejs:latest
     expose:
       - "4000"
@@ -54,7 +54,7 @@
 
   # # Celery worker - ChemAxon calc
   worker_chemaxon:
-    build: ../cts_celery
+    build: /home/npope/CTS/cts_celery
     image: cts-celery:latest
     command: celery worker -A tasks -Q chemaxon -l info -n chemaxon_worker -c 2
     # command: bash -c "sleep 3 && celery -A tasks worker -Q chemaxon --loglevel=info --concurrency=1 -n chemaxon_worker"
