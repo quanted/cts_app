@@ -54,6 +54,9 @@ $(document).ready(function() {
         startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
 
     }
+    else if (structure === null || structure.length == 0) {
+        return;
+    }
     else {
         startPchemPropDataCollection(structure, checkedCalcsAndProps, kowPH, null, null);
     }
@@ -106,18 +109,19 @@ function connectToSocket() {
 
     if (typeof io !== 'undefined') {
         
-        // Troubleshooting docker socket.io connection (worked!):
-        socket = io.connect();  // todo: test locally (sans docker)
+        // connect to socket.io!
+        if (nodejs_host == 'nginx') {
+            socket = io.connect();  // docker way
+        }
+        else {
+            if (nodejs_port && nodejs_port != 80) {
+                socket = io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
+            }
+            else {
+                socket = io.connect(nodejs_host, {'force new connection': true});
+            }
+        }
 
-        // if (nodejs_port && nodejs_port != 80) {
-        //     // socket.io 0.9
-        //     // socket = io.connect(nodejs_host, {port: nodejs_port, 'force new connection': true});
-        //     // socket.io 1+
-        //     socket = io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
-        // }
-        // else {
-        //     socket = io.connect(nodejs_host, {'force new connection': true});
-        // }
     }
     else {
         socket = null;
@@ -231,16 +235,11 @@ function connectToSocket() {
                 }
 
 
-                // if cts testing, use batch_data to compare to
-                // input csv values. this could maybe be a call to
-                // backend? or should it stay up here?
-                
-                // batch_chems is the object of input chemicals
-                // with chemical information for each (batch mode).
-                // this is where input csv values can be populated, using
-                // the same array of chemicals with pchem and mol
-
-
+                // testing code could go here...
+                // but it'll intertwine ubertool_cts and cts_testing
+                if (window.location.href.indexOf('testing') > -1) {
+                    
+                }
 
                 // if batch, display link for CSV:
                 if (window.location.href.indexOf('batch') > -1) {

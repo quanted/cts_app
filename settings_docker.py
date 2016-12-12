@@ -63,6 +63,8 @@ elif MACHINE_ID == "ord-uber-vm003":
     ALLOWED_HOSTS.append('qed.epa.gov')
 else:
     ALLOWED_HOSTS.append('192.168.99.100')
+    ALLOWED_HOSTS.append('134.67.114.7')
+    ALLOWED_HOSTS.append('*')  # This forces Django to serve behind NGINX when "DEBUG = False"
 
 # # celery config stuff:
 # CELERY_RESULT_BACKEND = 'redis://'
@@ -106,7 +108,9 @@ INSTALLED_APPS = (
     # 'epi_cts',
     # 'celery_cts',
     #'test_cts'
-    #'docs'
+    #'docs',
+    'cts_api',
+    'cts_testing'
 )
 
 MIDDLEWARE_CLASSES = (
