@@ -52,6 +52,11 @@
       - REDIS_PORT=6379
     links:
       - redis
+      - worker_chemaxon
+      - worker_epi
+      - worker_test
+      - worker_sparc
+      - worker_measured
 
   # # Celery worker - ChemAxon calc
   worker_chemaxon:
@@ -64,42 +69,42 @@
     environment:
     - REDIS_HOSTNAME=redis
 
-  # # # Celery worker - EPI Suite calc
-  # worker_epi:
-  #   build: ../cts_celery/
-  #   image: cts-celery:epi
-  #   command: celery worker -A tasks -Q epi -l info -n epi_worker -c 1
-  #   links:
-  #   - redis
-  #   environment:
-  #   - REDIS_HOSTNAME=redis
+  # # Celery worker - EPI Suite calc
+  worker_epi:
+    image: cts-celery:latest
+    # image: cts-celery:epi
+    command: celery worker -A tasks -Q epi -l info -n epi_worker -c 1
+    links:
+    - redis
+    environment:
+    - REDIS_HOSTNAME=redis
 
-  # # # Celery worker - TEST calc
-  # worker_test:
-  #   build: ../cts_celery/
-  #   image: cts-celery:test
-  #   command: celery worker -A tasks -Q test -l info -n test_worker -c 1
-  #   links:
-  #   - redis
-  #   environment:
-  #   - REDIS_HOSTNAME=redis
+  # # Celery worker - TEST calc
+  worker_test:
+    image: cts-celery:latest
+    # image: cts-celery:test
+    command: celery worker -A tasks -Q test -l info -n test_worker -c 1
+    links:
+    - redis
+    environment:
+    - REDIS_HOSTNAME=redis
 
-  # # # Celery worker - SPARC calc
-  # worker_sparc:
-  #   build: ../cts_celery/
-  #   image: cts-celery:sparc
-  #   command: celery worker -A tasks -Q sparc -l info -n sparc_worker -c 1
-  #   links:
-  #   - redis
-  #   environment:
-  #   - REDIS_HOSTNAME=redis
+  # # Celery worker - SPARC calc
+  worker_sparc:
+    image: cts-celery:latest
+    # image: cts-celery:sparc
+    command: celery worker -A tasks -Q sparc -l info -n sparc_worker -c 1
+    links:
+    - redis
+    environment:
+    - REDIS_HOSTNAME=redis
 
-  # # # Celery worker - Measured (EPI) calc
-  # worker_measured:
-  #   build: ../cts_celery/
-  #   image: cts-celery:measured
-  #   command: celery worker -A tasks -Q measured -l info -n measured_worker -c 1
-  #   links:
-  #   - redis
-  #   environment:
-  #   - REDIS_HOSTNAME=redis
+  # # Celery worker - Measured (EPI) calc
+  worker_measured:
+    image: cts-celery:latest
+    # image: cts-celery:measured
+    command: celery worker -A tasks -Q measured -l info -n measured_worker -c 1
+    links:
+    - redis
+    environment:
+    - REDIS_HOSTNAME=redis
