@@ -21,8 +21,10 @@
   redis:
     image: redis:latest
     hostname: redis
-    ports:
-    - "6379:6379"
+    # ports:
+    # - "6379:6379"
+    expose:
+      - "6379"
 
   # NGINX web server
   nginx:
