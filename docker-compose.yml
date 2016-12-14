@@ -42,7 +42,7 @@
     - cts_django:ro  # Mount all volumes from "cts_django" to NGINX, so it can access the collected static files
 
   cts_nodejs:
-    # build: /home/npope/CTS/cts_nodejs
+    build: ./cts_nodejs
     image: cts-nodejs:latest
     expose:
       - "4000"
@@ -62,7 +62,7 @@
 
   # # Celery worker - ChemAxon calc
   worker_chemaxon:
-    # build: /home/npope/CTS/cts_celery
+    build: ./cts_celery
     image: cts-celery:latest
     command: celery worker -A tasks -Q chemaxon -l info -n chemaxon_worker -c 2
     # command: bash -c "sleep 3 && celery -A tasks worker -Q chemaxon --loglevel=info --concurrency=1 -n chemaxon_worker"
@@ -73,6 +73,7 @@
 
   # # Celery worker - EPI Suite calc
   worker_epi:
+    build: ./cts_celery
     image: cts-celery:latest
     # image: cts-celery:epi
     command: celery worker -A tasks -Q epi -l info -n epi_worker -c 1
@@ -85,6 +86,7 @@
 
   # # Celery worker - TEST calc
   worker_test:
+    build: ./cts_celery
     image: cts-celery:latest
     # image: cts-celery:test
     command: celery worker -A tasks -Q test -l info -n test_worker -c 1
@@ -95,6 +97,7 @@
 
   # # Celery worker - SPARC calc
   worker_sparc:
+    build: ./cts_celery
     image: cts-celery:latest
     # image: cts-celery:sparc
     command: celery worker -A tasks -Q sparc -l info -n sparc_worker -c 1
@@ -105,6 +108,7 @@
 
   # # Celery worker - Measured (EPI) calc
   worker_measured:
+    build: ./cts_celery
     image: cts-celery:latest
     # image: cts-celery:measured
     command: celery worker -A tasks -Q measured -l info -n measured_worker -c 1
