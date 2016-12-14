@@ -80,6 +80,8 @@
     - redis
     environment:
     - REDIS_HOSTNAME=redis
+    # extra_hosts:
+    #   - "localhost:10.0.2.2"
 
   # # Celery worker - TEST calc
   worker_test:
@@ -110,3 +112,5 @@
     - redis
     environment:
     - REDIS_HOSTNAME=redis
+    # extra_hosts:
+    #   - "localhost:10.0.2.2"
