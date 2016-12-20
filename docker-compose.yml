@@ -30,6 +30,7 @@
   nginx:
 #    restart: always
     # build: /home/npope/CTS/cts_nginx
+    build: ./cts_nginx
     image: cts-nginx:stable
     # image: popenc/cts-nginx:stable
     ports:

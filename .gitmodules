@@ -13,3 +13,6 @@
 [submodule "cts_nodejs"]
 	path = cts_nodejs
 	url = https://github.com/popenc/cts_nodejs.git
+[submodule "cts_nginx"]
+	path = cts_nginx
+	url = https://github.com/popenc/cts_nginx.git
