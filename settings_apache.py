@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 import os, sys
 import socket
-import secret
+#import secret
 
 # Get machine IP address
 MACHINE_ID = socket.gethostname()
@@ -43,7 +43,7 @@ os.environ.update({
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = secret.SECRET_KEY
+SECRET_KEY = 'wx$p52y!1p!*p$$y^d!f9@5=)3o#88+08-i9_mc8*-8h+x2&@w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
