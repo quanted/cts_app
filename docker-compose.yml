@@ -11,7 +11,7 @@
     - "8080"
     volumes:
     - collected_static:/src/collected_static
-    # - .:/src  # map ubertool_cts/ to /src for updating without rebuilding images
+    - .:/src  # map ubertool_cts/ to /src for updating without rebuilding images
     environment:
     - REDIS_HOSTNAME=redis
     links:
