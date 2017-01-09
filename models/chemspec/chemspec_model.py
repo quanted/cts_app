@@ -114,7 +114,6 @@ class chemspec(object):
 
             self.speciation_inputs = {
                 'pKa_decimals': pKa_decimals,
-                'pKa_decimals': pKa_decimals,
                 'pKa_pH_lower': pKa_pH_lower,
                 'pKa_pH_upper': pKa_pH_upper,
                 'pKa_pH_increment': pKa_pH_increment,

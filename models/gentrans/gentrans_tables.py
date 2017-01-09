@@ -10,7 +10,6 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import json
 import os
-from django.conf import settings
 
 
 def getdjtemplate():
