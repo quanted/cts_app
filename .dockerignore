@@ -1,4 +1,0 @@
-.gitignore
-env/*
-cts_nodejs/*
-cts_celery/*
