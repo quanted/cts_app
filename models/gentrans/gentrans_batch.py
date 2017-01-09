@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.template.loader import render_to_string
-from models.gentrans import gentrans_parameters
+from cts_app.models.gentrans import gentrans_parameters
 import json
 
 
@@ -12,7 +12,7 @@ def gentransBatchInputPage(request, model='', header='Transformation Products', 
     """
 
     html = """
-    <script src="/static/stylesheets/scripts_pchemprop.js"></script>
+    <script src="/static_qed/cts/stylesheets/scripts_pchemprop.js"></script>
     <div id="pchem_batch_wrap" hidden>
         <h3>1. Select transformation pathways for batch chemicals</h3>
     """
@@ -50,8 +50,8 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     # instantiate model object to get checkedCalcsAndProps dict.
     # render said dict into cts_pchemprop_ajax_calls template
 
-    from models.gentrans import gentrans_output
-    from models.pchemprop import pchemprop_output
+    from cts_app.models.gentrans import gentrans_output
+    from cts_app.models.pchemprop import pchemprop_output
     from django.utils.safestring import mark_safe
 
 
@@ -78,7 +78,7 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
 
     html = render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
 
-    html += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript" ></script>'
+    html += '<script src="/static_qed/cts/stylesheets/scripts_pchemprop.js" type="text/javascript" ></script>'
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
     html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_limit})

@@ -5,11 +5,11 @@
 import json
 # from chemaxon_cts import jchem_rest
 # from chemaxon_cts.jchem_calculator import JchemProperty
-from cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
+from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
 import logging
 import datetime
 # from REST import cts_rest
-from cts_api import cts_rest
+from cts_app.cts_api import cts_rest
 
 
 class chemspec(object):

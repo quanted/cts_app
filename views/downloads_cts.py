@@ -13,12 +13,12 @@ import datetime
 import logging
 from django.http import HttpResponse
 
-from cts_api import cts_rest
+from cts_app.cts_api import cts_rest
 # from chemaxon_cts.jchem_calculator import JchemProperty
-from cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
-from cts_calcs.epi_cts.epi_calculator import EpiCalc
-from cts_calcs.test_cts.test_calculator import TestCalc
-from cts_calcs.sparc_cts.sparc_calculator import SparcCalc
+from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
+from cts_app.cts_calcs.epi_cts.epi_calculator import EpiCalc
+from cts_app.cts_calcs.test_cts.test_calculator import TestCalc
+from cts_app.cts_calcs.sparc_cts.sparc_calculator import SparcCalc
 
 
 class CSV(object):

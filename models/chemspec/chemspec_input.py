@@ -10,14 +10,14 @@ import logging
 def chemspecInputPage(request, model='', header='Chemical Speciation', formData=None):
     import chemspec_parameters
 
-    html = render_to_string('04uberinput_jquery.html', { 'model': model }) # Loads scripts_chemspec.js
+    html = render_to_string('04cts_uberinput_jquery.html', { 'model': model }) # Loads scripts_chemspec.js
 
-    html = html + render_to_string('04uberinput_start_tabbed.html', {
+    html = html + render_to_string('04cts_uberinput_start_tabbed.html', {
             'model': model,
             'model_attributes': header
     })
 
-    html = html + render_to_string('04uberinput_tabbed_nav.html', {
+    html = html + render_to_string('04cts_uberinput_tabbed_nav.html', {
             'nav_dict': {
                 'class_name': ['Chemical', 'Speciation'],
                 'tab_label': ['Chemical Editor', 'Chemical Speciation']
@@ -33,7 +33,7 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
 
     html = html + render_to_string('cts.html', {}) # Builds marvin js and results table 
 
-    html = html + render_to_string('04uberinput_tabbed_end.html', {'sub_title': 'Submit'})
+    html = html + render_to_string('04cts_uberinput_tabbed_end.html', {'sub_title': 'Submit'})
     
 
     # Check if tooltips dictionary exists
@@ -43,6 +43,6 @@ def chemspecInputPage(request, model='', header='Chemical Speciation', formData=
     #     tooltips = chemspec_tooltips.tooltips
     # except:
     #     tooltips = {}
-    # html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
+    # html = html + render_to_string('05cts_ubertext_tooltips_right.html', {'tooltips':tooltips})
 
     return html

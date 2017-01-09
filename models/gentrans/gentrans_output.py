@@ -4,7 +4,7 @@ import logging
 @require_POST
 def gentransOutputPage(request):
     import gentrans_model
-    from models.pchemprop import pchemprop_model
+    from cts_app.models.pchemprop import pchemprop_model
 
     run_type = request.POST.get('run_type')
 

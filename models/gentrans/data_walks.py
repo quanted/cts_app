@@ -2,7 +2,7 @@ import logging
 import json
 from django.http import HttpRequest
 # from chemaxon_cts import jchem_rest
-from cts_calcs.chemaxon_cts import jchem_rest
+from cts_app.cts_calcs.chemaxon_cts import jchem_rest
 from django.template import Context, Template, defaultfilters
 
 """

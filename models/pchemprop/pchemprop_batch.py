@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.template.loader import render_to_string
-from models.pchemprop import pchemprop_parameters
+from cts_app.models.pchemprop import pchemprop_parameters
 import json
 
 
@@ -38,7 +38,7 @@ def pchempropBatchOutputPage(request, model='', header='P-Chem Properties', form
     # instantiate model object to get checkedCalcsAndProps dict.
     # render said dict into cts_pchemprop_ajax_calls template
 
-    from models.pchemprop import pchemprop_output
+    from cts_app.models.pchemprop import pchemprop_output
     from django.utils.safestring import mark_safe
 
     pchemprop_obj = pchemprop_output.pchempropOutputPage(request)

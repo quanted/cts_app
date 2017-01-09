@@ -19,9 +19,9 @@ def fileNotFound(request, model=None):
 	html = html + render_to_string('04ubertext_start.html', {
 		'model_attributes': 'This page is still under maintenance',
 		'text_paragraph': ""})
-	# html = html + """ <img src="/static/images/404error.png" width="300" height="300">"""
-	html = html + """<img src="/static/images/fist-with-hammer.jpg" style="display:block; margin:auto;">"""
-	html = html + render_to_string('04ubertext_end.html', {})
+	# html = html + """ <img src="/static_qed/cts/images/404error.png" width="300" height="300">"""
+	html = html + """<img src="/static_qed/cts/images/fist-with-hammer.jpg" style="display:block; margin:auto;">"""
+	html = html + render_to_string('04cts_ubertext_end.html', {})
 	html = html + render_to_string('05cts_ubertext_links_right.html', {})
 	html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
 	response = HttpResponse()
@@ -34,7 +34,7 @@ def requestTimeout(request):
 	html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {'title2': 'Request timed out'})
 	html = html + linksLeft.linksLeft()
 	html = html + """<div class="articles">
-                    <img class="model_header" src="/static/images/408error.png" width="300" height="300">
+                    <img class="model_header" src="/static_qed/cts/images/408error.png" width="300" height="300">
                     </div>"""
 	html = html + render_to_string('05cts_ubertext_links_right.html', {})
 	html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
@@ -54,7 +54,7 @@ def displayPDF(request, reactionLib=None):
 		<p>Version 1.6 of the Abiotic Hydrolysis Reaction Library contains 25 reaction schemes.  Left click a reaction scheme to view the generalized reaction scheme, supporting reaction rules for reactivity, selectivity and exclusion, as well as example transformation pathways based on the execution of the reaction scheme.  References to process science on which the reaction scheme was developed are also provided.</p>
 		<br>
 		<h3> Click <a href="/static/docs/HydrolysisRxnLib_ver1-6.pdf" download="HydrolysisRxnLib_ver1-6.pdf">here</a> to download if file doesn't load</h3>
-		<embed src="/static/docs/HydrolysisRxnLib_ver1-6.pdf" class="libPDF">
+		<embed src="/static_qed/cts/docs/HydrolysisRxnLib_ver1-6.pdf" class="libPDF">
 		"""
 	elif 'areduction' in request.path:
 		logging.info('areduction in path!')
@@ -63,13 +63,13 @@ def displayPDF(request, reactionLib=None):
 		<p>Version 1.4 of the Abiotic Reduction Reaction Library contains 8 reaction schemes.  Left click a reaction scheme to view the generalized reaction scheme, supporting reaction rules for reactivity, selectivity and exclusion, as well as example transformation pathways based on the execution of the reaction scheme.  References to process science on which the reaction scheme was developed are also provided.</p>
 		<br>
 		<h3> Click <a href="/static/docs/AbioticReductionRxnLib_vers1-4.pdf" download="AbioticReductionRxnLib_vers1-4.pdf">here</a> to download if file doesn't load</h3>
-		<embed src="/static/docs/AbioticReductionRxnLib_vers1-4.pdf" class="libPDF">
+		<embed src="/static_qed/cts/docs/AbioticReductionRxnLib_vers1-4.pdf" class="libPDF">
 		"""
 	elif 'guide' in request.path:
 		title = "CTS User's Guide"
 		pdfHTML = """
 		<h3> Click <a href="/static/docs/CTS_USER_Guide_weber_9-14-15.pdf" download="CTS_USER_Guide_weber_9-14-15.pdf">here</a> to download if the file does not load </h3>
-		<embed src="/static/docs/CTS_USER_Guide_weber_9-14-15.pdf" class="libPDF">'
+		<embed src="/static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.pdf" class="libPDF">'
 		"""
 	else:
 		logging.info('error')
@@ -84,8 +84,8 @@ def displayPDF(request, reactionLib=None):
 		'text_paragraph': pdfHTML})
 		# 'text_paragraph': "<br><br>"})
 	# html += pdfHTML
-	# html = html + """<img src="/static/images/fist-with-hammer.jpg" style="display:block; margin:auto;">"""
-	html += render_to_string('04ubertext_end.html', {})
+	# html = html + """<img src="/static_qed/cts/images/fist-with-hammer.jpg" style="display:block; margin:auto;">"""
+	html += render_to_string('04cts_ubertext_end.html', {})
 	html += render_to_string('05cts_ubertext_links_right.html', {})
 	html += render_to_string('06cts_uberfooter.html', {'links': ''})
 
@@ -118,7 +118,7 @@ def moduleDescriptions(request, module=None):
 		'text_paragraph': module_text
 	})
 	
-	html += render_to_string('04ubertext_end.html', {})
+	html += render_to_string('04cts_ubertext_end.html', {})
 	html += render_to_string('05cts_ubertext_links_right.html', {})
 	html += render_to_string('06cts_uberfooter.html', {'links': ''})
 

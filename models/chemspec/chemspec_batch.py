@@ -1,7 +1,7 @@
 import os
 os.environ['DJANGO_SETTINGS_MODULE']='settings'
 from django.template.loader import render_to_string
-from models.pchemprop import pchemprop_parameters
+from cts_app.models.pchemprop import pchemprop_parameters
 import json
 from django.conf import settings
 
@@ -13,7 +13,7 @@ def chemspecBatchInputPage(request, model='', header='Chemical Speciation Proper
     appears after the user has uploaded a chemical file for batch
     """
 
-    from models.chemspec import chemspec_parameters
+    from cts_app.models.chemspec import chemspec_parameters
 
 
 
@@ -40,7 +40,7 @@ def chemspecBatchInputPage(request, model='', header='Chemical Speciation Proper
 
 def chemspecBatchOutputPage(request, model='', header='Chemical Speciation Properties', formData=None):
 
-    from models.chemspec import chemspec_output
+    from cts_app.models.chemspec import chemspec_output
     from django.utils.safestring import mark_safe
 
     chemspec_obj = chemspec_output.chemspecOutputPage(request)

@@ -17,12 +17,12 @@ class pchempropDescriptionPage(webapp.RequestHandler):
         html = template.render(templatepath + '01cts_uberheader.html', {'title'})
         html = html + template.render(templatepath + '02cts_uberintroblock_wmodellinks.html', {'model':'pchemprop','page':'description'})
         html = html + template.render(templatepath + '03cts_ubertext_links_left.html', {})                       
-        html = html + template.render(templatepath + '04ubertext_start.html', {
+        html = html + template.render(templatepath + '04cts_ubertext_start.html', {
                 'model_page':'#', 
                 'model_attributes':'Chemical Transformation Simulator Overview', 
                 'text_paragraph':x})
-        html = html + template.render(templatepath + '04ubertext_nav.html', {'model':'pchemprop'})
-        html = html + template.render(templatepath + '04ubertext_end.html', {})
+        html = html + template.render(templatepath + '04cts_ubertext_nav.html', {'model':'pchemprop'})
+        html = html + template.render(templatepath + '04cts_ubertext_end.html', {})
         html = html + template.render(templatepath + '05cts_ubertext_links_right.html', {})
         html = html + template.render(templatepath + '06cts_uberfooter.html', {'links': ''})
         self.response.out.write(html)

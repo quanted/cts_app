@@ -5,8 +5,8 @@ import linksLeft
 
 
 def inputPage(request, model='none', header='none'):
-    viewmodule = importlib.import_module('.views', 'models.'+model)
-    inputmodule = importlib.import_module('.'+model+'_input', 'models.'+model)
+    viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
+    inputmodule = importlib.import_module('.'+model+'_input', 'cts_app.models.'+model)
     header = viewmodule.header
 
     html = render_to_string('01cts_uberheader.html', {'title': header+' Inputs'})

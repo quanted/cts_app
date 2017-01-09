@@ -9,16 +9,16 @@ from django.template.loader import render_to_string
     
 def gentransInputPage(request, model='', header='Generate Transformation Pathways', formData=None):
     import gentrans_parameters
-    # from models.pchemprop import pchemprop_parameters
-    from models.chemspec import chemspec_parameters
+    # from cts_app.models.pchemprop import pchemprop_parameters
+    from cts_app.models.chemspec import chemspec_parameters
 
-    html = render_to_string('04uberinput_jquery.html', { 'model': model }) # loads scripts_gentrans.js
-    html = html + render_to_string('04uberinput_start_tabbed.html', {
+    html = render_to_string('04cts_uberinput_jquery.html', { 'model': model }) # loads scripts_gentrans.js
+    html = html + render_to_string('04cts_uberinput_start_tabbed.html', {
             'model': model,
             'model_attributes': header
     })
 
-    html = html + render_to_string('04uberinput_tabbed_nav.html', {
+    html = html + render_to_string('04cts_uberinput_tabbed_nav.html', {
             'nav_dict': {
                 'class_name': ["Chemical", "ReactionPathSim"],
                 'tab_label': ['Chemical Editor', 'Reaction Pathway Simulator'],
@@ -29,7 +29,7 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
     html = html + str(chemspec_parameters.form(formData)) # Loads the Chemical Speciation tables to the page
     html = html + render_to_string('cts.html', {}) # Builds Marvin JS, lookup table, and results table
     html = html + str(gentrans_parameters.form(formData))
-    html = html + render_to_string('04uberinput_tabbed_end.html', {'sub_title': 'Submit'})
+    html = html + render_to_string('04cts_uberinput_tabbed_end.html', {'sub_title': 'Submit'})
 
     # Check if tooltips dictionary exists
     # try:
@@ -38,6 +38,6 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
     #     tooltips = gentrans_tooltips.tooltips
     # except:
     #     tooltips = {}
-    # html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
+    # html = html + render_to_string('05cts_ubertext_tooltips_right.html', {'tooltips':tooltips})
 
     return html

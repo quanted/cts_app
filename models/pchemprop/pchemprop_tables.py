@@ -60,7 +60,7 @@ inTmpl = Template(getInputTemplate())
 
 def table_all(pchemprop_obj):
     html_all = '<br>'
-    html_all += '<script src="/static/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
+    html_all += '<script src="/static_qed/cts/stylesheets/scripts_pchemprop.js" type="text/javascript"></script>'
     html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
     html_all += input_struct_table(pchemprop_obj)
     html_all += output_pchem_table(pchemprop_obj)

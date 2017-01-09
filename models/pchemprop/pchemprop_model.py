@@ -3,13 +3,13 @@
 """
 
 import pchemprop_parameters  # Chemical Calculator and Transformation Pathway parameters
-from cts_api import cts_rest
-from cts_calcs import data_walks
+from cts_app.cts_api import cts_rest
+from cts_app.cts_calcs import data_walks
 import logging
 
 import datetime
 import json
-from cts_calcs.test_cts import views as test_views
+from cts_app.cts_calcs.test_cts import views as test_views
 from requests import Request
 from django.http import HttpRequest
 

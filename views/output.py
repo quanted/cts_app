@@ -8,8 +8,8 @@ import logging
 
 def outputPageView(request, model='none', header=''):
 
-    outputmodule = importlib.import_module('.'+model+'_output', 'models.'+model)
-    tablesmodule = importlib.import_module('.'+model+'_tables', 'models.'+model)
+    outputmodule = importlib.import_module('.'+model+'_output', 'cts_app.models.'+model)
+    tablesmodule = importlib.import_module('.'+model+'_tables', 'cts_app.models.'+model)
 
     outputPageFunc = getattr(outputmodule, model+'OutputPage') # function name = 'model'OutputPage  (e.g. 'sipOutputPage')
     model_obj = outputPageFunc(request)
@@ -34,13 +34,13 @@ def outputPageView(request, model='none', header=''):
     html = render_to_string('01cts_uberheader.html', {'title': header+' Output'})
     html += render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'output'})
     html += linksLeft.linksLeft()
-    html += render_to_string('export.html', {})
-    html += render_to_string('04uberoutput_start.html', {
+    html += render_to_string('cts_export.html', {})
+    html += render_to_string('04cts_uberoutput_start.html', {
             'model_attributes': header+' Output'})
 
     html += modelOutputHTML
     # html = html + render_to_string('export.html', {})
-    html += render_to_string('04uberoutput_end.html', {'model':model})
+    html += render_to_string('04cts_uberoutput_end.html', {'model':model})
     html += render_to_string('06cts_uberfooter.html', {'links': ''})
 
     response = HttpResponse()
@@ -50,11 +50,11 @@ def outputPageView(request, model='none', header=''):
 @require_POST
 def outputPage(request, model='none', header=''):
 
-    viewmodule = importlib.import_module('.views', 'models.'+model)
+    viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
 
     header = viewmodule.header
 
-    parametersmodule = importlib.import_module('.'+model+'_parameters', 'models.'+model)
+    parametersmodule = importlib.import_module('.'+model+'_parameters', 'cts_app.models.'+model)
 
     try:
         # Class name must be ModelInp, e.g. SipInp or TerrplantInp
@@ -68,7 +68,7 @@ def outputPage(request, model='none', header=''):
 
         else:
 
-            inputmodule = importlib.import_module('.'+model+'_input', 'models.'+model)
+            inputmodule = importlib.import_module('.'+model+'_input', 'cts_app.models.'+model)
 
             # Render input page view with POSTed values and show errors
             html = render_to_string('01cts_uberheader.html', {'title': header+' Inputs'})

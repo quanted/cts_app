@@ -9,17 +9,17 @@ import logging
 
 def pchempropInputPage(request, model='', header='P-Chem Properties', formData=None):
     import pchemprop_parameters
-    from models.chemspec import chemspec_parameters
+    from cts_app.models.chemspec import chemspec_parameters
 
 
-    html = render_to_string('04uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
+    html = render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
 
-    html = html + render_to_string('04uberinput_start_tabbed.html', {
+    html = html + render_to_string('04cts_uberinput_start_tabbed.html', {
             'model': model,
             'model_attributes': header
     })
 
-    html = html + render_to_string('04uberinput_tabbed_nav.html', {
+    html = html + render_to_string('04cts_uberinput_tabbed_nav.html', {
             'nav_dict': {
                 'class_name': ['Chemical', 'ChemCalcs'],
                 'tab_label': ['Chemical Editor', 'P-Chem Calculators']
@@ -35,7 +35,7 @@ def pchempropInputPage(request, model='', header='P-Chem Properties', formData=N
     html = html + render_to_string('cts_pchem.html', {})
     # html = html + str(pchemprop_parameters.form(formData)) # str(pchemprop_properties.form()) returns html table with ids
 
-    html = html + render_to_string('04ubercts_end.html', {'sub_title': 'Submit'})
+    html = html + render_to_string('04cts_ubercts_end.html', {'sub_title': 'Submit'})
     
     # Check if tooltips dictionary exists
     # try:
@@ -44,6 +44,6 @@ def pchempropInputPage(request, model='', header='P-Chem Properties', formData=N
     #     tooltips = pchemprop_tooltips.tooltips
     # except:
     #     tooltips = {}
-    # html = html + render_to_string('05ubertext_tooltips_right.html', {'tooltips':tooltips})
+    # html = html + render_to_string('05cts_ubertext_tooltips_right.html', {'tooltips':tooltips})
 
     return html

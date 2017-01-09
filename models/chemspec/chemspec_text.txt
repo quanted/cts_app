@@ -1,4 +1,4 @@
 <p>This workflow allows the user to enter an individual chemical through the Chemical Editor (see below). Based on the selection of the available options for structure analysis, the user will be able to generate structure information including pKa values, the dominant forms of ionized species and tautomers, as well as structures for possible stereoisomers.
 </p>
 
-<img src="/static/images/chemspec/chemspec_flow_diagram.png" alt="Chemical Speciation Flow Diagram">
+<img src="/static_qed/cts/images/chemspec/chemspec_flow_diagram.png" alt="Chemical Speciation Flow Diagram">
