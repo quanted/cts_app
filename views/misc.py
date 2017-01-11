@@ -53,7 +53,7 @@ def displayPDF(request, reactionLib=None):
 		pdfHTML = """
 		<p>Version 1.6 of the Abiotic Hydrolysis Reaction Library contains 25 reaction schemes.  Left click a reaction scheme to view the generalized reaction scheme, supporting reaction rules for reactivity, selectivity and exclusion, as well as example transformation pathways based on the execution of the reaction scheme.  References to process science on which the reaction scheme was developed are also provided.</p>
 		<br>
-		<h3> Click <a href="/static/docs/HydrolysisRxnLib_ver1-6.pdf" download="HydrolysisRxnLib_ver1-6.pdf">here</a> to download if file doesn't load</h3>
+		<h3> Click <a href="/static_qed/cts/docs/HydrolysisRxnLib_ver1-6.pdf" download="HydrolysisRxnLib_ver1-6.pdf">here</a> to download if file doesn't load</h3>
 		<embed src="/static_qed/cts/docs/HydrolysisRxnLib_ver1-6.pdf" class="libPDF">
 		"""
 	elif 'areduction' in request.path:
@@ -62,14 +62,14 @@ def displayPDF(request, reactionLib=None):
 		pdfHTML = """
 		<p>Version 1.4 of the Abiotic Reduction Reaction Library contains 8 reaction schemes.  Left click a reaction scheme to view the generalized reaction scheme, supporting reaction rules for reactivity, selectivity and exclusion, as well as example transformation pathways based on the execution of the reaction scheme.  References to process science on which the reaction scheme was developed are also provided.</p>
 		<br>
-		<h3> Click <a href="/static/docs/AbioticReductionRxnLib_vers1-4.pdf" download="AbioticReductionRxnLib_vers1-4.pdf">here</a> to download if file doesn't load</h3>
+		<h3> Click <a href="/static_qed/cts/docs/AbioticReductionRxnLib_vers1-4.pdf" download="AbioticReductionRxnLib_vers1-4.pdf">here</a> to download if file doesn't load</h3>
 		<embed src="/static_qed/cts/docs/AbioticReductionRxnLib_vers1-4.pdf" class="libPDF">
 		"""
 	elif 'guide' in request.path:
 		title = "CTS User's Guide"
 		pdfHTML = """
-		<h3> Click <a href="/static/docs/CTS_USER_Guide_weber_9-14-15.pdf" download="CTS_USER_Guide_weber_9-14-15.pdf">here</a> to download if the file does not load </h3>
-		<embed src="/static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.pdf" class="libPDF">'
+		<h3> Click <a href="/static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.docx" download="CTS_USER_Guide_weber_9-14-15.docx">here</a> to download if the file does not load </h3>
+		<embed src="/static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.docx" class="libPDF">'
 		"""
 	else:
 		logging.info('error')

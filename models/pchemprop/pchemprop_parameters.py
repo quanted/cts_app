@@ -60,7 +60,7 @@ class CTS_ChemCalcs_Props(forms.Form):
 	kow_ph = forms.DecimalField (
 				label='at pH:',
 				widget=forms.NumberInput(attrs={'class':'numberInput'}),
-				initial=7.4,
+				initial=7.0,
 				min_value=0,
 				max_value=14,
 				decimal_places=1,
