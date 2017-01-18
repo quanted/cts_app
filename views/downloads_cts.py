@@ -47,12 +47,12 @@ class CSV(object):
 		else:
 			response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + jid + '.csv'
 
-		writer = csv.writer(response)  # bind writer to http response
+		# writer = csv.writer(response)  # bind writer to http response
 
-		# build title section of csv..
-		writer.writerow([run_data['run_data']['title']])
-		writer.writerow([run_data['run_data']['time']])
-		writer.writerow([""])
+		# # build title section of csv..
+		# writer.writerow([run_data['run_data']['title']])
+		# writer.writerow([run_data['run_data']['time']])
+		# writer.writerow([""])
 
 		rows = []
 		headers = []
@@ -329,24 +329,60 @@ class CSV(object):
 																rows[i].insert(header_index, roundData(prop, pchem['data']))
 
 
-		# might have to add code to keep row order..
-		# writer.writerow(rows['headers'])
-		writer.writerow(headers)
+		# # might have to add code to keep row order..
+		# # writer.writerow(rows['headers'])
+		# writer.writerow(headers)
 
-		if self.model == 'gentrans':
-			for row in rows:
-				writer.writerow(row)
+		# if self.model == 'gentrans':
+		# 	for row in rows:
+		# 		writer.writerow(row)
 
-		else:
-			for row in rows:
-				encoded_row_data = []
-				for datum in row:
-					if isinstance(datum, unicode): datum = datum.encode('utf8')
-					encoded_row_data.append(datum)
-				writer.writerow(encoded_row_data)
+		# else:
+		# 	for row in rows:
+		# 		encoded_row_data = []
+		# 		for datum in row:
+		# 			if isinstance(datum, unicode): datum = datum.encode('utf8')
+		# 			encoded_row_data.append(datum)
+		# 		writer.writerow(encoded_row_data)
 
 
-		return response
+		# check for encoding issues that are laid out in the commented
+		# out conditional above...
+		return some_streaming_csv_view(headers, rows, run_data)
+		# return response
+
+
+class Echo(object):
+	"""
+	An object that implements just the write method of the file-like
+	interface.
+	"""
+	def write(self, value):
+		"""Write the value by returning it, instead of storing in a buffer"""
+		return value
+
+# def some_streaming_csv_view(request):
+def some_streaming_csv_view(headers, rows, run_data):
+	"""A view that streams a large CSV file"""
+	from django.http import StreamingHttpResponse
+
+	# only need this for stream response????
+	# csv_rows = []
+	# csv_rows.insert(0, headers)
+	# csv_rows.append(rows)	
+	rows.insert(0, headers)
+	# rows.insert(0, run_data['run_data']['time'])
+	# rows.insert(0, run_data['run_data']['title'])
+	
+	pseudo_buffer = Echo()
+	writer = csv.writer(pseudo_buffer)
+
+	response = StreamingHttpResponse((writer.writerow(row) for row in rows),
+		content_type="text/csv")
+	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+	return response
+
+# return some_streaming_csv_view(request)
 
 
 def getCalcMapKeys(calc):
