@@ -41,11 +41,14 @@ class CSV(object):
 		time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
 		response = HttpResponse(content_type='text/csv')
+		content_disposition = ''
 
 		if 'batch_data' in run_data:
-			response['Content-Disposition'] = 'attachment; filename=' + self.model + '_batch_' + jid + '.csv'	
+			content_disposition = 'attachment; filename=' + self.model + '_batch_' + jid + '.csv'	
 		else:
-			response['Content-Disposition'] = 'attachment; filename=' + self.model + '_' + jid + '.csv'
+			content_disposition = 'attachment; filename=' + self.model + '_' + jid + '.csv'
+			
+		response['Content-Disposition'] = content_disposition
 
 		# writer = csv.writer(response)  # bind writer to http response
 
@@ -347,8 +350,8 @@ class CSV(object):
 
 
 		# check for encoding issues that are laid out in the commented
-		# out conditional above...
-		return some_streaming_csv_view(headers, rows, run_data)
+		# out conditional above..qQ.
+		return some_streaming_csv_view(headers, rows, run_data, content_disposition)
 		# return response
 
 
@@ -362,7 +365,7 @@ class Echo(object):
 		return value
 
 # def some_streaming_csv_view(request):
-def some_streaming_csv_view(headers, rows, run_data):
+def some_streaming_csv_view(headers, rows, run_data, content_disposition):
 	"""A view that streams a large CSV file"""
 	from django.http import StreamingHttpResponse
 
@@ -379,7 +382,7 @@ def some_streaming_csv_view(headers, rows, run_data):
 
 	response = StreamingHttpResponse((writer.writerow(row) for row in rows),
 		content_type="text/csv")
-	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+	response['Content-Disposition'] = content_disposition
 	return response
 
 # return some_streaming_csv_view(request)
