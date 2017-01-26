@@ -220,11 +220,13 @@ def csvReceiver(request, model=''):
     """
     from downloads_cts import CSV
 
+    logging.warning("Entering csvReceiver..")
+
     try:
         run_data = json.loads(request.POST.get('run_data'))
 
     except Exception as error:
-        logging.info("CSV ERROR: {}".format(error))
+        logging.warning("CSV ERROR: {}".format(error))
         raise error
 
     csv_obj = CSV(model)
