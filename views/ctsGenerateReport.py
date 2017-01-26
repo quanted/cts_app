@@ -223,6 +223,8 @@ def csvReceiver(request, model=''):
     logging.warning("Entering csvReceiver..")
 
     try:
+        logging.warning("Inside try-except..")
+        logging.warning("Request POST: {}".format(request.POST))
         request_data = request.POST.get('run_data')
         logging.warning("Request data retrieved from POST..Attempting to json.loads()")
         run_data = json.loads(request_data)
