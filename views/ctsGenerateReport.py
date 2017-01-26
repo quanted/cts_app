@@ -223,8 +223,10 @@ def csvReceiver(request, model=''):
     logging.warning("Entering csvReceiver..")
 
     try:
-        run_data = json.loads(request.POST.get('run_data'))
-
+        request_data = request.POST.get('run_data')
+        logging.warning("Request data retrieved from POST..Attempting to json.loads()")
+        run_data = json.loads(request_data)
+        logging.warning("After json.loads() statement..")
     except Exception as error:
         logging.warning("CSV ERROR: {}".format(error))
         raise error
