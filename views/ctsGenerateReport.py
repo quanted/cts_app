@@ -219,11 +219,14 @@ def csvReceiver(request, model=''):
     Save output as CSV
     """
     from downloads_cts import CSV
+    from django.conf import settings
 
     logging.warning("Entering csvReceiver..")
+    logging.warning("DJANGO MAX UPLOAD MEM: {}".format(settings.DATA_UPLOAD_MAX_MEMORY))
 
     try:
         logging.warning("Inside try-except..")
+        logging.warning("Can 'request' be accessed: {}".format(request))
         logging.warning("Request POST: {}".format(request.POST))
         request_data = request.POST.get('run_data')
         logging.warning("Request data retrieved from POST..Attempting to json.loads()")
