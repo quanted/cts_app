@@ -221,32 +221,12 @@ def csvReceiver(request, model=''):
     from downloads_cts import CSV
     from django.conf import settings
 
-    logging.warning("Entering csvReceiver..")
-    logging.warning("Setting max memory manually..")
-    settings.DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 10MB => 10485760 bytes (IEC units)
-    logging.warning("Max memory set..")
-
-    # todo: could add log of request content size (self.META.get('CONTENT_LENGTH'))
-
+    settings.DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB => 10485760 bytes (IEC units)
     logging.warning("DJANGO MAX UPLOAD MEM: {}".format(settings.DATA_UPLOAD_MAX_MEMORY_SIZE))
 
-    logging.warning("CONTENT LENGTH: {}".format(request.META.get('CONTENT_LENGTH')))
-
-    # Conditional in django.http.request.py that's triggering error:
-    # Limit the maximum request data size that will be handled in-memory.
-    # if (settings.DATA_UPLOAD_MAX_MEMORY_SIZE is not None and
-    #         int(self.META.get('CONTENT_LENGTH') or 0) > settings.DATA_UPLOAD_MAX_MEMORY_SIZE):
-    # raise RequestDataTooBig('Request body exceeded settings.DATA_UPLOAD_MAX_MEMORY_SIZE.')
-
-
     try:
-        logging.warning("Inside try-except..")
-        logging.warning("Can 'request' contents be accessed: {}".format(dir(request)))
-        logging.warning("Request POST: {}".format(request.POST))
         request_data = request.POST.get('run_data')
-        logging.warning("Request data retrieved from POST..Attempting to json.loads()")
         run_data = json.loads(request_data)
-        logging.warning("After json.loads() statement..")
     except Exception as error:
         logging.warning("CSV ERROR: {}".format(error))
         raise error
