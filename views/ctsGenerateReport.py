@@ -223,12 +223,12 @@ def csvReceiver(request, model=''):
 
     logging.warning("Entering csvReceiver..")
     logging.warning("Setting max memory manually..")
-    settings.DATA_UPLOAD_MAX_MEMORY = 10485760  # 10MB => 10485760 bytes (IEC units)
+    settings.DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 10MB => 10485760 bytes (IEC units)
     logging.warning("Max memory set..")
 
     # todo: could add log of request content size (self.META.get('CONTENT_LENGTH'))
 
-    logging.warning("DJANGO MAX UPLOAD MEM: {}".format(settings.DATA_UPLOAD_MAX_MEMORY))
+    logging.warning("DJANGO MAX UPLOAD MEM: {}".format(settings.DATA_UPLOAD_MAX_MEMORY_SIZE))
 
     logging.warning("CONTENT LENGTH: {}".format(request.META.get('CONTENT_LENGTH')))
 
