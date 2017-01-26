@@ -57,6 +57,8 @@ class CSV(object):
 		# writer.writerow([run_data['run_data']['time']])
 		# writer.writerow([""])
 
+		logging.warning("Beginning CSV parsing..")
+
 		rows = []
 		headers = []
 
@@ -369,6 +371,8 @@ def some_streaming_csv_view(headers, rows, run_data, content_disposition):
 	"""A view that streams a large CSV file"""
 	from django.http import StreamingHttpResponse
 
+	logging.warning("About to stream the CSV..")
+
 	# only need this for stream response????
 	# csv_rows = []
 	# csv_rows.insert(0, headers)
@@ -380,8 +384,13 @@ def some_streaming_csv_view(headers, rows, run_data, content_disposition):
 	pseudo_buffer = Echo()
 	writer = csv.writer(pseudo_buffer)
 
+	logging.warning("Writer initiated..")
+
 	response = StreamingHttpResponse((writer.writerow(row) for row in rows),
 		content_type="text/csv")
+
+	logging.warning("HTTP streaming response complete..")
+
 	response['Content-Disposition'] = content_disposition
 	return response
 
