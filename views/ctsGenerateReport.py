@@ -222,6 +222,9 @@ def csvReceiver(request, model=''):
     from django.conf import settings
 
     logging.warning("Entering csvReceiver..")
+    logging.warning("Setting max memory manually..")
+    settings.DATA_UPLOAD_MAX_MEMORY = 50
+    logging.warning("Max memory set..")
     logging.warning("DJANGO MAX UPLOAD MEM: {}".format(settings.DATA_UPLOAD_MAX_MEMORY))
 
     try:
