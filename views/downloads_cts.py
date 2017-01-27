@@ -211,7 +211,8 @@ class CSV(object):
 							if prop == "ion_con":
 								for pka_key, pka_val in calc_props[prop].items():
 									if pka_val and pka_val != 'none':
-										pka_num = str(int(pka_key[-1:]) + 1)
+										# pka_num = str(int(pka_key[-1:]) + 1)
+										pka_num = str(int(pka_key[-1:]))
 										new_pka_key = pka_key[:-1] + "_" + pka_num
 										headers.append("{} ({})".format(new_pka_key, calc))
 										rows[0].append(roundData(prop, pka_val))
