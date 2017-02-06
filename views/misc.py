@@ -73,8 +73,7 @@ def displayPDF(request, reactionLib=None):
 		"""
 	else:
 		logging.info('error')
-		fileNotFound(request)
-		return
+		return fileNotFound(request)
 
 	html = render_to_string('01cts_uberheader.html')
 	html += render_to_string('02cts_uberintroblock_nomodellinks.html')

@@ -106,7 +106,7 @@ def output_pchem_table(pchemprop_obj):
     </script>
     """
 
-    kow_ph = 0.0
+    kow_ph = 7.4
     if pchemprop_obj.kow_ph:
         kow_ph = round(float(pchemprop_obj.kow_ph), 1)
 

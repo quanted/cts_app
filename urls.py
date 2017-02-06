@@ -26,6 +26,7 @@ urlpatterns.extend([
     url(r'^areduction/?$', misc.displayPDF),
     # url(r'^mammet/?$', misc.fileNotFound),
     url(r'^guide/?$', misc.displayPDF),
+    url(r'^about/(?P<model>.*?)/?$', description.about_page),
     url(r'^(?P<model>.*?)/description/?$', description.descriptionPage),
     url(r'^(?P<model>.*?)/input/?$', input.inputPage),
     url(r'^(?P<model>.*?)/output/?$', output.outputPage),

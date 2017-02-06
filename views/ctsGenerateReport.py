@@ -149,6 +149,24 @@ def parsePOST(request):
                 max-width: 600px;
                 word-break: break-all;
             }
+
+            #pchemprop_table table {
+                width: 100%;
+                overflow: auto;
+                border: 1px solid #666666;
+                display: table;
+                border-collapse: collapse;
+            }
+            #pchemprop_table tr {
+                border: 1px solid #666666;
+                display: table-row;
+            }
+            #pchemprop_table td, #pchemprop_table th {
+                word-break: break-all;
+                border: 1px solid #666666;
+                display: table-cell;
+            }
+
             th {text-align:center; padding:2px; font-size:11px;}
             td {padding:2px; font-size:10px;}
             h2 {font-size:13px; color:#79973F;}

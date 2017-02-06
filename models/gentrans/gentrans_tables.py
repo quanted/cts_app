@@ -170,10 +170,14 @@ def table_metabolites(gentrans_obj):
 		</div>
 	"""
 
+    # kow_ph = 7.4
+    # if pchemprop_obj.kow_ph:
+    #     kow_ph = round(float(pchemprop_obj.kow_ph), 1)
+
 	html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
 	html += render_to_string('cts_pchemprop_requests.html', {
 									"speciation_inputs": "null",
-									"kow_ph": "null",
+									"kow_ph": 7.4,
 									"structure": "null",
 									"checkedCalcsAndProps": "null",
 									"test_results": gentrans_obj.test_results,

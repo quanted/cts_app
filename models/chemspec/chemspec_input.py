@@ -1,5 +1,5 @@
 """
-yeah (np)
+(np)
 """
 import django
 from django import forms

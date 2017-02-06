@@ -3,7 +3,9 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 import importlib
 import linksLeft
+import links_left
 import logging
+import os
 
 
 def outputPageView(request, model='none', header=''):
@@ -30,18 +32,48 @@ def outputPageView(request, model='none', header=''):
         else:
             modelOutputHTML = "table_all() Returned Wrong Type"
 
-    # Render output page view
-    html = render_to_string('01cts_uberheader.html', {'title': header+' Output'})
-    html += render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'output'})
-    html += linksLeft.linksLeft()
-    html += render_to_string('cts_export.html', {})
+     #drupal template for header with bluestripe
+    #html = render_to_string('01epa_drupal_header.html', {})
+    html = render_to_string('01epa_drupal_header.html', {
+        'SITE_SKIN': os.environ['SITE_SKIN'],
+        'TITLE': "CTS"
+    })
+    html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('06ubertext_start_index_drupal.html', {
+        # 'TITLE': 'Calculate Chemical Speciation',
+        # 'TEXT_PARAGRAPH': xx
+    })
+
     html += render_to_string('04cts_uberoutput_start.html', {
             'model_attributes': header+' Output'})
 
     html += modelOutputHTML
-    # html = html + render_to_string('export.html', {})
+    html = html + render_to_string('cts_export.html', {})
     html += render_to_string('04cts_uberoutput_end.html', {'model':model})
-    html += render_to_string('06cts_uberfooter.html', {'links': ''})
+
+    html += render_to_string('07ubertext_end_drupal.html', {})
+    html += links_left.ordered_list(model='cts/' + model, page="output")  # fills out 05ubertext_links_left_drupal.html
+
+    #scripts and footer
+    html += render_to_string('09epa_drupal_ubertool_css.html', {})
+    html += render_to_string('09epa_drupal_cts_css.html')
+    html += render_to_string('09epa_drupal_cts_scripts.html')
+    #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
+    html += render_to_string('10epa_drupal_footer.html', {})
+
+    # # Render output page view
+    # html = render_to_string('01cts_uberheader.html', {'title': header+' Output'})
+    # html += render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'output'})
+    # html += linksLeft.linksLeft()
+    # html += render_to_string('cts_export.html', {})
+    # html += render_to_string('04cts_uberoutput_start.html', {
+    #         'model_attributes': header+' Output'})
+
+    # html += modelOutputHTML
+    # # html = html + render_to_string('export.html', {})
+    # html += render_to_string('04cts_uberoutput_end.html', {'model':model})
+    # html += render_to_string('06cts_uberfooter.html', {'links': ''})
 
     response = HttpResponse()
     response.write(html)

@@ -146,10 +146,7 @@ def table_all(chemspec_obj):
     }
     </script>
     <script>
-    tipit();
-
-    
-    
+        tipit();
     </script>
     """
 
