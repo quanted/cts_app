@@ -31,9 +31,10 @@ class chemspec(object):
         self.exactMass = "{} g/mol".format(exactMass)
 
         # Checkboxes:
-        self.get_pka = cts_rest.booleanize(get_pka)  # convert 'on'/'off' to bool
-        self.get_taut = cts_rest.booleanize(get_taut)
-        self.get_stereo = cts_rest.booleanize(get_stereo)
+        jchem_prop = JchemProperty()
+        self.get_pka = jchem_prop.booleanize(get_pka)  # convert 'on'/'off' to bool
+        self.get_taut = jchem_prop.booleanize(get_taut)
+        self.get_stereo = jchem_prop.booleanize(get_stereo)
 
         # Chemical Speciation Tab
         self.pKa_decimals = None
@@ -134,26 +135,30 @@ class chemspec(object):
             'exactMass': self.exactMass
         }
 
-        for key, value in self.jchemPropObjects.items():
-            if value:
-                if key == 'pKa':
-                    self.jchemDictResults.update({
-                        'pka': pkaObj.getMostAcidicPka(),
-                        'pkb': pkaObj.getMostBasicPka(),
-                        'pka_parent': pkaObj.getParent(),
-                        'pka_microspecies': pkaObj.getMicrospecies(),
-                        'pka_chartdata': pkaObj.getChartData()
-                    })
-                elif key == 'majorMicrospecies':
-                    self.jchemDictResults.update({key: majorMsObj.getMajorMicrospecies()})
-                elif key == 'isoelectricPoint':
-                    self.jchemDictResults.update({
-                        key: isoPtObj.getIsoelectricPoint(),
-                        'isopt_chartdata': isoPtObj.getChartData()
-                    })
-                elif key == 'tautomerization':
-                    self.jchemDictResults.update({'tautomers': tautObj.getTautomers()})
-                elif key == 'stereoisomers':
-                    self.jchemDictResults.update({key: stereoObj.getStereoisomers()})
+        speciation_results = jchem_prop.getSpeciationResults(self.jchemPropObjects)
+        self.run_data.update(speciation_results)
 
-        self.run_data.update(self.jchemDictResults)
+        # # This has moved to jchem_calculator.py now...
+        # for key, value in self.jchemPropObjects.items():
+        #     if value:
+        #         if key == 'pKa':
+        #             self.jchemDictResults.update({
+        #                 'pka': pkaObj.getMostAcidicPka(),
+        #                 'pkb': pkaObj.getMostBasicPka(),
+        #                 'pka_parent': pkaObj.getParent(),
+        #                 'pka_microspecies': pkaObj.getMicrospecies(),
+        #                 'pka_chartdata': pkaObj.getChartData()
+        #             })
+        #         elif key == 'majorMicrospecies':
+        #             self.jchemDictResults.update({key: majorMsObj.getMajorMicrospecies()})
+        #         elif key == 'isoelectricPoint':
+        #             self.jchemDictResults.update({
+        #                 key: isoPtObj.getIsoelectricPoint(),
+        #                 'isopt_chartdata': isoPtObj.getChartData()
+        #             })
+        #         elif key == 'tautomerization':
+        #             self.jchemDictResults.update({'tautomers': tautObj.getTautomers()})
+        #         elif key == 'stereoisomers':
+        #             self.jchemDictResults.update({key: stereoObj.getStereoisomers()})
+
+        # self.run_data.update(self.jchemDictResults)
