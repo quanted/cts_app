@@ -7,12 +7,3 @@
 [submodule "cts_testing"]
 	path = cts_testing
 	url = https://github.com/popenc/cts_testing.git
-[submodule "cts_celery"]
-	path = cts_celery
-	url = https://github.com/popenc/cts_celery.git
-[submodule "cts_nodejs"]
-	path = cts_nodejs
-	url = https://github.com/popenc/cts_nodejs.git
-[submodule "cts_nginx"]
-	path = cts_nginx
-	url = https://github.com/popenc/cts_nginx.git
