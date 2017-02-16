@@ -253,7 +253,7 @@ class cts_reaction_options(forms.Form):
 
 	gen_limit = forms.ChoiceField (
 					choices=gen_limit_CHOICES,
-					label='Number of generations:',
+					label='Max number of generations:',
 					required=False
 				)	
 
