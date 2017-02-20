@@ -19,10 +19,10 @@ n = 2  # number of decimal places to round values
 
 class PChemProp(object):
     def __init__(self, run_type, chem_struct=None, smiles=None, name=None, formula=None, mass=None,
-                 chemaxon=None, epi=None,
-                 test=None, sparc=None, measured=None, melting_point=None, boiling_point=None, water_sol=None,
-                 vapor_press=None, mol_diss=None, ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None,
-                 kow_ph=None, koc=None):
+                 chemaxon=None, epi=None, test=None, sparc=None, measured=None, melting_point=None,
+                 boiling_point=None, water_sol=None, water_sol_ph=None, vapor_press=None, mol_diss=None,
+                 ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None, kow_ph=None, koc=None):
+        
         self.run_type = run_type  # defaults to "single", "batch" coming soon...
         self.jid = cts_rest.gen_jid()  # get time of run
 
@@ -38,6 +38,7 @@ class PChemProp(object):
         self.melting_point = melting_point
         self.boiling_point = boiling_point
         self.water_sol = water_sol
+        self.water_sol_ph = water_sol_ph
         self.vapor_press = vapor_press
         self.mol_diss = mol_diss
         self.ion_con = ion_con
@@ -61,6 +62,7 @@ class PChemProp(object):
             "melting_point": self.melting_point,
             "boiling_point": self.boiling_point,
             "water_sol": self.water_sol,
+            "water_sol_ph": self.water_sol_ph,
             "vapor_press": self.vapor_press,
             "mol_diss": self.mol_diss,
             "ion_con": self.ion_con,
@@ -85,6 +87,7 @@ class PChemProp(object):
             "melting_point": self.melting_point,
             "boiling_point": self.boiling_point,
             "water_sol": self.water_sol,
+            "water_sol_ph": self.water_sol_ph,
             "vapor_press": self.vapor_press,
             "mol_diss": self.mol_diss,
             "ion_con": self.ion_con,

@@ -38,6 +38,7 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.melting_point = request.POST.get('melting_point')
     pchemprop_obj.boiling_point = request.POST.get('boiling_point')
     pchemprop_obj.water_sol = request.POST.get('water_sol')
+    pchemprop_obj.water_sol_ph = request.POST.get('water_sol_ph')
     pchemprop_obj.vapor_press = request.POST.get('vapor_press')
     pchemprop_obj.mol_diss = request.POST.get('mol_diss')
     pchemprop_obj.ion_con = request.POST.get('ion_con')
