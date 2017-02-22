@@ -33,7 +33,8 @@ def parsePOST(request):
         checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
         products = pdf_json['nodes']
         props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press',
-                    'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc']
+                'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph',
+                'kow_wph', 'koc', 'water_sol_ph']
 
         for product in products:
             product_image = data_walks.nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)

@@ -26,7 +26,7 @@ class CSV(object):
 		self.models = ['chemspec', 'pchemprop', 'gentrans']
 		self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
 		self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss',
-					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc']
+					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc', 'water_sol_ph']
 		self.speciation_props = ['isoelectricPoint', 'pka', 'pkb', 'majorMicrospecies', 'pka_microspecies']
 		if model and (model in self.models):
 			self.model = model  # model name
@@ -418,7 +418,7 @@ def roundData(prop, datum):
 	try:
 		logging.warning("rounding {}".format(datum))
 
-		if prop == 'water_sol' or prop == 'vapor_press' or prop == 'mol_diss' or prop == 'henrys_law_con':
+		if prop == 'water_sol' or prop == 'vapor_press' or prop == 'mol_diss' or prop == 'henrys_law_con' or prop == 'water_sol_ph':
 			rounded_datum = "{:.2E}".format(datum)
 			return rounded_datum
 		else:

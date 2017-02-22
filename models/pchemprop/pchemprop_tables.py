@@ -126,6 +126,8 @@ def output_pchem_table(pchemprop_obj):
                                     "checkedCalcsAndProps": mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
                                     'nodes': 'null',
                                     'speciation_inputs': 'null',
+                                    'workflow': 'pchemprop',
+                                    'run_type': 'single',
                                     'nodejs_host': settings.NODEJS_HOST,
                                     'nodejs_port': settings.NODEJS_PORT
                                 }
