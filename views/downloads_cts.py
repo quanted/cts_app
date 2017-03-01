@@ -248,21 +248,39 @@ class CSV(object):
 
 				parent_index = 0
 				products_index = 0
-				for parent in metabolites_data:
+
+				all_chems_data = []  # single-level list of chem objects
+
+				for batch_chem_products in metabolites_data:
+					# metabolites_data --> list of batch_chems arrays, which are a list
+					# of each batch_chem's products/metabolits..
 
 					# products_index = 0
-					for product in parent:
+					for product in batch_chem_products:
 						header_index = headers.index('genKey')
 
 						# make new gen key to keep track of parents
+						# e.g., batch chem 2 parent + children --> 2, 2.1, 2.2, ...
 						parent_genkey = int(product['genKey'][:1])  # first value of genKey
 						remaining_genkey = product['genKey'][1:]
 						new_genkey = str(parent_genkey + parent_index) + remaining_genkey
 
+						product['genKey'] = new_genkey
 						rows[products_index].insert(header_index, new_genkey)
+
+						all_chems_data.append(product)
+
 						products_index += 1
 
+					
+
+					# hopefully works, building rows one bach_chem + products at a time:
+					# pchempropsForMetabolites(headers, rows, self.props, run_data, batch_chem_products)
+
 					parent_index += 1
+
+				# build rows for all batch chems + products with one call
+				pchempropsForMetabolites(headers, rows, self.props, run_data, all_chems_data);
 
 			else:
 				# inserts genKey into first column of batch chems csv:
@@ -273,68 +291,9 @@ class CSV(object):
 						rows[products_index].insert(header_index, metabolite['genKey'])
 						products_index += 1
 
-				# for chem_data in metabolites_data:
-				for prop in self.props:
-					if run_data['checkedCalcsAndProps']:
-						for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-							if prop in calc_props:
-								for chem_data in metabolites_data:
-									if 'pchemprops' in chem_data:
-										for pchem in chem_data['pchemprops']:
+				pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data)
 
-											if pchem['prop'] == prop and pchem['calc'] == calc:
-
-												if pchem['prop'] == "ion_con":
-
-													j = 1
-													for pka in pchem['data']['pKa']:
-														header = "pka_{} ({})".format(j, calc)
-														j += 1
-														if not header in headers:
-															headers.append(header)
-															for i in range(0, len(rows)):
-																rows[i].append("")
-														header_index = headers.index(header)
-														for i in range(0, len(rows)):
-															if rows[i][1] == chem_data['smiles']:
-																rows[i].insert(header_index, roundData(prop, pka))
-
-												else:
-
-													if 'method' in pchem:
-														header = "{} ({}, {})".format(prop, calc, pchem['method'])
-													else:
-														header = "{} ({})".format(prop, calc)
-
-													if not header in headers:
-														headers.append(header)
-
-													header_index = headers.index(header)
-
-
-													for i in range(0, len(rows)):
-
-														if run_data['workflow'] == 'gentrans':
-															chem_smiles = rows[i][1]  # smiles after genKey column
-														else:
-															chem_smiles = rows[i][0]
-
-														# if chem_smiles == chem_data['smiles'] and pchem['data'] not in rows[i]:
-															# temporary error handling...
-
-														if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
-
-															if 'error' in chem_data:
-																# rows[i].insert(header_index, chem_data['data'])
-																rows[i].insert(header_index, roundData(prop, pchem['data']))
-															elif 'method' in chem_data:
-																# rows[i].insert(header_index, roundData(chem_data['data']))
-																rows[i].insert(header_index, roundData(prop, pchem['data']))
-															else:
-																# rows[i].insert(header_index, roundData(chem_data['data']))
-																rows[i].insert(header_index, roundData(prop, pchem['data']))
-
-
+				
 		# # might have to add code to keep row order..
 		# # writer.writerow(rows['headers'])
 		# writer.writerow(headers)
@@ -373,25 +332,13 @@ def some_streaming_csv_view(headers, rows, run_data, content_disposition):
 	from django.http import StreamingHttpResponse
 
 	logging.warning("About to stream the CSV..")
-
-	# only need this for stream response????
-	# csv_rows = []
-	# csv_rows.insert(0, headers)
-	# csv_rows.append(rows)	
 	rows.insert(0, headers)
-	# rows.insert(0, run_data['run_data']['time'])
-	# rows.insert(0, run_data['run_data']['title'])
-	
 	pseudo_buffer = Echo()
 	writer = csv.writer(pseudo_buffer)
-
 	logging.warning("Writer initiated..")
-
 	response = StreamingHttpResponse((writer.writerow(row) for row in rows),
 		content_type="text/csv")
-
 	logging.warning("HTTP streaming response complete..")
-
 	response['Content-Disposition'] = content_disposition
 	return response
 
@@ -483,3 +430,74 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 									rows[i].insert(header_index, roundData(prop, chem_data['data']))
 								else:
 									rows[i].insert(header_index, roundData(prop, chem_data['data']))
+
+
+def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
+	"""
+	Basically same as multiChemPchemDataRowBuilder, but just for
+	gentrans workflow.
+	TODO: Refactor to only one pchemprop function for any and all workflows
+	"""
+	# for chem_data in metabolites_data:
+	# for prop in self.props:
+	for prop in props:
+		if run_data['checkedCalcsAndProps']:
+			for calc, calc_props in run_data['checkedCalcsAndProps'].items():
+				if prop in calc_props:
+					for chem_data in metabolites_data:
+						if 'pchemprops' in chem_data:
+							for pchem in chem_data['pchemprops']:
+
+								if pchem['prop'] == prop and pchem['calc'] == calc:
+
+									if pchem['prop'] == "ion_con":
+									# if calc == 'chemaxon' and prop == 'ion_con':
+									# if prop == 'ion_con':
+
+										j = 1
+										for pka in pchem['data']['pKa']:
+											header = "pka_{} ({})".format(j, calc)
+											j += 1
+											if not header in headers:
+												headers.append(header)
+												for i in range(0, len(rows)):
+													rows[i].append("")
+											header_index = headers.index(header)
+											for i in range(0, len(rows)):
+												if rows[i][1] == chem_data['smiles']:
+													rows[i].insert(header_index, roundData(prop, pka))
+
+									else:
+
+										if 'method' in pchem:
+											header = "{} ({}, {})".format(prop, calc, pchem['method'])
+										else:
+											header = "{} ({})".format(prop, calc)
+
+										if not header in headers:
+											headers.append(header)
+
+										header_index = headers.index(header)
+
+
+										for i in range(0, len(rows)):
+
+											if run_data['workflow'] == 'gentrans':
+												chem_smiles = rows[i][1]  # smiles after genKey column
+											else:
+												chem_smiles = rows[i][0]
+
+											# if chem_smiles == chem_data['smiles'] and pchem['data'] not in rows[i]:
+												# temporary error handling...
+
+											if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
+
+												if 'error' in chem_data:
+													# rows[i].insert(header_index, chem_data['data'])
+													rows[i].insert(header_index, roundData(prop, pchem['data']))
+												elif 'method' in chem_data:
+													# rows[i].insert(header_index, roundData(chem_data['data']))
+													rows[i].insert(header_index, roundData(prop, pchem['data']))
+												else:
+													# rows[i].insert(header_index, roundData(chem_data['data']))
+													rows[i].insert(header_index, roundData(prop, pchem['data']))

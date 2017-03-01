@@ -19,17 +19,11 @@ def gentransBatchInputPage(request, model='', header='Transformation Products', 
 
     html += str(gentrans_parameters.form(formData))
 
-    # html += """
-    #     <br>
-    #     <h3>2. Select any p-chem properties for transformation products</h3>
-    # """
-
     html += """
         <br>
-        <h3>2. P-Chem properties for transformation products coming soon..</h3>
+        <h3>2. Select p-chem properties for transformation products</h3>
     """
-
-    # html += render_to_string('cts_pchem.html', {})
+    html += render_to_string('cts_pchem.html', {})
 
     html += """
         <div class="input_nav">
