@@ -9,7 +9,7 @@ urlpatterns = [
     # url(r'^cts/wstest/?$', portal.test_sockets),
     # url(r'^cts/portal/?$', portal.directAllTraffic),
     # url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app  # REMOVED BY JON DURING DOCKERIZATION
-    # url(r'^rest/', include('cts_app.cts_api.urls')),
+    url(r'^rest/', include('cts_app.cts_api.urls')),
     # url(r'^testing/', include('cts_app.cts_testing.urls'))
     url(r'^testing/', include('cts_app.cts_testing.urls'))
 ]
