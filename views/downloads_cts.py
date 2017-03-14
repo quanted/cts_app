@@ -270,7 +270,7 @@ class CSV(object):
 						product['genKey'] = new_genkey
 						rows[products_index].insert(genkey_index, new_genkey)
 
-						rows[products_index].insert(routes_index + 1, product['routes'])  # insert trans pathway into rows
+						rows[products_index].insert(routes_index, product['routes'])  # insert trans pathway into rows
 
 						all_chems_data.append(product)
 
