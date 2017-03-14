@@ -71,17 +71,17 @@ class chemspec(object):
                     "pHUpper": self.pKa_pH_upper,
                     "pHStep": self.pKa_pH_increment,
                 })
-                pkaObj.makeDataRequest(self.smiles)
+                pkaObj.make_data_request(self.smiles)
 
                 # make call for majorMS:
                 majorMsObj = JchemProperty.getPropObject('majorMicrospecies')
                 majorMsObj.setPostDataValue('pH', self.pH_microspecies)
-                majorMsObj.makeDataRequest(self.smiles)
+                majorMsObj.make_data_request(self.smiles)
 
                 # make call for isoPt:
                 isoPtObj = JchemProperty.getPropObject('isoelectricPoint')
                 isoPtObj.setPostDataValue('pHStep', self.isoelectricPoint_pH_increment)
-                isoPtObj.makeDataRequest(self.smiles)
+                isoPtObj.make_data_request(self.smiles)
 
             if self.get_taut:
                 tautObj = JchemProperty.getPropObject('tautomerization')
@@ -90,13 +90,13 @@ class chemspec(object):
                     "pH": self.tautomer_pH,
                     "considerPH": True
                 })
-                tautObj.makeDataRequest(self.smiles)
+                tautObj.make_data_request(self.smiles)
 
             if self.get_stereo:
                 # TODO: set values for max stereos!!!
                 stereoObj = JchemProperty.getPropObject('stereoisomer')
                 stereoObj.setPostDataValue('maxStructureCount', self.stereoisomers_maxNoOfStructures)
-                stereoObj.makeDataRequest(self.smiles)
+                stereoObj.make_data_request(self.smiles)
 
             self.jchemPropObjects = {
                 'pKa': pkaObj,
