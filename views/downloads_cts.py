@@ -240,8 +240,9 @@ class CSV(object):
 			if not metabolites_data:
 				return HttpResponse("error building csv for metabolites..")
 
+			# headers.insert(0, 'routes')
 			headers.insert(0, 'genKey') # insert generation headers first
-
+			headers.insert(1, 'routes')  # transformation pathway
 			
 
 			if 'batch_data' in run_data:
@@ -257,7 +258,8 @@ class CSV(object):
 
 					# products_index = 0
 					for product in batch_chem_products:
-						header_index = headers.index('genKey')
+						genkey_index = headers.index('genKey')
+						routes_index = headers.index('routes')
 
 						# make new gen key to keep track of parents
 						# e.g., batch chem 2 parent + children --> 2, 2.1, 2.2, ...
@@ -266,7 +268,9 @@ class CSV(object):
 						new_genkey = str(parent_genkey + parent_index) + remaining_genkey
 
 						product['genKey'] = new_genkey
-						rows[products_index].insert(header_index, new_genkey)
+						rows[products_index].insert(genkey_index, new_genkey)
+
+						rows[products_index].insert(routes_index + 1, product['routes'])  # insert trans pathway into rows
 
 						all_chems_data.append(product)
 
@@ -286,9 +290,11 @@ class CSV(object):
 				# inserts genKey into first column of batch chems csv:
 				products_index = 0
 				for metabolite in metabolites_data:
-					header_index = headers.index('genKey')
+					genkey_index = headers.index('genKey')
+					routes_index = headers.index('routes')
 					if 'genKey' not in rows[products_index]:
-						rows[products_index].insert(header_index, metabolite['genKey'])
+						rows[products_index].insert(genkey_index, metabolite['genKey'])
+						rows[products_index].insert(routes_index, metabolite['routes'])  # insert trans pathway into rows
 						products_index += 1
 
 				pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data)
@@ -418,7 +424,7 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 						for i in range(0, len(rows)):
 
 							if run_data['workflow'] == 'gentrans':
-								chem_smiles = rows[i][1]  # smiles after genKey column
+								chem_smiles = rows[i][2]  # smiles after genKey column
 							else:
 								chem_smiles = rows[i][0]
 
@@ -464,7 +470,7 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 													rows[i].append("")
 											header_index = headers.index(header)
 											for i in range(0, len(rows)):
-												if rows[i][1] == chem_data['smiles']:
+												if rows[i][2] == chem_data['smiles']:
 													rows[i].insert(header_index, roundData(prop, pka))
 
 									else:
@@ -483,7 +489,7 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 										for i in range(0, len(rows)):
 
 											if run_data['workflow'] == 'gentrans':
-												chem_smiles = rows[i][1]  # smiles after genKey column
+												chem_smiles = rows[i][2]  # smiles after genKey column
 											else:
 												chem_smiles = rows[i][0]
 
