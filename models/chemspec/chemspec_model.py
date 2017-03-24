@@ -4,8 +4,8 @@
 
 import json
 # from chemaxon_cts import jchem_rest
-# from chemaxon_cts.jchem_calculator import JchemProperty
-from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
+# from chemaxon_cts.jchem_calculator import ChemaxonCalc
+from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import ChemaxonCalc
 import logging
 import datetime
 # from REST import cts_rest
@@ -31,7 +31,7 @@ class chemspec(object):
         self.exactMass = "{} g/mol".format(exactMass)
 
         # Checkboxes:
-        jchem_prop = JchemProperty()
+        jchem_prop = ChemaxonCalc()
         self.get_pka = jchem_prop.booleanize(get_pka)  # convert 'on'/'off' to bool
         self.get_taut = jchem_prop.booleanize(get_taut)
         self.get_stereo = jchem_prop.booleanize(get_stereo)
@@ -65,7 +65,7 @@ class chemspec(object):
 
             if self.get_pka:
                 # make call for pKa:
-                pkaObj = JchemProperty.getPropObject('pKa')
+                pkaObj = ChemaxonCalc.getPropObject('pKa')
                 pkaObj.setPostDataValues({
                     "pHLower": self.pKa_pH_lower,
                     "pHUpper": self.pKa_pH_upper,
@@ -74,17 +74,17 @@ class chemspec(object):
                 pkaObj.makeDataRequest(self.smiles)
 
                 # make call for majorMS:
-                majorMsObj = JchemProperty.getPropObject('majorMicrospecies')
+                majorMsObj = ChemaxonCalc.getPropObject('majorMicrospecies')
                 majorMsObj.setPostDataValue('pH', self.pH_microspecies)
                 majorMsObj.makeDataRequest(self.smiles)
 
                 # make call for isoPt:
-                isoPtObj = JchemProperty.getPropObject('isoelectricPoint')
+                isoPtObj = ChemaxonCalc.getPropObject('isoelectricPoint')
                 isoPtObj.setPostDataValue('pHStep', self.isoelectricPoint_pH_increment)
                 isoPtObj.makeDataRequest(self.smiles)
 
             if self.get_taut:
-                tautObj = JchemProperty.getPropObject('tautomerization')
+                tautObj = ChemaxonCalc.getPropObject('tautomerization')
                 tautObj.setPostDataValues({
                     "maxStructureCount": self.tautomer_maxNoOfStructures,
                     "pH": self.tautomer_pH,
@@ -94,7 +94,7 @@ class chemspec(object):
 
             if self.get_stereo:
                 # TODO: set values for max stereos!!!
-                stereoObj = JchemProperty.getPropObject('stereoisomer')
+                stereoObj = ChemaxonCalc.getPropObject('stereoisomer')
                 stereoObj.setPostDataValue('maxStructureCount', self.stereoisomers_maxNoOfStructures)
                 stereoObj.makeDataRequest(self.smiles)
 

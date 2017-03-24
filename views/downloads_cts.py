@@ -14,8 +14,8 @@ import logging
 from django.http import HttpResponse
 
 from cts_app.cts_api import cts_rest
-# from chemaxon_cts.jchem_calculator import JchemProperty
-from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
+# from chemaxon_cts.jchem_calculator import ChemaxonCalc
+from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import ChemaxonCalc
 from cts_app.cts_calcs.epi_cts.epi_calculator import EpiCalc
 from cts_app.cts_calcs.test_cts.test_calculator import TestCalc
 from cts_app.cts_calcs.sparc_cts.sparc_calculator import SparcCalc
@@ -356,7 +356,7 @@ def getCalcMapKeys(calc):
 	returns prop map of requested calculator
 	"""
 	if calc == 'chemaxon':
-		return JchemProperty().propMap.keys()
+		return ChemaxonCalc().propMap.keys()
 	elif calc == 'epi':
 		return EpiCalc().propMap.keys()
 	elif calc == 'test':
