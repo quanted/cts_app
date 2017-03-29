@@ -85,7 +85,12 @@ def parsePOST(request):
                                     pka_string = ""
                                     pka_index = 1
                                     for pka in data_obj['data']['pKa']:
-                                        pka_string += "pka_{}: {} \n".format(pka_index, round(pka, 2))
+                                        try:
+                                            # todo: centralize rounding procedures
+                                            pka_string += "pka_{}: {} \n".format(pka_index, round(pka, 2))
+                                        except TypeError as te:
+                                            logging.warning("pka value not a number, {}".format(te))
+                                            pka_string += "pka_{}: {} \n".format(pka_index, pka)
                                         pka_index += 1
                                     data_row.append(pka_string)
                                 else:
