@@ -19,7 +19,6 @@ class chemspec(object):
 				 isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
 
-		logging.warning("INSIDE CHEMSPEC MODEL NOW..")
 
 		self.jid = cts_rest.gen_jid()  # timestamp
 
@@ -32,12 +31,10 @@ class chemspec(object):
 		self.name = name
 		self.formula = formula
 
-		logging.warning("BEFORE MASS DECLARATION")
 
 		self.mass = "{} g/mol".format(mass)
 		self.exactMass = "{} g/mol".format(exactMass)
 
-		logging.warning("AFTER MASS DECLARATION")
 
 		# Checkboxes:
 		jchem_prop = ChemaxonCalc()
@@ -45,7 +42,6 @@ class chemspec(object):
 		self.get_taut = jchem_prop.booleanize(get_taut)
 		self.get_stereo = jchem_prop.booleanize(get_stereo)
 
-		logging.warning("AFTER BOOL STUFF")
 
 
 		# Chemical Speciation Tab
@@ -72,16 +68,12 @@ class chemspec(object):
 		pkaObj, majorMsObj, isoPtObj, tautObj, stereoObj = None, None, None, None, None
 
 
-		logging.warning("AFTER INITIALIZING EVERYTHING")
-		logging.warning("run_type: {}".format(self.run_type))
 
 		if self.run_type != 'batch':
 
-			logging.warning("Making calls inside chemspec model, single mode...")
 
 			if self.get_pka:
 
-				logging.warning("self.get_pka: {}".format(self.get_pka))
 
 				# make call for pKa:
 				pkaObj = ChemaxonCalc.getPropObject('pKa')
@@ -90,7 +82,6 @@ class chemspec(object):
 					"pHUpper": self.pKa_pH_upper,
 					"pHStep": self.pKa_pH_increment,
 				})
-				logging.warning("Calling request handler")
 				jchem_prop.make_data_request(self.smiles, pkaObj)
 
 				# make call for majorMS:
@@ -105,7 +96,6 @@ class chemspec(object):
 
 			if self.get_taut:
 
-				logging.warning("self.get_taut: {}".format(self.get_taut))
 
 				tautObj = ChemaxonCalc.getPropObject('tautomerization')
 				jchem_prop.setPostDataValues({
@@ -117,7 +107,6 @@ class chemspec(object):
 
 			if self.get_stereo:
 
-				logging.warning("self.get_stereo: {}".format(self.get_stereo))
 
 				# TODO: set values for max stereos!!!
 				stereoObj = ChemaxonCalc.getPropObject('stereoisomer')
@@ -139,7 +128,6 @@ class chemspec(object):
 			# speciation calls are done through nodejs/socket.io
 			# using cts_pchemprop_requests.html
 
-			logging.warning("INSIDE CHEMSPEC MODEL BATCH CONDITION..")
 
 			self.speciation_inputs = {
 				'pKa_decimals': pKa_decimals,

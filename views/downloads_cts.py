@@ -414,7 +414,7 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 								if rows[i][0] == chem_data['node']['smiles']:
 									rows[i].insert(header_index, roundData(prop, pka))
 					else:
-						if 'method' in chem_data:
+						if chem_data.get('method', False):
 							header = "{} ({}, {})".format(prop, calc, chem_data['method'])
 						else:
 							header = "{} ({})".format(prop, calc)
@@ -475,7 +475,7 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 
 									else:
 
-										if 'method' in pchem:
+										if pchem.get('method', False):
 											header = "{} ({}, {})".format(prop, calc, pchem['method'])
 										else:
 											header = "{} ({})".format(prop, calc)
