@@ -4,13 +4,14 @@
 
 import json
 # from chemaxon_cts import jchem_rest
-# from chemaxon_cts.jchem_calculator import ChemaxonCalc
-# from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import ChemaxonCalc
-from cts_app.cts_calcs.calculator_chemaxon import ChemaxonCalc
+# from chemaxon_cts.jchem_calculator import JchemCalc
+# from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import JchemCalc
+from cts_app.cts_calcs.calculator_chemaxon import JchemCalc
+from cts_app.cts_calcs.jchem_properties import JchemProperty
 import logging
 import datetime
 # from REST import cts_rest
-from cts_app.cts_api import cts_rest
+# from cts_app.cts_api import cts_rest
 
 
 class chemspec(object):
@@ -20,7 +21,7 @@ class chemspec(object):
 
 
 
-		self.jid = cts_rest.gen_jid()  # timestamp
+		self.jid = JchemCalc().gen_jid()  # timestamp
 
 		self.run_type = run_type
 
@@ -37,7 +38,7 @@ class chemspec(object):
 
 
 		# Checkboxes:
-		jchem_prop = ChemaxonCalc()
+		jchem_prop = JchemCalc()
 		self.get_pka = jchem_prop.booleanize(get_pka)  # convert 'on'/'off' to bool
 		self.get_taut = jchem_prop.booleanize(get_taut)
 		self.get_stereo = jchem_prop.booleanize(get_stereo)
@@ -76,7 +77,7 @@ class chemspec(object):
 
 
 				# make call for pKa:
-				pkaObj = ChemaxonCalc.getPropObject('pKa')
+				pkaObj = JchemProperty.getPropObject('pKa')
 				jchem_prop.setPostDataValues({
 					"pHLower": self.pKa_pH_lower,
 					"pHUpper": self.pKa_pH_upper,
@@ -85,19 +86,19 @@ class chemspec(object):
 				jchem_prop.make_data_request(self.smiles, pkaObj)
 
 				# make call for majorMS:
-				majorMsObj = ChemaxonCalc.getPropObject('majorMicrospecies')
+				majorMsObj = JchemProperty.getPropObject('majorMicrospecies')
 				jchem_prop.setPostDataValue('pH', self.pH_microspecies)
 				jchem_prop.make_data_request(self.smiles, majorMsObj)
 
 				# make call for isoPt:
-				isoPtObj = ChemaxonCalc.getPropObject('isoelectricPoint')
+				isoPtObj = JchemProperty.getPropObject('isoelectricPoint')
 				jchem_prop.setPostDataValue('pHStep', self.isoelectricPoint_pH_increment)
 				jchem_prop.make_data_request(self.smiles, isoPtObj)
 
 			if self.get_taut:
 
 
-				tautObj = ChemaxonCalc.getPropObject('tautomerization')
+				tautObj = JchemProperty.getPropObject('tautomerization')
 				jchem_prop.setPostDataValues({
 					"maxStructureCount": self.tautomer_maxNoOfStructures,
 					"pH": self.tautomer_pH,
@@ -109,7 +110,7 @@ class chemspec(object):
 
 
 				# TODO: set values for max stereos!!!
-				stereoObj = ChemaxonCalc.getPropObject('stereoisomer')
+				stereoObj = JchemProperty.getPropObject('stereoisomer')
 				jchem_prop.setPostDataValue('maxStructureCount', self.stereoisomers_maxNoOfStructures)
 				jchem_prop.make_data_request(self.smiles, stereoObj)
 

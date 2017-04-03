@@ -12,13 +12,10 @@ import json
 import datetime
 import logging
 from django.http import HttpResponse
-
-from cts_app.cts_api import cts_rest
-# from chemaxon_cts.jchem_calculator import ChemaxonCalc
-from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import ChemaxonCalc
-from cts_app.cts_calcs.epi_cts.epi_calculator import EpiCalc
-from cts_app.cts_calcs.test_cts.test_calculator import TestCalc
-from cts_app.cts_calcs.sparc_cts.sparc_calculator import SparcCalc
+from cts_app.cts_calcs.calculator_chemaxon import JchemCalc
+from cts_app.cts_calcs.calculator_epi import EpiCalc
+from cts_app.cts_calcs.calculator_test import TestCalc
+from cts_app.cts_calcs.calculator_sparc import SparcCalc
 
 
 class CSV(object):
@@ -37,7 +34,7 @@ class CSV(object):
 
 	def parseToCSV(self, run_data):
 
-		jid = cts_rest.gen_jid()  # create timestamp
+		jid = JchemCalc().gen_jid()  # create timestamp
 		time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
 		response = HttpResponse(content_type='text/csv')
@@ -356,7 +353,7 @@ def getCalcMapKeys(calc):
 	returns prop map of requested calculator
 	"""
 	if calc == 'chemaxon':
-		return ChemaxonCalc().propMap.keys()
+		return JchemCalc().propMap.keys()
 	elif calc == 'epi':
 		return EpiCalc().propMap.keys()
 	elif calc == 'test':

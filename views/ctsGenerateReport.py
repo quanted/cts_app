@@ -6,9 +6,8 @@ import json
 from xhtml2pdf import pisa
 
 import logging
-from cts_app.cts_calcs import data_walks
+from cts_app.cts_calcs.calculator_metabolizer import MetabolizerCalc
 from cts_app.models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
-from cts_app.cts_api import cts_rest
 from django.core.cache import cache
 
 
@@ -37,7 +36,8 @@ def parsePOST(request):
                 'kow_wph', 'koc', 'water_sol_ph']
 
         for product in products:
-            product_image = data_walks.nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
+            # product_image = data_walks.nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
+            product_image = MetabolizerCalc().nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
             product.update({'image': product_image})
 
             # build object that's easy to make pchem table in template..
@@ -214,7 +214,7 @@ def pdfReceiver(request, model=''):
         pisa.CreatePDF(input_str, dest=packet, default_css="body{background-color:#FFFFFF;}")
 
 
-    jid = cts_rest.gen_jid()  # create timestamp
+    jid = MetabolizerCalc().gen_jid()  # create timestamp
     response = HttpResponse(packet.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.pdf'
     packet.close()  # todo: figure out why this doesn't solve the 'caching problem'
@@ -229,7 +229,7 @@ def htmlReceiver(request, model=''):
     input_str = ''
     input_str += parsePOST(request)
     packet = StringIO.StringIO(input_str)  # write to memory
-    jid = cts_rest.gen_jid()  # create timestamp
+    jid = MetabolizerCalc().gen_jid()  # create timestamp
     response = HttpResponse(packet.getvalue(), content_type='application/html')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.html'
     # packet.truncate(0)  # clear from memory?
