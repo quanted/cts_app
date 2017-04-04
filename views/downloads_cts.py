@@ -12,13 +12,10 @@ import json
 import datetime
 import logging
 from django.http import HttpResponse
-
-from cts_app.cts_api import cts_rest
-# from chemaxon_cts.jchem_calculator import JchemProperty
-from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import JchemProperty
-from cts_app.cts_calcs.epi_cts.epi_calculator import EpiCalc
-from cts_app.cts_calcs.test_cts.test_calculator import TestCalc
-from cts_app.cts_calcs.sparc_cts.sparc_calculator import SparcCalc
+from cts_app.cts_calcs.calculator_chemaxon import JchemCalc
+from cts_app.cts_calcs.calculator_epi import EpiCalc
+from cts_app.cts_calcs.calculator_test import TestCalc
+from cts_app.cts_calcs.calculator_sparc import SparcCalc
 
 
 class CSV(object):
@@ -37,7 +34,7 @@ class CSV(object):
 
 	def parseToCSV(self, run_data):
 
-		jid = cts_rest.gen_jid()  # create timestamp
+		jid = JchemCalc().gen_jid()  # create timestamp
 		time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
 		response = HttpResponse(content_type='text/csv')
@@ -356,7 +353,7 @@ def getCalcMapKeys(calc):
 	returns prop map of requested calculator
 	"""
 	if calc == 'chemaxon':
-		return JchemProperty().propMap.keys()
+		return JchemCalc().propMap.keys()
 	elif calc == 'epi':
 		return EpiCalc().propMap.keys()
 	elif calc == 'test':
@@ -414,7 +411,7 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 								if rows[i][0] == chem_data['node']['smiles']:
 									rows[i].insert(header_index, roundData(prop, pka))
 					else:
-						if 'method' in chem_data:
+						if chem_data.get('method', False):
 							header = "{} ({}, {})".format(prop, calc, chem_data['method'])
 						else:
 							header = "{} ({})".format(prop, calc)
@@ -475,7 +472,7 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 
 									else:
 
-										if 'method' in pchem:
+										if pchem.get('method', False):
 											header = "{} ({}, {})".format(prop, calc, pchem['method'])
 										else:
 											header = "{} ({})".format(prop, calc)

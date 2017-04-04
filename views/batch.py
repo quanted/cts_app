@@ -6,7 +6,8 @@ import links_left
 import os
 import logging
 from cts_app.models.pchemprop import pchemprop_tables
-from cts_app.cts_api import cts_rest
+# from cts_app.cts_api import cts_rest
+from cts_app.cts_calcs.calculator import Calculator
 import datetime
 
 def batchInputPage(request, model='none', header='none'):
@@ -100,7 +101,7 @@ def batchOutputPage(request, model='none', header='none'):
             'model_attributes': header+' Batch Output'})
 
     # timestamp / version section
-    st = datetime.datetime.strptime(cts_rest.gen_jid(), 
+    st = datetime.datetime.strptime(Calculator().gen_jid(), 
         '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html += """
     <div class="out_">

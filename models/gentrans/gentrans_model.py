@@ -2,16 +2,16 @@
 2014-08-13 (np)
 """
 
-# from chemaxon_cts import jchem_rest
-from cts_app.cts_calcs.chemaxon_cts import jchem_rest
-from cts_app.cts_api import cts_rest
+# from cts_app.cts_calcs.chemaxon_cts import jchem_rest
+# from cts_app.cts_api import cts_rest
 import logging
 from django.http import HttpRequest
-from cts_app.cts_calcs import data_walks
-from gentrans_parameters import gen_limit_max as gen_max
+# from cts_app.cts_calcs import data_walks
 import datetime
-from django.core.cache import cache
 import json
+
+# from cts_app.cts_calcs.calculator import Calculator
+from cts_app.cts_calcs.calculator_metabolizer import MetabolizerCalc
 
 
 class gentrans(object):
@@ -19,7 +19,8 @@ class gentrans(object):
                  exact_mass, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
                  gen_limit, pop_limit, likely_limit):
 
-        self.jid = cts_rest.gen_jid()  # get time of run
+        # self.jid = cts_rest.gen_jid()  # get time of run
+        self.jid = MetabolizerCalc().gen_jid()
         self.run_type = run_type  # single or batch
 
         # Chemical Structure
@@ -60,7 +61,7 @@ class gentrans(object):
 
         # NOTE: populationLimit is hard-coded to 0 as it currently does nothing
 
-        dataDict = {
+        data_dict = {
             'structure': self.smiles,
             'generationLimit': self.gen_limit,
             'populationLimit': 0,
@@ -71,19 +72,21 @@ class gentrans(object):
         }
 
         if len(self.trans_libs) > 0:
-            dataDict.update({'transformationLibraries': self.trans_libs})
+            data_dict.update({'transformationLibraries': self.trans_libs})
 
         if self.run_type != 'batch':
             try:
-                response = jchem_rest.getTransProducts(dataDict)
+                # response = jchem_rest.getTransProducts(data_dict)
+                response = MetabolizerCalc().getTransProducts(data_dict)
             except Exception as e:
                 logging.warning("error making data request: {}".format(e))
                 raise
 
-            # reformat data for outputting to tree structure:
-            data_walks.j = 0
-            data_walks.metID = 0
-            self.results = data_walks.recursive(response, int(self.gen_limit))
+            # # reformat data for outputting to tree structure:
+            # data_walks.j = 0
+            # data_walks.metID = 0
+            # self.results = data_walks.recursive(response, int(self.gen_limit))
+            self.results = MetabolizerCalc().recursive(response, int(self.gen_limit))
 
             # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
             self.test_results = []
