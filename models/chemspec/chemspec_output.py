@@ -15,6 +15,7 @@ def chemspecOutputPage(request):
     orig_smiles = request.POST.get('orig_smiles')
     iupac = request.POST.get('iupac')
     formula = request.POST.get('formula')
+    cas = request.POST.get('cas')
     mass = request.POST.get('mass')
     exact_mass = request.POST.get('exactmass')
 
@@ -37,7 +38,7 @@ def chemspecOutputPage(request):
     sterMaxNumStructs = request.POST.get('stereoisomers_maxNoOfStructures')
 
     chemspec_obj = chemspec_model.chemspec(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
-                    mass, exact_mass, get_pka, get_taut, get_stereo, pKaDecs, pKaPhLow, 
+                    cas, mass, exact_mass, get_pka, get_taut, get_stereo, pKaDecs, pKaPhLow, 
                     pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
                     tautMaxNumStructs, tautMaxNumStructsPh, sterMaxNumStructs)
 

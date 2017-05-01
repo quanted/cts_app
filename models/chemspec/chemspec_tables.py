@@ -56,7 +56,8 @@ def getMolTblData(chemspec_obj):
         {'SMILES': chemspec_obj.smiles},
         {'Initial SMILES': chemspec_obj.orig_smiles},
         {'IUPAC': chemspec_obj.name}, 
-        {'Formula': chemspec_obj.formula}, 
+        {'Formula': chemspec_obj.formula},
+        {'CAS #': chemspec_obj.cas}, 
         {'Mass': chemspec_obj.mass},
         {'Exact Mass': chemspec_obj.exactMass}
     ]

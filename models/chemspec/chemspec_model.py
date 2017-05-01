@@ -15,7 +15,7 @@ import datetime
 
 
 class chemspec(object):
-	def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass, exactMass, get_pka, get_taut,
+	def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, cas, mass, exactMass, get_pka, get_taut,
 				 get_stereo, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
 				 isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
@@ -31,7 +31,7 @@ class chemspec(object):
 		self.orig_smiles = orig_smiles
 		self.name = name
 		self.formula = formula
-
+		self.cas = cas
 
 		self.mass = "{} g/mol".format(mass)
 		self.exactMass = "{} g/mol".format(exactMass)
