@@ -12,7 +12,8 @@ import logging
 import json
 from StringIO import StringIO
 from django.utils.safestring import mark_safe
-from cts_app.cts_calcs import data_walks
+# from cts_app.cts_calcs import data_walks
+from cts_app.cts_calcs.calculator import Calculator
 import os
 
 
@@ -55,7 +56,8 @@ def getMolTblData(chemspec_obj):
         {'SMILES': chemspec_obj.smiles},
         {'Initial SMILES': chemspec_obj.orig_smiles},
         {'IUPAC': chemspec_obj.name}, 
-        {'Formula': chemspec_obj.formula}, 
+        {'Formula': chemspec_obj.formula},
+        {'CAS #': chemspec_obj.cas}, 
         {'Mass': chemspec_obj.mass},
         {'Exact Mass': chemspec_obj.exactMass}
     ]
@@ -414,7 +416,7 @@ def wrap_molecule(propDict, height, width, scale):
         key = propDict['key']
 
     # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
-    image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key, 'svg')) # displayed image
+    image = mark_safe(Calculator().nodeWrapper(propDict['smiles'], None, width, scale, key, 'svg')) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
     mass = "{} g/mol".format(propDict['mass'])
@@ -456,7 +458,7 @@ def wrap_molecule(propDict, height, width, scale):
     mol_props = ['formula', 'iupac', 'mass', 'smiles', 'exactMass']
 
     # wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key, 'Molecular Information') # popup table image
-    wrappedDict = data_walks.popupBuilder(infoDict, mol_props, key, 'Molecular Information') # popup table image
+    wrappedDict = Calculator().popupBuilder(infoDict, mol_props, key, 'Molecular Information') # popup table image
     html += '<div class="tooltiptext ' + iupac + '">'
     html += wrappedDict['html']
     html += '</div>'

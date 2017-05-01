@@ -3,13 +3,14 @@
 """
 
 import pchemprop_parameters  # Chemical Calculator and Transformation Pathway parameters
-from cts_app.cts_api import cts_rest
-from cts_app.cts_calcs import data_walks
+# from cts_app.cts_api import cts_rest
+# from cts_app.cts_calcs import data_walks
+from cts_app.cts_calcs.calculator import Calculator
 import logging
 
 import datetime
 import json
-from cts_app.cts_calcs.test_cts import views as test_views
+# from cts_app.cts_calcs.test_cts import views as test_views
 from requests import Request
 from django.http import HttpRequest
 
@@ -24,7 +25,8 @@ class PChemProp(object):
                  ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None, kow_ph=None, koc=None):
         
         self.run_type = run_type  # defaults to "single", "batch" coming soon...
-        self.jid = cts_rest.gen_jid()  # get time of run
+        # self.jid = cts_rest.gen_jid()  # get time of run
+        self.jid = Calculator().gen_jid()
 
         # chemical structure
         self.chem_struct = chem_struct
@@ -108,7 +110,8 @@ class PChemProp(object):
         }
 
 
-        self.parent_image = data_walks.nodeWrapper(self.smiles, None, 250, 50, 'pchem_parent_wrap', 'svg', None)
+        # self.parent_image = data_walks.nodeWrapper(self.smiles, None, 250, 50, 'pchem_parent_wrap', 'svg', None)
+        self.parent_image = Calculator().nodeWrapper(self.smiles, None, 250, 50, 'pchem_parent_wrap', 'svg', None)
 
 
         # dict with keys of checked calculators and values of
