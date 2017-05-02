@@ -25,7 +25,7 @@ def batchInputPage(request, model='none', header='none'):
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
 
-    html += render_to_string('06ubertext_start_index_drupal.html', {
+    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         # 'TITLE': 'Calculate Chemical Speciation',
         # 'TEXT_PARAGRAPH': xx
     })
@@ -91,7 +91,7 @@ def batchOutputPage(request, model='none', header='none'):
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
 
-    html += render_to_string('06ubertext_start_index_drupal.html', {
+    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         # 'TITLE': 'Calculate Chemical Speciation',
         # 'TEXT_PARAGRAPH': xx
     })

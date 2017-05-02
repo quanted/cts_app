@@ -40,7 +40,7 @@ def outputPageView(request, model='none', header=''):
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
-    html += render_to_string('06ubertext_start_index_drupal.html', {
+    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         # 'TITLE': 'Calculate Chemical Speciation',
         # 'TEXT_PARAGRAPH': xx
     })
@@ -86,7 +86,14 @@ def outputPage(request, model='none', header=''):
 
     header = viewmodule.header
 
+    logging.warning("HEADER: {}".format(header))
+
     parametersmodule = importlib.import_module('.'+model+'_parameters', 'cts_app.models.'+model)
+
+    logging.warning("HERE WE ARE IN THE OUTPUT PAGE. GREAT.")
+    logging.warning("MODEL: {}".format(model))
+    logging.warning("REQUEST: {}".format(request.POST))
+
 
     try:
         # Class name must be ModelInp, e.g. SipInp or TerrplantInp
@@ -94,11 +101,19 @@ def outputPage(request, model='none', header=''):
         
         form = inputForm(request.POST) # bind user inputs to form object
 
+        # logging.warning("FORM: {}".format(form))
+
         # Form validation testing
         if form.is_valid():
+
+            logging.warning("IS VALID")
+
             return outputPageView(request, model, header)
 
         else:
+
+            logging.warning("IS NOT VALID")
+            logging.warning("ERRORS: {}".format(form.errors))
 
             inputmodule = importlib.import_module('.'+model+'_input', 'cts_app.models.'+model)
 

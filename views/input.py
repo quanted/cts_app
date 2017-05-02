@@ -29,7 +29,7 @@ def inputPage(request, model='none', header='none'):
     #html += render_to_string('04uber_drupal_frog_intro.html', {})
     #http://jsfiddle.net/9zGQ8/
 
-    html += render_to_string('06ubertext_start_index_drupal.html', {
+    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         # 'TITLE': 'Calculate Chemical Speciation',
         # 'TEXT_PARAGRAPH': xx
     })
