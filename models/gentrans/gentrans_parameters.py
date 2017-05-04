@@ -289,7 +289,8 @@ class cts_oecd_guidelines(forms.Form):
 	# Fate, Transport, and Transformation Selections:
 
 	ftt_selection = forms.ChoiceField(
-					choices=ftt_CHOICES)
+					choices=ftt_CHOICES,
+					required=False)
 					# widget=forms.RadioSelect())
 
 	labAbioTrans_selection = forms.ChoiceField(
