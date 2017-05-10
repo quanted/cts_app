@@ -143,20 +143,20 @@ def table_metabolites(gentrans_obj):
 	of metabolites as a json string
 	"""
 
-	new_result = ''
-	for char in gentrans_obj.results:
-		if char == '"':
-			char = '&quot;'
-		new_result = new_result + char
+	# new_result = ''
+	# for char in gentrans_obj.results:
+	# 	if char == '"':
+	# 		char = '&quot;'
+	# 	new_result = new_result + char
 
-	gentrans_obj.results = new_result
+	# gentrans_obj.results = new_result
 
-	html = """
-	<H3 class="out_1 collapsible" id="reactionPathways"><span></span>Reaction Pathways</H3>
-	<div class="out_">
-	"""
-	html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
-	html += build_pchem_table() # build pchem workflow's pchem table
+	# html = """
+	# <H3 class="out_1 collapsible" id="reactionPathways"><span></span>Reaction Pathways</H3>
+	# <div class="out_">
+	# """
+	# html += '<input id="hiddenJson" type="hidden" value="' + gentrans_obj.results + '">'
+	html = build_pchem_table() # build pchem workflow's pchem table
 
 	html += """
 		<div id="cont">
@@ -178,14 +178,18 @@ def table_metabolites(gentrans_obj):
 	html += render_to_string('cts_pchemprop_requests.html', {
 									"speciation_inputs": "null",
 									"kow_ph": 7.0,
-									"structure": "null",
-									"checkedCalcsAndProps": "null",
-									"test_results": gentrans_obj.test_results,
+									"structure": mark_safe(gentrans_obj.smiles),
+									"checkedCalcsAndProps": {},
+									# "test_results": gentrans_obj.test_results,
 									'nodes': 'null',
 									'run_type': 'single',
 									'workflow': 'gentrans',
 									'nodejs_host': settings.NODEJS_HOST,
-                                    'nodejs_port': settings.NODEJS_PORT
+                                    'nodejs_port': settings.NODEJS_PORT,
+                                    "iupac": mark_safe(gentrans_obj.iupac),
+                                    "mass": gentrans_obj.mass,
+                                    "formula": gentrans_obj.formula,
+                                    'service': "getTransProducts",
 								}
 							)
 
