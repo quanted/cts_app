@@ -19,7 +19,7 @@ def batchInputPage(request, model='none', header='none'):
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
-        'TITLE': "CTS"
+        'title': "CTS"
     })
 
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
@@ -85,7 +85,7 @@ def batchOutputPage(request, model='none', header='none'):
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
-        'TITLE': "CTS"
+        'title': "CTS"
     })
 
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})

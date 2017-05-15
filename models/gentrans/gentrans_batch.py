@@ -88,7 +88,8 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
             'run_data': pchemprop_obj.run_data,
             'speciation_inputs': 'null',
             'nodejs_host': settings.NODEJS_HOST,
-            'nodejs_port': settings.NODEJS_PORT
+            'nodejs_port': settings.NODEJS_PORT,
+            'service': "getTransProducts",
         }
     )
 

@@ -16,7 +16,7 @@ def descriptionPage(request, model='none', header='none'):
     #html = render_to_string('01epa_drupal_header.html', {})
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
-        'TITLE': "CTS"
+        'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
@@ -73,7 +73,7 @@ def about_page(request, model='none', header='non'):
     #html = render_to_string('01epa_drupal_header.html', {})
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
-        'TITLE': "CTS"
+        'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
