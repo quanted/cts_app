@@ -14,7 +14,7 @@ def ctsLandingPage(request):
     #html = render_to_string('01epa_drupal_header.html', {})
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
-        'TITLE': "CTS"
+        'title': "CTS"
     })
     #html = render_to_string('01uberheader_main_drupal.html', {
     #    'SITE_SKIN': os.environ['SITE_SKIN'],

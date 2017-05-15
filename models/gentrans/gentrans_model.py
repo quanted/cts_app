@@ -71,25 +71,21 @@ class gentrans(object):
             'excludeCondition': ""  # 'generateImages': False
         }
 
-        if len(self.trans_libs) > 0:
-            data_dict.update({'transformationLibraries': self.trans_libs})
+        # if len(self.trans_libs) > 0:
+        #     data_dict.update({'transformationLibraries': self.trans_libs})
 
-        if self.run_type != 'batch':
-            try:
-                # response = jchem_rest.getTransProducts(data_dict)
-                response = MetabolizerCalc().getTransProducts(data_dict)
-            except Exception as e:
-                logging.warning("error making data request: {}".format(e))
-                raise
+        # if self.run_type != 'batch':
+        #     try:
+        #         # response = jchem_rest.getTransProducts(data_dict)
+        #         response = MetabolizerCalc().getTransProducts(data_dict)
+        #     except Exception as e:
+        #         logging.warning("error making data request: {}".format(e))
+        #         raise
 
-            # # reformat data for outputting to tree structure:
-            # data_walks.j = 0
-            # data_walks.metID = 0
-            # self.results = data_walks.recursive(response, int(self.gen_limit))
-            self.results = MetabolizerCalc().recursive(response, int(self.gen_limit))
+        #     self.results = MetabolizerCalc().recursive(response, int(self.gen_limit), 'single')
 
-            # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
-            self.test_results = []
+        #     # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
+        #     self.test_results = []
 
         self.run_data = {
             'title': "Transformation Products Output",
