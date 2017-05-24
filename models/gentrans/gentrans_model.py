@@ -61,7 +61,7 @@ class gentrans(object):
 
         # NOTE: populationLimit is hard-coded to 0 as it currently does nothing
 
-        data_dict = {
+        self.metabolizer_request_post = {
             'structure': self.smiles,
             'generationLimit': self.gen_limit,
             'populationLimit': 0,
@@ -71,8 +71,8 @@ class gentrans(object):
             'excludeCondition': ""  # 'generateImages': False
         }
 
-        # if len(self.trans_libs) > 0:
-        #     data_dict.update({'transformationLibraries': self.trans_libs})
+        if len(self.trans_libs) > 0:
+            self.metabolizer_request_post.update({'transformationLibraries': self.trans_libs})
 
         # if self.run_type != 'batch':
         #     try:

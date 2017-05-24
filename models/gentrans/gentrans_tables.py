@@ -190,6 +190,7 @@ def table_metabolites(gentrans_obj):
                                     "mass": gentrans_obj.mass,
                                     "formula": gentrans_obj.formula,
                                     'service': "getTransProducts",
+                                    'metabolizer_post': mark_safe(json.dumps(gentrans_obj.metabolizer_request_post))
 								}
 							)
 
