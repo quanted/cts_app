@@ -65,12 +65,12 @@ def displayPDF(request, reactionLib=None):
 		<h3> Click <a href="/static_qed/cts/docs/AbioticReductionRxnLib_vers1-4.pdf" download="AbioticReductionRxnLib_vers1-4.pdf">here</a> to download if file doesn't load</h3>
 		<embed src="/static_qed/cts/docs/AbioticReductionRxnLib_vers1-4.pdf" class="libPDF">
 		"""
-	elif 'guide' in request.path:
-		title = "CTS User's Guide"
-		pdfHTML = """
-		<h3> Click <a href="/static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.docx" download="CTS_USER_Guide_weber_9-14-15.docx">here</a> to download if the file does not load </h3>
-		<embed src="/static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.docx" class="libPDF">'
-		"""
+	# elif 'guide' in request.path:
+	# 	title = "CTS User's Guide"
+	# 	pdfHTML = """
+	# 	<h3> Click <a href="/static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.docx" download="CTS_USER_Guide_weber_9-14-15.docx">here</a> to download if the file does not load </h3>
+	# 	<embed src="/static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.docx" class="libPDF">'
+	# 	"""
 	else:
 		logging.info('error')
 		return fileNotFound(request)
