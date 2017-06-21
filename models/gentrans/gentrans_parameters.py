@@ -16,9 +16,7 @@ def tmpl_respirationTable():
 	{% with form|get_class as name %}
 
 	<td id="{{name}}">
-	{% for choice in form.respiration %}
-		{{ choice }} <br>
-	{% endfor %}
+		{{form.respiration}}
 	</td>
 
 	{% endwith %}
@@ -83,9 +81,7 @@ def tmpl_oecdGuidelines():
 	<tr><th colspan="4">Fate, Transport, and Transformation</th></tr>
 	<tr>
 	<td>
-	{% for choice in form.ftt_selection %}
-		{{ choice }} <br>
-	{% endfor %}
+		{{form.ftt_selection}}
 	</td>
 	<td id="labAbioTrans_picks">
 	{% for choice in form.labAbioTrans_selection %}
@@ -290,7 +286,8 @@ class cts_oecd_guidelines(forms.Form):
 
 	ftt_selection = forms.ChoiceField(
 					choices=ftt_CHOICES,
-					required=False)
+					required=False,
+					widget=forms.Select())
 					# widget=forms.RadioSelect())
 
 	labAbioTrans_selection = forms.ChoiceField(
