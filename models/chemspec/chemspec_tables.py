@@ -119,7 +119,7 @@ inTmpl = Template(getInputTemplate())
 
 
 def table_all(chemspec_obj):
-    html_all = '<script type="text/javascript" src="/static_qed/cts/stylesheets/jquery.qtip.js"></script>'
+    html_all = '<script type="text/javascript" src="/static_qed/cts/js/jquery.qtip.js"></script>'
     html_all += '<link type="text/css" rel="stylesheet" href="/static_qed/cts/stylesheets/jquery.qtip.css"></link>'
 
     html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))})
