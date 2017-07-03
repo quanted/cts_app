@@ -1,9 +1,9 @@
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
 import importlib
-import .linksLeft
+from .linksLeft import linksLeft
 import os
-import .links_left
+from .links_left import ordered_list
 
 
 def inputPage(request, model='none', header='none'):
@@ -41,7 +41,7 @@ def inputPage(request, model='none', header='none'):
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     # html += links_left.ordered_list(model='cts/' + model)  # fills out 05ubertext_links_left_drupal.html
-    html += links_left.ordered_list(model='cts/' + model, page='input')
+    html += ordered_list(model='cts/' + model, page='input')
 
     #scripts and footer
     html += render_to_string('09epa_drupal_ubertool_css.html', {})

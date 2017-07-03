@@ -1,8 +1,8 @@
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 import importlib
-import .linksLeft
-import .links_left
+from .linksLeft import linksLeft
+from .links_left import ordered_list
 import os
 import logging
 from cts_app.models.pchemprop import pchemprop_tables
@@ -42,7 +42,7 @@ def batchInputPage(request, model='none', header='none'):
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     # html += links_left.ordered_list(model='cts/' + model)  # fills out 05ubertext_links_left_drupal.html
-    html += links_left.ordered_list(model='cts/' + model, page='batch')
+    html += ordered_list(model='cts/' + model, page='batch')
 
     #scripts and footer
     html += render_to_string('09epa_drupal_ubertool_css.html', {})
@@ -121,7 +121,7 @@ def batchOutputPage(request, model='none', header='none'):
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     # html += links_left.ordered_list(model='cts/' + model)  # fills out 05ubertext_links_left_drupal.html
-    html += links_left.ordered_list(model='cts/' + model, page='batchoutput')
+    html += ordered_list(model='cts/' + model, page='batchoutput')
 
     #scripts and footer
     html += render_to_string('09epa_drupal_ubertool_css.html', {})
