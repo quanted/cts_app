@@ -2,8 +2,8 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 import importlib
-import .linksLeft
-import .links_left
+from .linksLeft import linksLeft
+from .links_left import ordered_list
 import logging
 import os
 
@@ -53,7 +53,7 @@ def outputPageView(request, model='none', header=''):
     html += render_to_string('04cts_uberoutput_end.html', {'model':model})
 
     html += render_to_string('07ubertext_end_drupal.html', {})
-    html += links_left.ordered_list(model='cts/' + model, page="output")  # fills out 05ubertext_links_left_drupal.html
+    html += ordered_list(model='cts/' + model, page="output")  # fills out 05ubertext_links_left_drupal.html
 
     #scripts and footer
     html += render_to_string('09epa_drupal_ubertool_css.html', {})
