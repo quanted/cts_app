@@ -1,6 +1,6 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import include, url
-from views import misc, landing, description, input, output, batch, ctsGenerateReport
+from .views import misc, landing, description, input, output, batch, ctsGenerateReport
 # from views import history, algorithms, references, qaqc
 
 
