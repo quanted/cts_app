@@ -24,7 +24,7 @@ def ordered_list(model=None, page=None):
             ])
         ),
         ('Documentation', OrderedDict([
-                ('Download CTS User Guide', 'static_qed/cts/docs/CTS_USER_Guide_weber_9-14-15.docx'),
+                ('Download CTS User Guide', 'static_qed/cts/docs/CTS_USER_Guide_5-8-17.docx'),
                 ('API Documentation', 'cts/rest/'),
                 # ('Source Code', 'https://github.com/quanted/cts_app'),
             ])
