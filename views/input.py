@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
 import importlib
-from .linksLeft import linksLeft
+#from .linksLeft import linksLeft
 import os
 from .links_left import ordered_list
 
