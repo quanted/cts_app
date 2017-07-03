@@ -1,5 +1,5 @@
 from django.views.decorators.http import require_POST
-import StringIO
+import io
 from django.http import HttpResponse
 from django.template import Context
 import json
@@ -204,7 +204,7 @@ def pdfReceiver(request, model=''):
 
     input_str = ''
     input_str += parsePOST(request)
-    packet = StringIO.StringIO()  # write to memory
+    packet = io.StringIO()  # write to memory
 
     try:
         pisa.CreatePDF(input_str, dest=packet)
@@ -228,7 +228,7 @@ def htmlReceiver(request, model=''):
     """
     input_str = ''
     input_str += parsePOST(request)
-    packet = StringIO.StringIO(input_str)  # write to memory
+    packet = io.StringIO(input_str)  # write to memory
     jid = MetabolizerCalc().gen_jid()  # create timestamp
     response = HttpResponse(packet.getvalue(), content_type='application/html')
     response['Content-Disposition'] = 'attachment; filename=' + model + '_' + jid + '.html'
@@ -242,7 +242,7 @@ def csvReceiver(request, model=''):
     """
     Save output as CSV
     """
-    from downloads_cts import CSV
+    from .downloads_cts import CSV
     from django.conf import settings
 
     settings.DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB => 10485760 bytes (IEC units)

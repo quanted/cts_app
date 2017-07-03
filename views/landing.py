@@ -1,8 +1,8 @@
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 import importlib
-import linksLeft
-import links_left
+import .linksLeft
+import .links_left
 import os
 
 

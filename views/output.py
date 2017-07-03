@@ -2,8 +2,8 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 import importlib
-import linksLeft
-import links_left
+import .linksLeft
+import .links_left
 import logging
 import os
 

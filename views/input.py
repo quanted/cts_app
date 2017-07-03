@@ -1,9 +1,9 @@
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
 import importlib
-import linksLeft
+import .linksLeft
 import os
-import links_left
+import .links_left
 
 
 def inputPage(request, model='none', header='none'):
