@@ -2,9 +2,9 @@ import json
 
 from django.conf import settings
 from django.template.loader import render_to_string
-from cts_app.models.pchemprop import pchemprop_parameters
-from . import pchemprop_output
 from django.utils.safestring import mark_safe
+from . import pchemprop_output
+from . import pchemprop_parameters
 
 
 def pchempropBatchInputPage(request, model='', header='P-Chem Properties', formData=None):
