@@ -4,17 +4,16 @@
 """
 __author__ = 'np'
 
-from django.template import Context, Template, defaultfilters
-import time
 import datetime
-from django.template.loader import render_to_string
 import logging
 import json
-from StringIO import StringIO
-from django.utils.safestring import mark_safe
-# from cts_app.cts_calcs import data_walks
-from cts_app.cts_calcs.calculator import Calculator
 import os
+
+from django.template import Context, Template, defaultfilters
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
+from ...cts_calcs.calculator import Calculator
+
 
 
 # image sizes for jchem ws structures:

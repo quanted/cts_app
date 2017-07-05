@@ -1,7 +1,11 @@
+import json
+
 from django.conf import settings
 from django.template.loader import render_to_string
-from cts_app.models.gentrans import gentrans_parameters
-import json
+from django.utils.safestring import mark_safe
+from . import gentrans_parameters
+from . import gentrans_output
+from ..pchemprop import pchemprop_output
 
 
 def gentransBatchInputPage(request, model='', header='Transformation Products', formData=None):
@@ -43,11 +47,6 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     # get all the fields from the form in the request, then
     # instantiate model object to get checkedCalcsAndProps dict.
     # render said dict into cts_pchemprop_ajax_calls template
-
-    from cts_app.models.gentrans import gentrans_output
-    from cts_app.models.pchemprop import pchemprop_output
-    from django.utils.safestring import mark_safe
-
 
     # get transformation products through gentrans_model,
     # then use cts_gentrans_tree and cts_pchemprop_ajax_calls to

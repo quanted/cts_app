@@ -1,11 +1,12 @@
+import importlib
+import logging
+import os
+
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
-import importlib
 from .linksLeft import linksLeft
 from .links_left import ordered_list
-import logging
-import os
 
 
 def outputPageView(request, model='none', header=''):
@@ -120,7 +121,7 @@ def outputPage(request, model='none', header=''):
             # Render input page view with POSTed values and show errors
             html = render_to_string('01cts_uberheader.html', {'title': header+' Inputs'})
             html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'input'})
-            html = html + linksLeft.linksLeft()
+            html = html + linksLeft()
 
             inputPageFunc = getattr(inputmodule, model+'InputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
             html = html + inputPageFunc(request, model, header, formData=request.POST)  # formData contains the already POSTed form data

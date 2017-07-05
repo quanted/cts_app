@@ -11,7 +11,7 @@ import datetime
 import json
 
 # from cts_app.cts_calcs.calculator import Calculator
-from cts_app.cts_calcs.calculator_metabolizer import MetabolizerCalc
+from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 
 
 class gentrans(object):

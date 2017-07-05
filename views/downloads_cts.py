@@ -6,16 +6,16 @@ this file in the REST directory. For now though, I'm just going to add the
 CSV class here. ctsGenerateReport will still be an entry point that will make
 calls to this file.
 """
-
 import csv
 import json
 import datetime
 import logging
 from django.http import HttpResponse
-from cts_app.cts_calcs.calculator_chemaxon import JchemCalc
-from cts_app.cts_calcs.calculator_epi import EpiCalc
-from cts_app.cts_calcs.calculator_test import TestCalc
-from cts_app.cts_calcs.calculator_sparc import SparcCalc
+from django.http import StreamingHttpResponse
+from ..cts_calcs.calculator_chemaxon import JchemCalc
+from ..cts_calcs.calculator_epi import EpiCalc
+from ..cts_calcs.calculator_test import TestCalc
+from ..cts_calcs.calculator_sparc import SparcCalc
 
 
 class CSV(object):
@@ -332,7 +332,6 @@ class Echo(object):
 # def some_streaming_csv_view(request):
 def some_streaming_csv_view(headers, rows, run_data, content_disposition):
 	"""A view that streams a large CSV file"""
-	from django.http import StreamingHttpResponse
 
 	logging.warning("About to stream the CSV..")
 	rows.insert(0, headers)

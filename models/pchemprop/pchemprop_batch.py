@@ -1,7 +1,10 @@
+import json
+
 from django.conf import settings
 from django.template.loader import render_to_string
 from cts_app.models.pchemprop import pchemprop_parameters
-import json
+from . import pchemprop_output
+from django.utils.safestring import mark_safe
 
 
 def pchempropBatchInputPage(request, model='', header='P-Chem Properties', formData=None):
@@ -37,9 +40,6 @@ def pchempropBatchOutputPage(request, model='', header='P-Chem Properties', form
     # get all the fields from the form in the request, then
     # instantiate model object to get checkedCalcsAndProps dict.
     # render said dict into cts_pchemprop_ajax_calls template
-
-    from cts_app.models.pchemprop import pchemprop_output
-    from django.utils.safestring import mark_safe
 
     pchemprop_obj = pchemprop_output.pchempropOutputPage(request)
     batch_chemicals = request.POST.get('nodes')  # expecting list of nodes (change name??)

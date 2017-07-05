@@ -1,11 +1,9 @@
-from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-import logging
+from . import pchemprop_model
+
 
 @require_POST
 def pchempropOutputPage(request, metabolite=False):
-
-    import pchemprop_model
 
     # NOTE: Adding metabolite input for gathering p-chem properties
     # for metabolites on the gentrans output page...

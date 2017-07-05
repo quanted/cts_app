@@ -1,16 +1,11 @@
 """
 doc stuff for pchemprop_input.py
 """
-import django
-from django import forms
-from django.template.loader import render_to_string
-import logging
 
+from django.template.loader import render_to_string
+from ..chemspec import chemspec_parameters
 
 def pchempropInputPage(request, model='', header='P-Chem Properties', formData=None):
-    import pchemprop_parameters
-    from cts_app.models.chemspec import chemspec_parameters
-
 
     html = render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
 
