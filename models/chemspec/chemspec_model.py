@@ -1,15 +1,15 @@
 """
 2014-08-13 (np)
 """
-
+import datetime
 import json
+import logging
 # from chemaxon_cts import jchem_rest
 # from chemaxon_cts.jchem_calculator import JchemCalc
 # from cts_app.cts_calcs.chemaxon_cts.jchem_calculator import JchemCalc
-from cts_app.cts_calcs.calculator_chemaxon import JchemCalc
-from cts_app.cts_calcs.jchem_properties import JchemProperty
-import logging
-import datetime
+from ...cts_calcs.calculator_chemaxon import JchemCalc
+from ...cts_calcs.jchem_properties import JchemProperty
+
 # from REST import cts_rest
 # from cts_app.cts_api import cts_rest
 
@@ -18,7 +18,6 @@ class chemspec(object):
 	def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, cas, mass, exactMass, get_pka, get_taut,
 				 get_stereo, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
 				 isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
-
 
 
 		self.jid = JchemCalc().gen_jid()  # timestamp

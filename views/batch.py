@@ -1,20 +1,21 @@
-from django.template.loader import render_to_string
-from django.http import HttpResponse
 import importlib
-from .linksLeft import linksLeft
-from .links_left import ordered_list
+import datetime
 import os
 import logging
+
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from .linksLeft import linksLeft
+from .links_left import ordered_list
 from cts_app.models.pchemprop import pchemprop_tables
 # from cts_app.cts_api import cts_rest
-from cts_app.cts_calcs.calculator import Calculator
-import datetime
+from ..cts_calcs.calculator import Calculator
+
 
 def batchInputPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
     inputmodule = importlib.import_module('.'+model+'_batch', 'cts_app.models.'+model)
     header = viewmodule.header
-    
 
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {

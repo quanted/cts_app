@@ -3,14 +3,12 @@ yeah (np)
 """
 import django
 from django import forms
-from django.template.loader import render_to_string    
+from django.template.loader import render_to_string
+from . import gentrans_parameters
+from ..chemspec import chemspec_parameters
 
 
-    
 def gentransInputPage(request, model='', header='Generate Transformation Pathways', formData=None):
-    import gentrans_parameters
-    # from cts_app.models.pchemprop import pchemprop_parameters
-    from cts_app.models.chemspec import chemspec_parameters
 
     html = render_to_string('04cts_uberinput_jquery.html', { 'model': model }) # loads scripts_gentrans.js
     html = html + render_to_string('04cts_uberinput_start_tabbed.html', {

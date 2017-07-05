@@ -2,14 +2,15 @@
 .. module:: gentrans_tables
    :synopsis: A useful module indeed.
 """
-
-from django.template import Context, Template
-from django.conf import settings
 import datetime
-from django.template.loader import render_to_string
-from django.utils.safestring import mark_safe
 import json
 import os
+
+from django.conf import settings
+from django.template import Context, Template
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
+from ..pchemprop import pchemprop_parameters
 
 
 def getdjtemplate():
@@ -211,7 +212,6 @@ def build_pchem_table():
     For window that displays metabolite's
     p-chem and structure data.
     """
-    from cts_app.models.pchemprop import pchemprop_parameters
 
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))  # recycling!

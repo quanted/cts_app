@@ -1,9 +1,9 @@
 from django.views.decorators.http import require_POST
 import logging
+from . import gentrans_model
 
 @require_POST
 def gentransOutputPage(request):
-    import gentrans_model
     # from cts_app.models.pchemprop import pchemprop_model
 
     run_type = request.POST.get('run_type')

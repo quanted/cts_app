@@ -1,5 +1,5 @@
 import requests
-from tabulate import tabulate
+import tabulate
 
 
 def build_table(list1, list2):

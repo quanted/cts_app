@@ -2,13 +2,13 @@
 (np)
 """
 import django
+import logging
 from django import forms
 from django.template.loader import render_to_string
-import logging    
+from . import chemspec_parameters
 
     
 def chemspecInputPage(request, model='', header='Chemical Speciation', formData=None):
-    import chemspec_parameters
 
     html = render_to_string('04cts_uberinput_jquery.html', { 'model': model }) # Loads scripts_chemspec.js
 

@@ -1,11 +1,11 @@
+import logging
+
 from django.views.decorators.http import require_POST
 from django.utils.encoding import smart_text
-import logging
+from . import chemspec_model
 
 @require_POST
 def chemspecOutputPage(request):
-    import chemspec_model
-
 
     run_type = request.POST.get('run_type')
 

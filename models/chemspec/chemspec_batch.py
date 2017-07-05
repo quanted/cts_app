@@ -1,9 +1,13 @@
+import json
 import os
 os.environ['DJANGO_SETTINGS_MODULE']='settings'
-from django.template.loader import render_to_string
-from cts_app.models.pchemprop import pchemprop_parameters
-import json
+
 from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
+from ..chemspec import chemspec_output
+from ..chemspec import chemspec_parameters
+from ..pchemprop import pchemprop_parameters
 
 
 def chemspecBatchInputPage(request, model='', header='Chemical Speciation Properties', formData=None):
@@ -12,11 +16,6 @@ def chemspecBatchInputPage(request, model='', header='Chemical Speciation Proper
     for drawing the models' unique input selection. For chemspec, the p-chem
     appears after the user has uploaded a chemical file for batch
     """
-
-    from cts_app.models.chemspec import chemspec_parameters
-
-
-
     # for chemspec batch, use p-chem for selecting inputs for batch data:
     html = """
     <div id="pchem_batch_wrap" hidden>
@@ -39,9 +38,6 @@ def chemspecBatchInputPage(request, model='', header='Chemical Speciation Proper
 
 
 def chemspecBatchOutputPage(request, model='', header='Chemical Speciation Properties', formData=None):
-
-    from cts_app.models.chemspec import chemspec_output
-    from django.utils.safestring import mark_safe
 
     chemspec_obj = chemspec_output.chemspecOutputPage(request)
     batch_chemicals = request.POST.get('nodes')  # expecting list of nodes (change name??)
