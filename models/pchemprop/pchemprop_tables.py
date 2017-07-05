@@ -4,7 +4,7 @@ import datetime
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import logging
-import pchemprop_parameters
+from . import pchemprop_parameters
 import json
 import os
 os.environ['DJANGO_SETTINGS_MODULE']='settings'

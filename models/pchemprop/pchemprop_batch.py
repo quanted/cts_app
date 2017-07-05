@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.template.loader import render_to_string
-from cts_app.models.pchemprop import pchemprop_parameters
+from . import pchemprop_parameters
 import json
 
 
