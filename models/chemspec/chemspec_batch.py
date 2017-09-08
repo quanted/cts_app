@@ -46,7 +46,7 @@ def chemspecBatchOutputPage(request, model='', header='Chemical Speciation Prope
         batch_chemicals = []
 
     html = render_to_string('cts_downloads.html', 
-        {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))})
+        {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))}, request=request)
 
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 

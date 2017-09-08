@@ -12,7 +12,7 @@ def pchempropInputPage(request, model='', header='P-Chem Properties', formData=N
     html = html + render_to_string('04cts_uberinput_start_tabbed.html', {
             'model': model,
             'model_attributes': header
-    })
+    }, request=request)
 
     html = html + render_to_string('04cts_uberinput_tabbed_nav.html', {
             'nav_dict': {

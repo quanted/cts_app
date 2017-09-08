@@ -5,6 +5,7 @@ import logging
 
 from django.template.loader import render_to_string
 from django.http import HttpResponse
+from django.views.decorators.csrf import requires_csrf_token
 from .linksLeft import linksLeft
 from .links_left import ordered_list
 from cts_app.models.pchemprop import pchemprop_tables
@@ -12,6 +13,7 @@ from cts_app.models.pchemprop import pchemprop_tables
 from ..cts_calcs.calculator import Calculator
 
 
+@requires_csrf_token
 def batchInputPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
     inputmodule = importlib.import_module('.'+model+'_batch', 'cts_app.models.'+model)
@@ -34,7 +36,7 @@ def batchInputPage(request, model='none', header='none'):
 
     html = html + render_to_string('04cts_uberbatchinput.html', {
             'model': model,
-            'model_attributes': header+' Batch Run'})
+            'model_attributes': header+' Batch Run'}, request=request)
     html += render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
     inputPageFunc = getattr(inputmodule, model+'BatchInputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
     html = html + inputPageFunc(request, model, header)
@@ -48,7 +50,7 @@ def batchInputPage(request, model='none', header='none'):
     #scripts and footer
     html += render_to_string('09epa_drupal_ubertool_css.html', {})
     html += render_to_string('09epa_drupal_cts_css.html')
-    html += render_to_string('09epa_drupal_cts_scripts.html')
+    html += render_to_string('09epa_drupal_cts_scripts.html', request=request)
     #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
     html += render_to_string('10epa_drupal_footer.html', {})
 
@@ -76,6 +78,8 @@ def batchInputPage(request, model='none', header='none'):
     response.write(html)
     return response
 
+
+@requires_csrf_token
 def batchOutputPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
     batchoutputmodule = importlib.import_module('.'+model+'_batch', 'cts_app.models.'+model)
@@ -127,7 +131,7 @@ def batchOutputPage(request, model='none', header='none'):
     #scripts and footer
     html += render_to_string('09epa_drupal_ubertool_css.html', {})
     html += render_to_string('09epa_drupal_cts_css.html')
-    html += render_to_string('09epa_drupal_cts_scripts.html')
+    html += render_to_string('09epa_drupal_cts_scripts.html', request=request)
     #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
     html += render_to_string('10epa_drupal_footer.html', {})
 
