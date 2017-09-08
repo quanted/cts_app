@@ -5,8 +5,10 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
 #from .linksLeft import linksLeft
 from .links_left import ordered_list
+from django.views.decorators.csrf import requires_csrf_token
 
 
+@requires_csrf_token
 def inputPage(request, model='none', header='none'):
     viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
     inputmodule = importlib.import_module('.'+model+'_input', 'cts_app.models.'+model)
@@ -47,7 +49,11 @@ def inputPage(request, model='none', header='none'):
     #scripts and footer
     html += render_to_string('09epa_drupal_ubertool_css.html', {})
     html += render_to_string('09epa_drupal_cts_css.html')
-    html += render_to_string('09epa_drupal_cts_scripts.html')
+
+    print("request object: {}".format(dir(request)))
+
+    # sending request to template with scripts_jchem added (will this work if template imports js and isn't in template itself?)
+    html += render_to_string('09epa_drupal_cts_scripts.html', request=request)
     #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
     html += render_to_string('10epa_drupal_footer.html', {})
 

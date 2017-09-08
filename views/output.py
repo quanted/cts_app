@@ -7,8 +7,10 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from .linksLeft import linksLeft
 from .links_left import ordered_list
+from django.views.decorators.csrf import requires_csrf_token
 
 
+@requires_csrf_token
 def outputPageView(request, model='none', header=''):
 
     outputmodule = importlib.import_module('.'+model+'_output', 'cts_app.models.'+model)

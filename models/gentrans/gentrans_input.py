@@ -14,7 +14,7 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
     html = html + render_to_string('04cts_uberinput_start_tabbed.html', {
             'model': model,
             'model_attributes': header
-    })
+    }, request=request)
 
     html = html + render_to_string('04cts_uberinput_tabbed_nav.html', {
             'nav_dict': {
