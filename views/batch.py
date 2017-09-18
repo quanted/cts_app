@@ -101,6 +101,8 @@ def batchOutputPage(request, model='none', header='none'):
         # 'TEXT_PARAGRAPH': xx
     })
 
+    html = html + render_to_string('04cts_uberoutput_end.html', {})
+
     html += render_to_string('04cts_uberbatch_start.html', {
             'model': model,
             'model_attributes': header+' Batch Output'})
@@ -122,7 +124,6 @@ def batchOutputPage(request, model='none', header='none'):
     batchOutputPageFunc = getattr(batchoutputmodule, model+'BatchOutputPage')  # function name = 'model'BatchOutputPage  (e.g. 'sipBatchOutputPage')
     html += batchOutputPageFunc(request)
 
-    html = html + render_to_string('04cts_uberoutput_end.html', {})
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     # html += links_left.ordered_list(model='cts/' + model)  # fills out 05ubertext_links_left_drupal.html
