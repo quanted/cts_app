@@ -48,12 +48,14 @@ def outputPageView(request, model='none', header=''):
         # 'TEXT_PARAGRAPH': xx
     })
 
+    html += render_to_string('04cts_uberoutput_end.html', {'model':model})  # file download html
+
     html += render_to_string('04cts_uberoutput_start.html', {
             'model_attributes': header+' Output'})
 
     html += modelOutputHTML
-    html = html + render_to_string('cts_export.html', {})
-    html += render_to_string('04cts_uberoutput_end.html', {'model':model})
+    html = html + render_to_string('cts_export.html', {}, request=request)
+    # html += render_to_string('04cts_uberoutput_end.html', {'model':model})
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     html += ordered_list(model='cts/' + model, page="output")  # fills out 05ubertext_links_left_drupal.html
