@@ -1,6 +1,7 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import include, url
 from .views import misc, landing, description, input, output, batch, ctsGenerateReport
+from .cts_api.views import test_ws_page
 # from views import history, algorithms, references, qaqc
 
 
@@ -11,7 +12,9 @@ urlpatterns = [
     # url(r'^epi-cts/', include('epi_cts.urls')),  # Pavan added this to include the test suite django app  # REMOVED BY JON DURING DOCKERIZATION
     url(r'^rest/', include('cts_app.cts_api.urls')),
     # url(r'^testing/', include('cts_app.cts_testing.urls'))
-    url(r'^testing/', include('cts_app.cts_testing.urls'))
+    url(r'^testing/', include('cts_app.cts_testing.urls')),
+
+    url(r'^testws/?$', test_ws_page)
 ]
 
 # All view functions here must be in '/views/worker.py'
