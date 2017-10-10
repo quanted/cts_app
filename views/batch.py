@@ -119,7 +119,7 @@ def batchOutputPage(request, model='none', header='none'):
     html += """
     </div><br><br>"""
 
-    html = html + render_to_string('cts_export.html', {})
+    html = html + render_to_string('cts_export.html', {}, request=request)
 
     batchOutputPageFunc = getattr(batchoutputmodule, model+'BatchOutputPage')  # function name = 'model'BatchOutputPage  (e.g. 'sipBatchOutputPage')
     html += batchOutputPageFunc(request)
