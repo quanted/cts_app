@@ -61,7 +61,7 @@ def about_page(request, model='none', header='non'):
 
     elif model == 'pchemcalcs':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_pchemcalcs_descriptions.txt'),'r')
-        header = "P-Chem Calculators"
+        header = "Physical-Chemical Calculators"
 
     elif model == 'reactionlibs':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_reactionlibs_descriptions.txt'),'r')

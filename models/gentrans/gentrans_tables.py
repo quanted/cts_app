@@ -43,7 +43,7 @@ def getInputTemplate():
 def getInputData(pchemprop_obj):
     data = [
         {'Entered chemical': pchemprop_obj.chem_struct},
-        {'SMILES': pchemprop_obj.smiles},
+        {'Standardized SMILES': pchemprop_obj.smiles},
         {'Initial SMILES': pchemprop_obj.orig_smiles},
         {'IUPAC': pchemprop_obj.iupac},
         {'Formula': pchemprop_obj.formula},
@@ -129,8 +129,8 @@ def timestamp(gentrans_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div class="out_" id="timestamp">
-        <b>Generate Transformation Pathways Version {}</a> (Beta)<br>
-    """.format(os.environ['CTS_VERSION'])
+        <b>Generate Transformation Pathways<br>
+    """
     html = html + st
     html = html + " (EST)</b>"
     html = html + """

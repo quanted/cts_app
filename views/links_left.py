@@ -7,19 +7,19 @@ def ordered_list(model=None, page=None):
     link_dict = OrderedDict([
         ('CTS Workflows', OrderedDict([
                 ('Calculate Chemical Speciation', 'cts/chemspec'),
-                ('Calculate P-Chem Properties', 'cts/pchemprop'),
+                ('Calculate Physical-Chemical Properties', 'cts/pchemprop'),
                 ('Generate Transformation Products', 'cts/gentrans'),
             ])
         ),
         # ('About', OrderedDict([
         #         ('Chemical Editor', 'cts/module/chemedit-description'),
-        #         ('P-Chem Properties', 'cts/module/pchemprop-description'),
+        #         ('Physical-Chemical Properties', 'cts/module/pchemprop-description'),
         #         ('Reaction Pathway Simulator', 'cts/module/reactsim-description'),
         #     ])
         # ),
         ('About', OrderedDict([
                 ('CTS Workflow Modules', 'cts/about/modules'),
-                ('P-Chem Calculators', 'cts/about/pchemcalcs'),
+                ('Physical-Chemical Calculators', 'cts/about/pchemcalcs'),
                 ('Reaction Libraries', 'cts/about/reactionlibs'),
             ])
         ),

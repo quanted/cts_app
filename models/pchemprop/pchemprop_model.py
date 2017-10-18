@@ -122,7 +122,7 @@ class PChemProp(object):
                 self.checkedCalcsAndPropsDict.update({calcKey: propList})
                 
         self.run_data = {
-            'title': "P-Chem Properties Output",
+            'title': "Physical-Chemical Properties Output",
             'jid': self.jid,
             'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
             'chem_struct': self.chem_struct,

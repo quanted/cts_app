@@ -5,7 +5,7 @@ doc stuff for pchemprop_input.py
 from django.template.loader import render_to_string
 from ..chemspec import chemspec_parameters
 
-def pchempropInputPage(request, model='', header='P-Chem Properties', formData=None):
+def pchempropInputPage(request, model='', header='Physical-Chemical Properties', formData=None):
 
     html = render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
 
@@ -17,9 +17,9 @@ def pchempropInputPage(request, model='', header='P-Chem Properties', formData=N
     html = html + render_to_string('04cts_uberinput_tabbed_nav.html', {
             'nav_dict': {
                 'class_name': ['Chemical', 'ChemCalcs'],
-                'tab_label': ['Chemical Editor', 'P-Chem Calculators']
+                'tab_label': ['Chemical Editor', 'Physical-Chemical Calculators']
                 },
-            'nextTabName': 'P-Chem Calculators'
+            'nextTabName': 'Physical-Chemical Calculators'
             })
 
     # chemspec inputs

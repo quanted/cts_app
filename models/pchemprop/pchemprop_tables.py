@@ -13,7 +13,7 @@ from django.conf import settings
 def getInputData(pchemprop_obj):
     data = [
         {'Entered chemical': pchemprop_obj.chem_struct},
-        {'SMILES': pchemprop_obj.smiles},
+        {'Standardized SMILES': pchemprop_obj.smiles},
         {'Initial SMILES': pchemprop_obj.orig_smiles},
         {'IUPAC': pchemprop_obj.name}, 
         {'Formula': pchemprop_obj.formula}, 
@@ -96,7 +96,7 @@ def output_pchem_table(pchemprop_obj):
     """
     html = """
     <br>
-    <H3 class="out_1 collapsible" id="section1"><span></span>P-Chem Properties Results</H3>
+    <H3 class="out_1 collapsible" id="section1"><span></span>Physical-Chemical Properties Results</H3>
     <div class="out_">
     <script>
     $(document).ready(function() {
@@ -134,7 +134,7 @@ def output_pchem_table(pchemprop_obj):
 
     html += """
         <br>
-        <input type="button" value="Get data" class="submit input_button btn-pchem" id="btn-pchem-data">
+        <input type="button" value="Calculate data" class="submit input_button btn-pchem" id="btn-pchem-data">
         <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
         <input type="button" value="Cancel" class="input_button btn-pchem" id="btn-pchem-cancel">
         <br>
@@ -160,8 +160,8 @@ def timestamp(pchemprop_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div class="out_">
-        <b>Calculate P-Chem Properties Version {}</a> (Beta)<br>
-    """.format(os.environ['CTS_VERSION'])
+        <b>Calculate Physical-Chemical Properties<br>
+    """
     html = html + st
     html = html + " (EST)</b>"
     html = html + """

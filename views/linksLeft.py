@@ -7,7 +7,7 @@ def linksLeft():
     link_dict = OrderedDict([
         ('CTS Workflows', OrderedDict([
                 ('Calculate Chemical Speciation', 'chemspec'),
-                ('Calculate P-Chem Properties', 'pchemprop'),
+                ('Calculate Physical-Chemical Properties', 'pchemprop'),
                 ('Generate Transformation Products', 'gentrans'),
             ])
         ),
