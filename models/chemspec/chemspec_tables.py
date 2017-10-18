@@ -52,7 +52,7 @@ def getInputTemplate():
 def getMolTblData(chemspec_obj):
     data = [
         {'Entered chemical': chemspec_obj.chem_struct},
-        {'SMILES': chemspec_obj.smiles},
+        {'Standardized SMILES': chemspec_obj.smiles},
         {'Initial SMILES': chemspec_obj.orig_smiles},
         {'IUPAC': chemspec_obj.name}, 
         {'Formula': chemspec_obj.formula},
@@ -161,8 +161,8 @@ def timestamp(chemspec_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div id="timestamp" class="out_">
-        <b>Chemical Speciation - Version {} (Beta)<br>
-    """.format(os.environ['CTS_VERSION'])
+        <b>Chemical Speciation<br>
+    """
     html += st
     html += " (EST)</b>"
     html += """
