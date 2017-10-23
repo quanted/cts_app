@@ -96,7 +96,7 @@ def output_pchem_table(pchemprop_obj):
     """
     html = """
     <br>
-    <H3 class="out_1 collapsible" id="section1"><span></span>Physical-Chemical Properties Results</H3>
+    <H3 class="out_1 collapsible" id="section1"><span></span>Physicochemical Properties Results</H3>
     <div class="out_">
     <script>
     $(document).ready(function() {
@@ -160,7 +160,7 @@ def timestamp(pchemprop_obj="", batch_jid=""):
         st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html="""
     <div class="out_">
-        <b>Calculate Physical-Chemical Properties<br>
+        <b>Calculate Physicochemical Properties<br>
     """
     html = html + st
     html = html + " (EST)</b>"
