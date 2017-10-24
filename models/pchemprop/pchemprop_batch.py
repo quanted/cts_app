@@ -7,7 +7,7 @@ from . import pchemprop_output
 from . import pchemprop_parameters
 
 
-def pchempropBatchInputPage(request, model='', header='Physical-Chemical Properties', formData=None):
+def pchempropBatchInputPage(request, model='', header='Physicochemical Properties', formData=None):
     """
     Currently, I'm using these model specific batch input page functions
     for drawing the models' unique input selection. For pchemprop, the p-chem
@@ -35,7 +35,7 @@ def pchempropBatchInputPage(request, model='', header='Physical-Chemical Propert
     return html
 
 
-def pchempropBatchOutputPage(request, model='', header='Physical-Chemical Properties', formData=None):
+def pchempropBatchOutputPage(request, model='', header='Physicochemical Properties', formData=None):
 
     # get all the fields from the form in the request, then
     # instantiate model object to get checkedCalcsAndProps dict.

@@ -7,8 +7,8 @@ import os
 
 
 def ctsLandingPage(request):
-    text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'cts_app/views/main_text.txt'),'r')
-    xx = text_file2.read()
+    # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'cts_app/views/main_text.txt'),'r')
+    # xx = text_file2.read()
 
     #drupal template for header with bluestripe
     #html = render_to_string('01epa_drupal_header.html', {})
@@ -27,10 +27,14 @@ def ctsLandingPage(request):
     #html += render_to_string('04uber_drupal_frog_intro.html', {})
     #http://jsfiddle.net/9zGQ8/
 
+    # fix attempt for &beta; in .txt encoding issue when pushing/pulling on github
+    main_text_html = render_to_string('cts_landing_text.html', {})
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         # 'TITLE': 'Chemical Transformation Simulator',
-        'TEXT_PARAGRAPH': xx
+        'TEXT_PARAGRAPH': main_text_html
+        # 'TEXT_PARAGRAPH': xx
     })
+
     html += render_to_string('07ubertext_end_drupal.html', {})
     html += ordered_list(model='cts')  # fills out 05ubertext_links_left_drupal.html
 
@@ -45,23 +49,3 @@ def ctsLandingPage(request):
     response.write(html)
 
     return response
-
-
-# def ctsLandingPage(request):
-#     text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'cts_app/views/main_text.txt'),'r')
-#     xx = text_file2.read()
-
-#     html = render_to_string('01cts_uberheader.html', {})
-#     html = html + render_to_string('02cts_uberintroblock_nomodellinks.html', {})
-#     html = html + linksLeft.linksLeft()
-#     html = html + render_to_string('04cts_ubertext_start_index.html', {
-#             'text_paragraph':xx
-#             })
-#     html = html + render_to_string('04cts_ubertext_end.html',{})
-#     html = html + render_to_string('05cts_ubertext_links_right.html', {})
-#     html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
-
-#     response = HttpResponse()
-#     response.write(html)
-
-#     return response

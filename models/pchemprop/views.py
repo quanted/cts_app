@@ -1,4 +1,4 @@
 ################ How model name appears on web page ################
-# header = 'Chemical Physical-Chemical Properties Workflow'
-header = 'Calculate Physical-Chemical Properties'
+# header = 'Chemical Physicochemical Properties Workflow'
+header = 'Calculate Physicochemical Properties'
 ####################################################################
