@@ -6,7 +6,7 @@ from django.template import Context, Template, engines
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from . import pchemprop_parameters
-os.environ['DJANGO_SETTINGS_MODULE']='settings'
+# os.environ['DJANGO_SETTINGS_MODULE']='settings'
 from django.conf import settings
 
 
