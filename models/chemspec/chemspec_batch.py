@@ -1,6 +1,6 @@
 import json
 import os
-os.environ['DJANGO_SETTINGS_MODULE']='settings'
+# os.environ['DJANGO_SETTINGS_MODULE']='settings'
 
 from django.conf import settings
 from django.template.loader import render_to_string
