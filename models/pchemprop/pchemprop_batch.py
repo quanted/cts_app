@@ -17,7 +17,7 @@ def pchempropBatchInputPage(request, model='', header='Physicochemical Propertie
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
     html = """
     <div id="pchem_batch_wrap" hidden>
-        <h3>Select p-chem properties for batch chemicals</h3>
+        <h3>Select physicochemical properties for batch chemicals</h3>
     """
 
     html += render_to_string('cts_pchem.html', {})

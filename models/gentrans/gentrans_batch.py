@@ -25,7 +25,7 @@ def gentransBatchInputPage(request, model='', header='Transformation Products', 
 
     html += """
         <br>
-        <h3>2. Select p-chem properties for transformation products</h3>
+        <h3>2. Select physicochemical properties for transformation products</h3>
     """
     html += render_to_string('cts_pchem.html', {})
 
