@@ -5,7 +5,7 @@ This web site is under development.  It is available for the purposes of receivi
 <br>
 
 <p>
-The Chemical Transformation Simulator (CTS) provides the calculated physico-chemical properties of the parent chemical and transformation products, which are predicted as a function of the reaction system of interest. This is accomplished through the integration of cheminformatics applications for the encoding of process science underlying transformation pathways, computational chemistry tools for the calculation of physico-chemical properties, and web-based technologies for providing access to on-line databases, physico-chemical calculators and reaction pathway simulators.
+The Chemical Transformation Simulator (CTS) provides the calculated physicochemical properties of the parent chemical and transformation products, which are predicted as a function of the reaction system of interest. This is accomplished through the integration of cheminformatics applications for the encoding of process science underlying transformation pathways, computational chemistry tools for the calculation of physicochemical properties, and web-based technologies for providing access to on-line databases, physicochemical calculators and reaction pathway simulators.
 </p>
 <p>
 The user interacts with the -version of the CTS through the execution of one of three available work flows (CTS Workflow tabs in the left column) described below. Each workflow invokes the CTS modules required to provide the data requested by the user. Descriptions of the individual modules are provided by the CTS Workflow tab in the left-hand column. 
@@ -15,8 +15,8 @@ The user interacts with the -version of the CTS through the execution of one 
 
 <p><b>Calculate Chemical Speciation Workflow:</b>  Invokes the Chemical Editor (CE) Module which provides the user options for chemical entry and calculates the speciation (i.e., ionization, tautomer distribution and isomer generation) for the chemical of interest.</p>
 
-<p><b>Calculate Physico-Chemical Properties Workflow:</b>  The User inputs chemical information through the CE and then invokes the Physico-Chemical Properties Calculator (PCP) Module. The PCP Module then calls upon four stand-alone widely recognized calculators (EPI Suite, SPARC, ChemAxon, and Test), all of which calculate physico-chemical properties by mutually exclusive methods.</p>
+<p><b>Calculate Physico-Chemical Properties Workflow:</b>  The User inputs chemical information through the CE and then invokes the Physico-Chemical Properties Calculator (PCP) Module. The PCP Module then calls upon four stand-alone widely recognized calculators (EPI Suite, SPARC, ChemAxon, and Test), all of which calculate physicochemical properties by mutually exclusive methods.</p>
 
-<p><b>Generate Transformation Products Workflow:</b>  The User inputs chemical information through the CE and then invokes the Reaction Pathway Simulator (RPS) Module to generate transformation products through the execution of reaction libraries based on user-specified conditions. The User is then given the option to invoke the PCP Module for the calculation of physico-chemical properties for one or more parent or product chemicals.</p>
+<p><b>Generate Transformation Products Workflow:</b>  The User inputs chemical information through the CE and then invokes the Reaction Pathway Simulator (RPS) Module to generate transformation products through the execution of reaction libraries based on user-specified conditions. The User is then given the option to invoke the PCP Module for the calculation of physicochemical properties for one or more parent or product chemicals.</p>
 
 <br>
