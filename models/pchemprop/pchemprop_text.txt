@@ -1,4 +1,4 @@
 <p>
-This workflow allows the user to enter an individual chemical through the Chemical Editor (select Single tab) or through batch mode (select Batch tab). Based on the selection of the available physicochemical calculators and physicochemical properties, the user will be able to generate calculated physicochemical properties of interest.
+This workflow allows you to enter an individual chemical through the Chemical Editor (see below) or through batch mode (select Batch tab).  Based on your selection of the available p-chem calculators and p-chem properties, you will be able to generate calculated p-chem properties of interest.
 </p>
 <img src="/static_qed/cts/images/pchemprop/pchemprop_flow_diagram.png" alt="pchemprop flow diagram">

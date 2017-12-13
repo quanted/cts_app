@@ -63,6 +63,9 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     # request.POST.update({'run_type': "batch"})
     gentrans_obj = gentrans_output.gentransOutputPage(request)
 
+    metabolizer_post = gentrans_obj.metabolizer_request_post
+    metabolizer_post['structure'] = gentrans_obj.smiles
+
     # get pchemprop model for cts_gentrans_tree/cts_pchemprop_ajax_calls on output page..
     pchemprop_obj = pchemprop_output.pchempropOutputPage(request)  # backend calc/prop dict generation
 
@@ -89,6 +92,7 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
             'nodejs_host': settings.NODEJS_HOST,
             'nodejs_port': settings.NODEJS_PORT,
             'service': "getTransProducts",
+            'metabolizer_post': mark_safe(json.dumps(metabolizer_post))
         }
     )
 
