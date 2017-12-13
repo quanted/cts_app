@@ -264,9 +264,17 @@ class CSV(object):
 
 						# make new gen key to keep track of parents
 						# e.g., batch chem 2 parent + children --> 2, 2.1, 2.2, ...
-						parent_genkey = int(product['genKey'][:1])  # first value of genKey
-						remaining_genkey = product['genKey'][1:]
-						new_genkey = str(parent_genkey + parent_index) + remaining_genkey
+						# parent_genkey = int(product['genKey'][:1])  # first value of genKey
+						# remaining_genkey = product['genKey'][1:]
+						# new_genkey = str(parent_genkey + parent_index) + remaining_genkey
+
+						# Increment parent genKey for batch (e.g., 2nd chemical in batch input file genkeys: 2, 2.1, 2.1.2, ...)
+						full_genkey = product['genKey'].split(' ')  # split key by space (e.g., 'molecule 1' --> ['molecule', '1'])
+
+						parent_key = int(full_genkey[1][:1])  # just the parent bit of the genkey
+						remaining_genkey = full_genkey[1][1:]  # the rest of the genkey number
+
+						new_genkey = "{} {}{}".format(full_genkey[0], parent_key + parent_index, remaining_genkey)
 
 						product['genKey'] = new_genkey
 						rows[products_index].insert(genkey_index, new_genkey)
@@ -461,7 +469,10 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 									# if prop == 'ion_con':
 
 										j = 1
-										for pka in pchem['data']['pKa']:
+										# for pka in pchem['data']['pKa']:
+										if not pchem.get('data'):
+											pchem['data'] = {'pKa': []}
+										for pka in pchem['data'].get('pKa', []):
 											header = "pka_{} ({})".format(j, calc)
 											j += 1
 											if not header in headers:
