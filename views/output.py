@@ -25,7 +25,7 @@ def outputPageView(request, model='none', header=''):
     else:
         # logging.info(model_obj.__dict__)
         modelOutputHTML = tablesmodule.timestamp(model_obj)
-        
+
         tables_output = tablesmodule.table_all(model_obj)
         
         if type(tables_output) is tuple:
@@ -53,7 +53,13 @@ def outputPageView(request, model='none', header=''):
     html += render_to_string('04cts_uberoutput_start.html', {
             'model_attributes': header+' Output'})
 
+
+    # html += '<div>'
+    # html += render_to_string('04cts_uberoutput_end.html', {'model':model})  # file download html
+
+
     html += modelOutputHTML
+
     html = html + render_to_string('cts_export.html', {}, request=request)
     # html += render_to_string('04cts_uberoutput_end.html', {'model':model})
 
