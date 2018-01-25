@@ -408,8 +408,11 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 				if chem_data['calc'] == calc and chem_data['prop'] == prop:
 					# if calc == 'chemaxon' and prop == 'ion_con':
 					if prop == 'ion_con':
+						if not chem_data.get('data'):
+							chem_data['data'] = {'pKa': []}
 						j = 1
-						for pka in chem_data['data']['pKa']:
+						# for pka in chem_data['data']['pKa']:
+						for pka in chem_data.get('data', {}).get('pKa', {}):
 							# header = "{} (pka_{})".format(calc, j)
 							header = "pka_{} ({})".format(j, calc)
 							j += 1
