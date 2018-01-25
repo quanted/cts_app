@@ -84,6 +84,8 @@ def parsePOST(request):
                                     # is there also pKb?????
                                     pka_string = ""
                                     pka_index = 1
+                                    if not chem_data.get('data'):
+                                        chem_data['data'] = {'pKa': []}
                                     for pka in data_obj['data']['pKa']:
                                         try:
                                             # todo: centralize rounding procedures
