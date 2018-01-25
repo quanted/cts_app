@@ -485,7 +485,10 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 											header_index = headers.index(header)
 											for i in range(0, len(rows)):
 												if rows[i][2] == chem_data['smiles']:
-													rows[i].insert(header_index, roundData(prop, pka))
+													# rows[i].insert(header_index, roundData(prop, pka))
+													rows[i][header_index] = roundData(prop, pka)
+												# else:
+												# 	rows[i].insert(header_index, '')
 
 									else:
 
@@ -512,12 +515,12 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 
 											if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
 
-												if 'error' in chem_data:
+												if 'error' in chem_data or 'error' in pchem:
 													# rows[i].insert(header_index, chem_data['data'])
 													rows[i].insert(header_index, roundData(prop, pchem['data']))
-												elif 'method' in chem_data:
-													# rows[i].insert(header_index, roundData(chem_data['data']))
-													rows[i].insert(header_index, roundData(prop, pchem['data']))
+												# elif 'method' in pchem:
+												# 	# rows[i].insert(header_index, roundData(chem_data['data']))
+												# 	rows[i].insert(header_index, roundData(prop, pchem['data']))
 												else:
 													# rows[i].insert(header_index, roundData(chem_data['data']))
 													rows[i].insert(header_index, roundData(prop, pchem['data']))
