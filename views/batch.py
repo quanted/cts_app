@@ -101,7 +101,7 @@ def batchOutputPage(request, model='none', header='none'):
         # 'TEXT_PARAGRAPH': xx
     })
 
-    html = html + render_to_string('04cts_uberoutput_end.html', {})
+    # html = html + render_to_string('04cts_uberoutput_end.html', {})
 
     html += render_to_string('04cts_uberbatch_start.html', {
             'model': model,
@@ -118,6 +118,8 @@ def batchOutputPage(request, model='none', header='none'):
     html += " (EST)</b>"
     html += """
     </div><br><br>"""
+
+    html = html + render_to_string('04cts_uberoutput_end.html', {})
 
     html = html + render_to_string('cts_export.html', {}, request=request)
 

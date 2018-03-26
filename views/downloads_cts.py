@@ -264,9 +264,17 @@ class CSV(object):
 
 						# make new gen key to keep track of parents
 						# e.g., batch chem 2 parent + children --> 2, 2.1, 2.2, ...
-						parent_genkey = int(product['genKey'][:1])  # first value of genKey
-						remaining_genkey = product['genKey'][1:]
-						new_genkey = str(parent_genkey + parent_index) + remaining_genkey
+						# parent_genkey = int(product['genKey'][:1])  # first value of genKey
+						# remaining_genkey = product['genKey'][1:]
+						# new_genkey = str(parent_genkey + parent_index) + remaining_genkey
+
+						# Increment parent genKey for batch (e.g., 2nd chemical in batch input file genkeys: 2, 2.1, 2.1.2, ...)
+						full_genkey = product['genKey'].split(' ')  # split key by space (e.g., 'molecule 1' --> ['molecule', '1'])
+
+						parent_key = int(full_genkey[1][:1])  # just the parent bit of the genkey
+						remaining_genkey = full_genkey[1][1:]  # the rest of the genkey number
+
+						new_genkey = "{} {}{}".format(full_genkey[0], parent_key + parent_index, remaining_genkey)
 
 						product['genKey'] = new_genkey
 						rows[products_index].insert(genkey_index, new_genkey)
@@ -400,8 +408,11 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 				if chem_data['calc'] == calc and chem_data['prop'] == prop:
 					# if calc == 'chemaxon' and prop == 'ion_con':
 					if prop == 'ion_con':
+						if not chem_data.get('data'):
+							chem_data['data'] = {'pKa': []}
 						j = 1
-						for pka in chem_data['data']['pKa']:
+						# for pka in chem_data['data']['pKa']:
+						for pka in chem_data.get('data', {}).get('pKa', {}):
 							# header = "{} (pka_{})".format(calc, j)
 							header = "pka_{} ({})".format(j, calc)
 							j += 1
@@ -461,7 +472,10 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 									# if prop == 'ion_con':
 
 										j = 1
-										for pka in pchem['data']['pKa']:
+										# for pka in pchem['data']['pKa']:
+										if not pchem.get('data'):
+											pchem['data'] = {'pKa': []}
+										for pka in pchem['data'].get('pKa', []):
 											header = "pka_{} ({})".format(j, calc)
 											j += 1
 											if not header in headers:
@@ -471,7 +485,10 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 											header_index = headers.index(header)
 											for i in range(0, len(rows)):
 												if rows[i][2] == chem_data['smiles']:
-													rows[i].insert(header_index, roundData(prop, pka))
+													# rows[i].insert(header_index, roundData(prop, pka))
+													rows[i][header_index] = roundData(prop, pka)
+												# else:
+												# 	rows[i].insert(header_index, '')
 
 									else:
 
@@ -498,12 +515,12 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 
 											if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
 
-												if 'error' in chem_data:
+												if 'error' in chem_data or 'error' in pchem:
 													# rows[i].insert(header_index, chem_data['data'])
 													rows[i].insert(header_index, roundData(prop, pchem['data']))
-												elif 'method' in chem_data:
-													# rows[i].insert(header_index, roundData(chem_data['data']))
-													rows[i].insert(header_index, roundData(prop, pchem['data']))
+												# elif 'method' in pchem:
+												# 	# rows[i].insert(header_index, roundData(chem_data['data']))
+												# 	rows[i].insert(header_index, roundData(prop, pchem['data']))
 												else:
 													# rows[i].insert(header_index, roundData(chem_data['data']))
 													rows[i].insert(header_index, roundData(prop, pchem['data']))
