@@ -122,22 +122,6 @@ def table_inputs(gentrans_obj):
     return html
 
 
-def timestamp(gentrans_obj="", batch_jid=""):
-    if gentrans_obj:
-        st = datetime.datetime.strptime(gentrans_obj.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
-    else:
-        st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
-    html="""
-    <div class="out_" id="timestamp">
-        <b>Generate Transformation Pathways<br>
-    """
-    html = html + st
-    html = html + " (EST)</b>"
-    html = html + """
-    </div>"""
-    return html
-
-
 def table_metabolites(gentrans_obj):
 	"""
 	Populate input with hidden value
@@ -216,7 +200,7 @@ def build_pchem_table():
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))  # recycling!
 
-    html = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
+    # html = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
     html += render_to_string('cts_gentrans_metabolites_nav.html', {'pchemHtml': pchemHTML})
 
     return html

@@ -151,19 +151,3 @@ def pchemHtmlTemplate():
     {% autoescape off %}{{pchemHtml}}{% endautoescape %}
     """
     return Template(pchem_html)
-
-
-def timestamp(pchemprop_obj="", batch_jid=""):
-    if pchemprop_obj:
-        st = datetime.datetime.strptime(pchemprop_obj.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
-    else:
-        st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
-    html="""
-    <div class="out_">
-        <b>Calculate Physicochemical Properties<br>
-    """
-    html = html + st
-    html = html + " (EST)</b>"
-    html = html + """
-    </div>"""
-    return html

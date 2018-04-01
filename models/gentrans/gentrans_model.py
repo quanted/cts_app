@@ -19,7 +19,7 @@ class gentrans(object):
                  exact_mass, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
                  gen_limit, pop_limit, likely_limit):
 
-        # self.jid = cts_rest.gen_jid()  # get time of run
+        self.title = "Generate Transformation Products"
         self.jid = MetabolizerCalc().gen_jid()
         self.run_type = run_type  # single or batch
 
@@ -42,16 +42,9 @@ class gentrans(object):
         self.pop_limit = pop_limit  # population limit
         self.likely_limit = likely_limit
 
-        # self.pchemprop_obj = pchemprop_obj # pchemprop object with inputs
-
-        # Known keys for metabolizer on pnnl server (11-5-14)
-        # metabolizerList = ["hydrolysis", "abiotic_reduction", "human_biotransformation"]
-        metabolizerList = ["hydrolysis", "abiotic_reduction"]
-
         reactionLibs = {
             "hydrolysis": self.abiotic_hydrolysis,
             "abiotic_reduction": self.abiotic_reduction,
-            # "human_biotransformation": self.mamm_metabolism
         }
 
         self.trans_libs = []
@@ -60,32 +53,16 @@ class gentrans(object):
                 self.trans_libs.append(key)
 
         # NOTE: populationLimit is hard-coded to 0 as it currently does nothing
-
         self.metabolizer_request_post = {
             'structure': self.smiles,
             'generationLimit': self.gen_limit,
             'populationLimit': 0,
-            # 'likelyLimit': self.likely_limit,
             'likelyLimit': 0.001,
-            # 'transformationLibraries': self.trans_libs,
-            'excludeCondition': ""  # 'generateImages': False
+            'excludeCondition': ""
         }
 
         if len(self.trans_libs) > 0:
             self.metabolizer_request_post.update({'transformationLibraries': self.trans_libs})
-
-        # if self.run_type != 'batch':
-        #     try:
-        #         # response = jchem_rest.getTransProducts(data_dict)
-        #         response = MetabolizerCalc().getTransProducts(data_dict)
-        #     except Exception as e:
-        #         logging.warning("error making data request: {}".format(e))
-        #         raise
-
-        #     self.results = MetabolizerCalc().recursive(response, int(self.gen_limit), 'single')
-
-        #     # Initializing here to fix ajax call script test_results being blank, triggering syntax error..
-        #     self.test_results = []
 
         self.run_data = {
             'title': "Transformation Products Output",

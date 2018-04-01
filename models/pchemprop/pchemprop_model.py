@@ -16,7 +16,7 @@ class PChemProp(object):
                  ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None, kow_ph=None, koc=None):
         
         self.run_type = run_type  # defaults to "single", "batch" coming soon...
-        # self.jid = cts_rest.gen_jid()  # get time of run
+        self.title = "Calculate Physicochemical Properties"
         self.jid = Calculator().gen_jid()
 
         # chemical structure
