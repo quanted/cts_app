@@ -11,6 +11,7 @@ from django.template import Context, Template
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from ..pchemprop import pchemprop_parameters
+from ..chem_info import get_chem_info
 
 
 def getdjtemplate():
@@ -38,19 +39,6 @@ def getInputTemplate():
     {% endfor %}
     """
     return input_template
-
-
-def getInputData(pchemprop_obj):
-    data = [
-        {'Entered chemical': pchemprop_obj.chem_struct},
-        {'Standardized SMILES': pchemprop_obj.smiles},
-        {'Initial SMILES': pchemprop_obj.orig_smiles},
-        {'IUPAC': pchemprop_obj.iupac},
-        {'Formula': pchemprop_obj.formula},
-        {'Mass': pchemprop_obj.mass},
-        {'Exact Mass': pchemprop_obj.exact_mass}
-    ]
-    return data
 
 
 def getReactPathSimData(gentrans_obj):
@@ -112,7 +100,7 @@ def table_inputs(gentrans_obj):
     <div class="out_">
     <table class="ctsTableStylin" id="inputsTable">
     """
-    html += inTmpl.render(Context(dict(data=getInputData(gentrans_obj), heading="Molecular Information")))
+    html += inTmpl.render(Context(dict(data=get_chem_info(gentrans_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getReactPathSimData(gentrans_obj), heading="Reaction Pathway Simulator")))
     html += """
     </table>

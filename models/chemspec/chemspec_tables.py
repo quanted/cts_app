@@ -13,6 +13,7 @@ from django.template import Context, Template, defaultfilters
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from ...cts_calcs.calculator import Calculator
+from ..chem_info import get_chem_info
 
 
 
@@ -47,20 +48,6 @@ def getInputTemplate():
     {% endfor %}
     """
     return input_template
-
-
-def getMolTblData(chemspec_obj):
-    data = [
-        {'Entered chemical': chemspec_obj.chem_struct},
-        {'Standardized SMILES': chemspec_obj.smiles},
-        {'Initial SMILES': chemspec_obj.orig_smiles},
-        {'IUPAC': chemspec_obj.name}, 
-        {'Formula': chemspec_obj.formula},
-        {'CAS #': chemspec_obj.cas}, 
-        {'Mass': chemspec_obj.mass},
-        {'Exact Mass': chemspec_obj.exactMass}
-    ]
-    return data
 
 
 def getIsoPtData(chemspec_obj):
@@ -183,7 +170,7 @@ def table_inputs(chemspec_obj):
     <div class="out_">
     <table class="ctsTableStylin" id="inputsTable">
     """
-    html += inTmpl.render(Context(dict(data=getMolTblData(chemspec_obj), heading="Molecular Information")))
+    html += inTmpl.render(Context(dict(data=get_chem_info(chemspec_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getPkaInputs(chemspec_obj), heading="Ionization Parameters")))
     html += inTmpl.render(Context(dict(data=getTautData(chemspec_obj), heading="Tautomer Parameters")))
     html += inTmpl.render(Context(dict(data=getStereoData(chemspec_obj), heading="Stereoisomer Parameters")))
