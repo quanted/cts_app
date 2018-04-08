@@ -32,7 +32,7 @@ class CSV(object):
 		self.molecular_info = ['smiles', 'iupac', 'formula', 'mass', 'exactMass']  # original user sructure
 
 
-	def insert_rows(self, rows, header_index, chem_data):
+	def insert_rows(self, rows, header_index, chem_data, spec_prop):
 		for i in range(0, len(rows)):
 			if rows[i][0] == chem_data['node']['smiles']:
 				rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
@@ -153,7 +153,7 @@ class CSV(object):
 							if not spec_prop in headers:
 								headers.append(spec_prop)
 							header_index = headers.index(spec_prop)
-							self.insert_rows(rows, header_index, chem_data)
+							self.insert_rows(rows, header_index, chem_data, spec_prop)
 							# for i in range(0, len(rows)):
 							# 	if rows[i][0] == chem_data['node']['smiles']:
 							# 		rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
@@ -166,7 +166,7 @@ class CSV(object):
 								if not header in headers:
 									headers.append(header)
 								header_index = headers.index(header)
-								self.insert_rows(rows, header_index, chem_data)
+								self.insert_rows(rows, header_index, chem_data, spec_prop)
 								# for i in range(0, len(rows)):
 								# 	if rows[i][0] == chem_data['node']['smiles']:
 								# 		rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])

@@ -2,7 +2,7 @@ import importlib
 import datetime
 import os
 import logging
-
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.views.decorators.csrf import requires_csrf_token
@@ -40,7 +40,14 @@ def batchInputPage(request, model='none', header='none'):
     html += render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
     inputPageFunc = getattr(inputmodule, model+'BatchInputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
     html = html + inputPageFunc(request, model, header)
-    html = html + render_to_string('04cts_uberbatchinput_jquery.html', {'model':model, 'header':header})
+
+    html = html + render_to_string('04cts_uberbatchinput_jquery.html',
+        {
+            'model':model,
+            'header':header,
+            'nodejsHost': settings.NODEJS_HOST,
+            'nodejsPort': settings.NODEJS_PORT
+        })
 
 
     html += render_to_string('07ubertext_end_drupal.html', {})
