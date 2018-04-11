@@ -8,6 +8,8 @@ import logging
 from cts_app.cts_calcs.calculator_metabolizer import MetabolizerCalc
 from cts_app.models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
 from django.core.cache import cache
+# import os
+from django.conf import settings
 
 
 
@@ -154,6 +156,19 @@ def csvReceiver(request, model=''):
 
     csv_obj = CSV(model)
     return csv_obj.parseToCSV(run_data)
+
+
+def textReceiver(request, model=''):
+    """
+    Download text file.
+    """
+    static_path = "{}/static_qed/cts/docs/sample_batch.txt".format(settings.PROJECT_ROOT.replace('\\', '/'))
+    filein = open(static_path, 'rb')
+    sample_batch_text = filein.read().decode('utf-16')
+    filein.close()
+    response = HttpResponse(sample_batch_text, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=sample_batch.txt'
+    return response
 
 
 def handle_gentrans_request(pdf_json):
