@@ -10,10 +10,10 @@ n = 2  # number of decimal places to round values
 
 
 class PChemProp(object):
-    def __init__(self, run_type, chem_struct=None, smiles=None, name=None, formula=None, mass=None,
-                 chemaxon=None, epi=None, test=None, sparc=None, measured=None, melting_point=None,
+    def __init__(self, run_type, chem_struct=None, smiles=None, name=None, formula=None, exactMass=None, mass=None,
+                 cas=None, chemaxon=None, epi=None, test=None, sparc=None, measured=None, melting_point=None,
                  boiling_point=None, water_sol=None, water_sol_ph=None, vapor_press=None, mol_diss=None,
-                 ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None, kow_ph=None, koc=None):
+                 ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None, kow_ph=None, koc=None, log_bcf=None, log_baf=None):
         
         self.run_type = run_type  # defaults to "single", "batch" coming soon...
         self.title = "Calculate Physicochemical Properties"
@@ -25,7 +25,9 @@ class PChemProp(object):
         self.name = name
         self.formula = formula
         # make sure to include units when assigning mass - 'g/mol'
+        self.exactMass = "{} g/mol".format(exactMass)
         self.mass = "{} g/mol".format(mass)
+        self.cas = cas
 
         # chemical properties (values 'on' or None) -- django params
         self.melting_point = melting_point
@@ -40,6 +42,8 @@ class PChemProp(object):
         self.kow_wph = kow_wph
         self.kow_ph = kow_ph
         self.koc = koc
+        self.log_bcf = log_bcf
+        self.log_baf = log_baf
 
         self.chemaxon = chemaxon
         self.sparc = sparc
@@ -63,7 +67,9 @@ class PChemProp(object):
             "kow_no_ph": self.kow_no_ph,
             "kow_wph": self.kow_wph,
             "kow_ph": self.kow_ph,
-            "koc": self.koc
+            "koc": self.koc,
+            "log_bcf": self.log_bcf,
+            "log_baf": self.log_baf
         }
         # calculator checkboxes' values:
         self.calcluatorsDict = {
@@ -88,7 +94,9 @@ class PChemProp(object):
             "kow_no_ph": self.kow_no_ph,
             "kow_wph": self.kow_wph,
             "kow_ph": self.kow_ph,
-            "koc": self.koc
+            "koc": self.koc,
+            "log_bcf": self.log_bcf,
+            "log_baf": self.log_baf
         }
 
         # calculator checkboxes' values:
@@ -130,5 +138,5 @@ class PChemProp(object):
             'name': self.name,
             'formula': self.formula,
             'mass': self.mass,
-            'exactMass': self.exact_mass
+            'exactMass': self.exactMass
         }

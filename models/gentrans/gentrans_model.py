@@ -16,7 +16,7 @@ from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 
 class gentrans(object):
     def __init__(self, run_type, chem_struct, smiles, orig_smiles, iupac, formula, mass,
-                 exact_mass, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
+                 exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
                  gen_limit, pop_limit, likely_limit):
 
         self.title = "Generate Transformation Products"
@@ -30,7 +30,8 @@ class gentrans(object):
         self.iupac = iupac
         self.formula = formula
         self.mass = '{} g/mol'.format(mass)
-        self.exact_mass = '{} g/mol'.format(exact_mass)
+        self.exactMass = '{} g/mol'.format(exactMass)
+        self.cas = cas
 
         # Reaction Libraries
         self.abiotic_hydrolysis = abiotic_hydrolysis  # values: on or None

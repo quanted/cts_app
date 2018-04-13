@@ -22,7 +22,8 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.formula = request.POST.get('formula')
     pchemprop_obj.mass = request.POST.get('mass')
     pchemprop_obj.orig_smiles = request.POST.get('orig_smiles')
-    pchemprop_obj.exact_mass = request.POST.get('exactmass')
+    pchemprop_obj.exactMass = request.POST.get('exactmass')
+    pchemprop_obj.cas = request.POST.get('cas')
 
     # Pchem Properties Column Checkboxes
     pchemprop_obj.chemaxon = request.POST.get('chemaxon')
@@ -45,7 +46,8 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.kow_wph = request.POST.get('kow_wph')
     pchemprop_obj.kow_ph = request.POST.get('kow_ph')
     pchemprop_obj.koc = request.POST.get('koc')
-
+    pchemprop_obj.log_bcf = request.POST.get('log_bcf')
+    pchemprop_obj.log_baf = request.POST.get('log_baf')
     pchemprop_obj.fillCalcsandPropsDict()
 
     # dataDict = {}

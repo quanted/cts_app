@@ -16,6 +16,7 @@ def gentransOutputPage(request):
     mass = request.POST.get('mass')
     orig_smiles = request.POST.get('orig_smiles')
     exact_mass = request.POST.get('exactmass')
+    cas = request.POST.get('cas')
     
     # Reaction Pathway Simulator tab fields
     abioticHydrolysis = request.POST.get('abiotic_hydrolysis')
