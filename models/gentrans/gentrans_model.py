@@ -15,7 +15,7 @@ from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 
 
 class gentrans(object):
-    def __init__(self, run_type, chem_struct, smiles, orig_smiles, iupac, formula, mass,
+    def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
                  exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
                  gen_limit, pop_limit, likely_limit):
 
@@ -27,7 +27,9 @@ class gentrans(object):
         self.chem_struct = chem_struct  # chemical structure
         self.smiles = smiles
         self.orig_smiles = orig_smiles
-        self.iupac = iupac
+        # self.iupac = iupac
+        self.name = name
+
         self.formula = formula
         self.mass = '{} g/mol'.format(mass)
         self.exactMass = '{} g/mol'.format(exactMass)
@@ -71,7 +73,7 @@ class gentrans(object):
             'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
             'chem_struct': self.chem_struct,
             'smiles': self.smiles,
-            'iupac': self.iupac,
+            'name': self.name,
             'formula': self.formula,
             'mass': self.mass
         }

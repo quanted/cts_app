@@ -159,7 +159,7 @@ def table_metabolites(gentrans_obj):
 									'workflow': 'gentrans',
 									'nodejs_host': settings.NODEJS_HOST,
                                     'nodejs_port': settings.NODEJS_PORT,
-                                    "iupac": mark_safe(gentrans_obj.iupac),
+                                    "name": mark_safe(gentrans_obj.name),
                                     "mass": gentrans_obj.mass,
                                     "formula": gentrans_obj.formula,
                                     'service': "getTransProducts",
@@ -189,7 +189,7 @@ def build_pchem_table():
     pchemHTML += str(pchemprop_parameters.form(None))  # recycling!
 
     # html = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
-    html += render_to_string('cts_gentrans_metabolites_nav.html', {'pchemHtml': pchemHTML})
+    html = render_to_string('cts_gentrans_metabolites_nav.html', {'pchemHtml': pchemHTML})
 
     return html
 
