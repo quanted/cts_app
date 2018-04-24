@@ -145,7 +145,6 @@ def csvReceiver(request, model=''):
     from django.conf import settings
 
     settings.DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB => 10485760 bytes (IEC units)
-    logging.warning("DJANGO MAX UPLOAD MEM: {}".format(settings.DATA_UPLOAD_MAX_MEMORY_SIZE))
 
     try:
         request_data = request.POST.get('run_data')
@@ -178,8 +177,8 @@ def handle_gentrans_request(pdf_json):
     checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
     products = pdf_json['nodes']
     props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press',
-            'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph',
-            'kow_wph', 'koc', 'water_sol_ph']
+            'mol_diss', 'mol_diss_air', 'ion_con', 'henrys_law_con', 'kow_no_ph',
+            'kow_wph', 'koc', 'water_sol_ph', 'log_bcf', 'log_baf']
 
     for product in products:
         # product_image = data_walks.nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
@@ -214,17 +213,6 @@ def handle_gentrans_request(pdf_json):
                                         'method': data_obj['method'],
                                         'data': round(data_obj['data'], 2)
                                     })
-                            # elif prop == 'kow_wph' and calc == 'chemaxon':
-                            #     # expecting same calc/prop with 3 methods..
-                            #     already_there = False
-                            #     for item in kow_no_ph_list:
-                            #         if data_obj['method'] == item['method']:
-                            #             already_there = True
-                            #     if not already_there:
-                            #         kow_wph_list.append({
-                            #             'method': data_obj['method'],
-                            #             'data': round(data_obj['data'], 2)
-                            #         })
                             elif prop == 'ion_con':
                                 pka_string = ""
                                 pka_index = 1

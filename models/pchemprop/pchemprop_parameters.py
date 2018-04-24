@@ -13,27 +13,27 @@ from parsley.decorators import parsleyfy
 # that folder entirely.
 # TODO: Consider using calculators' props attribute in pchempropAvailable() below
 ####################################################################################
-props_list = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 
-				'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc', 'water_sol_ph', 'log_bcf', 'log_baf']
+props_list = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 'ion_con',
+			'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc', 'water_sol_ph', 'log_bcf', 'log_baf', 'mol_diss_air']
 
 # List of each provider's available properties (see props list):
 chemaxon_props = ['ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available', 
-					'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
+					'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 
 # NOTE: temporarily setting koc for epi to unavailable
 epi_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available']
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable']
 
 # NOTE: temporarily setting kow_no_ph for test to unavailable
 test_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
- 				'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
+ 				'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 
 sparc_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available']
 
 # NOTE: Measured data is from EPI measured values
 measured_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 ####################################################################################
 
 

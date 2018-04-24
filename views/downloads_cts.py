@@ -22,7 +22,7 @@ class CSV(object):
 	def __init__(self, model):
 		self.models = ['chemspec', 'pchemprop', 'gentrans']
 		self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
-		self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss',
+		self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 'mol_diss_air',
 					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc', 'water_sol_ph', 'log_bcf', 'log_baf']
 		self.speciation_props = ['isoelectricPoint', 'pka', 'pkb', 'majorMicrospecies', 'pka_microspecies']
 		if model and (model in self.models):
@@ -337,9 +337,10 @@ def getCalcMapKeys(calc):
 
 def roundData(prop, datum):
 	try:
-		logging.warning("rounding {}".format(datum))
-
-		if prop == 'water_sol' or prop == 'vapor_press' or prop == 'mol_diss' or prop == 'henrys_law_con' or prop == 'water_sol_ph':
+		round_list = ['water_sol', 'vapor_press', 'mol_diss', 'mol_diss_air', 
+						'henrys_law_con', 'water_sol_ph']
+						
+		if prop in round_list:
 			rounded_datum = "{:.2E}".format(datum)
 			return rounded_datum
 		else:

@@ -12,7 +12,7 @@ n = 2  # number of decimal places to round values
 class PChemProp(object):
     def __init__(self, run_type, chem_struct=None, smiles=None, name=None, formula=None, exactMass=None, mass=None,
                  cas=None, chemaxon=None, epi=None, test=None, sparc=None, measured=None, melting_point=None,
-                 boiling_point=None, water_sol=None, water_sol_ph=None, vapor_press=None, mol_diss=None,
+                 boiling_point=None, water_sol=None, water_sol_ph=None, vapor_press=None, mol_diss=None, mol_diss_air=None,
                  ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None, kow_ph=None, koc=None, log_bcf=None, log_baf=None):
         
         self.run_type = run_type  # defaults to "single", "batch" coming soon...
@@ -36,6 +36,7 @@ class PChemProp(object):
         self.water_sol_ph = water_sol_ph
         self.vapor_press = vapor_press
         self.mol_diss = mol_diss
+        self.mol_diss_air = mol_diss_air
         self.ion_con = ion_con
         self.henrys_law_con = henrys_law_con
         self.kow_no_ph = kow_no_ph
@@ -62,6 +63,7 @@ class PChemProp(object):
             "water_sol_ph": self.water_sol_ph,
             "vapor_press": self.vapor_press,
             "mol_diss": self.mol_diss,
+            "mol_diss_air": self.mol_diss_air,
             "ion_con": self.ion_con,
             "henrys_law_con": self.henrys_law_con,
             "kow_no_ph": self.kow_no_ph,
@@ -89,6 +91,7 @@ class PChemProp(object):
             "water_sol_ph": self.water_sol_ph,
             "vapor_press": self.vapor_press,
             "mol_diss": self.mol_diss,
+            "mol_diss_air": self.mol_diss_air,
             "ion_con": self.ion_con,
             "henrys_law_con": self.henrys_law_con,
             "kow_no_ph": self.kow_no_ph,
@@ -109,8 +112,8 @@ class PChemProp(object):
         }
 
 
-        # self.parent_image = data_walks.nodeWrapper(self.smiles, None, 250, 50, 'pchem_parent_wrap', 'svg', None)
-        self.parent_image = Calculator().nodeWrapper(self.smiles, None, 250, 50, 'pchem_parent_wrap', 'svg', None)
+        if self.smiles and instance(self.smiles, str):
+            self.parent_image = Calculator().nodeWrapper(self.smiles, None, 250, 50, 'pchem_parent_wrap', 'svg', None)
 
 
         # dict with keys of checked calculators and values of
