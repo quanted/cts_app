@@ -22,15 +22,21 @@ class CSV(object):
 	def __init__(self, model):
 		self.models = ['chemspec', 'pchemprop', 'gentrans']
 		self.calcs = ['chemaxon', 'epi', 'test', 'sparc']
-		self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss',
-					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc', 'water_sol_ph']
+		self.props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 'mol_diss_air',
+					  'ion_con', 'henrys_law_con', 'kow_no_ph', 'kow_wph', 'kow_ph', 'koc', 'water_sol_ph', 'log_bcf', 'log_baf']
 		self.speciation_props = ['isoelectricPoint', 'pka', 'pkb', 'majorMicrospecies', 'pka_microspecies']
 		if model and (model in self.models):
 			self.model = model  # model name
 		else:
 			raise KeyError("Model - {} - not accepted..".format(model))
-		# self.molecular_info = ['smiles', 'iupac', 'formula', 'mass']  # original user sructure
 		self.molecular_info = ['smiles', 'iupac', 'formula', 'mass', 'exactMass']  # original user sructure
+
+
+	def insert_rows(self, rows, header_index, chem_data, spec_prop):
+		for i in range(0, len(rows)):
+			if rows[i][0] == chem_data['node']['smiles']:
+				rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
+
 
 	def parseToCSV(self, run_data):
 
@@ -47,14 +53,7 @@ class CSV(object):
 			
 		response['Content-Disposition'] = content_disposition
 
-		# writer = csv.writer(response)  # bind writer to http response
-
-		# # build title section of csv..
-		# writer.writerow([run_data['run_data']['title']])
-		# writer.writerow([run_data['run_data']['time']])
-		# writer.writerow([""])
-
-		logging.warning("Beginning CSV parsing..")
+		logging.info("Beginning CSV parsing..")
 
 		rows = []
 		headers = []
@@ -154,9 +153,10 @@ class CSV(object):
 							if not spec_prop in headers:
 								headers.append(spec_prop)
 							header_index = headers.index(spec_prop)
-							for i in range(0, len(rows)):
-								if rows[i][0] == chem_data['node']['smiles']:
-									rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
+							self.insert_rows(rows, header_index, chem_data, spec_prop)
+							# for i in range(0, len(rows)):
+							# 	if rows[i][0] == chem_data['node']['smiles']:
+							# 		rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
 
 						elif spec_prop == 'pka-micospecies':
 							j = 1
@@ -166,11 +166,10 @@ class CSV(object):
 								if not header in headers:
 									headers.append(header)
 								header_index = headers.index(header)
-								for i in range(0, len(rows)):
-									if rows[i][0] == chem_data['node']['smiles']:
-										rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
-						# i += 1					
-
+								self.insert_rows(rows, header_index, chem_data, spec_prop)
+								# for i in range(0, len(rows)):
+								# 	if rows[i][0] == chem_data['node']['smiles']:
+								# 		rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
 			else:
 				run_data = run_data['run_data']
 				for key, val in run_data.items():
@@ -208,27 +207,30 @@ class CSV(object):
 			else:
 				for prop in self.props:
 					for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-						if prop in calc_props:
-							if prop == "ion_con":
-								for pka_key, pka_val in calc_props[prop].items():
-									if pka_val and pka_val != 'none':
-										# pka_num = str(int(pka_key[-1:]) + 1)
-										pka_num = str(int(pka_key[-1:]))
-										new_pka_key = pka_key[:-1] + "_" + pka_num
-										headers.append("{} ({})".format(new_pka_key, calc))
-										rows[0].append(roundData(prop, pka_val))
-							elif calc == 'chemaxon' and prop == 'kow_no_ph' or calc == 'chemaxon' and prop == 'kow_wph':
-								# e.g., "-1.102 (KLOP)<br>-1.522 (VG)<br>-1.344 (PHYS)<br>"
-								method_data = calc_props[prop].split('<br>')
-								method_data.remove('')  # remove trailing '' list item
-								for method_datum in method_data:
-									value = method_datum.split()[0]  # value, method
-									method = method_datum.split()[1]
-									headers.append("{} ({}, {})".format(prop, calc, method))
-									rows[0].append(roundData(prop, value))
-							else:
-								headers.append("{} ({})".format(prop, calc))
-								rows[0].append(roundData(prop, calc_props[prop]))
+						# if prop in calc_props:
+						if not prop in calc_props:
+							continue
+
+						if prop == "ion_con":
+							for pka_key, pka_val in calc_props[prop].items():
+								if pka_val and pka_val != 'none':
+									pka_num = str(int(pka_key[-1:]))
+									new_pka_key = pka_key[:-1] + "_" + pka_num
+									headers.append("{} ({})".format(new_pka_key, calc))
+									rows[0].append(roundData(prop, pka_val))
+						# elif calc == 'chemaxon' and prop == 'kow_no_ph' or calc == 'chemaxon' and prop == 'kow_wph':
+						elif '<br>' in calc_props.get(prop, ''):
+							# calc-prop value has methods, e.g., "-1.102 (KLOP)<br>-1.522 (VG)<br>-1.344 (PHYS)<br>"
+							method_data = calc_props[prop].split('<br>')
+							method_data.remove('')  # remove trailing '' list item
+							for method_datum in method_data:
+								value = method_datum.split()[0]  # value, method
+								method = method_datum.split()[1]
+								headers.append("{} ({}, {})".format(prop, calc, method))
+								rows[0].append(roundData(prop, value))
+						else:
+							headers.append("{} ({})".format(prop, calc))
+							rows[0].append(roundData(prop, calc_props[prop]))
 
 
 		elif self.model == 'gentrans':
@@ -241,54 +243,33 @@ class CSV(object):
 			if not metabolites_data:
 				return HttpResponse("error building csv for metabolites..")
 
-			# headers.insert(0, 'routes')
 			headers.insert(0, 'genKey') # insert generation headers first
-			headers.insert(1, 'routes')  # transformation pathway
-			
+			headers.insert(1, 'routes')  # transformation pathway			
 
 			if 'batch_data' in run_data:
 
 				parent_index = 0
 				products_index = 0
-
 				all_chems_data = []  # single-level list of chem objects
 
 				for batch_chem_products in metabolites_data:
 					# metabolites_data --> list of batch_chems arrays, which are a list
 					# of each batch_chem's products/metabolits..
 
-					# products_index = 0
 					for product in batch_chem_products:
 						genkey_index = headers.index('genKey')
 						routes_index = headers.index('routes')
 
-						# make new gen key to keep track of parents
-						# e.g., batch chem 2 parent + children --> 2, 2.1, 2.2, ...
-						# parent_genkey = int(product['genKey'][:1])  # first value of genKey
-						# remaining_genkey = product['genKey'][1:]
-						# new_genkey = str(parent_genkey + parent_index) + remaining_genkey
-
 						# Increment parent genKey for batch (e.g., 2nd chemical in batch input file genkeys: 2, 2.1, 2.1.2, ...)
 						full_genkey = product['genKey'].split(' ')  # split key by space (e.g., 'molecule 1' --> ['molecule', '1'])
-
 						parent_key = int(full_genkey[1][:1])  # just the parent bit of the genkey
 						remaining_genkey = full_genkey[1][1:]  # the rest of the genkey number
-
 						new_genkey = "{} {}{}".format(full_genkey[0], parent_key + parent_index, remaining_genkey)
-
 						product['genKey'] = new_genkey
 						rows[products_index].insert(genkey_index, new_genkey)
-
 						rows[products_index].insert(routes_index, product['routes'])  # insert trans pathway into rows
-
 						all_chems_data.append(product)
-
 						products_index += 1
-
-					
-
-					# hopefully works, building rows one bach_chem + products at a time:
-					# pchempropsForMetabolites(headers, rows, self.props, run_data, batch_chem_products)
 
 					parent_index += 1
 
@@ -309,27 +290,9 @@ class CSV(object):
 				pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data)
 
 				
-		# # might have to add code to keep row order..
-		# # writer.writerow(rows['headers'])
-		# writer.writerow(headers)
-
-		# if self.model == 'gentrans':
-		# 	for row in rows:
-		# 		writer.writerow(row)
-
-		# else:
-		# 	for row in rows:
-		# 		encoded_row_data = []
-		# 		for datum in row:
-		# 			if isinstance(datum, unicode): datum = datum.encode('utf8')
-		# 			encoded_row_data.append(datum)
-		# 		writer.writerow(encoded_row_data)
-
-
 		# check for encoding issues that are laid out in the commented
-		# out conditional above..qQ.
+		# out conditional above.
 		return some_streaming_csv_view(headers, rows, run_data, content_disposition)
-		# return response
 
 
 class Echo(object):
@@ -356,9 +319,6 @@ def some_streaming_csv_view(headers, rows, run_data, content_disposition):
 	response['Content-Disposition'] = content_disposition
 	return response
 
-# return some_streaming_csv_view(request)
-
-
 def getCalcMapKeys(calc):
 	"""
 	returns prop map of requested calculator
@@ -377,9 +337,10 @@ def getCalcMapKeys(calc):
 
 def roundData(prop, datum):
 	try:
-		logging.warning("rounding {}".format(datum))
-
-		if prop == 'water_sol' or prop == 'vapor_press' or prop == 'mol_diss' or prop == 'henrys_law_con' or prop == 'water_sol_ph':
+		round_list = ['water_sol', 'vapor_press', 'mol_diss', 'mol_diss_air', 
+						'henrys_law_con', 'water_sol_ph']
+						
+		if prop in round_list:
 			rounded_datum = "{:.2E}".format(datum)
 			return rounded_datum
 		else:
@@ -439,7 +400,8 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 							else:
 								chem_smiles = rows[i][0]
 
-							if chem_smiles == chem_data['node']['smiles'] and chem_data['data'] not in rows[i]:
+							# if chem_smiles == chem_data['node']['smiles'] and chem_data['data'] not in rows[i]:
+							if chem_smiles == chem_data['node']['smiles']:
 								# temporary error handling...
 								if 'error' in chem_data:
 									rows[i].insert(header_index, chem_data['data'])
@@ -455,72 +417,67 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 	gentrans workflow.
 	TODO: Refactor to only one pchemprop function for any and all workflows
 	"""
-	# for chem_data in metabolites_data:
-	# for prop in self.props:
+
+	if not run_data['checkedCalcsAndProps']:
+			return False
+
 	for prop in props:
-		if run_data['checkedCalcsAndProps']:
-			for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-				if prop in calc_props:
-					for chem_data in metabolites_data:
-						if 'pchemprops' in chem_data:
-							for pchem in chem_data['pchemprops']:
+		for calc, calc_props in run_data['checkedCalcsAndProps'].items():
+			
+			if not prop in calc_props:
+				continue  # move on to next iteration..
 
-								if pchem['prop'] == prop and pchem['calc'] == calc:
+			for chem_data in metabolites_data:
 
-									if pchem['prop'] == "ion_con":
-									# if calc == 'chemaxon' and prop == 'ion_con':
-									# if prop == 'ion_con':
+				if not 'pchemprops' in chem_data:
+					continue  # move on to next iteration..
 
-										j = 1
-										# for pka in pchem['data']['pKa']:
-										if not pchem.get('data'):
-											pchem['data'] = {'pKa': []}
-										for pka in pchem['data'].get('pKa', []):
-											header = "pka_{} ({})".format(j, calc)
-											j += 1
-											if not header in headers:
-												headers.append(header)
-												for i in range(0, len(rows)):
-													rows[i].append("")
-											header_index = headers.index(header)
-											for i in range(0, len(rows)):
-												if rows[i][2] == chem_data['smiles']:
-													# rows[i].insert(header_index, roundData(prop, pka))
-													rows[i][header_index] = roundData(prop, pka)
-												# else:
-												# 	rows[i].insert(header_index, '')
+				for pchem in chem_data['pchemprops']:
 
-									else:
+					# if pchem['prop'] == prop and pchem['calc'] == calc:
+					if pchem.get('prop') != prop or pchem.get('calc') != calc:
+						continue  # move on to next iteration..
 
-										if pchem.get('method', False):
-											header = "{} ({}, {})".format(prop, calc, pchem['method'])
-										else:
-											header = "{} ({})".format(prop, calc)
+					if pchem['prop'] == "ion_con":
+						j = 1
+						if not pchem.get('data'):
+							pchem['data'] = {'pKa': []}
+						for pka in pchem['data'].get('pKa', []):
+							header = "pka_{} ({})".format(j, calc)
+							j += 1
+							if not header in headers:
+								headers.append(header)
+								for i in range(0, len(rows)):
+									rows[i].append("")
+							header_index = headers.index(header)
+							for i in range(0, len(rows)):
+								if rows[i][2] == chem_data['smiles']:
+									rows[i][header_index] = roundData(prop, pka)
 
-										if not header in headers:
-											headers.append(header)
+					else:
 
-										header_index = headers.index(header)
+						if pchem.get('method', False):
+							header = "{} ({}, {})".format(prop, calc, pchem['method'])
+						else:
+							header = "{} ({})".format(prop, calc)
 
+						if not header in headers:
+							headers.append(header)
 
-										for i in range(0, len(rows)):
+						header_index = headers.index(header)
 
-											if run_data['workflow'] == 'gentrans':
-												chem_smiles = rows[i][2]  # smiles after genKey column
-											else:
-												chem_smiles = rows[i][0]
+						for i in range(0, len(rows)):
 
-											# if chem_smiles == chem_data['smiles'] and pchem['data'] not in rows[i]:
-												# temporary error handling...
+							if run_data['workflow'] == 'gentrans':
+								chem_smiles = rows[i][2]  # smiles after genKey column
+							else:
+								chem_smiles = rows[i][0]
 
-											if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
+							# if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
+							if chem_smiles != chem_data.get('smiles') or pchem.get('prop') != prop:
+								continue  # move on to next iteration..
 
-												if 'error' in chem_data or 'error' in pchem:
-													# rows[i].insert(header_index, chem_data['data'])
-													rows[i].insert(header_index, roundData(prop, pchem['data']))
-												# elif 'method' in pchem:
-												# 	# rows[i].insert(header_index, roundData(chem_data['data']))
-												# 	rows[i].insert(header_index, roundData(prop, pchem['data']))
-												else:
-													# rows[i].insert(header_index, roundData(chem_data['data']))
-													rows[i].insert(header_index, roundData(prop, pchem['data']))
+							if 'error' in chem_data or 'error' in pchem:
+								rows[i].insert(header_index, roundData(prop, pchem['data']))
+							else:
+								rows[i].insert(header_index, roundData(prop, pchem['data']))

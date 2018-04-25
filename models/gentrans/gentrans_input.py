@@ -1,6 +1,3 @@
-"""
-yeah (np)
-"""
 import django
 from django import forms
 from django.template.loader import render_to_string
@@ -28,14 +25,5 @@ def gentransInputPage(request, model='', header='Generate Transformation Pathway
     html = html + render_to_string('cts.html', {}) # Builds Marvin JS, lookup table, and results table
     html = html + str(gentrans_parameters.form(formData))
     html = html + render_to_string('04cts_uberinput_tabbed_end.html', {'sub_title': 'Submit'})
-
-    # Check if tooltips dictionary exists
-    # try:
-    #     import gentrans_tooltips
-    #     hasattr(gentrans_tooltips, 'tooltips')
-    #     tooltips = gentrans_tooltips.tooltips
-    # except:
-    #     tooltips = {}
-    # html = html + render_to_string('05cts_ubertext_tooltips_right.html', {'tooltips':tooltips})
 
     return html

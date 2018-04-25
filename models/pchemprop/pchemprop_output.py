@@ -22,7 +22,8 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.formula = request.POST.get('formula')
     pchemprop_obj.mass = request.POST.get('mass')
     pchemprop_obj.orig_smiles = request.POST.get('orig_smiles')
-    pchemprop_obj.exact_mass = request.POST.get('exactmass')
+    pchemprop_obj.exactMass = request.POST.get('exactmass')
+    pchemprop_obj.cas = request.POST.get('cas')
 
     # Pchem Properties Column Checkboxes
     pchemprop_obj.chemaxon = request.POST.get('chemaxon')
@@ -39,26 +40,16 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.water_sol_ph = request.POST.get('water_sol_ph')
     pchemprop_obj.vapor_press = request.POST.get('vapor_press')
     pchemprop_obj.mol_diss = request.POST.get('mol_diss')
+    pchemprop_obj.mol_diss_air = request.POST.get('mol_diss_air')
     pchemprop_obj.ion_con = request.POST.get('ion_con')
     pchemprop_obj.henrys_law_con = request.POST.get('henrys_law_con')
     pchemprop_obj.kow_no_ph = request.POST.get('kow_no_ph')
     pchemprop_obj.kow_wph = request.POST.get('kow_wph')
     pchemprop_obj.kow_ph = request.POST.get('kow_ph')
     pchemprop_obj.koc = request.POST.get('koc')
+    pchemprop_obj.log_bcf = request.POST.get('log_bcf')
+    pchemprop_obj.log_baf = request.POST.get('log_baf')
 
     pchemprop_obj.fillCalcsandPropsDict()
 
-    # dataDict = {}
-    # for key, value in request.POST.items():
-    #     logging.info("{}: {}".format(key, value))
-
-    #pchemprop_obj = pchemprop_model.PChemProp("single", chemStruct, smiles, name, formula,
-    #                    mass, chemaxon, epi, test, sparc, measured, meltingPoint, boilingPoint,
-    #                    waterSol, vaporPress, molDiss, ionCon, henrysLawCon, kowNoPh, kowWph,
-    #                    kowPh, koc)
-
-    # pchemprop_obj = pchemprop_model.pchemprop(None)
-
     return pchemprop_obj
-
-

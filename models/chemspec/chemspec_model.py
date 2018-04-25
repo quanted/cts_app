@@ -20,8 +20,8 @@ class chemspec(object):
 				 isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
 
+		self.title = "Calculate Chemical Speciation"
 		self.jid = JchemCalc().gen_jid()  # timestamp
-
 		self.run_type = run_type
 
 		# Chemical Editor Tab

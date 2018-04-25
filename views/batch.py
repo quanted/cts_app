@@ -2,7 +2,7 @@ import importlib
 import datetime
 import os
 import logging
-
+from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.views.decorators.csrf import requires_csrf_token
@@ -40,7 +40,14 @@ def batchInputPage(request, model='none', header='none'):
     html += render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
     inputPageFunc = getattr(inputmodule, model+'BatchInputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
     html = html + inputPageFunc(request, model, header)
-    html = html + render_to_string('04cts_uberbatchinput_jquery.html', {'model':model, 'header':header})
+
+    html = html + render_to_string('04cts_uberbatchinput_jquery.html',
+        {
+            'model':model,
+            'header':header,
+            'nodejsHost': settings.NODEJS_HOST,
+            'nodejsPort': settings.NODEJS_PORT
+        })
 
 
     html += render_to_string('07ubertext_end_drupal.html', {})
@@ -54,25 +61,6 @@ def batchInputPage(request, model='none', header='none'):
     #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
     html += render_to_string('10epa_drupal_footer.html', {})
 
-
-    # html = render_to_string('01cts_uberheader.html', {'title': header+' Batch'})
-    # html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'batchinput'})
-    # html = html + linksLeft.linksLeft()
-    # html = html + render_to_string('04cts_uberbatchinput.html', {
-    #         'model': model,
-    #         'model_attributes': header+' Batch Run'})
-
-    # html += render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
-
-
-    # inputPageFunc = getattr(inputmodule, model+'BatchInputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
-    # html = html + inputPageFunc(request, model, header)
-
-
-    # html = html + render_to_string('04cts_uberbatchinput_jquery.html', {'model':model, 'header':header})
-    
-    # # html = html + render_to_string('05cts_ubertext_links_right.html', {})
-    # html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
 
     response = HttpResponse()
     response.write(html)
