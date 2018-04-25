@@ -11,6 +11,7 @@ from django.template import Context, Template
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from ..pchemprop import pchemprop_parameters
+from ..chem_info import get_chem_info
 
 
 def getdjtemplate():
@@ -38,19 +39,6 @@ def getInputTemplate():
     {% endfor %}
     """
     return input_template
-
-
-def getInputData(pchemprop_obj):
-    data = [
-        {'Entered chemical': pchemprop_obj.chem_struct},
-        {'Standardized SMILES': pchemprop_obj.smiles},
-        {'Initial SMILES': pchemprop_obj.orig_smiles},
-        {'IUPAC': pchemprop_obj.iupac},
-        {'Formula': pchemprop_obj.formula},
-        {'Mass': pchemprop_obj.mass},
-        {'Exact Mass': pchemprop_obj.exact_mass}
-    ]
-    return data
 
 
 def getReactPathSimData(gentrans_obj):
@@ -112,29 +100,13 @@ def table_inputs(gentrans_obj):
     <div class="out_">
     <table class="ctsTableStylin" id="inputsTable">
     """
-    html += inTmpl.render(Context(dict(data=getInputData(gentrans_obj), heading="Molecular Information")))
+    html += inTmpl.render(Context(dict(data=get_chem_info(gentrans_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getReactPathSimData(gentrans_obj), heading="Reaction Pathway Simulator")))
     html += """
     </table>
     </div>
     <br>
     """
-    return html
-
-
-def timestamp(gentrans_obj="", batch_jid=""):
-    if gentrans_obj:
-        st = datetime.datetime.strptime(gentrans_obj.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
-    else:
-        st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
-    html="""
-    <div class="out_" id="timestamp">
-        <b>Generate Transformation Pathways<br>
-    """
-    html = html + st
-    html = html + " (EST)</b>"
-    html = html + """
-    </div>"""
     return html
 
 
@@ -187,7 +159,7 @@ def table_metabolites(gentrans_obj):
 									'workflow': 'gentrans',
 									'nodejs_host': settings.NODEJS_HOST,
                                     'nodejs_port': settings.NODEJS_PORT,
-                                    "iupac": mark_safe(gentrans_obj.iupac),
+                                    "name": mark_safe(gentrans_obj.name),
                                     "mass": gentrans_obj.mass,
                                     "formula": gentrans_obj.formula,
                                     'service': "getTransProducts",
@@ -216,8 +188,8 @@ def build_pchem_table():
     pchemHTML = render_to_string('cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))  # recycling!
 
-    html = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
-    html += render_to_string('cts_gentrans_metabolites_nav.html', {'pchemHtml': pchemHTML})
+    # html = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
+    html = render_to_string('cts_gentrans_metabolites_nav.html', {'pchemHtml': pchemHTML})
 
     return html
 

@@ -23,22 +23,12 @@ def pchempropInputPage(request, model='', header='Physicochemical Properties', f
             })
 
     # chemspec inputs
-    html = html + str(chemspec_parameters.form(formData)) # Loads the Chemical Speciation tables to the page
+    html = html + str(chemspec_parameters.form(formData))
     html = html + render_to_string('cts.html', {})
 
     # pchemprop inputs
     html = html + render_to_string('cts_pchem.html', {})
-    # html = html + str(pchemprop_parameters.form(formData)) # str(pchemprop_properties.form()) returns html table with ids
 
     html = html + render_to_string('04cts_ubercts_end.html', {'sub_title': 'Submit'})
     
-    # Check if tooltips dictionary exists
-    # try:
-    #     import pchemprop_tooltips
-    #     hasattr(pchemprop_tooltips, 'tooltips')
-    #     tooltips = pchemprop_tooltips.tooltips
-    # except:
-    #     tooltips = {}
-    # html = html + render_to_string('05cts_ubertext_tooltips_right.html', {'tooltips':tooltips})
-
     return html

@@ -4,11 +4,13 @@ from django.http import HttpResponse
 from django.template import Context
 import json
 from xhtml2pdf import pisa
-
 import logging
 from cts_app.cts_calcs.calculator_metabolizer import MetabolizerCalc
 from cts_app.models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
 from django.core.cache import cache
+# import os
+from django.conf import settings
+
 
 
 def parsePOST(request):
@@ -18,7 +20,6 @@ def parsePOST(request):
     pdf_p = json.loads(request.POST.get('pdf_p'))
     if 'pdf_json' in request.POST and request.POST['pdf_json']:
         pdf_json = json.loads(request.POST.get('pdf_json'))
-        # pdf_json = request.POST.get('pdf_json')
     else:
         pdf_json = None
 
@@ -26,117 +27,14 @@ def parsePOST(request):
     final_str = pdf_t
 
     if 'gentrans' in request.path:
+        final_str += handle_gentrans_request(pdf_json)  # add metabolites to PDF/HTML file
 
-        headings = ['genKey', 'smiles', 'iupac', 'formula', 'mass', 'exactMass', 'routes']
-        calcs = ['chemaxon', 'epi', 'test', 'sparc', 'measured']
-        checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
-        products = pdf_json['nodes']
-        props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press',
-                'mol_diss', 'ion_con', 'henrys_law_con', 'kow_no_ph',
-                'kow_wph', 'koc', 'water_sol_ph']
-
-        for product in products:
-            # product_image = data_walks.nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
-            product_image = MetabolizerCalc().nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
-            product.update({'image': product_image})
-
-            # build object that's easy to make pchem table in template..
-            if 'pchemprops' in product:
-
-                rows = []
-                for prop in props:
-
-                    data_row = []
-                    kow_no_ph_list = []
-                    kow_wph_list = []
-                    data_row.append(prop)
-
-                    calc_index = 1
-                    for calc in calcs:
-                        # pick out data by key, make sure not already there..
-                        for data_obj in product['pchemprops']:
-                            if data_obj['prop'] == prop and data_obj['calc'] == calc:
-                                if prop == 'kow_no_ph' and calc == 'chemaxon':
-                                    # expecting same calc/prop with 3 methods..\
-                                    already_there = False
-                                    for item in kow_no_ph_list:
-                                        if data_obj['method'] == item['method']:
-                                            already_there = True
-                                    if not already_there:
-                                        kow_no_ph_list.append({
-                                            'method': data_obj['method'],
-                                            'data': round(data_obj['data'], 2)
-                                        })
-                                elif prop == 'kow_wph' and calc == 'chemaxon':
-                                    # expecting same calc/prop with 3 methods..
-                                    already_there = False
-                                    for item in kow_no_ph_list:
-                                        if data_obj['method'] == item['method']:
-                                            already_there = True
-                                    if not already_there:
-                                        kow_wph_list.append({
-                                            'method': data_obj['method'],
-                                            'data': round(data_obj['data'], 2)
-                                        })
-                                    # account for kow_wph too!!!!!
-                                # elif prop == 'ion_con' and calc == 'chemaxon':
-                                elif prop == 'ion_con':
-                                    # is there also pKb?????
-                                    pka_string = ""
-                                    pka_index = 1
-                                    if not data_obj.get('data'):
-                                        data_obj['data'] = {'pKa': []}
-                                    for pka in data_obj['data']['pKa']:
-                                        try:
-                                            # todo: centralize rounding procedures
-                                            pka_string += "pka_{}: {} \n".format(pka_index, round(pka, 2))
-                                        except TypeError as te:
-                                            logging.warning("pka value not a number, {}".format(te))
-                                            pka_string += "pka_{}: {} \n".format(pka_index, pka)
-                                        pka_index += 1
-                                    data_row.append(pka_string)
-                                else:
-                                    data_row.append(data_obj['data'])
-
-                        if len(data_row) <= calc_index:
-                            # should mean there wasn't data for calc-prop combo:
-                            data_row.append('')
-
-                        calc_index += 1
-
-                        if prop == 'kow_no_ph' and calc == 'chemaxon':
-                            # insert chemaxon's kow values if they exist:
-                            kow_string = ""
-                            for kow in kow_no_ph_list:
-                                kow_string += "{} ({}) \n".format(kow['data'], kow['method'])
-                            # data_row.insert(1, kow_string)
-                            data_row[1] = kow_string
-                            # kow_values = []
-
-                        if prop == 'kow_wph' and calc == 'chemaxon':
-                            # insert chemaxon's kow values if they exist:
-                            kow_string = ""
-                            for kow in kow_wph_list:
-                                kow_string += "{} ({}) \n".format(kow['data'], kow['method'])
-                            # data_row.insert(1, kow_string)
-                            data_row[1] = kow_string
-                            # kow_values = []
-
-                    rows.append(data_row)
-
-                product['data'] = rows
-
-        final_str += buildMetaboliteTableForPDF().render(
-            Context(dict(headings=headings, checkedCalcsAndProps=checkedCalcsAndProps, products=products, props=props, calcs=calcs)))
-
-
-    final_str += """<br>"""
+    final_str += "<br>"
     if (int(pdf_nop)>0):
         for i in range(int(pdf_nop)):
             final_str += """<img id="imgChart1" src="%s" />"""%(pdf_p[i])
-            # final_str = final_str + """<br>"""
 
-    # Styling
+    # PDF/HTML File Styling:
     input_css="""
             <style>
             html {
@@ -193,7 +91,6 @@ def parsePOST(request):
             </style>
             """
     input_str = input_css + final_str
-
     return input_str
 
 
@@ -248,7 +145,6 @@ def csvReceiver(request, model=''):
     from django.conf import settings
 
     settings.DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB => 10485760 bytes (IEC units)
-    logging.warning("DJANGO MAX UPLOAD MEM: {}".format(settings.DATA_UPLOAD_MAX_MEMORY_SIZE))
 
     try:
         request_data = request.POST.get('run_data')
@@ -259,3 +155,104 @@ def csvReceiver(request, model=''):
 
     csv_obj = CSV(model)
     return csv_obj.parseToCSV(run_data)
+
+
+def textReceiver(request, model=''):
+    """
+    Download text file.
+    """
+    static_path = "{}/static_qed/cts/docs/sample_batch.txt".format(settings.PROJECT_ROOT.replace('\\', '/'))
+    filein = open(static_path, 'rb')
+    sample_batch_text = filein.read().decode('utf-16')
+    filein.close()
+    response = HttpResponse(sample_batch_text, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=sample_batch.txt'
+    return response
+
+
+def handle_gentrans_request(pdf_json):
+
+    headings = ['genKey', 'smiles', 'iupac', 'formula', 'mass', 'exactMass', 'routes']
+    calcs = ['chemaxon', 'epi', 'test', 'sparc', 'measured']
+    checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
+    products = pdf_json['nodes']
+    props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press',
+            'mol_diss', 'mol_diss_air', 'ion_con', 'henrys_law_con', 'kow_no_ph',
+            'kow_wph', 'koc', 'water_sol_ph', 'log_bcf', 'log_baf']
+
+    for product in products:
+        # product_image = data_walks.nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
+        product_image = MetabolizerCalc().nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
+        product.update({'image': product_image})
+
+        # build object that's easy to make pchem table in template..
+        if 'pchemprops' in product:
+
+            rows = []
+            for prop in props:
+
+                data_row = []
+                kow_no_ph_list = []
+                kow_wph_list = []
+                data_row.append(prop)
+
+                calc_index = 1
+                for calc in calcs:
+                    # pick out data by key, make sure not already there..
+                    for data_obj in product['pchemprops']:
+                        if data_obj['prop'] == prop and data_obj['calc'] == calc:
+                            _is_kow = prop in ['kow_no_ph', 'kow_wph']
+                            if _is_kow and calc == 'chemaxon':
+                                # expecting same calc/prop with 3 methods..
+                                already_there = False
+                                for item in kow_no_ph_list:
+                                    if data_obj['method'] == item['method']:
+                                        already_there = True
+                                if not already_there:
+                                    kow_no_ph_list.append({
+                                        'method': data_obj['method'],
+                                        'data': round(data_obj['data'], 2)
+                                    })
+                            elif prop == 'ion_con':
+                                pka_string = ""
+                                pka_index = 1
+                                if not data_obj.get('data'):
+                                    data_obj['data'] = {'pKa': []}
+                                for pka in data_obj['data']['pKa']:
+                                    try:
+                                        # todo: centralize rounding procedures
+                                        pka_string += "pka_{}: {} \n".format(pka_index, round(pka, 2))
+                                    except TypeError as te:
+                                        logging.warning("pka value not a number, {}".format(te))
+                                        pka_string += "pka_{}: {} \n".format(pka_index, pka)
+                                    pka_index += 1
+                                data_row.append(pka_string)
+                            else:
+                                data_row.append(data_obj['data'])
+
+                    if len(data_row) <= calc_index:
+                        # should mean there wasn't data for calc-prop combo:
+                        data_row.append('')
+
+                    calc_index += 1
+
+                    if prop == 'kow_no_ph' and calc == 'chemaxon':
+                        # insert chemaxon's kow values if they exist:
+                        kow_string = ""
+                        for kow in kow_no_ph_list:
+                            kow_string += "{} ({}) \n".format(kow['data'], kow['method'])
+                        data_row[1] = kow_string
+
+                    if prop == 'kow_wph' and calc == 'chemaxon':
+                        # insert chemaxon's kow values if they exist:
+                        kow_string = ""
+                        for kow in kow_wph_list:
+                            kow_string += "{} ({}) \n".format(kow['data'], kow['method'])
+                        data_row[1] = kow_string
+
+                rows.append(data_row)
+
+            product['data'] = rows
+
+    return buildMetaboliteTableForPDF().render(
+        Context(dict(headings=headings, checkedCalcsAndProps=checkedCalcsAndProps, products=products, props=props, calcs=calcs)))

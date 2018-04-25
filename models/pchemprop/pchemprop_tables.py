@@ -6,21 +6,8 @@ from django.template import Context, Template, engines
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from . import pchemprop_parameters
-# os.environ['DJANGO_SETTINGS_MODULE']='settings'
+from ..chem_info import get_chem_info
 from django.conf import settings
-
-
-def getInputData(pchemprop_obj):
-    data = [
-        {'Entered chemical': pchemprop_obj.chem_struct},
-        {'Standardized SMILES': pchemprop_obj.smiles},
-        {'Initial SMILES': pchemprop_obj.orig_smiles},
-        {'IUPAC': pchemprop_obj.name}, 
-        {'Formula': pchemprop_obj.formula}, 
-        {'Mass': pchemprop_obj.mass},
-        {'Exact Mass': pchemprop_obj.exact_mass}
-    ]
-    return data
 
 
 def getStructInfoTemplate():
@@ -80,7 +67,7 @@ def input_struct_table(pchemprop_obj):
     # attempting to add image to right of user inputs table:
     html += pchemprop_obj.parent_image
 
-    html += inTmpl.render(Context(dict(data=getInputData(pchemprop_obj), heading="Molecular Information")))
+    html += inTmpl.render(Context(dict(data=get_chem_info(pchemprop_obj), heading="Molecular Information")))
     # html += inTmpl.render(Context({'data': getInputData(pchemprop_obj), heading="Molecular Information"}))
 
     html += """
@@ -151,19 +138,3 @@ def pchemHtmlTemplate():
     {% autoescape off %}{{pchemHtml}}{% endautoescape %}
     """
     return Template(pchem_html)
-
-
-def timestamp(pchemprop_obj="", batch_jid=""):
-    if pchemprop_obj:
-        st = datetime.datetime.strptime(pchemprop_obj.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
-    else:
-        st = datetime.datetime.strptime(batch_jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
-    html="""
-    <div class="out_">
-        <b>Calculate Physicochemical Properties<br>
-    """
-    html = html + st
-    html = html + " (EST)</b>"
-    html = html + """
-    </div>"""
-    return html
