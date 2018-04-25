@@ -112,7 +112,7 @@ class PChemProp(object):
         }
 
 
-        if self.smiles and instance(self.smiles, str):
+        if self.smiles and isinstance(self.smiles, str):
             self.parent_image = Calculator().nodeWrapper(self.smiles, None, 250, 50, 'pchem_parent_wrap', 'svg', None)
 
 
