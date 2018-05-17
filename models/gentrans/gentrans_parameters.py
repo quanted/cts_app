@@ -240,7 +240,7 @@ class cts_reaction_libs(forms.Form):
 	photolysis = forms.BooleanField(required=False, label='Photolysis')
 	abiotic_reduction = forms.BooleanField(required=False, label='Abiotic Reduction')
 	anaerobic_biodegrad = forms.BooleanField(required=False, label='Anaerobic Biodegradation')
-	mamm_metabolism = forms.BooleanField(required=False, label='Mammalian Metabolism')
+	mamm_metabolism = forms.BooleanField(required=False, label='Human Phase 1 Metabolism')
 
 
 # Reaction Options (e.g., generation limit, likely limit, etc.)
