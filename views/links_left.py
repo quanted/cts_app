@@ -5,7 +5,7 @@ from collections import OrderedDict
 # 03ubertext_links_left:
 def ordered_list(model=None, page=None):
     link_dict = OrderedDict([
-        ('CTS Workflows', OrderedDict([
+        ('Execute CTS Workflows', OrderedDict([
                 ('Calculate Chemical Speciation', 'cts/chemspec'),
                 ('Calculate Physicochemical Properties', 'cts/pchemprop'),
                 ('Generate Transformation Products', 'cts/gentrans'),
@@ -18,7 +18,7 @@ def ordered_list(model=None, page=None):
         #     ])
         # ),
         ('About', OrderedDict([
-                ('CTS Workflow Modules', 'cts/about/modules'),
+                ('CTS Modules', 'cts/about/modules'),
                 ('Physicochemical Calculators', 'cts/about/pchemcalcs'),
                 ('Reaction Libraries', 'cts/about/reactionlibs'),
             ])
@@ -26,6 +26,7 @@ def ordered_list(model=None, page=None):
         ('Documentation', OrderedDict([
                 ('Download CTS User Guide (PDF)', 'static_qed/cts/docs/CTS_USER_Guide_5-8-17.pdf'),
                 ('API Documentation', 'cts/rest/'),
+                ('Manuscripts', 'cts'),
                 # ('Source Code', 'https://github.com/quanted/cts_app'),
             ])
         ),
