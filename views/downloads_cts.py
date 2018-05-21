@@ -474,7 +474,7 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 								chem_smiles = rows[i][0]
 
 							# if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
-							if chem_smiles != chem_data.get('smiles') or pchem.get('prop') != prop:
+							if chem_smiles != chem_data.get('smiles') or pchem.get('prop') != prop or chem_data.get('genKey') != rows[i][0]:
 								continue  # move on to next iteration..
 
 							if 'error' in chem_data or 'error' in pchem:
