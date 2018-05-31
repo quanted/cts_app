@@ -1,9 +1,9 @@
-[submodule "cts_calcs"]
-	path = cts_calcs
-	url = https://github.com/popenc/cts_calcs.git
 [submodule "cts_api"]
 	path = cts_api
-	url = https://github.com/popenc/cts_api.git
+	url = https://github.com/quanted/cts_api.git
+[submodule "cts_calcs"]
+	path = cts_calcs
+	url = https://github.com/quanted/cts_calcs.git
 [submodule "cts_testing"]
 	path = cts_testing
-	url = https://github.com/popenc/cts_testing.git
+	url = https://github.com/quanted/cts_testing.git
