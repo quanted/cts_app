@@ -103,7 +103,8 @@ def pdfReceiver(request, model=''):
 
     input_str = ''
     input_str += parsePOST(request)
-    packet = io.StringIO()  # write to memory
+    # packet = io.StringIO()  # write to memory
+    packet = io.BytesIO()
 
     try:
         pisa.CreatePDF(input_str, dest=packet)
