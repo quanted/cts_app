@@ -67,6 +67,10 @@ def about_page(request, model='none', header='non'):
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_reactionlibs_descriptions.txt'),'r')
         header = "Reaction Libraries"
 
+    elif model == 'manuscripts':
+        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_manuscripts_descriptions.txt'),'r')
+        header = "CTS Manuscripts"
+
     xx = text_file2.read()
 
     #drupal template for header with bluestripe
