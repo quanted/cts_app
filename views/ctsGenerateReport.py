@@ -34,6 +34,7 @@ def parsePOST(request):
         for i in range(int(pdf_nop)):
             final_str += """<img id="imgChart1" src="%s" />"""%(pdf_p[i])
 
+
     # PDF/HTML File Styling:
     input_css="""
             <style>
@@ -47,34 +48,24 @@ def parsePOST(request):
                 border: 1px solid #666666;
             }
             #gentrans_table td {
-                /*word-wrap: normal;*/
                 max-width: 100px;
                 word-break: break-all;
             }
-            table#inputsTable td {
-                max-width: 600px;
-                word-break: break-all;
-            }
-
             #pchemprop_table table {
                 width: 100%;
                 overflow: auto;
-                border: 1px solid #666666;
                 display: table;
-                border-collapse: collapse;
             }
             #pchemprop_table tr {
-                border: 1px solid #666666;
                 display: table-row;
             }
             #pchemprop_table td, #pchemprop_table th {
                 word-break: break-all;
-                border: 1px solid #666666;
                 display: table-cell;
             }
 
             th {text-align:center; padding:2px; font-size:11px;}
-            td {padding:2px; font-size:10px;}
+            td {padding:2px; font-size:10px; margin:2px;}
             h2 {font-size:13px; color:#79973F;}
             h3 {font-size:12px; color:#79973F; margin-top: 8px;}
             h4 {font-size:12px; color:#79973F; padding-top:30px;}
@@ -183,7 +174,7 @@ def handle_gentrans_request(pdf_json):
 
     for product in products:
         # product_image = data_walks.nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
-        product_image = MetabolizerCalc().nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', False)
+        product_image = MetabolizerCalc().nodeWrapper(product['smiles'], None, 250, 100, product['genKey'], 'png', True)
         product.update({'image': product_image})
 
         # build object that's easy to make pchem table in template..
