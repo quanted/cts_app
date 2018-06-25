@@ -210,7 +210,7 @@ def buildMetaboliteTableForPDF():
                 <table class="mol-info-table ctsTableStylin">
                     {% for key, val in product.items %}
                         {% if key in headings %}
-                            <tr><td>{{key}}</td><td>{{val}}</td>
+                            <tr><td>{{key}}</td><td>{{val|default:"N/A"}}</td>
                         {% endif %}
                     {% endfor %}
                 </table>
@@ -218,6 +218,8 @@ def buildMetaboliteTableForPDF():
             </div>
 
             <br>
+
+            {% if product.data %}
 
             <div class="pchem-wrapper">
 
@@ -235,6 +237,10 @@ def buildMetaboliteTableForPDF():
                 </table>
 
             </div>
+
+            {% endif %}
+
+
         </div>
         <br>
     {% endfor %}
