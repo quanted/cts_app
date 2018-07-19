@@ -349,7 +349,7 @@ def getTautomerResults(chemspec_obj):
         return ""
 
     html = """
-    <H4 class="out_1 collapsible" id="taut"><span></span>Tautomerization</H4>
+    <H4 class="out_1 collapsible" id="taut"><span></span>Tautomerization (pH = 7.0)</H4>
     """
 
     if tautStructs:
