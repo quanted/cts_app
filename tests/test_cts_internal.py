@@ -1,26 +1,32 @@
 import requests
 import unittest
 import numpy.testing as npt
-from . import linkcheck_helper
+import linkcheck_helper
 
 test = {}
 
-servers = ["https://qedinternal.epa.gov/cyan/","http://127.0.0.1:8000/cyan/"]
+servers = ["https://qedinternal.epa.gov/cts/", "http://127.0.0.1:8000/cts/"]
+# servers = ["http://127.0.0.1:8000/cts/"]
 
-pages = ["", "map", "lakecomparison", "dashboard", "algorithms", "references"]
+pages = {
+    'GET': ["", "rest/", "chemspec", "pchemprop", "gentrans", "chemspec/input", "pchemprop/input",
+            "gentrans/input", "chemspec/batch", "pchemprop/batch", "gentrans/batch"],
+    'POST': []
+}
 
-api_endpoints = ["https://cyan.epa.gov/cyan/cyano/location/data/28.6138/-81.6227/2017-12-08",
-                 "https://cyan.epa.gov/cyan/cyano/notifications/2015-05-03T20-16-26-000-0400",
-                 #if the next png 500s, you can get an updated image from a specific location e.g.,
-                 #https://cyan.epa.gov/cyan/cyano/location/images/28.6138/-81.6227/
-                 "https://cyan.epa.gov/cyan/cyano/location/images/envisat.2012094.0403.1551C.L3.EF3.v670.CIcyano2.png",
-                 "https://cyan.epa.gov/cyan/cyano/location/images/28.6138/-81.6227/"]
+# TODO: replace api_endpoints array with endpoints from cts
+api_endpoints = []
 
-#following are lists of url's to be processed with tests below
-check_pages = [s + p for s in servers for p in pages]
+# following are lists of url's to be processed with tests below
+# check_pages = [s + p for s in servers for p in pages]
+check_pages = []
+for key,val in pages.items():
+    check_pages += [s + p for s in servers for p in pages[key]]
+
+print("check pages: {}".format(check_pages))
 
 
-class TestCyanPages(unittest.TestCase):
+class TestCTSPages(unittest.TestCase):
     """
     this testing routine accepts a list of pages and performs a series of unit tests that ensure
     that the web pages are up and operational on the server.
@@ -33,7 +39,7 @@ class TestCyanPages(unittest.TestCase):
         pass
 
     @staticmethod
-    def test_cyan_200():
+    def test_cts_200():
         test_name = "Check page access "
         try:
             assert_error = False
@@ -53,7 +59,7 @@ class TestCyanPages(unittest.TestCase):
         return
 
     @staticmethod
-    def test_cyan_api_endpoints_200():
+    def test_cts_api_endpoints_200():
         test_name = "Check page access "
         try:
             assert_error = False
