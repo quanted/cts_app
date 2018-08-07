@@ -346,10 +346,10 @@ def roundData(prop, datum):
 		else:
 			return round(datum, 2)
 	except ValueError as err:
-		logging.warning("downloads_cts, didn't round {}: {}".format(datum, err))
+		# logging.warning("downloads_cts, didn't round {}: {}".format(datum, err))
 		return datum
 	except TypeError as err:
-		logging.warning("downloads_cts, datum: {}, err: {}".format(datum, err))
+		# logging.warning("downloads_cts, datum: {}, err: {}".format(datum, err))
 		return datum
 
 
