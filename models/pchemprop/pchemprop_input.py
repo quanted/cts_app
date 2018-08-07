@@ -24,7 +24,7 @@ def pchempropInputPage(request, model='', header='Physicochemical Properties', f
 
     # chemspec inputs
     html = html + str(chemspec_parameters.form(formData))
-    html = html + render_to_string('cts.html', {})
+    html = html + render_to_string('cts_cheminfo.html', {})
 
     # pchemprop inputs
     html = html + render_to_string('cts_pchem.html', {})
