@@ -4,6 +4,9 @@ import importlib
 #import linksLeft
 from .links_left import ordered_list
 import os
+from cts_app.models import cts_acronyms
+
+
 
 def descriptionPage(request, model='none', header='none'):
 
@@ -35,19 +38,6 @@ def descriptionPage(request, model='none', header='none'):
     #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
     html += render_to_string('10epa_drupal_footer.html', {})
 
-    # html = render_to_string('01cts_uberheader.html', {'title': header+' Description'})
-    # html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'description'})
-    # html = html + linksLeft.linksLeft()
-    # html = html + render_to_string('04cts_ubertext_start.html', {
-    #         'model_attributes': header+' Overview',
-    #         'text_paragraph':xx})
-
-    # html = html + render_to_string('04cts_ubertext_nav.html', {'model':model})
-
-    # html = html + render_to_string('04cts_ubertext_end.html', {})
-    # html = html + render_to_string('05cts_ubertext_links_right.html', {})
-    # html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
-    
     response = HttpResponse()
     response.write(html)
     return response
@@ -55,6 +45,8 @@ def descriptionPage(request, model='none', header='none'):
 
 def about_page(request, model='none', header='non'):
     
+    text_file2 = None
+
     if model == 'modules':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_modules_descriptions.txt'),'r')
         header = "CTS Modules"
@@ -71,28 +63,37 @@ def about_page(request, model='none', header='non'):
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_manuscripts_descriptions.txt'),'r')
         header = "CTS Manuscripts"
 
-    xx = text_file2.read()
+    elif model == 'acronyms':
+        # renders django template to display acronyms table:
+        acronyms_table = render_to_string('cts_acronyms_table.html', {'cts_acronyms_list': cts_acronyms.acronyms})
+        header = "CTS Acronyms"
 
     #drupal template for header with bluestripe
-    #html = render_to_string('01epa_drupal_header.html', {})
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
-    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-        'TITLE': header + ' Overview',
-        'TEXT_PARAGRAPH': xx
-    })
+
+    if text_file2:
+        xx = text_file2.read()
+        html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+            'TITLE': header + ' Overview',
+            'TEXT_PARAGRAPH': xx
+        })
+    elif model == 'acronyms':
+        html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+            'TITLE': header + ' Overview',
+            'TEXT_PARAGRAPH': acronyms_table
+        })
+
     html += render_to_string('07ubertext_end_drupal.html', {})
     html += ordered_list()  # fills out 05ubertext_links_left_drupal.html
 
     #scripts and footer
     html += render_to_string('09epa_drupal_ubertool_css.html', {})
-    #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
     html += render_to_string('10epa_drupal_footer.html', {})
-
 
     response = HttpResponse()
     response.write(html)
