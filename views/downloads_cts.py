@@ -344,11 +344,13 @@ def roundData(prop, datum):
 			rounded_datum = "{:.2E}".format(datum)
 			return rounded_datum
 		else:
-			return round(datum, 2)
+			return round(float(datum), 2)
 	except ValueError as err:
 		# logging.warning("downloads_cts, didn't round {}: {}".format(datum, err))
 		return datum
 	except TypeError as err:
+		# Triggered when trying to round something that's not a number.
+
 		# logging.warning("downloads_cts, datum: {}, err: {}".format(datum, err))
 		return datum
 
