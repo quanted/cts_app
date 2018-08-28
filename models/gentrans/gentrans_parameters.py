@@ -235,8 +235,8 @@ class cts_respiration(forms.Form):
 # Reaction Libraries
 @parsleyfy
 class cts_reaction_libs(forms.Form):
-	abiotic_hydrolysis = forms.BooleanField(required=False, label='Abiotic Hydrolysis (under development)')
-	aerobic_biodegrad = forms.BooleanField(required=False, label='Aerobic Biodegradation')
+	abiotic_hydrolysis = forms.BooleanField(required=False, label='Abiotic Hydrolysis')
+	aerobic_biodegrad = forms.BooleanField(required=False, label='Aerobic Biodegradation (under development)')
 	photolysis = forms.BooleanField(required=False, label='Photolysis (under development)')
 	abiotic_reduction = forms.BooleanField(required=False, label='Abiotic Reduction')
 	anaerobic_biodegrad = forms.BooleanField(required=False, label='Anaerobic Biodegradation (under development)')
