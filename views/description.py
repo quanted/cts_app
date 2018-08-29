@@ -68,6 +68,10 @@ def about_page(request, model='none', header='non'):
         acronyms_table = render_to_string('cts_acronyms_table.html', {'cts_acronyms_list': cts_acronyms.acronyms})
         header = "CTS Acronyms"
 
+    elif model == 'flowcharts':
+        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_flowcharts_descriptions.txt'),'r')
+        header = "CTS Flowcharts"
+
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
@@ -87,6 +91,62 @@ def about_page(request, model='none', header='non'):
             'TITLE': header + ' Overview',
             'TEXT_PARAGRAPH': acronyms_table
         })
+
+    html += render_to_string('07ubertext_end_drupal.html', {})
+    html += ordered_list()  # fills out 05ubertext_links_left_drupal.html
+
+    #scripts and footer
+    html += render_to_string('09epa_drupal_ubertool_css.html', {})
+    html += render_to_string('10epa_drupal_footer.html', {})
+
+    response = HttpResponse()
+    response.write(html)
+    return response
+
+
+
+def flowcharts_page(request, chart='none', header='non'):
+    
+    img_filepath = None
+
+    if chart == 'cheminfo':
+        # displays chemical information flowchart
+        img_filepath = '/static_qed/cts/docs/cts_flowchart_cheminfo.svg'
+        header = ""
+
+    elif chart == 'standardization':
+        # displays standardization flowchart
+        img_filepath = '/static_qed/cts/docs/cts_flowchart_smilesfilter.svg'
+        header = ""
+
+    #drupal template for header with bluestripe
+    html = render_to_string('01epa_drupal_header.html', {
+        'SITE_SKIN': os.environ['SITE_SKIN'],
+        'title': "CTS"
+    })
+    html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+
+    if img_filepath:
+        # xx = img_file.read()
+        # html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+        #     'TITLE': header + ' Overview',
+        #     'TEXT_PARAGRAPH': xx
+        # })
+        # html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+        #     'TITLE': "",
+        #     'TEXT_PARAGRAPH': 
+        # }
+
+        html += """
+        <div class="main-column clearfix">
+        <div class="panel-pane pane-node-content" >
+          <div class="pane-content">
+            <div class="node node-page clearfix view-mode-full">
+                <img src="{}">
+        """.format(img_filepath)
+
+        # html += '<img src="' + img_filepath + '">'  # appends flowchart image to page
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     html += ordered_list()  # fills out 05ubertext_links_left_drupal.html

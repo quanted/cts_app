@@ -28,7 +28,8 @@ def ordered_list(model=None, page=None):
                 ('Download CTS User Guide (PDF)', 'static_qed/cts/docs/CTS_USER_Guide_7-19-2018.pdf'),
                 ('API Documentation', 'cts/rest/'),
                 ('Manuscripts', 'cts/about/manuscripts'),
-                ('CTS Acronyms', 'cts/about/acronyms')
+                ('CTS Acronyms', 'cts/about/acronyms'),
+                ('CTS Flowcharts', 'cts/about/flowcharts'),
                 # ('Source Code', 'https://github.com/quanted/cts_app'),
             ])
         ),
