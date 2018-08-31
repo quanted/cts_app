@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from . import pchemprop_parameters
 from ..chem_info import get_chem_info
+from ..cts_pchem_definitions import pchem_defs
 from django.conf import settings
 
 
@@ -50,6 +51,10 @@ def table_all(pchemprop_obj):
     html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
     html_all += input_struct_table(pchemprop_obj)
     html_all += output_pchem_table(pchemprop_obj)
+
+    # Creates popup divs for p-chem table using qtip2 JS library:
+    html_all += render_to_string('cts_pchem_definitions_popups.html', {'pchem_defs': pchem_defs})
+
     return html_all
 
 
