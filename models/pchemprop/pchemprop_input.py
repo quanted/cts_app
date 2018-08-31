@@ -4,6 +4,7 @@ doc stuff for pchemprop_input.py
 
 from django.template.loader import render_to_string
 from ..chemspec import chemspec_parameters
+from ..cts_pchem_definitions import pchem_defs
 
 def pchempropInputPage(request, model='', header='Physicochemical Properties', formData=None):
 
@@ -28,6 +29,10 @@ def pchempropInputPage(request, model='', header='Physicochemical Properties', f
 
     # pchemprop inputs
     html = html + render_to_string('cts_pchem.html', {})
+    
+    # Creates popup divs for p-chem table using qtip2 JS library:
+    html += render_to_string('cts_pchem_definitions_popups.html', 
+        {'pchem_defs' :pchem_defs})
 
     html = html + render_to_string('04cts_ubercts_end.html', {'sub_title': 'Submit'})
     
