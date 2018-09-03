@@ -100,7 +100,7 @@ def batchOutputPage(request, model='none', header='none'):
         '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
     html += """
     <div class="out_">
-        <b>{} Batch Version 1.0</a> (Beta)<br>
+        <b>{} Batch</a><br>
     """.format(header)
     html += st
     html += " (EST)</b>"
