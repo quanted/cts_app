@@ -142,6 +142,10 @@ def table_metabolites(gentrans_obj):
 				<div id="infovis"></div>
 			</div>
 			<div id="log"></div>
+			<div id="zoom-controls">
+				<input id="zoom-out" class="zoom-buttons" type="button" value="-" />
+				<input id="zoom-in" class="zoom-buttons" type="button" value="+" />
+			</div>
 		</div>
 		<div id="reactionpathways">
 		</div>
