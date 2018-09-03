@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import logging
 
 from django.template import Context, Template, engines
 from django.template.loader import render_to_string
@@ -129,9 +130,6 @@ def output_pchem_table(pchemprop_obj):
         <input type="button" value="Calculate data" class="submit input_button btn-pchem" id="btn-pchem-data">
         <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
         <input type="button" value="Cancel" class="input_button btn-pchem" id="btn-pchem-cancel">
-        <br>
-        <p class="gentransError">Must right-click a metabolite first</p>
-        <p class="selectNodeForData">Select (right-click) a node to view its physicochemical data</p>
     </div>
     """
     return html

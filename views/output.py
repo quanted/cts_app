@@ -30,7 +30,7 @@ def outputPageView(request, model='none', header=''):
         
         if type(tables_output) is tuple:
             modelOutputHTML = modelOutputHTML + tables_output[0]
-        elif type(tables_output) is str or type(tables_output) is unicode:
+        elif type(tables_output) is str:
             modelOutputHTML = modelOutputHTML + tables_output
         else:
             modelOutputHTML = "table_all() Returned Wrong Type"
@@ -80,31 +80,81 @@ def outputPage(request, model='none', header=''):
         form = inputForm(request.POST) # bind user inputs to form object
 
         # Form validation testing
-        if form.is_valid():
-            logging.debug("Form validated.. Returning output page view..")
-            return outputPageView(request, model, header)
+        if not form.is_valid():
+            # return reload_inputs_page(request, model, header)
+            return generate_error_page(model)
 
-        else:
-
-            logging.debug("Form not valid.. Reloading inputs page..")
-            logging.debug("ERRORS: {}".format(form.errors))
-
-            inputmodule = importlib.import_module('.'+model+'_input', 'cts_app.models.'+model)
-
-            # Render input page view with POSTed values and show errors
-            html = render_to_string('01cts_uberheader.html', {'title': header+' Inputs'})
-            html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'input'})
-            html = html + linksLeft()
-
-            inputPageFunc = getattr(inputmodule, model+'InputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
-            html = html + inputPageFunc(request, model, header, formData=request.POST)  # formData contains the already POSTed form data
-
-            html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
-            
-            response = HttpResponse()
-            response.write(html)
-            return response
-
-    except:
-        logging.warning("E X C E P T: Exception in output.py")
         return outputPageView(request, model, header)
+
+    except Exception as e:
+        # logging.warning("E X C E P T: Exception in output.py")
+        # return outputPageView(request, model, header)
+        return generate_error_page(model)
+
+
+
+def generate_error_page(model, title=None, error_msg=None):
+    """
+    Generates error page to display to user if something went wrong.
+    """
+
+    if not title or not error_msg:
+        title = 'Error processing model'
+        error_msg = """
+        <p>A error occurred while processing the submitting model. Please check the model inputs and try again.</p>
+
+        <form action="/cts/{}/input" method="get">
+            <input type="submit" value="Go back to input page" />
+        </form>
+        """.format(model)
+
+    html = render_to_string('01epa_drupal_header.html', {
+        'SITE_SKIN': os.environ['SITE_SKIN'],
+        'title': "CTS"
+    })
+    html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+
+    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+        'TITLE': title,
+        'TEXT_PARAGRAPH': error_msg
+    })
+
+    html += render_to_string('07ubertext_end_drupal.html', {})
+    html += ordered_list(model='cts')  # fills out 05ubertext_links_left_drupal.html
+
+    #scripts and footer
+    html += render_to_string('09epa_drupal_ubertool_css.html', {})
+    html += render_to_string('09epa_drupal_cts_css.html')
+    html += render_to_string('09epa_drupal_cts_scripts.html')
+    html += render_to_string('10epa_drupal_footer.html', {})
+
+    response = HttpResponse()
+    response.write(html)
+    return response
+
+
+
+def reload_inputs_page(request, model='none', header=''):
+    """
+    Reloads inputs page if error submitting model.
+    """
+
+    # logging.debug("Form not valid.. Reloading inputs page..")
+    # logging.debug("ERRORS: {}".format(form.errors))
+
+    inputmodule = importlib.import_module('.'+model+'_input', 'cts_app.models.'+model)
+
+    # Render input page view with POSTed values and show errors
+    html = render_to_string('01cts_uberheader.html', {'title': header+' Inputs'})
+    html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'input'})
+    html = html + linksLeft()
+
+    inputPageFunc = getattr(inputmodule, model+'InputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
+    html = html + inputPageFunc(request, model, header, formData=request.POST)  # formData contains the already POSTed form data
+
+    html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
+    
+    response = HttpResponse()
+    response.write(html)
+    return response
