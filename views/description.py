@@ -119,6 +119,11 @@ def flowcharts_page(request, chart='none', header='non'):
         img_filepath = '/static_qed/cts/docs/cts_flowchart_smilesfilter.svg'
         header = ""
 
+    elif chart == 'meltingpoint':
+        # displays melting point request flowchart
+        img_filepath = '/static_qed/cts/docs/cts_flowchart_meltingpoint.svg'
+        header = ""
+
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
