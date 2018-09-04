@@ -6,7 +6,7 @@ Inspired by creating popups for p-chem table properties.
 pchem_defs = {
 	"mp": {
 		'name': "Melting Point",
-		'definition': "The temperature at which a chemical will go from liquid to gaseous phase.",
+		'definition': "The temperature at which a chemical changes from liquid to gaseous phase.",
 		'methods': {
 			'HC': "Hierarchical Clustering",
 			'NN': "Nearest Neighbor",
@@ -16,7 +16,7 @@ pchem_defs = {
 	},
 	"bp": {
 		'name': "Boiling Point",
-		'definition': "The temperature at which a chemical will go from liquid to gaseous phase.",
+		'definition': "The temperature at which a chemical changes from liquid to gaseous phase.",
 		'methods': {
 			'HC': "Hierarchical Clustering",
 			'NN': "Nearest Neighbor",
@@ -26,7 +26,7 @@ pchem_defs = {
 	},
 	"ws": {
 		'name': "Water Solubility",
-		'definition': "The capacity of a chemical to be dissolved in water. Can be used to understand approximate polarity of a chemical (i.e. more soluble in water = more polar).",
+		'definition': "The maximum concentration of a chemical compound which can result when it is dissolved in water.",
 		'methods': {
 			'WSKOW': "QSAR model for determining water solubility",
 			'WATERNT': "Fragment-based QSAR model for determining water solubility"
@@ -35,47 +35,47 @@ pchem_defs = {
 	},
 	"vp": {
 		'name': "Vapor Pressure",
-		'definition': "The force per cubic meter on the base of a column of mercury 1 mm high and with density 13595.1 kg/m^3 (mmHg) that is exerted on a liquid, or solid, when the chemical is evaporating in thermodynamic equilibrium. Used to determine if a chemical is volatile or relatively stable at room temperature.",
+		'definition': "The force per unit area exerted by a vapor in an equilibrium state with its pure solid, liquid, or solution at a given temperature. Vapor pressure is a measure of a substance's propensity to evaporate.",
 		'methods': None,
 		'cts_props': ['vapor_press']
 	},
 	"mdw": {
 		'name': "Molecular Diffusivity in Water",
-		'definition': "The proportionality constant of molar change between a liquid chemical in question and liquid water due to diffusion. Used to determine how fast a chemical will move in water from a high concentration to a lower concentration.",
+		'definition': "The proportionality constant of molar flux due to molecular diffusion in water and the concentration gradient of the chemical in water. Molecular diffusion in water is the process in which solutes are transported at the microscopic level as the result of their spontaneous movement from regions of higher concentrations to regions of lower concentrations.",
 		'methods': None,
 		'cts_props': ['mol_diss']
 	},
 	"mda": {
 		'name': "Molecular Diffusivity in Air",
-		'definition': "The proportionality constant of molar change between a gas chemical in question and air due to diffusion. Used to determine how fast a chemical will move in air from a high concentration to a lower concentration.",
+		'definition': "The proportionality constant of molar flux due to molecular diffusion in air and the concentration gradient of the chemical in air. Molecular diffusion in air is the process in which gases are transported at the microscopic level as the result of their spontaneous movement from regions of higher concentrations to regions of lower concentrations.",
 		'methods': None,
 		'cts_props': ['mol_diss_air']
 	},
 	"ic": {
 		'name': "Ionization Constant",
-		'definition': "The equilibrium constant for a dissociation reaction. Used to measure the strength of an acid.",
+		'definition': "The equilibrium constant for an acid or base dissocation reaction. The constant provides a measure of the strength of an acid or base.",
 		'methods': None,
 		'cts_props': ['ion_con']
 	},
 	"hlc": {
 		'name': "Henry's Law Constant",
-		'definition': "Proportionality of a dissolved gas to its partial pressure.",
+		'definition': "The ratio of the concentration of a compound in air to the concentration of the compound in water under equilibrium conditions.",
 		'methods': None,
 		'cts_props': ['henrys_law_con']
 	},
 	"kow": {
 		'name': "Octanol/Water Partition Coefficient",
-		'definition': "Proportional relationship of a chemical's tendency to be more soluble in octanol (non-polar) or water (polar). Values above 1 represent more non-polar solvation and values less than 1 represent more polar solvation.",
+		'definition': "The ratio of the concentration of a compound inn n-octanol (a non-polar solvent) to its concentration in water (a polar solvent). The higher the Kow, the more non-polar the compound.",
 		'methods': {
-			'KLOP': "Method for determining octanol/water partition coefficient using Klopman et al. models (Klopman, G.; Li, Ju-Yun.; Wang, S.; Dimayuga, M.: J.Chem.Inf.Comput.Sci., 1994, 34, 752)",
-			'VG': "Method for determining octanol/water partition coefficient derived from Viswanadhan et al. (Viswanadhan, V. N.; Ghose, A. K.; Revankar, G. R.; Robins, R. K., J. Chem. Inf. Comput. Sci., 1989, 29, 163-172)",
-			'PHYS': "Method for determining octanol/water partition coefficient based on the PHYSPROP database"
+			'KLOP': "Method for determining Kow using Klopman et al. models (Klopman, G.; Li, Ju-Yun.; Wang, S.; Dimayuga, M.: J.Chem.Inf.Comput.Sci., 1994, 34, 752)",
+			'VG': "Method for determining Kow derived from Viswanadhan et al. (Viswanadhan, V. N.; Ghose, A. K.; Revankar, G. R.; Robins, R. K., J. Chem. Inf. Comput. Sci., 1989, 29, 163-172)",
+			'PHYS': "Method for determining Kow based on the VG model with the PHYSPROP database as a training set"
 		},
 		'cts_props': ['kow_no_ph', 'kow_wph']
 	},
 	"koc": {
 		'name': "Organic Carbon Partition Coefficient",
-		'definition': "The ratio of mass of a chemical adsorbed in the soil per unit mass of organic carbon in the soil. Can also be described as the distribution coefficient normalized to the total organic carbon content.",
+		'definition': "The ratio of mass of a chemical adsorbed to soil organic carbon to the concentration of the chemical in water under equilibrium conditions. Can also be described as the soil-water distribution coefficient (Koc) normalized to the total organic carbon content of the soil.",
 		'methods': {
 				'MCI': "Molecular Connectivity Index method",
 				'KOW': "log Kow-based method"
@@ -84,9 +84,9 @@ pchem_defs = {
 	},
 	"bcf": {
 		'name': "Bioconcentration Factor",
-		'definition': "The ratio of the concentration of a chemical in an organism due to intake from surrounding water to the concentration of the chemical in the surrounding water.",
+		'definition': "The ratio of the concentration of a chemical in an organism due to uptake from surrounding water to the concentration of the chemical in the surrounding water.",
 		'methods': {
-			'REG': "Regression method for determining bioconcentration and bioaccumulation factor",
+			'REG': "Regression method for determining bioconcentration factors",
 			'A-G': "Arnot-Gobas method for determining bioconcentration and bioaccumulation factors",
 			'SM': "Single Model",
 			'HC': "Hierarchical Clustering",
@@ -97,9 +97,8 @@ pchem_defs = {
 	},
 	"baf": {
 		'name': "Bioaccumulation Factor",
-		'definition': "The ratio of the concentration of a chemical in an organism from all intake pathways, including surrounding water and diet, to the concentration of the chemical in the surrounding environment.",
+		'definition': "The ratio of the concentration of a chemical in an organism from all uptake pathways, including respiration, dermal uptake, and diet, to the concentration of the chemical in the surrounding environment.",
 		'methods': {
-			'REG': "Regression method for determining bioconcentration and bioaccumulation factor",
 			'A-G': "Arnot-Gobas method for determining bioconcentration and bioaccumulation factors"
 		},
 		'cts_props': ['log_baf']
