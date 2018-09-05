@@ -98,8 +98,7 @@ class chemspec(object):
 				tautObj = JchemProperty.getPropObject('tautomerization')
 				tautObj.postData.update({
 					"maxStructureCount": self.tautomer_maxNoOfStructures,
-					"pH": self.tautomer_pH,
-					"considerPH": True
+					"pH": self.tautomer_pH
 				})
 				jchem_prop.make_data_request(self.smiles, tautObj)
 
