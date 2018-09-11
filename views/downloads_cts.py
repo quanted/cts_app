@@ -31,6 +31,8 @@ class CSV(object):
 			raise KeyError("Model - {} - not accepted..".format(model))
 		self.molecular_info = ['smiles', 'iupac', 'formula', 'mass', 'exactMass']  # original user sructure
 
+		self.new_phkow_key = "d_ow"  # key to use for csv for kow_wph
+
 
 	def insert_rows(self, rows, header_index, chem_data, spec_prop):
 		for i in range(0, len(rows)):
@@ -202,7 +204,7 @@ class CSV(object):
 		elif self.model == 'pchemprop':
 			if 'batch_data' in run_data:
 
-				multiChemPchemDataRowBuilder(headers, rows, self.props, run_data)
+				multiChemPchemDataRowBuilder(headers, rows, self.props, run_data, self)
 
 			else:
 				for prop in self.props:
@@ -226,11 +228,15 @@ class CSV(object):
 							for method_datum in method_data:
 								value = method_datum.split()[0]  # value, method
 								method = method_datum.split()[1]
-								headers.append("{} ({}, {})".format(prop, calc, method))
 								rows[0].append(roundData(prop, value))
+								if prop == 'kow_wph':
+									prop = self.new_phkow_key
+								headers.append("{} ({}, {})".format(prop, calc, method))
 						else:
-							headers.append("{} ({})".format(prop, calc))
 							rows[0].append(roundData(prop, calc_props[prop]))
+							if prop == 'kow_wph':
+									prop = self.new_phkow_key
+							headers.append("{} ({})".format(prop, calc))
 
 
 		elif self.model == 'gentrans':
@@ -274,7 +280,7 @@ class CSV(object):
 					parent_index += 1
 
 				# build rows for all batch chems + products with one call
-				pchempropsForMetabolites(headers, rows, self.props, run_data, all_chems_data);
+				pchempropsForMetabolites(headers, rows, self.props, run_data, all_chems_data, self)
 
 			else:
 				# inserts genKey into first column of batch chems csv:
@@ -287,7 +293,7 @@ class CSV(object):
 						rows[products_index].insert(routes_index, metabolite['routes'])  # insert trans pathway into rows
 						products_index += 1
 
-				pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data)
+				pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data, self)
 
 				
 		# check for encoding issues that are laid out in the commented
@@ -355,7 +361,7 @@ def roundData(prop, datum):
 		return datum
 
 
-def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
+def multiChemPchemDataRowBuilder(headers, rows, props, run_data, csv_obj):
 
 	for prop in props:
 		for calc, calc_props in run_data['checkedCalcsAndProps'].items():
@@ -370,6 +376,7 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 
 				if chem_data['calc'] == calc and chem_data['prop'] == prop:
 					# if calc == 'chemaxon' and prop == 'ion_con':
+
 					if prop == 'ion_con':
 						if not chem_data.get('data'):
 							chem_data['data'] = {'pKa': []}
@@ -389,9 +396,15 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 									rows[i].insert(header_index, roundData(prop, pka))
 					else:
 						if chem_data.get('method', False):
-							header = "{} ({}, {})".format(prop, calc, chem_data['method'])
+							if prop == 'kow_wph':
+								header = "{} ({}, {})".format(csv_obj.new_phkow_key, calc, chem_data['method'])	
+							else:
+								header = "{} ({}, {})".format(prop, calc, chem_data['method'])
 						else:
-							header = "{} ({})".format(prop, calc)
+							if prop == 'kow_wph':
+								header = "{} ({})".format(csv_obj.new_phkow_key, calc)
+							else:
+								header = "{} ({})".format(prop, calc)
 						if not header in headers:
 							headers.append(header)
 						header_index = headers.index(header)
@@ -413,7 +426,7 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data):
 									rows[i].insert(header_index, roundData(prop, chem_data['data']))
 
 
-def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
+def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data, csv_obj):
 	"""
 	Basically same as multiChemPchemDataRowBuilder, but just for
 	gentrans workflow.
@@ -458,10 +471,16 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data):
 
 					else:
 
-						if pchem.get('method', False):
-							header = "{} ({}, {})".format(prop, calc, pchem['method'])
+						if pchem.get('method'):
+							if prop == 'kow_wph':
+								header = "{} ({}, {})".format(csv_obj.new_phkow_key, calc, pchem['method'])	
+							else:
+								header = "{} ({}, {})".format(prop, calc, pchem['method'])
 						else:
-							header = "{} ({})".format(prop, calc)
+							if prop == 'kow_wph':
+								header = "{} ({})".format(csv_obj.new_phkow_key, calc)
+							else:
+								header = "{} ({})".format(prop, calc)
 
 						if not header in headers:
 							headers.append(header)

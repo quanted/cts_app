@@ -13,6 +13,7 @@ acronyms = [
 	["CS", "Chemical Speciation"],
 	["CSV", "Comma-Separated Values"],
 	["CTS", "Chemical Transformation Simulator"],
+	["d_ow", "pH-dependent octanol/water distribution coefficient"],
 	["DTXSID", "DSSTOX substance identifier"],
 	["EPA", "Environmental Protection Agency"],
 	["EPI", "Suite Estimation Program Interface"],

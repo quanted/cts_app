@@ -31,7 +31,7 @@ pchem_defs = {
 			'WSKOW': "QSAR model for determining water solubility",
 			'WATERNT': "Fragment-based QSAR model for determining water solubility"
 		},
-		'cts_props': ['water_sol', 'water_sol_ph']
+		'cts_props': ['water_sol']
 	},
 	"vp": {
 		'name': "Vapor Pressure",
@@ -71,7 +71,7 @@ pchem_defs = {
 			'VG': "Method for determining Kow derived from Viswanadhan et al. (Viswanadhan, V. N.; Ghose, A. K.; Revankar, G. R.; Robins, R. K., J. Chem. Inf. Comput. Sci., 1989, 29, 163-172)",
 			'PHYS': "Method for determining Kow based on the VG model with the PHYSPROP database as a training set"
 		},
-		'cts_props': ['kow_no_ph', 'kow_wph']
+		'cts_props': ['kow_no_ph']
 	},
 	"koc": {
 		'name': "Organic Carbon Partition Coefficient",
@@ -102,6 +102,28 @@ pchem_defs = {
 			'A-G': "Arnot-Gobas method for determining bioconcentration and bioaccumulation factors"
 		},
 		'cts_props': ['log_baf']
+	},
+	"d_ow": {
+		'name': "Octanol/Water Partition Distribution Coefficient",
+		'definition': "The ratio of the concentration of a compound in n-octanol (a non-polar solvent) to its concentration in water (a polar solvent) at a user-specified pH value. The higher the d_ow , the more non-polar the compound.",
+		'methods': {
+			'KLOP': "Method for determining d_ow using Klopman et al. models (Klopman, G.; Li, Ju-Yun.; Wang, S.; Dimayuga, M.: J.Chem.Inf.Comput.Sci., 1994, 34, 752)",
+			'VG': "Method for determining d_ow derived from Viswanadhan et al. (Viswanadhan, V. N.; Ghose, A. K.; Revankar, G. R.; Robins, R. K., J. Chem. Inf. Comput. Sci., 1989, 29, 163-172)",
+			'PHYS': "Method for determining d_ow based on the VG model with the PHYSPROP database as a training set"
+		},
+		'cts_props': ['kow_wph']
+	},
+	"wsph": {
+		'name': "Water Solubility",
+		'definition': "The maximum concentration of a chemical compound which can result when it is dissolved in water, adjusted to a user-specified pH.",
+		'methods': {
+			'WSKOW': "QSAR model for determining water solubility",
+			'WATERNT': "Fragment-based QSAR model for determining water solubility",
+			'HC': "Hierarchical Clustering",
+			'NN': "Nearest Neighbor",
+			'GC': "Group Contribution"
+		},
+		'cts_props': ['water_sol_ph']
 	}
 }
 
