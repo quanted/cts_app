@@ -104,7 +104,7 @@ pchem_defs = {
 		'cts_props': ['log_baf']
 	},
 	"d_ow": {
-		'name': "Octanol/Water Partition Distribution Coefficient",
+		'name': "Octanol/Water Distribution Coefficient",
 		'definition': "The ratio of the concentration of a compound in n-octanol (a non-polar solvent) to its concentration in water (a polar solvent) at a user-specified pH value. The higher the d_ow , the more non-polar the compound.",
 		'methods': {
 			'KLOP': "Method for determining d_ow using Klopman et al. models (Klopman, G.; Li, Ju-Yun.; Wang, S.; Dimayuga, M.: J.Chem.Inf.Comput.Sci., 1994, 34, 752)",

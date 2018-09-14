@@ -6,8 +6,8 @@
 def get_chem_info(workflow_obj):
 	data = [
 		{'Entered chemical': workflow_obj.chem_struct},
-		{'Standardized SMILES': workflow_obj.smiles},
 		{'Initial SMILES': workflow_obj.orig_smiles},
+		{'Standardized SMILES': workflow_obj.smiles},
 		{'IUPAC': workflow_obj.name}, 
 		{'Formula': workflow_obj.formula},
 		{'CAS #': workflow_obj.cas}, 
