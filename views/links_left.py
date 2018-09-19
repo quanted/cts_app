@@ -31,6 +31,7 @@ def ordered_list(model=None, page=None):
                 ('Manuscripts', 'cts/about/manuscripts'),
                 ('CTS Acronyms', 'cts/about/acronyms'),
                 ('CTS Flowcharts', 'cts/about/flowcharts'),
+                ('CTS Errors', 'cts/about/errors'),
                 # ('Source Code', 'https://github.com/quanted/cts_app'),
             ])
         ),

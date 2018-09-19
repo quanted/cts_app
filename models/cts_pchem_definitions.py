@@ -26,7 +26,7 @@ pchem_defs = {
 	},
 	"ws": {
 		'name': "Water Solubility",
-		'definition': "The maximum concentration of a chemical compound which can result when it is dissolved in water.",
+		'definition': "The maximum concentration of a chemical compound which can result when it is dissolved in water. For solids, a correction factor has been applied to convert estimated supercooled values to the vapor pressure of the solid.",
 		'methods': {
 			'WSKOW': "QSAR model for determining water solubility",
 			'WATERNT': "Fragment-based QSAR model for determining water solubility"
@@ -35,7 +35,7 @@ pchem_defs = {
 	},
 	"vp": {
 		'name': "Vapor Pressure",
-		'definition': "The force per unit area exerted by a vapor in an equilibrium state with its pure solid, liquid, or solution at a given temperature. Vapor pressure is a measure of a substance's propensity to evaporate.",
+		'definition': "The force per unit area exerted by a vapor in an equilibrium state with its pure solid, liquid, or solution at a given temperature. Vapor pressure is a measure of a substance's propensity to evaporate. For solids, a correction factor has been applied to convert estimated supercooled values to the vapor pressure of the solid.",
 		'methods': None,
 		'cts_props': ['vapor_press']
 	},
@@ -115,7 +115,7 @@ pchem_defs = {
 	},
 	"wsph": {
 		'name': "Water Solubility",
-		'definition': "The maximum concentration of a chemical compound which can result when it is dissolved in water, adjusted to a user-specified pH.",
+		'definition': "The maximum concentration of a chemical compound which can result when it is dissolved in water, adjusted to a user-specified pH. For solids, a correction factor has been applied to convert estimated supercooled values to the vapor pressure of the solid.",
 		'methods': {
 			'WSKOW': "QSAR model for determining water solubility",
 			'WATERNT': "Fragment-based QSAR model for determining water solubility",

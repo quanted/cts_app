@@ -5,6 +5,7 @@ import importlib
 from .links_left import ordered_list
 import os
 from cts_app.models import cts_acronyms
+from cts_app.models import cts_errors
 
 
 
@@ -76,6 +77,10 @@ def about_page(request, model='none', header='non'):
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_intended_use.txt'),'r')
         header = "Intended Use"
 
+    elif model == 'errors':
+        errors_table = render_to_string('cts_errors_table.html', {'cts_errors_list': cts_errors.cts_errors})
+        header = "CTS Errors"
+
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
@@ -87,14 +92,18 @@ def about_page(request, model='none', header='non'):
     if text_file2:
         xx = text_file2.read()
         html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-            # 'TITLE': header + ' Overview',
             'TITLE': header,
             'TEXT_PARAGRAPH': xx
         })
     elif model == 'acronyms':
         html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-            'TITLE': header + ' Overview',
+            'TITLE': header,
             'TEXT_PARAGRAPH': acronyms_table
+        })
+    elif model == 'errors':
+        html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+            'TITLE': header,
+            'TEXT_PARAGRAPH': errors_table
         })
 
     html += render_to_string('07ubertext_end_drupal.html', {})
