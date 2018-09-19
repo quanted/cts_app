@@ -53,5 +53,11 @@ cts_errors = [
 		'name': "cts_rest_general_error",
 		'message': "Error requesting data from [calc name]",
 		'description': "Top-level exception for CTS REST requests. If an unexpected issue occurs that's not caught by specific error handling, this error is thrown."
+	},
+	{
+		'index': 10,
+		'name': "data_not_available",
+		'message': "N/A",
+		'description': "The calculator request was successful, but there wasn't any available data for the given chemical."
 	}
 ]
