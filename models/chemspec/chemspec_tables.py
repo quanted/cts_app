@@ -65,7 +65,7 @@ def getPkaInputs(chemspec_obj):
         {'pH Upper Limit': chemspec_obj.pKa_pH_upper},  
         {'pH Step Size': chemspec_obj.pKa_pH_increment},
         {'Generate Major Microspecies at pH': chemspec_obj.pH_microspecies},
-        {'Isoelectric Point (pl) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment}
+        {'Isoelectric Point (pI) pH Step Size of Charge Distribution': chemspec_obj.isoelectricPoint_pH_increment}
     ]
     return data
 

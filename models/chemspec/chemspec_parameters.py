@@ -130,7 +130,7 @@ class CTS_Speciation_Pka(forms.Form):
 					)
 
 	isoelectricPoint_pH_increment = forms.FloatField (
-						label=mark_safe('Isoelectric Point (pl) <br> pH Step Size for Charge Distribution'),
+						label=mark_safe('Isoelectric Point (pI) <br> pH Step Size for Charge Distribution'),
 						initial=0.5,
 						min_value=0.1,
 						max_value=1.0,
