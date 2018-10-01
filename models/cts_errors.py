@@ -1,3 +1,7 @@
+"""
+Current list of user-level CTS error messages.
+See /cts/about/errors page for table.
+"""
 
 cts_errors = [
 	{

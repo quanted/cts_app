@@ -13,7 +13,7 @@ from django.template import Context, Template, defaultfilters
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from ...cts_calcs.calculator import Calculator
-from ..chem_info import get_chem_info
+from ...cts_calcs.chemical_information import ChemInfo
 
 
 
@@ -22,6 +22,9 @@ lgWidth = 250
 mdWidth = 125 
 smWidth = 75
 scale = 100 # default is 28 
+
+# cheminfo instance for building user-inputs table:
+chem_info = ChemInfo()
 
 
 def getdjtemplate():
@@ -170,7 +173,7 @@ def table_inputs(chemspec_obj):
     <div class="out_">
     <table class="ctsTableStylin" id="inputsTable">
     """
-    html += inTmpl.render(Context(dict(data=get_chem_info(chemspec_obj), heading="Molecular Information")))
+    html += inTmpl.render(Context(dict(data=chem_info.create_cheminfo_table(chemspec_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getPkaInputs(chemspec_obj), heading="Ionization Parameters")))
     html += inTmpl.render(Context(dict(data=getTautData(chemspec_obj), heading="Tautomer Parameters")))
     html += inTmpl.render(Context(dict(data=getStereoData(chemspec_obj), heading="Stereoisomer Parameters")))
