@@ -5,6 +5,10 @@ doc stuff for pchemprop_input.py
 from django.template.loader import render_to_string
 from ..chemspec import chemspec_parameters
 from ..cts_pchem_definitions import pchem_defs
+from ...cts_calcs.chemical_information import ChemInfo
+
+# Instantiates ChemInfo class for building cheminfo results table:
+chem_info = ChemInfo()
 
 def pchempropInputPage(request, model='', header='Physicochemical Properties', formData=None):
 
@@ -25,7 +29,8 @@ def pchempropInputPage(request, model='', header='Physicochemical Properties', f
 
     # chemspec inputs
     html = html + str(chemspec_parameters.form(formData))
-    html = html + render_to_string('cts_cheminfo.html', {})
+    # html = html + render_to_string('cts_cheminfo.html', {})
+    html = html + render_to_string('cts_cheminfo.html', {'chem_objects': chem_info.chem_obj}) # Builds marvin js and results table 
 
     # pchemprop inputs
     html = html + render_to_string('cts_pchem.html', {})
