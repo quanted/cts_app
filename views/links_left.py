@@ -26,7 +26,8 @@ def ordered_list(model=None, page=None):
         ),
         ('Documentation', OrderedDict([
                 # ('Download CTS User Guide (PDF)', 'static_qed/cts/docs/CTS_USER_Guide_5-8-17.pdf'),
-                ("Download CTS User's Guide (PDF)", 'static_qed/cts/docs/CTS_USER_Guide_7-19-2018.pdf'),
+                # ("Download CTS User's Guide (PDF)", 'static_qed/cts/docs/CTS_USER_Guide_7-19-2018.pdf'),
+                ("Download CTS User's Guide (PDF)", 'static_qed/cts/docs/CTS_USER_Guide_10-03-2018.pdf'),
                 ('API Documentation', 'cts/rest/'),
                 ('Manuscripts', 'cts/about/manuscripts'),
                 ('CTS Acronyms', 'cts/about/acronyms'),
