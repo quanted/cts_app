@@ -7,9 +7,15 @@ from django.template import Context, Template, engines
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from . import pchemprop_parameters
-from ..chem_info import get_chem_info
+from ...cts_calcs.chemical_information import ChemInfo
 from ..cts_pchem_definitions import pchem_defs
 from django.conf import settings
+
+
+
+# cheminfo instance for building user-inputs table:
+chem_info = ChemInfo()
+
 
 
 def getStructInfoTemplate():
@@ -73,7 +79,7 @@ def input_struct_table(pchemprop_obj):
     # attempting to add image to right of user inputs table:
     html += pchemprop_obj.parent_image
 
-    html += inTmpl.render(Context(dict(data=get_chem_info(pchemprop_obj), heading="Molecular Information")))
+    html += inTmpl.render(Context(dict(data=chem_info.create_cheminfo_table(pchemprop_obj), heading="Molecular Information")))
     # html += inTmpl.render(Context({'data': getInputData(pchemprop_obj), heading="Molecular Information"}))
 
     html += """
