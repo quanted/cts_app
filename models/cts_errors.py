@@ -14,13 +14,13 @@ cts_errors = [
 		'index': 2,
 		'name': "metals_error",
 		'message': "Chemical cannot contain metals",
-		'description': "Returns error if chemical contains any metals (see 'Intended Use' in the About section)"
+		'description': "Returns error if chemical contains any metals (see 'Intended Use' in the About section)."
 	},
 	{
 		'index': 3,
 		'name': "smiles_filter_error",
 		'message': "Cannot process chemical",
-		'description': "Error message that's returned if something goes wrong when standardizing the SMILES"
+		'description': "Error message that's returned if something goes wrong when standardizing the SMILES."
 	},
 	{
 		'index': 4,
@@ -32,7 +32,7 @@ cts_errors = [
 		'index': 5,
 		'name': "calc_smiles_filter_error",
 		'message': "Cannot filter SMILES for [calc name] data",
-		'description': "Is thrown when an error occurred during the chemical information request routine."
+		'description': "Is returned when an error occurred during the chemical information request routine."
 	},
 	{
 		'index': 6,
@@ -50,7 +50,7 @@ cts_errors = [
 		'index': 8,
 		'name': "chem_type_error",
 		'message': "error getting chemical type",
-		'description': "Is thrown if CTS is unable to get chemical type of user-entered chemical from ChemAxon."
+		'description': "Is returned if CTS is unable to get chemical type of user-entered chemical from ChemAxon."
 	},
 	{
 		'index': 9,
@@ -63,5 +63,11 @@ cts_errors = [
 		'name': "data_not_available",
 		'message': "N/A",
 		'description': "The calculator request was successful, but there wasn't any available data for the given chemical."
+	},
+	{
+		'index': 11,
+		'name': "salt_mixtures_error",
+		'message': "Chemical cannot contain salts or mixtures",
+		'description': "This error is returned if the chemical contains a salt or mixture."
 	}
 ]
