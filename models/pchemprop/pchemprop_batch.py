@@ -60,7 +60,9 @@ def pchempropBatchOutputPage(request, model='', header='Physicochemical Properti
             'speciation_inputs': 'null',
             'nodes': mark_safe(batch_chemicals),
             'nodejs_host': settings.NODEJS_HOST,
-            'nodejs_port': settings.NODEJS_PORT
+            'nodejs_port': settings.NODEJS_PORT,
+            'workflow': "pchemprop",
+            'run_type': "batch"
         }
     )
 

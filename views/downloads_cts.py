@@ -238,6 +238,12 @@ class CSV(object):
 									prop = self.new_phkow_key
 							headers.append("{} ({})".format(prop, calc))
 
+					# Adds geomean column for prop:
+					propGeomean = getGeomeanForProp(prop, run_data['geomeanDict'])
+					if propGeomean:
+						rows[0].append(propGeomean)
+						headers.append("{} ({})".format(prop, "geomean"))
+
 
 		elif self.model == 'gentrans':
 			# TODO: class this, e.g., Metabolizer (jchem_rest)
@@ -425,6 +431,9 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data, csv_obj):
 								else:
 									rows[i].insert(header_index, roundData(prop, chem_data['data']))
 
+		headers, rows = add_geomean_for_batch_chems(run_data, data, headers, rows, prop)
+
+
 
 def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data, csv_obj):
 	"""
@@ -501,4 +510,131 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data, c
 							if 'error' in chem_data or 'error' in pchem:
 								rows[i].insert(header_index, roundData(prop, pchem['data']))
 							else:
+				
 								rows[i].insert(header_index, roundData(prop, pchem['data']))
+
+		headers, rows = add_geomean_for_metabolites(run_data, metabolites_data, headers, rows, prop)
+
+
+
+def add_geomean_for_batch_chems(run_data, batch_chems, headers, rows, prop):
+	"""
+	Adds geomean column to end of a given p-chem property.
+	"""
+
+	if not 'geomeanDict' in run_data:
+		return
+
+	for smiles_key, chem_geomean in run_data['geomeanDict'].items():
+
+		# for chem_data in batch_chems:
+		for prop_key, prop_geomean in run_data['geomeanDict'][smiles_key].items():
+
+			# if smiles_key != chem_data.get('chemical'):
+			# 	continue
+
+			if prop_key != prop:
+				continue
+
+			for i in range(0, len(rows)):
+
+				if run_data['workflow'] == 'gentrans':
+					chem_smiles = rows[i][2]  # smiles after genKey column
+				else:
+					chem_smiles = rows[i][0]
+
+				# if chem_smiles != chem_data.get('chemical') or chem_data.get('prop') != prop:
+					# continue  # move on to next iteration..
+
+				if smiles_key != chem_smiles:
+					continue
+
+				# Adds geomean column for metabolite prop:
+				propGeomean = getGeomeanForProp(prop, run_data['geomeanDict'][chem_smiles])
+				if prop == 'kow_wph':
+						prop = "d_ow"
+				header = "{} ({})".format(prop, "geomean")
+				if propGeomean:
+					if not header in headers:
+						headers.append(header)
+					header_index = headers.index(header)
+					rows[i].insert(header_index, roundData(prop, propGeomean))
+				elif header in headers:
+					# Inserts blank data if there's a geomean for other metabolites but not chem_data
+					header_index = headers.index(header)
+					rows[i].insert(header_index, "N/A")
+
+	return headers, rows
+		
+
+
+
+def add_geomean_for_metabolites(run_data, metabolites_data, headers, rows, prop):
+
+	for chem_data in metabolites_data:
+
+		if not 'pchemprops' in chem_data:
+			continue  # move on to next iteration..
+
+		if not 'geomeanDict' in chem_data:
+			continue
+
+		for i in range(0, len(rows)):
+
+			if run_data['workflow'] == 'gentrans':
+				chem_smiles = rows[i][2]  # smiles after genKey column
+			else:
+				chem_smiles = rows[i][0]
+
+			
+			# if chem_smiles != chem_data.get('smiles') or pchem.get('prop') != prop or chem_data.get('genKey') != rows[i][0]:
+			if chem_smiles != chem_data.get('smiles') or chem_data.get('genKey') != rows[i][0]:
+				continue  # move on to next iteration..
+
+			# Adds geomean column for metabolite prop:
+			# propGeomean = getGeomeanForProp(prop, run_data['geomeanDict'])
+			propGeomean = getGeomeanForProp(prop, chem_data.get('geomeanDict'))
+			if prop == 'kow_wph':
+					prop = "d_ow"
+			header = "{} ({})".format(prop, "geomean")
+			if propGeomean:
+				if not header in headers:
+					headers.append(header)
+				header_index = headers.index(header)
+				rows[i].insert(header_index, roundData(prop, propGeomean))
+			elif header in headers:
+				# Inserts blank data if there's a geomean for other metabolites but not chem_data
+				header_index = headers.index(header)
+				rows[i].insert(header_index, "N/A")
+
+	return headers, rows
+
+
+
+
+
+def getGeomeanForProp(prop, geometricDict):
+	"""
+	Loops geomtric values and returns data for
+	requested prop as a .
+	"""
+	if not geometricDict:
+		return None
+
+	for propName, propGeomean in geometricDict.items():
+
+		# Accounts for prop name change for CSV files (d_ow -> kow_wph):
+		if prop == "d_ow":
+			prop = "kow_wph"
+
+		# Continues loop until prop match:
+		if prop != propName: continue
+
+		# Returns None if prop's geomean is None:
+		if not propGeomean: return None
+
+		# Returns None for props that don't have a geomean:
+		if propName == 'ion_con': return None
+
+		# Returns matching geomean for requested prop:
+		return propGeomean
