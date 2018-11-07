@@ -67,7 +67,7 @@ cts_errors = [
 	{
 		'index': 11,
 		'name': "salt_mixtures_error",
-		'message': "Chemical cannot contain salts or mixtures",
+		'message': "Chemical cannot contain be salt or mixture",
 		'description': "This error is returned if the chemical contains a salt or mixture."
 	}
 ]
