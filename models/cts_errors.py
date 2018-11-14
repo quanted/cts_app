@@ -69,5 +69,17 @@ cts_errors = [
 		'name': "salt_mixtures_error",
 		'message': "Chemical cannot contain be salt or mixture",
 		'description': "This error is returned if the chemical contains a salt or mixture."
+	},
+	{
+		'index': 12,
+		'name': "carbon_check_error",
+		'message': "CTS only accepts organic chemicals",
+		'description': "This error is returned if the chemical does not contain carbon."
+	},
+	{
+		'index': 13,
+		'name': "email_contact",
+		'message': "CTS [at] EPA [dot] gov ",
+		'description': "Email address for any questions or comments about using CTS."
 	}
 ]
