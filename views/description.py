@@ -147,25 +147,13 @@ def flowcharts_page(request, chart='none', header='non'):
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
 
     if img_filepath:
-        # xx = img_file.read()
-        # html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-        #     'TITLE': header + ' Overview',
-        #     'TEXT_PARAGRAPH': xx
-        # })
-        # html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-        #     'TITLE': "",
-        #     'TEXT_PARAGRAPH': 
-        # }
-
         html += """
         <div class="main-column clearfix">
         <div class="panel-pane pane-node-content" >
           <div class="pane-content">
             <div class="node node-page clearfix view-mode-full">
-                <img src="{}">
+                <object type="image/svg+xml" data="{}"></object>
         """.format(img_filepath)
-
-        # html += '<img src="' + img_filepath + '">'  # appends flowchart image to page
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     html += ordered_list()  # fills out 05ubertext_links_left_drupal.html
