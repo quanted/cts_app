@@ -22,6 +22,7 @@ def ordered_list(model=None, page=None):
                 ('Physicochemical Calculators', 'cts/about/pchemcalcs'),
                 ('Reaction Libraries', 'cts/about/reactionlibs'),
                 ('Intended Use', 'cts/about/intendeduse'),
+                ('Contact', 'cts/about/contact'),
             ])
         ),
         ('Documentation', OrderedDict([

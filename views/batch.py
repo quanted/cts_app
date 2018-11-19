@@ -6,7 +6,6 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.views.decorators.csrf import requires_csrf_token
-from .linksLeft import linksLeft
 from .links_left import ordered_list
 from cts_app.models.pchemprop import pchemprop_tables
 # from cts_app.cts_api import cts_rest

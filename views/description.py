@@ -1,7 +1,6 @@
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 import importlib
-#import linksLeft
 from .links_left import ordered_list
 import os
 from cts_app.models import cts_acronyms
@@ -46,7 +45,7 @@ def descriptionPage(request, model='none', header='none'):
 
 def about_page(request, model='none', header='non'):
     
-    text_file2 = None
+    text_file2, html_string = None, None
 
     if model == 'modules':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_modules_descriptions.txt'),'r')
@@ -66,7 +65,7 @@ def about_page(request, model='none', header='non'):
 
     elif model == 'acronyms':
         # renders django template to display acronyms table:
-        acronyms_table = render_to_string('cts_acronyms_table.html', {'cts_acronyms_list': cts_acronyms.acronyms})
+        html_string = render_to_string('cts_acronyms_table.html', {'cts_acronyms_list': cts_acronyms.acronyms})
         header = "CTS Acronyms"
 
     elif model == 'flowcharts':
@@ -78,8 +77,12 @@ def about_page(request, model='none', header='non'):
         header = "Intended Use"
 
     elif model == 'errors':
-        errors_table = render_to_string('cts_errors_table.html', {'cts_errors_list': cts_errors.cts_errors})
+        html_string = render_to_string('cts_errors_table.html', {'cts_errors_list': cts_errors.cts_errors})
         header = "CTS Errors"
+
+    elif model == 'contact':
+        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_contact.txt'),'r')
+        header = "CTS Contact"
 
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {
@@ -95,15 +98,10 @@ def about_page(request, model='none', header='non'):
             'TITLE': header,
             'TEXT_PARAGRAPH': xx
         })
-    elif model == 'acronyms':
+    elif html_string:
         html += render_to_string('06cts_ubertext_start_index_drupal.html', {
             'TITLE': header,
-            'TEXT_PARAGRAPH': acronyms_table
-        })
-    elif model == 'errors':
-        html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-            'TITLE': header,
-            'TEXT_PARAGRAPH': errors_table
+            'TEXT_PARAGRAPH': html_string
         })
 
     html += render_to_string('07ubertext_end_drupal.html', {})
