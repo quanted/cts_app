@@ -1,6 +1,6 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import include, url
-from .views import misc, landing, description, input, output, batch, ctsGenerateReport
+from .views import misc, landing, description, input, output, batch, ctsGenerateReport, cts_stress_view
 # from .cts_api.views import test_ws_page
 # from views import history, algorithms, references, qaqc
 
@@ -46,6 +46,7 @@ urlpatterns.extend([
 	url(r'^(?P<model>.*?)/html/?$', ctsGenerateReport.htmlReceiver),
 	url(r'^(?P<model>.*?)/csv/?$', ctsGenerateReport.csvReceiver),
 	url(r'^batch/sample/?$', ctsGenerateReport.textReceiver),
+	url(r'^stress/testing/?$', cts_stress_view.cts_stress_page),
 	# url(r'^module/(?P<module>.*?)/?$', misc.moduleDescriptions),
 	url(r'^docs/?$', misc.docsRedirect),
 	url(r'^(?P<model>.*?)/?$', description.descriptionPage),
