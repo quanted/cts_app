@@ -79,7 +79,8 @@ class CSV(object):
 
 		# Add molecular info header if gentrans:
 		if run_data['workflow'] == 'gentrans':
-			self.molecular_info = self.molecular_info + ['production', 'accumulation']
+			# self.molecular_info = self.molecular_info + ['production', 'accumulation']
+			self.molecular_info = self.molecular_info + ['production', 'accumulation', 'globalAccumulation']
 
 		# write parent info first and in order..
 		for prop in self.molecular_info:
@@ -239,7 +240,7 @@ class CSV(object):
 							headers.append("{} ({})".format(prop, calc))
 
 					# Adds geomean column for prop:
-					propGeomean = getGeomeanForProp(prop, run_data['geomeanDict'])
+					propGeomean = get_geomean_for_prop(prop, run_data['geomeanDict'])
 					if propGeomean:
 						rows[0].append(propGeomean)
 						headers.append("{} ({})".format(prop, "geomean"))
@@ -550,7 +551,7 @@ def add_geomean_for_batch_chems(run_data, batch_chems, headers, rows, prop):
 					continue
 
 				# Adds geomean column for metabolite prop:
-				propGeomean = getGeomeanForProp(prop, run_data['geomeanDict'][chem_smiles])
+				propGeomean = get_geomean_for_prop(prop, run_data['geomeanDict'][chem_smiles])
 				if prop == 'kow_wph':
 						prop = "d_ow"
 				header = "{} ({})".format(prop, "geomean")
@@ -592,8 +593,8 @@ def add_geomean_for_metabolites(run_data, metabolites_data, headers, rows, prop)
 				continue  # move on to next iteration..
 
 			# Adds geomean column for metabolite prop:
-			# propGeomean = getGeomeanForProp(prop, run_data['geomeanDict'])
-			propGeomean = getGeomeanForProp(prop, chem_data.get('geomeanDict'))
+			# propGeomean = get_geomean_for_prop(prop, run_data['geomeanDict'])
+			propGeomean = get_geomean_for_prop(prop, chem_data.get('geomeanDict'))
 			if prop == 'kow_wph':
 					prop = "d_ow"
 			header = "{} ({})".format(prop, "geomean")
@@ -613,7 +614,7 @@ def add_geomean_for_metabolites(run_data, metabolites_data, headers, rows, prop)
 
 
 
-def getGeomeanForProp(prop, geometricDict):
+def get_geomean_for_prop(prop, geometricDict):
 	"""
 	Loops geomtric values and returns data for
 	requested prop as a .

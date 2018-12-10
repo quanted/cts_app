@@ -222,10 +222,12 @@ def buildMetaboliteTableForPDF():
 
 				<div class="nodeWrapDiv"></div>
 				<table class="mol-info-table ctsTableStylin">
-					{% for key, val in product.items %}
-						{% if key in headings %}
-							<tr><td>{{key}}</td><td>{{val|default:"N/A"}}</td>
-						{% endif %}
+					{% for heading in headings %}
+						{% for key, val in product.items %}
+							{% if key == heading %}
+								<tr><td>{{key}}</td><td>{{val|default:"N/A"}}</td>
+							{% endif %}
+						{% endfor %}						
 					{% endfor %}
 				</table>
 
@@ -238,7 +240,7 @@ def buildMetaboliteTableForPDF():
 			<div class="pchem-wrapper">
 
 				<table id="pchemprop_table" class="input_table">
-					<tr><td></td><td>ChemAxon</td><td>EPI Suite</td><td>TEST</td><td>SPARC</td><td>Measured</td></tr>
+					<tr><td></td><td>ChemAxon</td><td>EPI Suite</td><td>TEST</td><td>SPARC</td><td>Geometric Mean</td><td>Measured</td></tr>
 
 					{% for data_row in product.data %}
 						<tr>
