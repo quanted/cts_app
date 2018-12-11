@@ -163,7 +163,7 @@ def textReceiver(request, model=''):
 
 def handle_gentrans_request(pdf_json):
 
-	headings = ['genKey', 'routes', 'smiles', 'iupac', 'formula', 'mass', 'exactMass', 'accumulation', 'production', 'globalAccumulation']
+	headings = ['genKey', 'routes', 'smiles', 'iupac', 'formula', 'mass', 'exactMass', 'accumulation', 'production', 'globalAccumulation', 'likelihood']
 	calcs = ['chemaxon', 'epi', 'test', 'sparc', 'measured']
 	checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
 	products = pdf_json['nodes']

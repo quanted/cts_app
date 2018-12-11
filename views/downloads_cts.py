@@ -80,7 +80,7 @@ class CSV(object):
 		# Add molecular info header if gentrans:
 		if run_data['workflow'] == 'gentrans':
 			# self.molecular_info = self.molecular_info + ['production', 'accumulation']
-			self.molecular_info = self.molecular_info + ['production', 'accumulation', 'globalAccumulation']
+			self.molecular_info = self.molecular_info + ['production', 'accumulation', 'globalAccumulation', 'likelihood']
 
 		# write parent info first and in order..
 		for prop in self.molecular_info:
