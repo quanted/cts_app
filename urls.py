@@ -14,6 +14,7 @@ if settings.MACHINE_ID == "developer" or settings.MACHINE_ID == "ord-uber-vm005"
 	urlpatterns.extend([
 		url(r'^stress/testing/?$', cts_stress_view.cts_stress_page),
 		url(r'^stress/html/?$', cts_stress_view.cts_stress_html_download),
+		url(r'^stress/json/?$', cts_stress_view.cts_stress_json_download),
 	])
 
 # All view functions here must be in '/views/worker.py'

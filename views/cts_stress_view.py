@@ -31,3 +31,18 @@ def cts_stress_html_download(request):
 	response['Content-Disposition'] = 'attachment; filename=' + 'stress_results_' + jid + '.html'
 	packet.close()
 	return response
+
+
+
+@require_POST
+def cts_stress_json_download(request):
+	"""
+	Saves output as JSON
+	"""
+	input_str = request.POST.get('stress_json')
+	packet = io.StringIO(input_str)  # write to memory
+	jid = Calculator().gen_jid()  # create timestamp
+	response = HttpResponse(packet.getvalue(), content_type='application/json')
+	response['Content-Disposition'] = 'attachment; filename=' + 'stress_results_' + jid + '.json'
+	packet.close()
+	return response
