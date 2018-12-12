@@ -553,8 +553,10 @@ def add_geomean_for_batch_chems(run_data, batch_chems, headers, rows, prop):
 				# Adds geomean column for metabolite prop:
 				propGeomean = get_geomean_for_prop(prop, run_data['geomeanDict'][chem_smiles])
 				if prop == 'kow_wph':
-						prop = "d_ow"
-				header = "{} ({})".format(prop, "geomean")
+					# prop = "d_ow"
+					header = "{} ({})".format("d_ow", "geomean")
+				else:
+					header = "{} ({})".format(prop, "geomean")
 				if propGeomean:
 					if not header in headers:
 						headers.append(header)
@@ -596,8 +598,10 @@ def add_geomean_for_metabolites(run_data, metabolites_data, headers, rows, prop)
 			# propGeomean = get_geomean_for_prop(prop, run_data['geomeanDict'])
 			propGeomean = get_geomean_for_prop(prop, chem_data.get('geomeanDict'))
 			if prop == 'kow_wph':
-					prop = "d_ow"
-			header = "{} ({})".format(prop, "geomean")
+				# prop = "d_ow"
+				header = "{} ({})".format("d_ow", "geomean")
+			else:
+				header = "{} ({})".format(prop, "geomean")
 			if propGeomean:
 				if not header in headers:
 					headers.append(header)
