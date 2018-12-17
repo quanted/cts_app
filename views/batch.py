@@ -106,7 +106,11 @@ def batchOutputPage(request, model='none', header='none'):
     html += """
     </div><br><br>"""
 
-    html = html + render_to_string('04cts_uberoutput_end.html', {})
+    # Uses CSV dropdown for gentrans workflow, regular button for the rest:
+    if model == 'gentrans':
+        html += render_to_string('04cts_uberoutput_end_gentrans.html')  # file download html    
+    else:
+        html += render_to_string('04cts_uberoutput_end.html')  # file download html
 
     html = html + render_to_string('cts_export.html', {}, request=request)
 

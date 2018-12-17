@@ -43,7 +43,11 @@ def outputPageView(request, model='none', header=''):
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {})
 
-    html += render_to_string('04cts_uberoutput_end.html', {'model':model})  # file download html
+    # Uses CSV dropdown for gentrans workflow, regular button for the rest:
+    if model == 'gentrans':
+        html += render_to_string('04cts_uberoutput_end_gentrans.html')  # file download html    
+    else:
+        html += render_to_string('04cts_uberoutput_end.html')  # file download html
 
     html += render_to_string('04cts_uberoutput_start.html', {
             'model_attributes': header+' Output'})

@@ -157,9 +157,6 @@ class CSV(object):
 								headers.append(spec_prop)
 							header_index = headers.index(spec_prop)
 							self.insert_rows(rows, header_index, chem_data, spec_prop)
-							# for i in range(0, len(rows)):
-							# 	if rows[i][0] == chem_data['node']['smiles']:
-							# 		rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
 
 						elif spec_prop == 'pka-micospecies':
 							j = 1
@@ -170,9 +167,6 @@ class CSV(object):
 									headers.append(header)
 								header_index = headers.index(header)
 								self.insert_rows(rows, header_index, chem_data, spec_prop)
-								# for i in range(0, len(rows)):
-								# 	if rows[i][0] == chem_data['node']['smiles']:
-								# 		rows[i].insert(header_index, chem_data['data'][spec_prop]['smiles'])
 			else:
 				run_data = run_data['run_data']
 				for key, val in run_data.items():
@@ -254,7 +248,7 @@ class CSV(object):
 				metabolites_data = run_data['data']
 
 			if not metabolites_data:
-				return HttpResponse("error building csv for metabolites..")
+				return HttpResponse("Error building csv for metabolites.")
 
 			headers.insert(0, 'genKey') # insert generation headers first
 			headers.insert(1, 'routes')  # transformation pathway			
