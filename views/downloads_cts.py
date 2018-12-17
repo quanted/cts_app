@@ -280,8 +280,13 @@ class CSV(object):
 
 					parent_index += 1
 
-				# build rows for all batch chems + products with one call
-				pchempropsForMetabolites(headers, rows, self.props, run_data, all_chems_data, self)
+				if run_data.get('csv_type') == 'likely':
+					# Adds column for 'number of major products' for each parent, if likely csv:
+					for batch_chem_products in metabolites_data:
+						headers, rows = add_likely_products_column(headers, rows, batch_chem_products)
+				else:
+					# Build rows for all batch chems + products with one call
+					pchempropsForMetabolites(headers, rows, self.props, run_data, all_chems_data, self)
 
 			else:
 				# inserts genKey into first column of batch chems csv:
@@ -294,7 +299,11 @@ class CSV(object):
 						rows[products_index].insert(routes_index, metabolite['routes'])  # insert trans pathway into rows
 						products_index += 1
 
-				pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data, self)
+				# Adds column for 'number of major products' for each parent, if likely csv:
+				if run_data.get('csv_type') == 'likely':
+					headers, rows = add_likely_products_column(headers, rows, metabolites_data)
+				else:
+					pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data, self)
 
 				
 		# check for encoding issues that are laid out in the commented
@@ -494,7 +503,8 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data, c
 						for i in range(0, len(rows)):
 
 							if run_data['workflow'] == 'gentrans':
-								chem_smiles = rows[i][2]  # smiles after genKey column
+								smiles_index = headers.index('smiles')
+								chem_smiles = rows[i][smiles_index]  # smiles after genKey column
 							else:
 								chem_smiles = rows[i][0]
 
@@ -637,3 +647,59 @@ def get_geomean_for_prop(prop, geometricDict):
 
 		# Returns matching geomean for requested prop:
 		return propGeomean
+
+
+
+def add_likely_products_column(headers, rows, metabolites_data):
+	"""
+	Adds 'number of major products' column, which
+	is number of products a parent has with global
+	accumulation great than 10%.
+	"""
+	major_products_header = "major_products"
+	major_products_index = 1
+
+	if not major_products_header in headers:
+		headers.insert(major_products_index, major_products_header)
+
+	parent_data = metabolites_data[0]  # assuming first object in list is parent of remaining items
+	parent_genkey = parent_data['genKey']
+
+	# Gets first number from genKey num (e.g., 3.1.2 returns 3):
+	# parent_num = get_parent_number(parent_genkey)
+
+	num_major_products = len(metabolites_data) - 1
+
+	for row in rows:
+
+		# Skips rows that don't have a genKey yet
+		# if not 'molecule' in row[0]:
+		# 	continue
+
+		# product_parent_num = get_parent_number(row[0])  # gets parent num for product
+
+		# if product_parent_num != parent_num:
+		# 	continue
+
+		if row[0] == parent_genkey and len(row) == len(headers):
+			row[major_products_index] = num_major_products
+		elif row[0] == parent_genkey:
+			row.insert(major_products_index, num_major_products)
+		elif len(row) < len(headers):
+			row.insert(major_products_index, "")
+		# else:
+		# 	row.insert(major_products_index, "")
+
+	return headers, rows
+
+
+
+def get_parent_number(genkey):
+	"""
+	Returns the parent's number as an integer,
+	e.g., 'molecule 3.1.2' returns 3, 'molecule 1'
+	returns 1.
+	"""
+	genkey_num = genkey.split(' ')[1]
+	parent_num = genkey_num.split('.')[0]
+	return parent_num
