@@ -60,8 +60,8 @@ class gentrans(object):
             'structure': self.smiles,
             'generationLimit': self.gen_limit,
             'populationLimit': 0,
-            'likelyLimit': 0.001,
-            'excludeCondition': ""
+            'likelyLimit': 0.1,
+            'excludeCondition': "hasValenceError()"
         }
 
         if len(self.trans_libs) > 0:
