@@ -58,7 +58,7 @@ cts_errors = [
 		'name': "cts_rest_general_error",
 		'message': "Error requesting data from [calc name]",
 		'description': "Top-level exception for CTS REST requests. If an unexpected issue occurs that's not caught by specific error handling, this error is thrown. (API-specific error)",
-		'suggestions': "Please contact us at cts AT epa DOT gov with your request information so we can reproduce and examine this unknown error."
+		'suggestions': "Please contact us at cts@epa.gov with your request information so we can reproduce and examine this unknown error."
 	},
 	{
 		'index': 9,
