@@ -53,6 +53,11 @@ class CSV(object):
 		else:
 			content_disposition = 'attachment; filename=' + self.model + '_' + jid + '.csv'
 			
+		# Adds 'likely' to CSV filename if gentrans likely CSV:
+		if run_data.get('csv_type') == "likely":
+			parsed_string = content_disposition.split(jid)  # splits filename at jid
+			content_disposition = parsed_string[0] + "likely_" + jid + parsed_string[1]  # adds 'likely' to filename
+
 		response['Content-Disposition'] = content_disposition
 
 		logging.info("Beginning CSV parsing..")
