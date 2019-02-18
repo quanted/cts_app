@@ -283,7 +283,7 @@ class CSV(object):
 					# Adds column for 'number of major products' for each parent, if likely csv:
 					for batch_chem_products in metabolites_data:
 						headers, rows = add_likely_products_column(headers, rows, batch_chem_products)
-						# renumber_likely_products(batch_chem_products)  # renumbers likely product genKey
+						headers, rows = renumber_likely_products(headers, rows)  # renumbers likely product genKey
 						headers, rows = remove_routes_column(headers, rows)
 				else:
 					# Build rows for all batch chems + products with one call
@@ -303,6 +303,7 @@ class CSV(object):
 				# Adds column for 'number of major products' for each parent, if likely csv:
 				if run_data.get('csv_type') == 'likely':
 					headers, rows = add_likely_products_column(headers, rows, metabolites_data)
+					headers, rows = renumber_likely_products(headers, rows)  # renumbers likely product genKey
 					headers, rows = remove_routes_column(headers, rows)
 				else:
 					pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data, self)
@@ -673,28 +674,28 @@ def remove_routes_column(headers, rows):
 
 
 
-# def renumber_likely_products(metabolites_data):
-# 	"""
-# 	Renumbers likely product genkeys to be sequential
-# 	(e.g., 1.4, 1.6 --> 1.1, 1.2).
-# 	"""
-# 	genkey_list = []
-# 	genkey_lengths = []
-
-# 	parent_num = metabolites_data[0]['genKey'].split(" ")[1]
-# 	parent_num = parent_num.split(".")[0]
-
-# 	for product in metabolites_data:
-# 		gen_num = product['genKey'].split(" ")[1]  # assuming ex: "molecule 1.1"
-		
-# 		product_level = len(gen_num.split(".")) - 1  # gen/product level (1.1 = 1, 1.1.1 = 2)
-
-# 		if product_level > 0:
-# 			genkey_lengths.append(product_level)  # gen level for each product
-
-# 	number_of_gens = list(set(genkey_lengths))  # total num of gens (list of gen levels)
-
-# 	# for product in metabolites_data:
-# 	# 	gen_num = product['genKey'].split(" ")[1]
-# 	# 	product_level = len(gen_num.split(".")) - 1
-# 	# 	for gen_level in number_of_gens:
+def renumber_likely_products(headers, rows):
+	"""
+	Renumbers likely product genkeys for the likely
+	products CSV in the gentrans workflow. Currently, keeps
+	parent genKey the same, and numbers its products with the
+	following schema: 1-A, 1-B, etc.
+	"""
+	if not 'genKey' in headers:
+		return headers, rows
+	letter_id = "A"  # identifier for product (e.g., 1-A)
+	prev_parent_num = None
+	genkey_index = headers.index('genKey')
+	for row in rows:
+		genkey_val = row[0]  # gets parent or product genkey
+		parent_num = genkey_val.split(" ")[1]  # splitting e.g., "molecule 1" to get number
+		parent_num = parent_num.split(".")[0]  # gets parent value of molecule number
+		if parent_num != prev_parent_num:
+			letter_id = "A"  # resets letter back to "A" for new parent's products
+			prev_parent_num = parent_num  # resets prev parent 
+		if len(genkey_val.split(".")) > 1:
+			# this is a product (i.e., "1.x..".split(".") > 1)
+			new_genkey = "molecule {}-{}".format(parent_num, letter_id)
+			row[0] = new_genkey
+			letter_id = chr(ord(letter_id) + 1)  # increments letter
+	return headers, rows
