@@ -53,6 +53,11 @@ class CSV(object):
 		else:
 			content_disposition = 'attachment; filename=' + self.model + '_' + jid + '.csv'
 			
+		# Adds 'likely' to CSV filename if gentrans likely CSV:
+		if run_data.get('csv_type') == "likely":
+			parsed_string = content_disposition.split(jid)  # splits filename at jid
+			content_disposition = parsed_string[0] + "likely_" + jid + parsed_string[1]  # adds 'likely' to filename
+
 		response['Content-Disposition'] = content_disposition
 
 		logging.info("Beginning CSV parsing..")
@@ -79,7 +84,6 @@ class CSV(object):
 
 		# Add molecular info header if gentrans:
 		if run_data['workflow'] == 'gentrans':
-			# self.molecular_info = self.molecular_info + ['production', 'accumulation']
 			self.molecular_info = self.molecular_info + ['production', 'accumulation', 'globalAccumulation', 'likelihood']
 
 		# write parent info first and in order..
@@ -93,7 +97,6 @@ class CSV(object):
 					for metabolite in run_data['data']:
 						for key, val in metabolite.items():
 							if key == prop and key not in rows[i]:
-								# headers.append(key)
 								rows[i].append(val)
 								i += 1
 				else:
@@ -105,7 +108,6 @@ class CSV(object):
 				headers.append(prop)
 				i = 0
 				j = 0  # trying it here for gentrans batch mode!
-				# for chem_data in run_data['batch_data']:
 				for chem_data in run_data['batch_chems']:
 
 					if run_data['workflow'] == 'gentrans':
@@ -188,7 +190,6 @@ class CSV(object):
 								# each ms is a jchem_structure object
 								headers.append(key + '-smiles')
 								rows[0].append(val['smiles'])
-						# elif key == 'stereoisomers' or key == 'tautomers':
 						elif key == 'tautomers':
 							i = 0
 							for item in val:
@@ -204,7 +205,6 @@ class CSV(object):
 			else:
 				for prop in self.props:
 					for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-						# if prop in calc_props:
 						if not prop in calc_props:
 							continue
 
@@ -215,7 +215,6 @@ class CSV(object):
 									new_pka_key = pka_key[:-1] + "_" + pka_num
 									headers.append("{} ({})".format(new_pka_key, calc))
 									rows[0].append(roundData(prop, pka_val))
-						# elif calc == 'chemaxon' and prop == 'kow_no_ph' or calc == 'chemaxon' and prop == 'kow_wph':
 						elif '<br>' in calc_props.get(prop, ''):
 							# calc-prop value has methods, e.g., "-1.102 (KLOP)<br>-1.522 (VG)<br>-1.344 (PHYS)<br>"
 							method_data = calc_props[prop].split('<br>')
@@ -284,6 +283,8 @@ class CSV(object):
 					# Adds column for 'number of major products' for each parent, if likely csv:
 					for batch_chem_products in metabolites_data:
 						headers, rows = add_likely_products_column(headers, rows, batch_chem_products)
+						headers, rows = renumber_likely_products(headers, rows)  # renumbers likely product genKey
+						headers, rows = remove_routes_column(headers, rows)
 				else:
 					# Build rows for all batch chems + products with one call
 					pchempropsForMetabolites(headers, rows, self.props, run_data, all_chems_data, self)
@@ -302,6 +303,8 @@ class CSV(object):
 				# Adds column for 'number of major products' for each parent, if likely csv:
 				if run_data.get('csv_type') == 'likely':
 					headers, rows = add_likely_products_column(headers, rows, metabolites_data)
+					headers, rows = renumber_likely_products(headers, rows)  # renumbers likely product genKey
+					headers, rows = remove_routes_column(headers, rows)
 				else:
 					pchempropsForMetabolites(headers, rows, self.props, run_data, metabolites_data, self)
 
@@ -355,19 +358,15 @@ def roundData(prop, datum):
 	try:
 		round_list = ['water_sol', 'vapor_press', 'mol_diss', 'mol_diss_air', 
 						'henrys_law_con', 'water_sol_ph']
-						
 		if prop in round_list:
 			rounded_datum = "{:.2E}".format(datum)
 			return rounded_datum
 		else:
 			return round(float(datum), 2)
 	except ValueError as err:
-		# logging.warning("downloads_cts, didn't round {}: {}".format(datum, err))
 		return datum
 	except TypeError as err:
 		# Triggered when trying to round something that's not a number.
-
-		# logging.warning("downloads_cts, datum: {}, err: {}".format(datum, err))
 		return datum
 
 
@@ -375,7 +374,6 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data, csv_obj):
 
 	for prop in props:
 		for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-			# for prop in calc_props:  # works, but columns aren't together by prop
 			data = None
 			if 'batch_data' in run_data:
 				data = run_data['batch_data']
@@ -385,15 +383,12 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data, csv_obj):
 			for chem_data in data:
 
 				if chem_data['calc'] == calc and chem_data['prop'] == prop:
-					# if calc == 'chemaxon' and prop == 'ion_con':
 
 					if prop == 'ion_con':
 						if not chem_data.get('data'):
 							chem_data['data'] = {'pKa': []}
 						j = 1
-						# for pka in chem_data['data']['pKa']:
 						for pka in chem_data.get('data', {}).get('pKa', {}):
-							# header = "{} (pka_{})".format(calc, j)
 							header = "pka_{} ({})".format(j, calc)
 							j += 1
 							if not header in headers:
@@ -462,7 +457,6 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data, c
 
 				for pchem in chem_data['pchemprops']:
 
-					# if pchem['prop'] == prop and pchem['calc'] == calc:
 					if pchem.get('prop') != prop or pchem.get('calc') != calc:
 						continue  # move on to next iteration..
 
@@ -508,7 +502,6 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data, c
 							else:
 								chem_smiles = rows[i][0]
 
-							# if chem_smiles == chem_data['smiles'] and pchem['prop'] == prop:
 							if chem_smiles != chem_data.get('smiles') or pchem.get('prop') != prop or chem_data.get('genKey') != rows[i][0]:
 								continue  # move on to next iteration..
 
@@ -532,11 +525,7 @@ def add_geomean_for_batch_chems(run_data, batch_chems, headers, rows, prop):
 
 	for smiles_key, chem_geomean in run_data['geomeanDict'].items():
 
-		# for chem_data in batch_chems:
 		for prop_key, prop_geomean in run_data['geomeanDict'][smiles_key].items():
-
-			# if smiles_key != chem_data.get('chemical'):
-			# 	continue
 
 			if prop_key != prop:
 				continue
@@ -548,16 +537,12 @@ def add_geomean_for_batch_chems(run_data, batch_chems, headers, rows, prop):
 				else:
 					chem_smiles = rows[i][0]
 
-				# if chem_smiles != chem_data.get('chemical') or chem_data.get('prop') != prop:
-					# continue  # move on to next iteration..
-
 				if smiles_key != chem_smiles:
 					continue
 
 				# Adds geomean column for metabolite prop:
 				propGeomean = get_geomean_for_prop(prop, run_data['geomeanDict'][chem_smiles])
 				if prop == 'kow_wph':
-					# prop = "d_ow"
 					header = "{} ({})".format("d_ow", "geomean")
 				else:
 					header = "{} ({})".format(prop, "geomean")
@@ -593,16 +578,12 @@ def add_geomean_for_metabolites(run_data, metabolites_data, headers, rows, prop)
 			else:
 				chem_smiles = rows[i][0]
 
-			
-			# if chem_smiles != chem_data.get('smiles') or pchem.get('prop') != prop or chem_data.get('genKey') != rows[i][0]:
 			if chem_smiles != chem_data.get('smiles') or chem_data.get('genKey') != rows[i][0]:
 				continue  # move on to next iteration..
 
 			# Adds geomean column for metabolite prop:
-			# propGeomean = get_geomean_for_prop(prop, run_data['geomeanDict'])
 			propGeomean = get_geomean_for_prop(prop, chem_data.get('geomeanDict'))
 			if prop == 'kow_wph':
-				# prop = "d_ow"
 				header = "{} ({})".format("d_ow", "geomean")
 			else:
 				header = "{} ({})".format(prop, "geomean")
@@ -665,41 +646,56 @@ def add_likely_products_column(headers, rows, metabolites_data):
 	parent_data = metabolites_data[0]  # assuming first object in list is parent of remaining items
 	parent_genkey = parent_data['genKey']
 
-	# Gets first number from genKey num (e.g., 3.1.2 returns 3):
-	# parent_num = get_parent_number(parent_genkey)
-
 	num_major_products = len(metabolites_data) - 1
 
 	for row in rows:
-
-		# Skips rows that don't have a genKey yet
-		# if not 'molecule' in row[0]:
-		# 	continue
-
-		# product_parent_num = get_parent_number(row[0])  # gets parent num for product
-
-		# if product_parent_num != parent_num:
-		# 	continue
-
 		if row[0] == parent_genkey and len(row) == len(headers):
 			row[major_products_index] = num_major_products
 		elif row[0] == parent_genkey:
 			row.insert(major_products_index, num_major_products)
 		elif len(row) < len(headers):
 			row.insert(major_products_index, "")
-		# else:
-		# 	row.insert(major_products_index, "")
 
 	return headers, rows
 
 
 
-def get_parent_number(genkey):
+def remove_routes_column(headers, rows):
 	"""
-	Returns the parent's number as an integer,
-	e.g., 'molecule 3.1.2' returns 3, 'molecule 1'
-	returns 1.
+	Removes the 'routes' column from the likely CSV.
 	"""
-	genkey_num = genkey.split(' ')[1]
-	parent_num = genkey_num.split('.')[0]
-	return parent_num
+	if not 'routes' in headers:
+		return headers, rows
+	route_index = headers.index('routes')
+	for row in rows:
+		del row[route_index]
+	del headers[route_index]
+	return headers, rows
+
+
+
+def renumber_likely_products(headers, rows):
+	"""
+	Renumbers likely product genkeys for the likely
+	products CSV in the gentrans workflow. Currently, keeps
+	parent genKey the same, and numbers its products with the
+	following schema: 1-A, 1-B, etc.
+	"""
+	if not 'genKey' in headers:
+		return headers, rows
+	letter_id = "A"  # identifier for product (e.g., 1-A)
+	prev_parent_num = None
+	genkey_index = headers.index('genKey')
+	for row in rows:
+		genkey_val = row[0]  # gets parent or product genkey
+		parent_num = genkey_val.split(" ")[1]  # splitting e.g., "molecule 1" to get number
+		parent_num = parent_num.split(".")[0]  # gets parent value of molecule number
+		if parent_num != prev_parent_num:
+			letter_id = "A"  # resets letter back to "A" for new parent's products
+			prev_parent_num = parent_num  # resets prev parent 
+		if len(genkey_val.split(".")) > 1:
+			# this is a product (i.e., "1.x..".split(".") > 1)
+			new_genkey = "molecule {}-{}".format(parent_num, letter_id)
+			row[0] = new_genkey
+			letter_id = chr(ord(letter_id) + 1)  # increments letter
+	return headers, rows
