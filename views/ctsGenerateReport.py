@@ -1,5 +1,6 @@
 from django.views.decorators.http import require_POST
 import io
+import os
 from django.http import HttpResponse
 from django.template import Context
 import json
@@ -12,6 +13,8 @@ from django.core.cache import cache
 from django.conf import settings
 
 
+
+sparc_available = os.environ.get('SPARC_AVAILABLE', False)
 
 def parsePOST(request):
 
@@ -164,7 +167,9 @@ def textReceiver(request, model=''):
 def handle_gentrans_request(pdf_json):
 
 	headings = ['genKey', 'routes', 'smiles', 'iupac', 'formula', 'mass', 'exactMass', 'accumulation', 'production', 'globalAccumulation', 'likelihood']
-	calcs = ['chemaxon', 'epi', 'test', 'sparc', 'measured']
+	calcs = ['chemaxon', 'epi', 'test', 'measured']
+	if sparc_available:
+		calcs.insert(-1, 'sparc')  # inserts sparc after test calc, if available
 	checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
 	products = pdf_json['nodes']
 	props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press',
@@ -264,6 +269,10 @@ def handle_gentrans_request(pdf_json):
 
 	# Adds geomean to product's 'data' lists:
 	products = add_geomean_to_products(products)
+
+	# if not sparc_available and 'sparc' in list(checkedCalcsAndProps.keys()):
+	# 	logging.warning("DELETING SPARC FROM CHECKED CALCS AND PROPS")
+	# 	del checkedCalcsAndProps['sparc']
 
 	return buildMetaboliteTableForPDF().render(
 		Context(dict(headings=headings, checkedCalcsAndProps=checkedCalcsAndProps, products=products, props=props, calcs=calcs)))

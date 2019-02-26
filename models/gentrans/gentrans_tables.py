@@ -240,14 +240,19 @@ def buildMetaboliteTableForPDF():
 			<div class="pchem-wrapper">
 
 				<table id="pchemprop_table" class="input_table">
+				
+					{% if sparc_available %}
 					<tr><td></td><td>ChemAxon</td><td>EPI Suite</td><td>TEST</td><td>SPARC</td><td>Geometric Mean</td><td>Measured</td></tr>
+					{% else %}
+					<tr><td></td><td>ChemAxon</td><td>EPI Suite</td><td>TEST</td><td>Geometric Mean</td><td>Measured</td></tr>
+					{% endif %}
 
 					{% for data_row in product.data %}
-						<tr>
-						{% for row_item in data_row %}
-							<td>{{row_item}}</td>
-						{% endfor %}
-						</tr>
+					<tr>
+					{% for row_item in data_row %}
+						<td>{{row_item}}</td>
+					{% endfor %}
+					</tr>
 					{% endfor %}
 
 				</table>
