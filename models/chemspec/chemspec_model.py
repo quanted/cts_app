@@ -4,7 +4,9 @@
 import datetime
 import json
 import logging
-from ...cts_calcs.jchem_properties import JchemProperty
+import requests
+from ..generate_timestamp import gen_jid
+from ..booleanize import booleanize
 
 
 
@@ -13,12 +15,8 @@ class chemspec(object):
 				 get_stereo, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
 				 isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
-
-		self.jchem_prop = JchemProperty()
-
 		self.title = "Calculate Chemical Speciation"
-		# self.jid = JchemCalc().gen_jid()  # timestamp
-		self.jid = self.jchem_prop.gen_jid()
+		self.jid = gen_jid()
 		self.run_type = run_type
 
 		# Chemical Editor Tab
@@ -28,18 +26,13 @@ class chemspec(object):
 		self.name = name
 		self.formula = formula
 		self.cas = cas
-
 		self.mass = "{} g/mol".format(mass)
 		self.exactMass = "{} g/mol".format(exactMass)
 
-
 		# Checkboxes:
-		# jchem_prop = JchemCalc()
-		self.get_pka = self.jchem_prop.booleanize(get_pka)  # convert 'on'/'off' to bool
-		self.get_taut = self.jchem_prop.booleanize(get_taut)
-		self.get_stereo = self.jchem_prop.booleanize(get_stereo)
-
-
+		self.get_pka = booleanize(get_pka)  # convert 'on'/'off' to bool
+		self.get_taut = booleanize(get_taut)
+		self.get_stereo = booleanize(get_stereo)
 
 		# Chemical Speciation Tab
 		self.pKa_decimals = None
@@ -50,77 +43,27 @@ class chemspec(object):
 		self.pKa_pH_increment = pKa_pH_increment
 		self.pH_microspecies = pH_microspecies
 		self.isoelectricPoint_pH_increment = isoelectricPoint_pH_increment
-
 		self.tautomer_maxNoOfStructures = tautomer_maxNoOfStructures
 		self.tautomer_pH = tautomer_pH
-
 		self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
 
 		# Output stuff:
-		self.jchemPropObjects = {}
-		self.jchemDictResults = {}
 		self.speciation_inputs = {}  # for batch mode use
-
-
-		pkaObj, majorMsObj, isoPtObj, tautObj, stereoObj = None, None, None, None, None
-
-
+		speciation_results = {}  # speciation prop results
 
 		if self.run_type != 'batch':
-
-			if self.get_pka:
-
-				# make call for pKa:
-				pkaObj = JchemProperty.getPropObject('pKa')
-				pkaObj.postData.update({
-					"pHLower": self.pKa_pH_lower,
-					"pHUpper": self.pKa_pH_upper,
-					"pHStep": self.pKa_pH_increment,
-				})
-				self.jchem_prop.make_data_request(self.smiles, pkaObj)
-
-				# make call for majorMS:
-				majorMsObj = JchemProperty.getPropObject('majorMicrospecies')
-				majorMsObj.postData.update({'pH': self.pH_microspecies})
-				self.jchem_prop.make_data_request(self.smiles, majorMsObj)
-
-				# make call for isoPt:
-				isoPtObj = JchemProperty.getPropObject('isoelectricPoint')
-				isoPtObj.postData.update({'pHStep': self.isoelectricPoint_pH_increment})
-				self.jchem_prop.make_data_request(self.smiles, isoPtObj)
-
-			if self.get_taut:
-
-				tautObj = JchemProperty.getPropObject('tautomerization')
-				tautObj.postData.update({
-					"maxStructureCount": self.tautomer_maxNoOfStructures,
-					"pH": self.tautomer_pH
-				})
-				self.jchem_prop.make_data_request(self.smiles, tautObj)
-
-
-			if self.get_stereo:
-				# TODO: set values for max stereos!!!
-				stereoObj = JchemProperty.getPropObject('stereoisomer')
-				stereoObj.postData.update({'maxStructureCount': self.stereoisomers_maxNoOfStructures})
-				self.jchem_prop.make_data_request(self.smiles, stereoObj)
-
-			self.jchemPropObjects = {
-				'pKa': pkaObj,
-				'majorMicrospecies': majorMsObj,
-				'isoelectricPoint': isoPtObj,
-				'tautomerization': tautObj,
-				'stereoisomers': stereoObj
-			}
+			# Calls cts_rest to get speciation results:
+			speciation_url = os.environ.get('CTS_REST_SERVER') + "/cts/rest/speciation/run"
+			post_data = self.__dict__  # payload is class attributes as dict
+			speciation_results = requests.post(speciation_url,
+									data=json.dumps(post_data),
+									allow_redirects=True,
+									verify=False)
+			speciation_results = json.loads(speciation_results.content)
 
 		else:
-
-			# for batch mode, get inputs but don't get
-			# data until output page loads. this is because batch
-			# speciation calls are done through nodejs/socket.io
+			# Batch speciation calls are done through nodejs/socket.io
 			# using cts_pchemprop_requests.html
-
-
 			self.speciation_inputs = {
 				'pKa_decimals': pKa_decimals,
 				'pKa_pH_lower': pKa_pH_lower,
@@ -143,5 +86,4 @@ class chemspec(object):
 			'exactMass': self.exactMass
 		}
 
-		speciation_results = self.jchem_prop.getSpeciationResults(self.jchemPropObjects)
 		self.run_data.update(speciation_results)
