@@ -11,7 +11,7 @@ n = 2  # number of decimal places to round values
 
 class PChemProp(object):
     def __init__(self, run_type, chem_struct=None, smiles=None, name=None, formula=None, exactMass=None, mass=None,
-                 cas=None, chemaxon=None, epi=None, test=None, sparc=None, measured=None, melting_point=None,
+                 cas=None, chemaxon=None, epi=None, test=None, sparc=None, measured=None, opera=None, melting_point=None,
                  boiling_point=None, water_sol=None, water_sol_ph=None, vapor_press=None, mol_diss=None, mol_diss_air=None,
                  ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None, kow_ph=None, koc=None, log_bcf=None, log_baf=None):
         
@@ -51,6 +51,7 @@ class PChemProp(object):
         self.epi = epi
         self.test = test
         self.measured = measured
+        self.opera = opera
 
         self.checkedPropsDict = {}
         self.calcluatorsDict = {}
@@ -79,7 +80,8 @@ class PChemProp(object):
             "epi": self.epi,
             "test": self.test,
             "sparc": self.sparc,
-            "measured": self.measured
+            "measured": self.measured,
+            "opera": self.opera
         }
 
     def fillCalcsandPropsDict(self):
@@ -108,7 +110,8 @@ class PChemProp(object):
             "epi": self.epi,
             "test": self.test,
             "sparc": self.sparc,
-            "measured": self.measured
+            "measured": self.measured,
+            "opera": self.opera
         }
 
 

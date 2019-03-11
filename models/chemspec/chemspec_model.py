@@ -4,6 +4,7 @@
 import datetime
 import json
 import logging
+import os
 import requests
 from ..generate_timestamp import gen_jid
 from ..booleanize import booleanize
@@ -55,11 +56,18 @@ class chemspec(object):
 			# Calls cts_rest to get speciation results:
 			speciation_url = os.environ.get('CTS_REST_SERVER') + "/cts/rest/speciation/run"
 			post_data = self.__dict__  # payload is class attributes as dict
+			post_data['chemical'] = self.chem_struct  # cts rest uses 'chemical'
+			post_data['service'] = "getSpeciationData"
+			post_data['run_type'] = "single"
 			speciation_results = requests.post(speciation_url,
 									data=json.dumps(post_data),
 									allow_redirects=True,
-									verify=False)
+									verify=False,
+									timeout=30)
 			speciation_results = json.loads(speciation_results.content)
+
+			if speciation_results.get('status'):
+				speciation_results = speciation_results['data']
 
 		else:
 			# Batch speciation calls are done through nodejs/socket.io

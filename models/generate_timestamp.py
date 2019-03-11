@@ -1,7 +1,7 @@
 import datetime
 import pytz
 
-def gen_jid(self):
+def gen_jid():
 	"""
 	Generates timestamp for output pages.
 	"""

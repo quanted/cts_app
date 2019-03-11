@@ -34,6 +34,9 @@ sparc_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_availa
 # NOTE: Measured data is from EPI measured values
 measured_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
 				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
+
+opera_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available',
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 ####################################################################################
 
 
@@ -95,7 +98,8 @@ def pchempropAvailable(calculator, prop):
 		calcDict = dict(zip(props_list, sparc_props))
 	elif calculator == "measured":
 		calcDict = dict(zip(props_list, measured_props))
-
+	elif calculator == "opera":
+		calcDict = dict(zip(props_list, opera_props))
 
 	if prop in calcDict:
 		if 'unavailable' in calcDict[prop]:

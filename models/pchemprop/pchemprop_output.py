@@ -31,7 +31,7 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.epi = request.POST.get('epi')
     pchemprop_obj.sparc = request.POST.get('sparc')
     pchemprop_obj.measured = request.POST.get('measured')
-    # measured = request.POST.get('measured') # now "average", which is computed
+    pchemprop_obj.opera = request.POST.get('opera')
 
     # Pchem Properties Table Checkboxes
     pchemprop_obj.melting_point = request.POST.get('melting_point')

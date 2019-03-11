@@ -1,4 +1,4 @@
-def booleanize(self, value):
+def booleanize(value):
     """
     Django checkbox comes back as 'on' or 'off',
     or True/False depending on version, so this
