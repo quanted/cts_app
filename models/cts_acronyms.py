@@ -45,7 +45,7 @@ acronyms = [
 	["RPS", "Reaction Pathway Simulator"],
 	["SM",	"Single Model"],
 	["SMILES", "Simplified Molecular-Input Line-Entry System"],
-	["SPARC", "SPARC Performs Automated Reasoning in Chemistry"],
+	# ["SPARC", "SPARC Performs Automated Reasoning in Chemistry"],
 	["TEST", "Toxicity Estimation Software Tool"],
 	["TSCA", "Toxic Substances Control Act"],
 	["VG", "Method for determining octanol/water partition coefficient in ChemAxon derived from Viswanadhan et al. (Viswanadhan, V. N.; Ghose, A. K.; Revankar, G. R.; Robins, R. K., J. Chem. Inf. Comput. Sci., 1989, 29, 163-172)"],
