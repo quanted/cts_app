@@ -8,6 +8,7 @@ import os
 import requests
 from ..generate_timestamp import gen_jid
 from ..booleanize import booleanize
+from ...cts_api import cts_rest
 
 
 
@@ -54,16 +55,17 @@ class chemspec(object):
 
 		if self.run_type != 'batch':
 			# Calls cts_rest to get speciation results:
-			speciation_url = os.environ.get('CTS_REST_SERVER') + "/cts/rest/speciation/run"
+			# speciation_url = os.environ.get('CTS_REST_SERVER') + "/cts/rest/speciation/run"
 			post_data = self.__dict__  # payload is class attributes as dict
 			post_data['chemical'] = self.chem_struct  # cts rest uses 'chemical'
 			post_data['service'] = "getSpeciationData"
 			post_data['run_type'] = "single"
-			speciation_results = requests.post(speciation_url,
-									data=json.dumps(post_data),
-									allow_redirects=True,
-									verify=False,
-									timeout=30)
+			# speciation_results = requests.post(speciation_url,
+			# 						data=json.dumps(post_data),
+			# 						allow_redirects=True,
+			# 						verify=False,
+			# 						timeout=30)
+			speciation_results = cts_rest.getChemicalSpecationData(post_data)
 			speciation_results = json.loads(speciation_results.content)
 
 			if speciation_results.get('status'):
