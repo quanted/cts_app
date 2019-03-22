@@ -65,7 +65,7 @@ class chemspec(object):
 			# 						allow_redirects=True,
 			# 						verify=False,
 			# 						timeout=30)
-			speciation_results = cts_rest.getChemicalSpecationData(post_data)
+			speciation_results = cts_rest.getChemicalSpeciationData(post_data)
 			speciation_results = json.loads(speciation_results.content)
 
 			if speciation_results.get('status'):
