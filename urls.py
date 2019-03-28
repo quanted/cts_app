@@ -1,6 +1,6 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 from django.conf.urls import include, url
-from .views import misc, landing, description, input, output, batch, ctsGenerateReport, cts_stress_view
+from .views import misc, landing, description, input, output, batch, ctsGenerateReport, cts_stress_view, user_comments
 from django.conf import settings
 
 
@@ -25,6 +25,7 @@ urlpatterns.extend([
 	url(r'^flame/?$', misc.fileNotFound),
 	url(r'^about/(?P<model>.*?)/?$', description.about_page),
 	url(r'^flowcharts/(?P<chart>.*?)/?$', description.flowcharts_page),
+	url(r'^forms/contact/?$', user_comments.handle_contact_post),
 	url(r'^(?P<model>.*?)/description/?$', description.descriptionPage),
 	url(r'^(?P<model>.*?)/input/?$', input.inputPage),
 	url(r'^(?P<model>.*?)/output/?$', output.outputPage),

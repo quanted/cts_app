@@ -1,8 +1,10 @@
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.mail import BadHeaderError, send_mail
 import importlib
 from .links_left import ordered_list
 import os
+import logging
 from cts_app.models import cts_acronyms
 from cts_app.models import cts_errors
 
@@ -81,7 +83,8 @@ def about_page(request, model='none', header='non'):
         header = "CTS Errors"
 
     elif model == 'contact':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_contact.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_contact.txt'),'r')
+        html_string = render_to_string('cts_contacts_page.html', {}, request=request)
         header = "CTS Contact"
 
     #drupal template for header with bluestripe
