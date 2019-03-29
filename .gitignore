@@ -28,3 +28,4 @@ settings_local.py
 *.log
 *.pid
 secret.py
+cts_comments.json

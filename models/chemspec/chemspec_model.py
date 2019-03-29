@@ -75,6 +75,7 @@ class chemspec(object):
 			# Batch speciation calls are done through nodejs/socket.io
 			# using cts_pchemprop_requests.html
 			self.speciation_inputs = {
+				'get_pka': True,
 				'pKa_decimals': pKa_decimals,
 				'pKa_pH_lower': pKa_pH_lower,
 				'pKa_pH_upper': pKa_pH_upper,

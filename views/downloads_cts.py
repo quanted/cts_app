@@ -385,7 +385,7 @@ def multiChemPchemDataRowBuilder(headers, rows, props, run_data, csv_obj):
 				if chem_data['calc'] == calc and chem_data['prop'] == prop:
 
 					if prop == 'ion_con':
-						if not chem_data.get('data'):
+						if not chem_data.get('data') or not 'pKa' in chem_data['data']:
 							chem_data['data'] = {'pKa': []}
 						j = 1
 						for pka in chem_data.get('data', {}).get('pKa', {}):
@@ -462,7 +462,7 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data, c
 
 					if pchem['prop'] == "ion_con":
 						j = 1
-						if not pchem.get('data'):
+						if not pchem.get('data') or not 'pKa' in pchem['data']:
 							pchem['data'] = {'pKa': []}
 						for pka in pchem['data'].get('pKa', []):
 							header = "pka_{} ({})".format(j, calc)
