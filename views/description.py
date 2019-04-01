@@ -49,7 +49,11 @@ def about_page(request, model='none', header='non'):
     
     text_file2, html_string = None, None
 
-    if model == 'modules':
+    if model == 'cts':
+        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_about.txt'),'r')
+        header = "About CTS"
+
+    elif model == 'modules':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_modules_descriptions.txt'),'r')
         header = "CTS Modules"
 
@@ -86,6 +90,10 @@ def about_page(request, model='none', header='non'):
         # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_contact.txt'),'r')
         html_string = render_to_string('cts_contacts_page.html', {}, request=request)
         header = "CTS Contact"
+
+    elif model == 'versionhistory':
+        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_version_history.txt'),'r')
+        header = "CTS Version History"
 
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {

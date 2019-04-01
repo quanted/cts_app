@@ -69,7 +69,7 @@ class chemspec(object):
 			speciation_results = json.loads(speciation_results.content)
 
 			if speciation_results.get('status'):
-				speciation_results = speciation_results['data']
+				speciation_results = speciation_results['data'].get('data')
 
 		else:
 			# Batch speciation calls are done through nodejs/socket.io
