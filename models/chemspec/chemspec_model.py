@@ -57,7 +57,8 @@ class chemspec(object):
 			# Calls cts_rest to get speciation results:
 			# speciation_url = os.environ.get('CTS_REST_SERVER') + "/cts/rest/speciation/run"
 			post_data = self.__dict__  # payload is class attributes as dict
-			post_data['chemical'] = self.chem_struct  # cts rest uses 'chemical'
+			# post_data['chemical'] = self.chem_struct  # cts rest uses 'chemical'
+			post_data['chemical'] = self.smiles
 			post_data['service'] = "getSpeciationData"
 			post_data['run_type'] = "single"
 			# speciation_results = requests.post(speciation_url,
