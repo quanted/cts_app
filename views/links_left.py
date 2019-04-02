@@ -18,10 +18,11 @@ def ordered_list(model=None, page=None):
         ),
         ('Documentation', OrderedDict([
                 ("Download CTS User's Guide (PDF)", 'static_qed/cts/docs/CTS_USER_Guide_10-03-2018.pdf'),
+                ('CTS Modules', 'cts/about/modules'),
+                ('Physicochemical Calculators', 'cts/about/pchemcalcs'),
+                ('Reaction Libraries', 'cts/about/reactionlibs'),
                 ('API Documentation', 'cts/rest/'),
                 ('Manuscripts', 'cts/about/manuscripts'),
-                # ('Physicochemical Calculators', 'cts/about/pchemcalcs'),
-                # ('Reaction Libraries', 'cts/about/reactionlibs'),
                 ('Intended Use', 'cts/about/intendeduse'),
                 ('Version History', 'cts/about/versionhistory'),
                 # ('CTS Acronyms', 'cts/about/acronyms'),
