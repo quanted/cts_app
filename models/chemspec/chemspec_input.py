@@ -12,7 +12,7 @@ from ...cts_calcs.chemical_information import ChemInfo
 # Instantiates ChemInfo class for building cheminfo results table:
 chem_info = ChemInfo()
 
-jchem_server = os.environ.get('CTS_JCHEM_SERVER')
+jchem_server = os.environ.get('MARVIN_PROXY')  # url for marvinsketchjs operations
 
     
 
