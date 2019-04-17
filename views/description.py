@@ -78,9 +78,9 @@ def about_page(request, model='none', header='non'):
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_flowcharts_descriptions.txt'),'r')
         header = "CTS Flowcharts"
 
-    elif model == 'intendeduse':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_intended_use.txt'),'r')
-        header = "Intended Use"
+    elif model == 'help':
+        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_help.txt'),'r')
+        header = "Help"
 
     elif model == 'errors':
         html_string = render_to_string('cts_errors_table.html', {'cts_errors_list': cts_errors.cts_errors})

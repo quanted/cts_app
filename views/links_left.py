@@ -5,7 +5,6 @@ from collections import OrderedDict
 def ordered_list(model=None, page=None):
     link_dict = OrderedDict([
         ('About', OrderedDict([
-                # ('CTS Modules', 'cts/about/modules'),
                 ('About CTS', 'cts/about/cts'),
                 ('Contact', 'cts/about/contact'),
             ])
@@ -23,12 +22,8 @@ def ordered_list(model=None, page=None):
                 ('Reaction Libraries', 'cts/about/reactionlibs'),
                 ('API Documentation', 'cts/rest/'),
                 ('Manuscripts', 'cts/about/manuscripts'),
-                ('Intended Use', 'cts/about/intendeduse'),
                 ('Version History', 'cts/about/versionhistory'),
-                ('CTS Acronyms', 'cts/about/acronyms'),
-                ('CTS Flowcharts', 'cts/about/flowcharts'),
-                ('CTS Errors', 'cts/about/errors'),
-                # ('Source Code', 'https://github.com/quanted/cts_app'),
+                ('Help', 'cts/about/help'),
             ])
         )
     ])
