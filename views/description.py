@@ -50,7 +50,8 @@ def about_page(request, model='none', header='non'):
     text_file2, html_string = None, None
 
     if model == 'cts':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_about.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_about.txt'),'r')
+        html_string = render_to_string('cts_about.html')
         header = "About CTS"
 
     elif model == 'modules':
