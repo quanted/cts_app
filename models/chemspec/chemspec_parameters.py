@@ -14,7 +14,7 @@ def tmpl_chemstructCTS():
 		<div id="chemEditLookup">
 		<table class="input_table tab tab_Chemical">
 			<tr>
-				<td colspan="2"><span>{{ header }}</span>
+				<td colspan="2"><span><label for="id_chem_struct">{{ header }}</label></span>
 				<input id="setSmilesButton" class="tab_chemicalButtons" type="button" value="Enter a SMILES, Name, or CAS# and Click Here">
 				</td>
 			</tr>
@@ -36,11 +36,17 @@ def tmpl_speciationCTS():
 	<table class="input_table tab tab_Speciation" name="{{name}}" style="display:none">
 
 	{% if name == "CTS_Speciation_Pka" %}
-		<tr><th colspan="2" class="ctsInputHeader">{{ form.get_pka }} {{ header }}</th></tr>
+		<tr>
+		<th colspan="2" class="ctsInputHeader"><label style="display:inline;" for="{{form.get_pka.auto_id}}">{{ header }}</label>{{ form.get_pka }}</th>
+		</tr>
 	{% elif name == "CTS_Speciation_Tautomer" %}
-		<tr><th colspan="2" class="ctsInputHeader">{{ form.get_taut }} {{ header }}</th></tr>
+		<tr>
+		<th colspan="2" class="ctsInputHeader"><label style="display:inline;" for="{{form.get_taut.auto_id}}">{{ header }}</label>{{ form.get_taut }}</th>
+		</tr>
 	{% elif name == "CTS_Speciation_Stereoisomers" %}
-		<tr><th colspan="2" class="ctsInputHeader">{{ form.get_stereo }} {{ header }}</th></tr>
+		<tr>
+		<th colspan="2" class="ctsInputHeader"><label style="display:inline;" for="{{form.get_stereo.auto_id}}">{{ header }}</label>{{ form.get_stereo }}</th>
+		</tr>
 	{% endif %}
 		
 	{% for field in form %}

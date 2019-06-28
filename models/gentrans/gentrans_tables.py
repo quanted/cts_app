@@ -145,12 +145,12 @@ def table_metabolites(gentrans_obj):
 		<div id="cont">
 			<div id="center-cont">
 				<!-- the canvas container -->
-				<div id="infovis"></div>
+				<div id="infovis" tabindex="0" aria-label="reaction pathway tree"></div>
 			</div>
 			<div id="log"></div>
 			<div id="zoom-controls">
-				<input id="zoom-out" class="zoom-buttons" type="button" value="-" />
-				<input id="zoom-in" class="zoom-buttons" type="button" value="+" />
+				<input id="zoom-out" class="zoom-buttons" type="button" value="-" aria-label="zoom out" />
+				<input id="zoom-in" class="zoom-buttons" type="button" value="+" aria-label="zoom in" />
 			</div>
 		</div>
 		<div id="reactionpathways">

@@ -7,7 +7,7 @@ def ordered_list(model=None, page=None):
         ('About', OrderedDict([
                 ('CTS Home', 'cts/'),
                 ('About CTS', 'cts/about/cts'),
-                ('Contact', 'cts/about/contact'),
+                # ('Contact', 'cts/about/contact'),
             ])
         ),
         ('Execute CTS Workflows', OrderedDict([

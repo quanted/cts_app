@@ -250,7 +250,8 @@ class cts_reaction_options(forms.Form):
 	gen_limit = forms.ChoiceField (
 					choices=gen_limit_CHOICES,
 					label='Max number of generations:',
-					required=False
+					required=False,
+					widget=forms.Select(attrs={'aria-label': 'select generation limit'})
 				)	
 
 	# pop_limit = forms.ChoiceField (

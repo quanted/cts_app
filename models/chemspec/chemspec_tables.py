@@ -29,7 +29,7 @@ chem_info = ChemInfo()
 
 def getdjtemplate():
     dj_template ="""
-    <dl class="shiftRight" id="{{id|default:"none"}}">
+    <dl class="shiftRight" id="{{id|default:"none"}}" tabindex="0">
     {% for label, value in data.items %}
         <dd>
         {{label}}: {{value|default:"none"}}
@@ -171,8 +171,8 @@ def table_inputs(chemspec_obj):
     <br>
     <H3 class="out_1 collapsible" id="userInputs"><span></span>User Inputs</H3>
     <div class="out_">
-    <table class="ctsTableStylin" id="inputsTable">
-    """
+    <table class="ctsTableStylin" id="inputsTable" tabindex="0" aria-label="user inputs for {}">
+    """.format(chemspec_obj.name)
     html += inTmpl.render(Context(dict(data=chem_info.create_cheminfo_table(chemspec_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getPkaInputs(chemspec_obj), heading="Ionization Parameters")))
     html += inTmpl.render(Context(dict(data=getTautData(chemspec_obj), heading="Tautomer Parameters")))
