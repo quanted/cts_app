@@ -17,7 +17,8 @@ def ordered_list(model=None, page=None):
             ])
         ),
         ('Documentation', OrderedDict([
-                ("Download CTS User's Guide (PDF)", 'static_qed/cts/docs/CTS_USER_Guide_10-03-2018.pdf'),
+                # ("Download CTS User's Guide (PDF)", 'static_qed/cts/docs/CTS_USER_Guide_10-03-2018.pdf'),
+                ("Download CTS User's Guide (PDF)", 'static_qed/cts/docs/CTS_USER_Guide_07162019.pdf'),
                 ('CTS Modules', 'cts/about/modules'),
                 ('Physicochemical Calculators', 'cts/about/pchemcalcs'),
                 ('Reaction Libraries', 'cts/about/reactionlibs'),
