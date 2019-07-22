@@ -35,7 +35,7 @@ def outputPageView(request, model='none', header=''):
             modelOutputHTML = "table_all() Returned Wrong Type"
 
     # drupal template for header with bluestripe
-    html = render_to_string('01epa_drupal_header.html', {
+    html = render_to_string('01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
