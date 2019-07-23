@@ -6,7 +6,7 @@ def ordered_list(model=None, page=None):
     link_dict = OrderedDict([
         ('About', OrderedDict([
                 ('CTS Home', 'cts/'),
-                ('About CTS', 'cts/about/cts'),
+                ('CTS Basic Information', 'cts/about/cts'),
                 # ('Contact', 'cts/about/contact'),
             ])
         ),
