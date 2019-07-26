@@ -92,55 +92,20 @@ def getStereoData(chemspec_obj):
 
 # Parent/Micro species data dictionary for templating
 def getPkaValues(chemspec_obj):
-    # jsonData = json.dumps(chemspec_obj.result)
-    
     data = { 
-        # 'Basic pKa Value(s)': chemspec_obj.pkaDict['mostBasicPka'], 
-        # 'Acidic pKa Value(s)': chemspec_obj.pkaDict['mostAcidicPka']
         'pKa Value(s)': chemspec_obj.pkaDict['mostAcidicPka']
     }
     return data
 
 
-# djtemplate = getdjtemplate()
 tmpl = Template(getdjtemplate())
 inTmpl = Template(getInputTemplate())
 
 
 def table_all(chemspec_obj):
-    # html_all = '<script type="text/javascript" src="/static_qed/cts/js/qtip/jquery.qtip.js"></script>'
-    # html_all += '<link type="text/css" rel="stylesheet" href="/static_qed/cts/js/qtip/jquery.qtip.css"></link>'
-
     html_all = render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))})
     html_all += table_inputs(chemspec_obj)
     html_all += table_outputs(chemspec_obj)
-    # qtip popup script for images with class "wrapped_molecule"
-    html_all += """
-    <script>
-    function tipit() {
-        // Using qtip2 for tooltip
-        $('.chemspec_molecule').each(function() {
-            $(this).qtip({
-                content: {
-                    text: $(this).next('.tooltiptext')
-                },
-                style: {
-                    classes: 'qtip-light'
-                },
-                position: {
-                    my: 'bottom center',
-                    at: 'center right',
-                    target: 'mouse'
-                }
-            });
-        });
-    }
-    </script>
-    <script>
-        tipit();
-    </script>
-    """
-
     return html_all
 
 
