@@ -40,7 +40,13 @@ def parsePOST(request):
 
 	# PDF/HTML File Styling:
 	input_css="""
+			<!DOCTYPE html>
+			<head>
 			<style>
+			@page {
+				size: letter portrait;
+
+			}
 			html {
 				background-color:#FFFFFF;
 			}
@@ -81,10 +87,18 @@ def parsePOST(request):
 			img {
 				background-color: #FFFFFF;
 			}
-
 			</style>
+			<title>CTS PDF Results</title>
+			</head>
+			<body>
 			"""
 	input_str = input_css + final_str
+
+	input_str += """
+	</body>
+	</html>
+	"""
+
 	return input_str
 
 
