@@ -20,7 +20,7 @@ def ordered_list(model=None, page=None):
                 # ("Download CTS User's Guide (PDF)", 'static_qed/cts/docs/CTS_USER_Guide_07162019.pdf'),
                 ("CTS User's Guide", 'https://www.epa.gov/chemical-research/users-guide-chemical-transformation-simulator-cts'),
                 ('CTS Modules', 'cts/about/modules'),
-                ('Physicochemical Calculators', 'cts/about/pchemcalcs'),
+                ('Property Calculators', 'cts/about/pchemcalcs'),
                 ('Reaction Libraries', 'cts/about/reactionlibs'),
                 ('API Documentation', 'cts/rest/'),
                 ('Manuscripts', 'cts/about/manuscripts'),

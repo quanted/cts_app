@@ -13,7 +13,7 @@ chem_info = ChemInfo()
 
 jchem_server = os.environ.get('MARVIN_PROXY')  # url for marvinsketchjs operations
 
-def pchempropInputPage(request, model='', header='Physicochemical Properties', formData=None):
+def pchempropInputPage(request, model='', header='Physicochemical Property Calculators', formData=None):
 
     html = render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
 
