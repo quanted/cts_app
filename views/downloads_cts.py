@@ -14,7 +14,7 @@ from django.http import HttpResponse
 from django.http import StreamingHttpResponse
 from ..cts_calcs.calculator_chemaxon import JchemCalc
 from ..cts_calcs.calculator_epi import EpiCalc
-from ..cts_calcs.calculator_test import TestCalc
+from ..cts_calcs.calculator_test import TestWSCalc
 from ..cts_calcs.calculator_sparc import SparcCalc
 
 
@@ -347,7 +347,7 @@ def getCalcMapKeys(calc):
 	elif calc == 'epi':
 		return EpiCalc().propMap.keys()
 	elif calc == 'test':
-		return TestCalc().propMap.keys()
+		return TestWSCalc().propMap.keys()
 	elif calc == 'sparc':
 		return SparcCalc().propMap.keys()
 	else:
