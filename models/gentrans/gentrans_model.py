@@ -17,7 +17,7 @@ from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 class gentrans(object):
     def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
                  exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
-                 gen_limit, pop_limit, likely_limit):
+                 gen_limit, pop_limit, likely_limit, biotrans_libs):
 
         self.title = "Generate Transformation Products"
         self.jid = MetabolizerCalc().gen_jid()
@@ -56,16 +56,22 @@ class gentrans(object):
                 self.trans_libs.append(key)
 
         # NOTE: populationLimit is hard-coded to 0 as it currently does nothing
-        self.metabolizer_request_post = {
-            'structure': self.smiles,
-            'generationLimit': self.gen_limit,
-            'populationLimit': 0,
-            'likelyLimit': 0.1,
-            'excludeCondition': "hasValenceError()"
-        }
-
-        if len(self.trans_libs) > 0:
-            self.metabolizer_request_post.update({'transformationLibraries': self.trans_libs})
+        if biotrans_libs:
+            self.metabolizer_request_post = {
+                'chemical': self.smiles,
+                'gen_limit': self.gen_limit,
+                'prop': biotrans_libs
+            }
+        else:
+            self.metabolizer_request_post = {
+                'structure': self.smiles,
+                'generationLimit': self.gen_limit,
+                'populationLimit': 0,
+                'likelyLimit': 0.1,
+                'excludeCondition': "hasValenceError()"
+            }
+            if len(self.trans_libs) > 0:
+                self.metabolizer_request_post.update({'transformationLibraries': self.trans_libs})
 
         self.run_data = {
             'title': "Transformation Products Output",
