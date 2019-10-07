@@ -72,6 +72,10 @@ def outputPageView(request, model='none', header=''):
 @require_POST
 def outputPage(request, model='none', header=''):
 
+    orig_model = model
+    if model == 'biotrans':
+        model = 'gentrans'
+
     viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
     header = viewmodule.header
 

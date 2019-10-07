@@ -9,6 +9,10 @@ from django.views.decorators.csrf import requires_csrf_token
 
 @requires_csrf_token
 def inputPage(request, model='none', header='none'):
+    orig_model = model
+    if model == 'biotrans':
+        model = 'gentrans'  # use gentrans workflow for biotrans during testing
+
     viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
     inputmodule = importlib.import_module('.'+model+'_input', 'cts_app.models.'+model)
     header = viewmodule.header
@@ -24,7 +28,8 @@ def inputPage(request, model='none', header='none'):
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {})
 
     inputPageFunc = getattr(inputmodule, model+'InputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
-    html += inputPageFunc(request, model, header)
+
+    html += inputPageFunc(request, orig_model, header)
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     html += ordered_list(model='cts/' + model, page='input')
