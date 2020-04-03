@@ -5,7 +5,6 @@ import os
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
-from .linksLeft import linksLeft
 from .links_left import ordered_list
 from .generate_timestamp import get_timestamp
 from django.views.decorators.csrf import requires_csrf_token
@@ -36,7 +35,7 @@ def outputPageView(request, model='none', header=''):
             modelOutputHTML = "table_all() Returned Wrong Type"
 
     # drupal template for header with bluestripe
-    html = render_to_string('01epa_drupal_header.html', {
+    html = render_to_string('01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
@@ -44,7 +43,11 @@ def outputPageView(request, model='none', header=''):
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {})
 
-    html += render_to_string('04cts_uberoutput_end.html', {'model':model})  # file download html
+    # Uses CSV dropdown for gentrans workflow, regular button for the rest:
+    if model == 'gentrans':
+        html += render_to_string('04cts_uberoutput_end_gentrans.html')  # file download html    
+    else:
+        html += render_to_string('04cts_uberoutput_end.html')  # file download html
 
     html += render_to_string('04cts_uberoutput_start.html', {
             'model_attributes': header+' Output'})
@@ -69,6 +72,10 @@ def outputPageView(request, model='none', header=''):
 @require_POST
 def outputPage(request, model='none', header=''):
 
+    orig_model = model
+    if model == 'biotrans':
+        model = 'gentrans'
+
     viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
     header = viewmodule.header
 
@@ -81,14 +88,11 @@ def outputPage(request, model='none', header=''):
 
         # Form validation testing
         if not form.is_valid():
-            # return reload_inputs_page(request, model, header)
             return generate_error_page(model)
 
         return outputPageView(request, model, header)
 
     except Exception as e:
-        # logging.warning("E X C E P T: Exception in output.py")
-        # return outputPageView(request, model, header)
         return generate_error_page(model)
 
 
@@ -129,32 +133,6 @@ def generate_error_page(model, title=None, error_msg=None):
     html += render_to_string('09epa_drupal_cts_scripts.html')
     html += render_to_string('10epa_drupal_footer.html', {})
 
-    response = HttpResponse()
-    response.write(html)
-    return response
-
-
-
-def reload_inputs_page(request, model='none', header=''):
-    """
-    Reloads inputs page if error submitting model.
-    """
-
-    # logging.debug("Form not valid.. Reloading inputs page..")
-    # logging.debug("ERRORS: {}".format(form.errors))
-
-    inputmodule = importlib.import_module('.'+model+'_input', 'cts_app.models.'+model)
-
-    # Render input page view with POSTed values and show errors
-    html = render_to_string('01cts_uberheader.html', {'title': header+' Inputs'})
-    html = html + render_to_string('02cts_uberintroblock_wmodellinks.html', {'model':model,'page':'input'})
-    html = html + linksLeft()
-
-    inputPageFunc = getattr(inputmodule, model+'InputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
-    html = html + inputPageFunc(request, model, header, formData=request.POST)  # formData contains the already POSTed form data
-
-    html = html + render_to_string('06cts_uberfooter.html', {'links': ''})
-    
     response = HttpResponse()
     response.write(html)
     return response

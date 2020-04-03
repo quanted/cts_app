@@ -6,7 +6,6 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.views.decorators.csrf import requires_csrf_token
-from .linksLeft import linksLeft
 from .links_left import ordered_list
 from cts_app.models.pchemprop import pchemprop_tables
 # from cts_app.cts_api import cts_rest
@@ -107,7 +106,11 @@ def batchOutputPage(request, model='none', header='none'):
     html += """
     </div><br><br>"""
 
-    html = html + render_to_string('04cts_uberoutput_end.html', {})
+    # Uses CSV dropdown for gentrans workflow, regular button for the rest:
+    if model == 'gentrans':
+        html += render_to_string('04cts_uberoutput_end_gentrans.html')  # file download html    
+    else:
+        html += render_to_string('04cts_uberoutput_end.html')  # file download html
 
     html = html + render_to_string('cts_export.html', {}, request=request)
 

@@ -122,7 +122,7 @@ tmpl_oecdGuidelines = Template(tmpl_oecdGuidelines())
 
 
 # Method(s) called from *_inputs.py
-def form(formData):
+def form(formData, model='gentrans'):
 
 	html = """
 	<div class="input_table tab tab_ReactionPathSim" style="display:none">
@@ -148,7 +148,10 @@ def form(formData):
 	# html = html + '<table id="cts_reaction_options" class="tbl_wrap"><tr><td>' # table wrapper for react libs and options 
 	html += '<div id="alignLibAndOptions">'
 
-	form_cts_reaction_libs = cts_reaction_libs(formData)
+	if model == 'biotrans':
+		form_cts_reaction_libs = cts_biotrans_libs(formData)
+	else:
+		form_cts_reaction_libs = cts_reaction_libs(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, header=mark_safe("Reaction Libraries"))))
 
 	# html = html + '</td><td>'
@@ -243,6 +246,18 @@ class cts_reaction_libs(forms.Form):
 	mamm_metabolism = forms.BooleanField(required=False, label='Human Phase 1 Metabolism')
 
 
+
+@parsleyfy
+class cts_biotrans_libs(forms.Form):
+	biotrans_choices = (('CYP450', "CYP450"), ('ECBASED', "ECBASED"), ('PHASEII', "PHASEII"), ('HGUT', "HGUT"), ('ENVMICRO', "ENVMICRO"), ('ALLHUMAN', "ALLHUMAN"), ('SUPERBIO', "SUPERBIO"))
+	biotrans_libs = forms.ChoiceField(
+					label='Biotransformer Choices',
+					choices=biotrans_choices,
+					widget=forms.RadioSelect(),
+					required=False)
+
+
+
 # Reaction Options (e.g., generation limit, likely limit, etc.)
 @parsleyfy
 class cts_reaction_options(forms.Form):
@@ -250,7 +265,8 @@ class cts_reaction_options(forms.Form):
 	gen_limit = forms.ChoiceField (
 					choices=gen_limit_CHOICES,
 					label='Max number of generations:',
-					required=False
+					required=False,
+					widget=forms.Select(attrs={'aria-label': 'select generation limit'})
 				)	
 
 	# pop_limit = forms.ChoiceField (

@@ -1,9 +1,10 @@
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.mail import BadHeaderError, send_mail
 import importlib
-#import linksLeft
 from .links_left import ordered_list
 import os
+import logging
 from cts_app.models import cts_acronyms
 from cts_app.models import cts_errors
 
@@ -46,15 +47,20 @@ def descriptionPage(request, model='none', header='none'):
 
 def about_page(request, model='none', header='non'):
     
-    text_file2 = None
+    text_file2, html_string = None, None
 
-    if model == 'modules':
+    if model == 'cts':
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_about.txt'),'r')
+        html_string = render_to_string('cts_about.html')
+        header = "About CTS"
+
+    elif model == 'modules':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_modules_descriptions.txt'),'r')
         header = "CTS Modules"
 
     elif model == 'pchemcalcs':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_pchemcalcs_descriptions.txt'),'r')
-        header = "Physicochemical Calculators"
+        header = "Physicochemical Property Calculators"
 
     elif model == 'reactionlibs':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_reactionlibs_descriptions.txt'),'r')
@@ -66,20 +72,29 @@ def about_page(request, model='none', header='non'):
 
     elif model == 'acronyms':
         # renders django template to display acronyms table:
-        acronyms_table = render_to_string('cts_acronyms_table.html', {'cts_acronyms_list': cts_acronyms.acronyms})
+        html_string = render_to_string('cts_acronyms_table.html', {'cts_acronyms_list': cts_acronyms.acronyms})
         header = "CTS Acronyms"
 
     elif model == 'flowcharts':
         text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_flowcharts_descriptions.txt'),'r')
         header = "CTS Flowcharts"
 
-    elif model == 'intendeduse':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_intended_use.txt'),'r')
-        header = "Intended Use"
+    elif model == 'help':
+        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_help.txt'),'r')
+        header = "Help"
 
     elif model == 'errors':
-        errors_table = render_to_string('cts_errors_table.html', {'cts_errors_list': cts_errors.cts_errors})
+        html_string = render_to_string('cts_errors_table.html', {'cts_errors_list': cts_errors.cts_errors})
         header = "CTS Errors"
+
+    elif model == 'contact':
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_contact.txt'),'r')
+        html_string = render_to_string('cts_contacts_page.html', {}, request=request)
+        header = "CTS Contact"
+
+    elif model == 'versionhistory':
+        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'static_qed/cts/docs/cts_version_history.txt'),'r')
+        header = "CTS Version History"
 
     #drupal template for header with bluestripe
     html = render_to_string('01epa_drupal_header.html', {
@@ -95,15 +110,10 @@ def about_page(request, model='none', header='non'):
             'TITLE': header,
             'TEXT_PARAGRAPH': xx
         })
-    elif model == 'acronyms':
+    elif html_string:
         html += render_to_string('06cts_ubertext_start_index_drupal.html', {
             'TITLE': header,
-            'TEXT_PARAGRAPH': acronyms_table
-        })
-    elif model == 'errors':
-        html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-            'TITLE': header,
-            'TEXT_PARAGRAPH': errors_table
+            'TEXT_PARAGRAPH': html_string
         })
 
     html += render_to_string('07ubertext_end_drupal.html', {})
@@ -147,25 +157,13 @@ def flowcharts_page(request, chart='none', header='non'):
     html += render_to_string('03epa_drupal_section_title_cts.html', {})
 
     if img_filepath:
-        # xx = img_file.read()
-        # html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-        #     'TITLE': header + ' Overview',
-        #     'TEXT_PARAGRAPH': xx
-        # })
-        # html += render_to_string('06cts_ubertext_start_index_drupal.html', {
-        #     'TITLE': "",
-        #     'TEXT_PARAGRAPH': 
-        # }
-
         html += """
         <div class="main-column clearfix">
         <div class="panel-pane pane-node-content" >
           <div class="pane-content">
             <div class="node node-page clearfix view-mode-full">
-                <img src="{}">
+                <object type="image/svg+xml" data="{}"></object>
         """.format(img_filepath)
-
-        # html += '<img src="' + img_filepath + '">'  # appends flowchart image to page
 
     html += render_to_string('07ubertext_end_drupal.html', {})
     html += ordered_list()  # fills out 05ubertext_links_left_drupal.html

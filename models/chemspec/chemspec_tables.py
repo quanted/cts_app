@@ -29,7 +29,7 @@ chem_info = ChemInfo()
 
 def getdjtemplate():
     dj_template ="""
-    <dl class="shiftRight" id="{{id|default:"none"}}">
+    <dl class="shiftRight" id="{{id|default:"none"}}" tabindex="0">
     {% for label, value in data.items %}
         <dd>
         {{label}}: {{value|default:"none"}}
@@ -92,55 +92,20 @@ def getStereoData(chemspec_obj):
 
 # Parent/Micro species data dictionary for templating
 def getPkaValues(chemspec_obj):
-    # jsonData = json.dumps(chemspec_obj.result)
-    
     data = { 
-        # 'Basic pKa Value(s)': chemspec_obj.pkaDict['mostBasicPka'], 
-        # 'Acidic pKa Value(s)': chemspec_obj.pkaDict['mostAcidicPka']
         'pKa Value(s)': chemspec_obj.pkaDict['mostAcidicPka']
     }
     return data
 
 
-# djtemplate = getdjtemplate()
 tmpl = Template(getdjtemplate())
 inTmpl = Template(getInputTemplate())
 
 
 def table_all(chemspec_obj):
-    html_all = '<script type="text/javascript" src="/static_qed/cts/js/qtip/jquery.qtip.js"></script>'
-    html_all += '<link type="text/css" rel="stylesheet" href="/static_qed/cts/js/qtip/jquery.qtip.css"></link>'
-
-    html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))})
+    html_all = render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))})
     html_all += table_inputs(chemspec_obj)
     html_all += table_outputs(chemspec_obj)
-    # qtip popup script for images with class "wrapped_molecule"
-    html_all += """
-    <script>
-    function tipit() {
-        // Using qtip2 for tooltip
-        $('.chemspec_molecule').each(function() {
-            $(this).qtip({
-                content: {
-                    text: $(this).next('.tooltiptext')
-                },
-                style: {
-                    classes: 'qtip-light'
-                },
-                position: {
-                    my: 'bottom center',
-                    at: 'center right',
-                    target: 'mouse'
-                }
-            });
-        });
-    }
-    </script>
-    <script>
-        tipit();
-    </script>
-    """
-
     return html_all
 
 
@@ -171,8 +136,8 @@ def table_inputs(chemspec_obj):
     <br>
     <H3 class="out_1 collapsible" id="userInputs"><span></span>User Inputs</H3>
     <div class="out_">
-    <table class="ctsTableStylin" id="inputsTable">
-    """
+    <table class="ctsTableStylin" id="inputsTable" tabindex="0" aria-label="user inputs for {}">
+    """.format(chemspec_obj.name)
     html += inTmpl.render(Context(dict(data=chem_info.create_cheminfo_table(chemspec_obj), heading="Molecular Information")))
     html += inTmpl.render(Context(dict(data=getPkaInputs(chemspec_obj), heading="Ionization Parameters")))
     html += inTmpl.render(Context(dict(data=getTautData(chemspec_obj), heading="Tautomer Parameters")))
@@ -191,9 +156,6 @@ def table_outputs(chemspec_obj):
     <H3 class="out_1 collapsible" id="section1"><span></span>Results</H3>
     <div class="out_">
     """
-    # build output with below defs
-    # html += inTmpl.render(Context(dict(data=getPkaResults(chemspec_obj), heading="pKa")))
-
     html += getPkaResults(chemspec_obj)
     html += getIsoPtResults(chemspec_obj)
     html += getMajorMsImages(chemspec_obj)
@@ -210,12 +172,14 @@ def getIsoPtResults(chemspec_obj):
     IsoelectricPoint calculations
     """
     try:
-        isoPtObj = chemspec_obj.jchemPropObjects['isoelectricPoint']
-        isoPt = isoPtObj.getIsoelectricPoint()
+        # isoPtObj = chemspec_obj.jchemPropObjects['isoelectricPoint']
+        # isoPt = isoPtObj.getIsoelectricPoint()
+        isoPt = chemspec_obj.run_data['isoelectricPoint']
         if isoPt:
             isoPt = round(isoPt, chemspec_obj.pKa_decimals)
-        isoPtChartData = isoPtObj.getChartData()
-    except AttributeError:
+        # isoPtChartData = isoPtObj.getChartData()
+        isoPtChartData = chemspec_obj.run_data['isopt_chartdata']
+    except Exception as e:
         logging.info("isoelectricPoint not checked..moving on..")
         return ""
     else:
@@ -239,8 +203,9 @@ def getMajorMsImages(chemspec_obj):
     MajorMicrospecies image
     """
     try:
-        majorMsDict = chemspec_obj.jchemPropObjects['majorMicrospecies'].getMajorMicrospecies()
-    except AttributeError:
+        # majorMsDict = chemspec_obj.jchemPropObjects['majorMicrospecies'].getMajorMicrospecies()
+        majorMsDict = chemspec_obj.run_data['majorMicrospecies']
+    except Exception as e:
         logging.info("major microspecies not checked..moving on..")
         return ""
     else:
@@ -262,8 +227,10 @@ def getPkaResults(chemspec_obj):
 
     try:
         # acidic/basic pKa values:
-        pka = chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()
-        pkb = chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
+        # pka = chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()
+        # pkb = chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
+        pka = chemspec_obj.run_data['pka']
+        pkb = chemspec_obj.run_data['pkb']
         roundedPka, roundedPkb = [], []
         for val in pka:
             roundedPka.append(round(val, chemspec_obj.pKa_decimals))
@@ -273,19 +240,21 @@ def getPkaResults(chemspec_obj):
             'Acidic pKa Value(s)': roundedPka,
             'Basic pKa Value(s)': roundedPkb
         }
-    except AttributeError:
-        logging.info("pKa not selected..moving..")
-        return "" # get out of here!
+    except Exception as e:
+        logging.info("no pka data.. moving on..")
+        return ""
     else:
         html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
 
     # pKa parent species:
     html += '<table id="msMain" class="ctsTableStylin"><tr><td><h4 class="unstyle">Parent</h4>'
-    html += wrap_molecule(chemspec_obj.jchemPropObjects['pKa'].getParent(), None, lgWidth, scale)
+    # html += wrap_molecule(chemspec_obj.jchemPropObjects['pKa'].getParent(), None, lgWidth, scale)
+    html += wrap_molecule(chemspec_obj.run_data['pka_parent'], None, lgWidth, scale)
     html += '<br></td><td id="ms-cell"><h4 class="unstyle">Microspecies</h4>'
 
     # pKa microspecies:
-    microspeciesList = chemspec_obj.jchemPropObjects['pKa'].getMicrospecies()
+    # microspeciesList = chemspec_obj.jchemPropObjects['pKa'].getMicrospecies()
+    microspeciesList = chemspec_obj.run_data['pka_microspecies']
     try:
         for item in microspeciesList:
             html += wrap_molecule(item, None, mdWidth, scale)
@@ -297,7 +266,8 @@ def getPkaResults(chemspec_obj):
 
     # Microspecies Distribution Plot:
     html += '<div id="microDistData1" class="hideData nopdf">'
-    html += mark_safe(json.dumps(chemspec_obj.jchemPropObjects['pKa'].getChartData()))
+    # html += mark_safe(json.dumps(chemspec_obj.jchemPropObjects['pKa'].getChartData()))
+    html += mark_safe(json.dumps(chemspec_obj.run_data['pka_chartdata']))
     html += '</div>'
     html += render_to_string('cts_plot_microspecies_dist.html')
     html += '</td></table></div>'
@@ -310,8 +280,9 @@ def getStereoisomersResults(chemspec_obj):
     Stereoisomers image 
     """
     try:
-        stereoList = chemspec_obj.jchemPropObjects['stereoisomers'].getStereoisomers()
-    except AttributeError:
+        # stereoList = chemspec_obj.jchemPropObjects['stereoisomers'].getStereoisomers()
+        stereoList = chemspec_obj.run_data['stereoisomers']
+    except Exception as e:
         logging.info("stereoisomers not checked..moving on..")
         return ""
 
@@ -346,8 +317,9 @@ def getTautomerResults(chemspec_obj):
     Tautomer image
     """
     try:
-        tautStructs = chemspec_obj.jchemPropObjects['tautomerization'].getTautomers()
-    except AttributeError:
+        # tautStructs = chemspec_obj.jchemPropObjects['tautomerization'].getTautomers()
+        tautStructs = chemspec_obj.run_data['tautomers']
+    except Exception as e:
         logging.info("tautomerization not selected..moving on..")
         return ""
 
@@ -404,20 +376,12 @@ def wrap_molecule(propDict, height, width, scale):
     if 'key' in propDict:
         key = propDict['key']
 
-    # image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key)) # displayed image
     image = mark_safe(Calculator().nodeWrapper(propDict['smiles'], None, width, scale, key, 'svg')) # displayed image
     formula = propDict['formula']
     iupac = propDict['iupac']
     mass = "{} g/mol".format(propDict['mass'])
     smiles = propDict['smiles']
     exactMass = "{} g/mol".format(propDict['exactMass'])
-
-
-    # call nodeWrapper again with 'png' image format and add it to infoDict
-    # with a image_pdf key or something....
-
-    # pdf_image = mark_safe(data_walks.nodeWrapper(propDict['smiles'], None, width, scale, key, None))
-
 
     infoDict = {
         "image": image,
@@ -426,7 +390,6 @@ def wrap_molecule(propDict, height, width, scale):
         "mass": mass,
         "smiles": smiles,
         "exactMass": exactMass
-        # 'pdf_image': pdf_image
     }
 
     # this is the actual image on the chemspec output, wrapped in a div:
@@ -434,31 +397,18 @@ def wrap_molecule(propDict, height, width, scale):
     <div class="chemspec_molecule nopdf">
     """
     html += infoDict['image']
-    # html += infoDict['pdf_image']
     html += """
     </div>
     """
-
-    # this builds the larger-image popup:
 
     # the Molecular/Structure class/object needs to be used as well
     # as its location in CTS considered. Is it being in REST make sense?
     # the following list needs to be in that class:
     mol_props = ['formula', 'iupac', 'mass', 'smiles', 'exactMass']
 
-    # wrappedDict = data_walks.popupBuilder(infoDict, ['formula', 'iupac', 'mass', 'smiles'], key, 'Molecular Information') # popup table image
     wrappedDict = Calculator().popupBuilder(infoDict, mol_props, key, 'Molecular Information') # popup table image
     html += '<div class="tooltiptext ' + iupac + '">'
     html += wrappedDict['html']
     html += '</div>'
 
     return html
-
-
-# def makeLogFile(chemspec_obj):
-    # """
-    # Gathers data for log file and
-    # puts it in a hidden div to be downloaded
-    # by the user
-    # """
-    

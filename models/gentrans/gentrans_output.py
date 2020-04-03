@@ -26,8 +26,10 @@ def gentransOutputPage(request):
     popLimit = request.POST.get('pop_limit')
     likelyLimit = request.POST.get('likely_limit')
 
+    biotrans_libs = request.POST.get('biotrans_libs')
+
     gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
                                     mass, exact_mass, cas, abioticHydrolysis, abioticRecuction,
-                                    mammMetabolism, genLimit, popLimit, likelyLimit)
+                                    mammMetabolism, genLimit, popLimit, likelyLimit, biotrans_libs)
 
     return gentrans_obj

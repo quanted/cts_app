@@ -34,6 +34,9 @@ sparc_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_availa
 # NOTE: Measured data is from EPI measured values
 measured_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
 				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
+
+opera_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available',
+				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 ####################################################################################
 
 
@@ -60,7 +63,7 @@ class CTS_ChemCalcs_Props(forms.Form):
 	kow_ph = forms.DecimalField (
 				label='at pH:',
 				widget=forms.NumberInput(attrs={'class':'numberInput'}),
-				initial=7.0,
+				initial=7.4,
 				min_value=0,
 				max_value=14,
 				decimal_places=1,
@@ -95,7 +98,8 @@ def pchempropAvailable(calculator, prop):
 		calcDict = dict(zip(props_list, sparc_props))
 	elif calculator == "measured":
 		calcDict = dict(zip(props_list, measured_props))
-
+	elif calculator == "opera":
+		calcDict = dict(zip(props_list, opera_props))
 
 	if prop in calcDict:
 		if 'unavailable' in calcDict[prop]:

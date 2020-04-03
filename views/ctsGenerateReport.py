@@ -1,5 +1,6 @@
 from django.views.decorators.http import require_POST
 import io
+import os
 from django.http import HttpResponse
 from django.template import Context
 import json
@@ -7,10 +8,13 @@ from xhtml2pdf import pisa
 import logging
 from cts_app.cts_calcs.calculator_metabolizer import MetabolizerCalc
 from cts_app.models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
+from .downloads_cts import CSV, roundData
 from django.core.cache import cache
 from django.conf import settings
 
 
+
+sparc_available = os.environ.get('SPARC_AVAILABLE', False)
 
 def parsePOST(request):
 
@@ -36,7 +40,13 @@ def parsePOST(request):
 
 	# PDF/HTML File Styling:
 	input_css="""
+			<!DOCTYPE html>
+			<head>
 			<style>
+			@page {
+				size: letter portrait;
+
+			}
 			html {
 				background-color:#FFFFFF;
 			}
@@ -77,10 +87,18 @@ def parsePOST(request):
 			img {
 				background-color: #FFFFFF;
 			}
-
 			</style>
+			<title>CTS PDF Results</title>
+			</head>
+			<body>
 			"""
 	input_str = input_css + final_str
+
+	input_str += """
+	</body>
+	</html>
+	"""
+
 	return input_str
 
 
@@ -132,7 +150,6 @@ def csvReceiver(request, model=''):
 	"""
 	Save output as CSV
 	"""
-	from .downloads_cts import CSV
 	from django.conf import settings
 
 	settings.DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB => 10485760 bytes (IEC units)
@@ -163,8 +180,10 @@ def textReceiver(request, model=''):
 
 def handle_gentrans_request(pdf_json):
 
-	headings = ['genKey', 'smiles', 'iupac', 'formula', 'mass', 'exactMass', 'routes']
-	calcs = ['chemaxon', 'epi', 'test', 'sparc', 'measured']
+	headings = ['genKey', 'routes', 'smiles', 'iupac', 'formula', 'mass', 'exactMass', 'accumulation', 'production', 'globalAccumulation', 'likelihood']
+	calcs = ['chemaxon', 'epi', 'test', 'measured']
+	if sparc_available:
+		calcs.insert(-1, 'sparc')  # inserts sparc after test calc, if available
 	checkedCalcsAndProps = pdf_json['checkedCalcsAndProps']
 	products = pdf_json['nodes']
 	props = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press',
@@ -214,12 +233,14 @@ def handle_gentrans_request(pdf_json):
 							method_obj = {}
 							method_obj['method'] = data_obj['method']
 
-							try:
-								# tries rounding value if it's numeric:
-								method_obj['data'] = round(data_obj['data'], 3)
-							except TypeError:
-								# if not numeric, stores as-is:
-								method_obj['data'] = data_obj['data']
+							method_obj['data'] = roundData(prop, data_obj['data'])
+
+							# try:
+							# 	# tries rounding value if it's numeric:
+							# 	method_obj['data'] = round(data_obj['data'], 3)
+							# except TypeError:
+							# 	# if not numeric, stores as-is:
+							# 	method_obj['data'] = data_obj['data']
 
 							method_map[calc][prop].append(method_obj)
 
@@ -239,7 +260,8 @@ def handle_gentrans_request(pdf_json):
 						data_row.append(pka_string)
 
 					else:
-						data_row.append(data_obj['data'])
+						# data_row.append(data_obj['data'])
+						data_row.append(roundData(prop, data_obj['data']))
 
 				if len(data_row) <= calc_index:
 					# should mean there wasn't data for calc-prop combo:
@@ -250,7 +272,7 @@ def handle_gentrans_request(pdf_json):
 					# for a single table cell:
 					table_cell_string = ""
 					for item in method_map[calc][prop]:
-						table_cell_string += "{} ({})\n".format(item['data'], item['method'])
+						table_cell_string += "{} ({})\n".format(roundData(prop, item['data']), item['method'])
 					data_row[calc_index] = table_cell_string
 
 				calc_index += 1
@@ -259,5 +281,55 @@ def handle_gentrans_request(pdf_json):
 
 		product['data'] = rows
 
+	# Adds geomean to product's 'data' lists:
+	products = add_geomean_to_products(products)
+
+	# if not sparc_available and 'sparc' in list(checkedCalcsAndProps.keys()):
+	# 	logging.warning("DELETING SPARC FROM CHECKED CALCS AND PROPS")
+	# 	del checkedCalcsAndProps['sparc']
+
 	return buildMetaboliteTableForPDF().render(
 		Context(dict(headings=headings, checkedCalcsAndProps=checkedCalcsAndProps, products=products, props=props, calcs=calcs)))
+
+
+
+
+def add_geomean_to_products(products):
+	"""
+	Adds geomean data to products data for building
+	a PDF for the gentrans workflow.
+	"""
+	for product in products:
+		if not 'geomeanDict' in product:
+			continue
+		for prop_name, geomean_val in product['geomeanDict'].items():
+			if not geomean_val:
+				continue
+			# add geomean val to property in product's data
+			product = add_geomean_to_product_data(product, prop_name, geomean_val)
+		product = fill_empty_geomean_vals(product)
+	return products
+
+
+
+def add_geomean_to_product_data(product, prop_name, geomean_val):
+	"""
+	Adds geomean data to the product's data by property.
+	"""
+	for prop_data_list in product['data']:
+		if prop_data_list[0] == prop_name:
+			# prop_data_list.append(geomean_val)
+			prop_data_list.insert(len(prop_data_list)-1, roundData(prop_name, geomean_val))  # inserts geomean before Measured column
+	return product
+
+
+
+def fill_empty_geomean_vals(product):
+	"""
+	Fills any empty geomean values for a product.
+	"""
+	headers = ['chemaxon', 'epi', 'test', 'sparc', 'geomean', 'measured']
+	for prop_data_list in product['data']:
+		if len(prop_data_list) < len(headers):
+			prop_data_list.append('')
+	return product

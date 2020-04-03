@@ -145,12 +145,12 @@ def table_metabolites(gentrans_obj):
 		<div id="cont">
 			<div id="center-cont">
 				<!-- the canvas container -->
-				<div id="infovis"></div>
+				<div id="infovis" tabindex="0" aria-label="reaction pathway tree"></div>
 			</div>
 			<div id="log"></div>
 			<div id="zoom-controls">
-				<input id="zoom-out" class="zoom-buttons" type="button" value="-" />
-				<input id="zoom-in" class="zoom-buttons" type="button" value="+" />
+				<input id="zoom-out" class="zoom-buttons" type="button" value="-" aria-label="zoom out" />
+				<input id="zoom-in" class="zoom-buttons" type="button" value="+" aria-label="zoom in" />
 			</div>
 		</div>
 		<div id="reactionpathways">
@@ -222,10 +222,12 @@ def buildMetaboliteTableForPDF():
 
 				<div class="nodeWrapDiv"></div>
 				<table class="mol-info-table ctsTableStylin">
-					{% for key, val in product.items %}
-						{% if key in headings %}
-							<tr><td>{{key}}</td><td>{{val|default:"N/A"}}</td>
-						{% endif %}
+					{% for heading in headings %}
+						{% for key, val in product.items %}
+							{% if key == heading %}
+								<tr><td>{{key}}</td><td>{{val|default:"N/A"}}</td>
+							{% endif %}
+						{% endfor %}						
 					{% endfor %}
 				</table>
 
@@ -238,14 +240,19 @@ def buildMetaboliteTableForPDF():
 			<div class="pchem-wrapper">
 
 				<table id="pchemprop_table" class="input_table">
-					<tr><td></td><td>ChemAxon</td><td>EPI Suite</td><td>TEST</td><td>SPARC</td><td>Measured</td></tr>
+				
+					{% if sparc_available %}
+					<tr><td></td><td>ChemAxon</td><td>EPI Suite</td><td>TEST</td><td>SPARC</td><td>Geometric Mean</td><td>Measured</td></tr>
+					{% else %}
+					<tr><td></td><td>ChemAxon</td><td>EPI Suite</td><td>TEST</td><td>Geometric Mean</td><td>Measured</td></tr>
+					{% endif %}
 
 					{% for data_row in product.data %}
-						<tr>
-						{% for row_item in data_row %}
-							<td>{{row_item}}</td>
-						{% endfor %}
-						</tr>
+					<tr>
+					{% for row_item in data_row %}
+						<td>{{row_item}}</td>
+					{% endfor %}
+					</tr>
 					{% endfor %}
 
 				</table>
