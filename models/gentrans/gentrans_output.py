@@ -22,6 +22,7 @@ def gentransOutputPage(request):
     abioticHydrolysis = request.POST.get('abiotic_hydrolysis')
     abioticRecuction = request.POST.get('abiotic_reduction')
     mammMetabolism = request.POST.get('mamm_metabolism')
+    photolysis = request.POST.get('photolysis')
     genLimit = request.POST.get('gen_limit')
     popLimit = request.POST.get('pop_limit')
     likelyLimit = request.POST.get('likely_limit')
@@ -30,6 +31,6 @@ def gentransOutputPage(request):
 
     gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
                                     mass, exact_mass, cas, abioticHydrolysis, abioticRecuction,
-                                    mammMetabolism, genLimit, popLimit, likelyLimit, biotrans_libs)
+                                    mammMetabolism, photolysis, genLimit, popLimit, likelyLimit, biotrans_libs)
 
     return gentrans_obj

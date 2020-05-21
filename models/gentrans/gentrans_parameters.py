@@ -240,7 +240,7 @@ class cts_respiration(forms.Form):
 class cts_reaction_libs(forms.Form):
 	abiotic_hydrolysis = forms.BooleanField(required=False, label='Abiotic Hydrolysis')
 	abiotic_reduction = forms.BooleanField(required=False, label='Abiotic Reduction')
-	photolysis = forms.BooleanField(required=False, label='Photolysis (under development)')
+	photolysis = forms.BooleanField(required=False, label='Photolysis')
 	aerobic_biodegrad = forms.BooleanField(required=False, label='Aerobic Biodegradation (under development)')
 	anaerobic_biodegrad = forms.BooleanField(required=False, label='Anaerobic Biodegradation (under development)')
 	mamm_metabolism = forms.BooleanField(required=False, label='Human Phase 1 Metabolism')
