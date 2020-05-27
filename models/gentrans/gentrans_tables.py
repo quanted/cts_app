@@ -164,7 +164,7 @@ def table_metabolites(gentrans_obj):
 	html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
 	html += render_to_string('cts_pchemprop_requests.html', {
 									"speciation_inputs": "null",
-									"kow_ph": 7.0,
+									"kow_ph": 7.4,
 									"structure": mark_safe(gentrans_obj.smiles),
 									"checkedCalcsAndProps": {},
 									# "test_results": gentrans_obj.test_results,
