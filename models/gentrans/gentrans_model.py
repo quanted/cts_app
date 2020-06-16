@@ -17,7 +17,7 @@ from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 class gentrans(object):
     def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
                  exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis,
-                 gen_limit, pop_limit, likely_limit, biotrans_libs):
+                 pfas_environmental, pfas_metabolism, gen_limit, pop_limit, likely_limit, biotrans_libs):
 
         self.title = "Generate Transformation Products"
         self.jid = MetabolizerCalc().gen_jid()
@@ -40,6 +40,10 @@ class gentrans(object):
         self.abiotic_reduction = abiotic_reduction
         self.mamm_metabolism = mamm_metabolism
         self.photolysis = photolysis
+
+        # Class-specific reaction libraries
+        self.pfas_environmental  = pfas_environmental
+        self.pfas_metabolism  = pfas_metabolism
 
         self.gen_max = gen_limit
         self.gen_limit = gen_limit  # generation limit

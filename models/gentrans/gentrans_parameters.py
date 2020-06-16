@@ -154,6 +154,9 @@ def form(formData, model='gentrans'):
 		form_cts_reaction_libs = cts_reaction_libs(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, header=mark_safe("Reaction Libraries"))))
 
+	form_cts_class_specific_reaction_libs = cts_class_specific_reaction_libs(formData)
+	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_class_specific_reaction_libs, header=mark_safe("Class-Specific Reaction Libraries"))))	
+
 	# html = html + '</td><td>'
 
 	form_cts_reaction_options = cts_reaction_options(formData)
@@ -245,6 +248,13 @@ class cts_reaction_libs(forms.Form):
 	aerobic_biodegrad = forms.BooleanField(required=False, label='Aerobic Biodegradation (under development)')
 	anaerobic_biodegrad = forms.BooleanField(required=False, label='Anaerobic Biodegradation (under development)')
 	mamm_metabolism = forms.BooleanField(required=False, label='Human Phase 1 Metabolism')
+
+
+
+@parsleyfy
+class cts_class_specific_reaction_libs(forms.Form):
+	pfas_environmental = forms.BooleanField(required=False, label='PFAS Environmental (under development)', disabled=True)
+	pfas_metabolism = forms.BooleanField(required=False, label='PFAS Metabolism (under development)', disabled=True)
 
 
 

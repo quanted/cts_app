@@ -26,11 +26,14 @@ def gentransOutputPage(request):
     genLimit = request.POST.get('gen_limit')
     popLimit = request.POST.get('pop_limit')
     likelyLimit = request.POST.get('likely_limit')
+    pfas_environmental = request.POST.get('pfas_environmental')
+    pfas_metabolism = request.POST.get('pfas_metabolism')
 
     biotrans_libs = request.POST.get('biotrans_libs')
 
     gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
                                     mass, exact_mass, cas, abioticHydrolysis, abioticRecuction,
-                                    mammMetabolism, photolysis, genLimit, popLimit, likelyLimit, biotrans_libs)
+                                    mammMetabolism, photolysis, pfas_environmental, pfas_metabolism,
+                                    genLimit, popLimit, likelyLimit, biotrans_libs)
 
     return gentrans_obj
