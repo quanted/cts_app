@@ -114,11 +114,13 @@ def tmpl_oecdGuidelines():
 	</table>
 	"""
 	return tmpl_oecdGuidelines
+	
 
 
 tmpl_reactionSysCTS = Template(tmpl_reactionSysCTS())
 tmpl_respirationTable = Template(tmpl_respirationTable())
 tmpl_oecdGuidelines = Template(tmpl_oecdGuidelines())
+
 
 
 # Method(s) called from *_inputs.py
@@ -156,8 +158,6 @@ def form(formData, model='gentrans'):
 
 	form_cts_class_specific_reaction_libs = cts_class_specific_reaction_libs(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_class_specific_reaction_libs, header=mark_safe("Class-Specific Reaction Libraries"))))	
-
-	# html = html + '</td><td>'
 
 	form_cts_reaction_options = cts_reaction_options(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_options, header=mark_safe("Reaction Options"))))
@@ -253,8 +253,24 @@ class cts_reaction_libs(forms.Form):
 
 @parsleyfy
 class cts_class_specific_reaction_libs(forms.Form):
-	pfas_environmental = forms.BooleanField(required=False, label='PFAS Environmental (under development)', disabled=True)
-	pfas_metabolism = forms.BooleanField(required=False, label='PFAS Metabolism (under development)', disabled=True)
+	pfas_choices = (('pfas_environmental', "Experimentally verified transformations"),
+		('pfas_metabolism', "Proposed and expermentally verified transformations"))
+	pfas_environmental = forms.ChoiceField(
+		label='PFAS Environmental (under development)',
+		choices=pfas_choices,
+		widget=forms.Select(),
+		required=False,
+		disabled=True
+	)
+	pfas_metabolism = forms.ChoiceField(
+		label='PFAS Metabolism (under development)',
+		choices=pfas_choices,
+		widget=forms.Select(),
+		required=False,
+		disabled=True
+	)
+	# pfas_environmental = forms.BooleanField(required=False, label='PFAS Environmental (under development)', disabled=True)
+	# pfas_metabolism = forms.BooleanField(required=False, label='PFAS Metabolism (under development)', disabled=True)
 
 
 
