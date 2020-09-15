@@ -35,6 +35,8 @@ class gentrans(object):
         self.exactMass = '{} g/mol'.format(exactMass)
         self.cas = cas
 
+        self.calc = "metabolizer"
+
         # Reaction Libraries
         self.abiotic_hydrolysis = abiotic_hydrolysis  # values: on or None
         self.abiotic_reduction = abiotic_reduction
@@ -50,6 +52,8 @@ class gentrans(object):
         self.pop_limit = pop_limit  # population limit
         self.likely_limit = likely_limit
 
+        self.biotrans_libs = biotrans_libs
+
         reactionLibs = {
             "hydrolysis": self.abiotic_hydrolysis,
             "abiotic_reduction": self.abiotic_reduction,
@@ -61,12 +65,13 @@ class gentrans(object):
             if value:
                 self.trans_libs.append(key)
 
-        # NOTE: populationLimit is hard-coded to 0 as it currently does nothing
-        if biotrans_libs:
+        if self.biotrans_libs:
+            # self.trans_libs = ""
+            self.calc = "biotrans"
             self.metabolizer_request_post = {
                 'chemical': self.smiles,
                 'gen_limit': self.gen_limit,
-                'prop': biotrans_libs
+                'prop': self.biotrans_libs
             }
         else:
             self.metabolizer_request_post = {

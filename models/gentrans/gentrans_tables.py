@@ -56,6 +56,12 @@ def getReactPathSimData(gentrans_obj):
 		libs += item + ", "
 	libs = libs[:-2]
 
+	if not libs and gentrans_obj.calc == "metabolizer":
+		# assume mammalian metabolism for now (may need revised when PFAS libs are introduced)
+		libs = "mammalian_metabolism"
+	elif not libs and gentrans_obj.calc == "biotrans":
+		libs = "biotransformer_{}".format(gentrans_obj.biotrans_libs)
+
 	data = [
 		{'Libraries': libs},
 		{'Generation Limit': gentrans_obj.gen_limit},
@@ -166,7 +172,7 @@ def table_metabolites(gentrans_obj):
 									"speciation_inputs": "null",
 									"kow_ph": 7.4,
 									"structure": mark_safe(gentrans_obj.smiles),
-									"checkedCalcsAndProps": {},
+									"checkedCalcsAndProps": mark_safe(json.dumps({'calc': gentrans_obj.calc})),
 									# "test_results": gentrans_obj.test_results,
 									'nodes': 'null',
 									'run_type': 'single',
