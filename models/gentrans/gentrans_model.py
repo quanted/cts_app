@@ -2,22 +2,17 @@
 2014-08-13 (np)
 """
 
-# from cts_app.cts_calcs.chemaxon_cts import jchem_rest
-# from cts_app.cts_api import cts_rest
-import logging
 from django.http import HttpRequest
-# from cts_app.cts_calcs import data_walks
 import datetime
 import json
 
-# from cts_app.cts_calcs.calculator import Calculator
 from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 
 
 class gentrans(object):
     def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
                  exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis,
-                 pfas_environmental, pfas_metabolism, gen_limit, pop_limit, likely_limit, biotrans_libs):
+                 pfas_environmental, pfas_metabolism, gen_limit, pop_limit, likely_limit, biotrans_metabolism, biotrans_libs):
 
         self.title = "Generate Transformation Products"
         self.jid = MetabolizerCalc().gen_jid()
@@ -52,6 +47,7 @@ class gentrans(object):
         self.pop_limit = pop_limit  # population limit
         self.likely_limit = likely_limit
 
+        self.biotrans_metabolism = biotrans_metabolism
         self.biotrans_libs = biotrans_libs
 
         reactionLibs = {
@@ -65,7 +61,7 @@ class gentrans(object):
             if value:
                 self.trans_libs.append(key)
 
-        if self.biotrans_libs:
+        if self.biotrans_metabolism:
             # self.trans_libs = ""
             self.calc = "biotrans"
             self.metabolizer_request_post = {

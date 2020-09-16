@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -57,10 +58,6 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     if not batch_chemicals:
         batch_chemicals = []
 
-    # for chemical in batch_chemicals:
-    #     # get transformation products (synchronous!):
-
-    # request.POST.update({'run_type': "batch"})
     gentrans_obj = gentrans_output.gentransOutputPage(request)
 
     metabolizer_post = gentrans_obj.metabolizer_request_post
@@ -82,6 +79,8 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
     html +=  render_to_string('cts_pchemprop_requests.html', 
         {
+            'structure': mark_safe(gentrans_obj.smiles),
+            'calc': gentrans_obj.calc,
             'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
             'kow_ph': pchemprop_obj.kow_ph,
             'nodes': mark_safe(batch_chemicals),
