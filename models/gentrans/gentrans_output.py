@@ -32,9 +32,11 @@ def gentransOutputPage(request):
     biotrans_metabolism = request.POST.get('biotrans_metabolism')
     biotrans_libs = request.POST.get('biotrans_libs')
 
+    envipath_metabolism = request.POST.get('envipath_metabolism')
+
     gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
                                     mass, exact_mass, cas, abioticHydrolysis, abioticRecuction,
                                     mammMetabolism, photolysis, pfas_environmental, pfas_metabolism,
-                                    genLimit, popLimit, likelyLimit, biotrans_metabolism, biotrans_libs)
+                                    genLimit, popLimit, likelyLimit, biotrans_metabolism, biotrans_libs, envipath_metabolism)
 
     return gentrans_obj

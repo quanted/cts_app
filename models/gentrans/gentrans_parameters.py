@@ -270,6 +270,10 @@ class cts_reaction_libs(forms.Form):
 		required=False,
 		label='Biotransformer Mammalian Metabolism'
 	)
+	envipath_metabolism = forms.BooleanField(
+		required=False,
+		label='Envipath microbial biotransformation'
+	)
 
 
 

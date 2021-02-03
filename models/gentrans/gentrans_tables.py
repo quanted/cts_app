@@ -61,6 +61,8 @@ def getReactPathSimData(gentrans_obj):
 		libs = "mammalian_metabolism"
 	elif not libs and gentrans_obj.calc == "biotrans":
 		libs = "biotransformer_{}".format(gentrans_obj.biotrans_libs)
+	elif not libs and gentrans_obj.calc == "envipath":
+		libs = "microbial biotransformation"
 
 	data = [
 		{'Libraries': libs},
