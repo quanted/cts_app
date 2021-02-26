@@ -46,19 +46,21 @@ def pchempropBatchOutputPage(request, model='', header='Physicochemical Properti
 
     if not batch_chemicals:
         batch_chemicals = []
+    if isinstance(batch_chemicals, str):
+        batch_chemicals = json.loads(batch_chemicals)
 
     html = render_to_string('cts_downloads.html', 
-        {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
+        {'run_data': pchemprop_obj.run_data})
 
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
     html +=  render_to_string('cts_pchemprop_requests.html', 
         {
-            'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
+            'checkedCalcsAndProps': pchemprop_obj.checkedCalcsAndPropsDict,
             'kow_ph': pchemprop_obj.kow_ph,
             'speciation_inputs': 'null',
-            'nodes': mark_safe(batch_chemicals),
+            'nodes': batch_chemicals,
             'nodejs_host': settings.NODEJS_HOST,
             'nodejs_port': settings.NODEJS_PORT,
             'workflow': "pchemprop",

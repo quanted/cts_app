@@ -58,6 +58,9 @@ class CSV(object):
 			parsed_string = content_disposition.split(jid)  # splits filename at jid
 			content_disposition = parsed_string[0] + "likely_" + jid + parsed_string[1]  # adds 'likely' to filename
 
+		if isinstance(run_data['run_data'], str):
+			run_data['run_data'] = json.loads(run_data['run_data'])
+
 		response['Content-Disposition'] = content_disposition
 
 		logging.info("Beginning CSV parsing..")

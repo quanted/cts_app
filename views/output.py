@@ -81,19 +81,19 @@ def outputPage(request, model='none', header=''):
 
     parametersmodule = importlib.import_module('.'+model+'_parameters', 'cts_app.models.'+model)
 
-    try:
-        # Class name must be ModelInp, e.g. SipInp or TerrplantInp
-        inputForm = getattr(parametersmodule, model.title() + 'Inp')
-        form = inputForm(request.POST) # bind user inputs to form object
+    # try:
+    # Class name must be ModelInp, e.g. SipInp or TerrplantInp
+    inputForm = getattr(parametersmodule, model.title() + 'Inp')
+    form = inputForm(request.POST) # bind user inputs to form object
 
-        # Form validation testing
-        if not form.is_valid():
-            return generate_error_page(model)
-
-        return outputPageView(request, model, header)
-
-    except Exception as e:
+    # Form validation testing
+    if not form.is_valid():
         return generate_error_page(model)
+
+    return outputPageView(request, model, header)
+
+    # except Exception as e:
+    #     return generate_error_page(model)
 
 
 

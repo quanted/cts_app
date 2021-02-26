@@ -43,8 +43,8 @@ class gentrans(object):
         self.pfas_environmental  = pfas_environmental
         self.pfas_metabolism  = pfas_metabolism
 
-        self.gen_max = gen_limit
-        self.gen_limit = gen_limit  # generation limit
+        self.gen_max = int(gen_limit)
+        self.gen_limit = int(gen_limit)  # generation limit
         self.pop_limit = pop_limit  # population limit
         self.likely_limit = likely_limit
 

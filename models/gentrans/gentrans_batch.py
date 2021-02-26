@@ -57,6 +57,8 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
 
     if not batch_chemicals:
         batch_chemicals = []
+    if isinstance(batch_chemicals, str):
+        batch_chemicals = json.loads(batch_chemicals)
 
     gentrans_obj = gentrans_output.gentransOutputPage(request)
 
@@ -69,7 +71,7 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     # html = render_to_string('cts_downloads.html', 
     #     {'run_data': mark_safe(json.dumps(gentrans_obj.run_data))})
 
-    html = render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
+    html = render_to_string('cts_downloads.html', {'run_data': pchemprop_obj.run_data})
 
     html += '<script src="/static_qed/cts/js/scripts_pchemprop.js" type="text/javascript" ></script>'
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
@@ -81,9 +83,9 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
         {
             'structure': mark_safe(gentrans_obj.smiles),
             'calc': gentrans_obj.calc,
-            'checkedCalcsAndProps': mark_safe(pchemprop_obj.checkedCalcsAndPropsDict),
+            'checkedCalcsAndProps': pchemprop_obj.checkedCalcsAndPropsDict,
             'kow_ph': pchemprop_obj.kow_ph,
-            'nodes': mark_safe(batch_chemicals),
+            'nodes': batch_chemicals,
             'workflow': "gentrans",
             'run_type': "batch",
             'run_data': pchemprop_obj.run_data,
@@ -91,7 +93,7 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
             'nodejs_host': settings.NODEJS_HOST,
             'nodejs_port': settings.NODEJS_PORT,
             'service': "getTransProducts",
-            'metabolizer_post': mark_safe(json.dumps(metabolizer_post))
+            'metabolizer_post': metabolizer_post
         }
     )
 

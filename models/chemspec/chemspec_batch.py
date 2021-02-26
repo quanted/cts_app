@@ -1,6 +1,6 @@
 import json
 import os
-# os.environ['DJANGO_SETTINGS_MODULE']='settings'
+import logging
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -44,17 +44,19 @@ def chemspecBatchOutputPage(request, model='', header='Chemical Speciation Prope
 
     if not batch_chemicals:
         batch_chemicals = []
+    if isinstance(batch_chemicals, str):
+        batch_chemicals = json.loads(batch_chemicals)
 
     html = render_to_string('cts_downloads.html', 
-        {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))}, request=request)
+        {'run_data': chemspec_obj.run_data}, request=request)
 
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
     html +=  render_to_string('cts_pchemprop_requests.html', 
         {
             'checkedCalcsAndProps': {},
-            'speciation_inputs': mark_safe(chemspec_obj.speciation_inputs),
-            'nodes': mark_safe(batch_chemicals),
+            'speciation_inputs': chemspec_obj.speciation_inputs,
+            'nodes': batch_chemicals,
             'workflow': "chemspec",
             'run_type': "batch",
             'run_data': chemspec_obj.run_data,

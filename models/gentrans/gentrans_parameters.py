@@ -190,7 +190,7 @@ reaction_sys_CHOICES = (('0', 'Environmental'), ('1', 'Mammalian'))
 respiration_CHOICES = (('0', 'Make a selection'), ('1', 'Aerobic'), ('2', 'Anaerobic'))
 
 # Reaction Options
-gen_limit_CHOICES = (('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'))  # generation limit
+gen_limit_CHOICES = (('1', 1), ('2', 2), ('3', 3), ('4', 4))  # generation limit
 gen_limit_max = gen_limit_CHOICES[-1][1]  # not used as field, but referenced in many-a-place
 pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'),
                      ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'))  # population limit

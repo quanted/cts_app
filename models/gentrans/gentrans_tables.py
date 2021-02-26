@@ -82,7 +82,7 @@ def table_all(gentrans_obj):
 	html_all = table_inputs(gentrans_obj)
 	
 	html_all += '<script src="/static_qed/cts/js/scripts_pchemprop.js" type="text/javascript"></script>'
-	html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(gentrans_obj.run_data))})
+	html_all += render_to_string('cts_downloads.html', {'run_data': gentrans_obj.run_data})
 	html_all += table_metabolites(gentrans_obj)
 
 	# Creates popup divs for p-chem table using qtip2 JS library:
@@ -171,21 +171,21 @@ def table_metabolites(gentrans_obj):
 
 	html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
 	html += render_to_string('cts_pchemprop_requests.html',{
-									"speciation_inputs": "null",
+									"speciation_inputs": None,
 									"kow_ph": 7.4,
-									"structure": mark_safe(gentrans_obj.smiles),
+									"structure": gentrans_obj.smiles,
 									"checkedCalcsAndProps": {},
 									"calc": gentrans_obj.calc,
-									'nodes': 'null',
+									'nodes': None,
 									'run_type': 'single',
 									'workflow': 'gentrans',
 									'nodejs_host': settings.NODEJS_HOST,
 									'nodejs_port': settings.NODEJS_PORT,
-									"name": mark_safe(gentrans_obj.name),
+									"name": gentrans_obj.name,
 									"mass": gentrans_obj.mass,
 									"formula": gentrans_obj.formula,
 									'service': "getTransProducts",
-									'metabolizer_post': mark_safe(json.dumps(gentrans_obj.metabolizer_request_post))
+									'metabolizer_post': gentrans_obj.metabolizer_request_post
 								}
 							)
 

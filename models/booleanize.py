@@ -6,7 +6,7 @@ def booleanize(value):
     """
     if value == 'on' or value == 'true':
         return True
-    if value == 'off' or value == 'false':
+    if value == 'off' or value == 'false' or value == '':
         return False
     if isinstance(value, bool):
         return value
