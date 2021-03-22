@@ -25,7 +25,7 @@ urlpatterns.extend([
 	path('fifra/', misc.fileNotFound),
 	path('flame/', misc.fileNotFound),
 	path('about/<slug:model>/', description.about_page),
-	path('flowcharts/<slug:model>/', description.flowcharts_page),
+	path('flowcharts/<slug:chart>/', description.flowcharts_page),
 	path('forms/contact/', user_comments.handle_contact_post),
 	path('<slug:model>/description/', description.descriptionPage),
 	path('<slug:model>/input/', input.inputPage),
