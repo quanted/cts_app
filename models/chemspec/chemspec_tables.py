@@ -103,7 +103,7 @@ inTmpl = Template(getInputTemplate())
 
 
 def table_all(chemspec_obj):
-    html_all = render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(chemspec_obj.run_data))})
+    html_all = render_to_string('cts_downloads.html', {'run_data': chemspec_obj.run_data})
     html_all += table_inputs(chemspec_obj)
     html_all += table_outputs(chemspec_obj)
     return html_all

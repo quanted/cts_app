@@ -16,7 +16,12 @@ def gentransInputPage(request, model='gentrans', header='Generate Transformation
     if model == 'biotrans':
         model = 'gentrans'
 
-    html = render_to_string('04cts_uberinput_jquery.html', { 'model': model }) # loads scripts_gentrans.js
+    html = render_to_string('04cts_uberinput_jquery.html',
+        { 
+            'model': model,
+            'ENV_NAME': os.environ.get('ENV_NAME')
+        }
+    ) # loads scripts_gentrans.js
     html = html + render_to_string('04cts_uberinput_start_tabbed.html', {
             # 'model': model,
             'model': orig_model,

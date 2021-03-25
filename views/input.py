@@ -1,5 +1,6 @@
 import importlib
 import os
+import bleach
 
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseRedirect
@@ -9,6 +10,10 @@ from django.views.decorators.csrf import requires_csrf_token
 
 @requires_csrf_token
 def inputPage(request, model='none', header='none'):
+
+    model = bleach.clean(model)
+    header = bleach.clean(header)
+
     orig_model = model
     if model == 'biotrans':
         model = 'gentrans'  # use gentrans workflow for biotrans during testing

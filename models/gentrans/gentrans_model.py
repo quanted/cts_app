@@ -2,22 +2,18 @@
 2014-08-13 (np)
 """
 
-# from cts_app.cts_calcs.chemaxon_cts import jchem_rest
-# from cts_app.cts_api import cts_rest
-import logging
 from django.http import HttpRequest
-# from cts_app.cts_calcs import data_walks
 import datetime
 import json
 
-# from cts_app.cts_calcs.calculator import Calculator
 from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 
 
 class gentrans(object):
     def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
-                 exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism,
-                 gen_limit, pop_limit, likely_limit, biotrans_libs):
+                 exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis,
+                 pfas_environmental, pfas_metabolism, gen_limit, pop_limit, likely_limit,
+                 biotrans_metabolism, biotrans_libs, envipath_metabolism):
 
         self.title = "Generate Transformation Products"
         self.jid = MetabolizerCalc().gen_jid()
@@ -35,19 +31,32 @@ class gentrans(object):
         self.exactMass = '{} g/mol'.format(exactMass)
         self.cas = cas
 
+        self.calc = "metabolizer"
+
         # Reaction Libraries
         self.abiotic_hydrolysis = abiotic_hydrolysis  # values: on or None
         self.abiotic_reduction = abiotic_reduction
         self.mamm_metabolism = mamm_metabolism
+        self.photolysis = photolysis
 
-        self.gen_max = gen_limit
-        self.gen_limit = gen_limit  # generation limit
+        # Class-specific reaction libraries
+        self.pfas_environmental  = pfas_environmental
+        self.pfas_metabolism  = pfas_metabolism
+
+        self.gen_max = int(gen_limit)
+        self.gen_limit = int(gen_limit)  # generation limit
         self.pop_limit = pop_limit  # population limit
         self.likely_limit = likely_limit
+
+        self.biotrans_metabolism = biotrans_metabolism
+        self.biotrans_libs = biotrans_libs
+
+        self.envipath_metabolism = envipath_metabolism
 
         reactionLibs = {
             "hydrolysis": self.abiotic_hydrolysis,
             "abiotic_reduction": self.abiotic_reduction,
+            "photolysis": self.photolysis
         }
 
         self.trans_libs = []
@@ -55,12 +64,19 @@ class gentrans(object):
             if value:
                 self.trans_libs.append(key)
 
-        # NOTE: populationLimit is hard-coded to 0 as it currently does nothing
-        if biotrans_libs:
+        if self.biotrans_metabolism:
+            # self.trans_libs = ""
+            self.calc = "biotrans"
             self.metabolizer_request_post = {
                 'chemical': self.smiles,
                 'gen_limit': self.gen_limit,
-                'prop': biotrans_libs
+                'prop': self.biotrans_libs
+            }
+        elif self.envipath_metabolism:
+            self.calc = "envipath"
+            self.metabolizer_request_post = {
+                'chemical': self.smiles,
+                'gen_limit': self.gen_limit
             }
         else:
             self.metabolizer_request_post = {

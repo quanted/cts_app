@@ -45,7 +45,13 @@ def tmpl_reactionSysCTS():
 		<tr><th colspan="2"> {{header}} </th></tr>
 		{% for field in form %}
 			<tr>
-			{% if field|is_checkbox %}
+			{% if field.label == "Biotransformer Mammalian Metabolism" %}
+				<td>{{field}}</td>
+				<td>
+					{{field.label}}
+					{{biotrans_libs.biotrans_libs}}
+				</td>
+			{% elif field|is_checkbox %}
 				<td>{{field}}</td>
 				<td>{{field.label}}</td>
 			{% else %}
@@ -114,11 +120,13 @@ def tmpl_oecdGuidelines():
 	</table>
 	"""
 	return tmpl_oecdGuidelines
+	
 
 
 tmpl_reactionSysCTS = Template(tmpl_reactionSysCTS())
 tmpl_respirationTable = Template(tmpl_respirationTable())
 tmpl_oecdGuidelines = Template(tmpl_oecdGuidelines())
+
 
 
 # Method(s) called from *_inputs.py
@@ -152,9 +160,11 @@ def form(formData, model='gentrans'):
 		form_cts_reaction_libs = cts_biotrans_libs(formData)
 	else:
 		form_cts_reaction_libs = cts_reaction_libs(formData)
-	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, header=mark_safe("Reaction Libraries"))))
+		form_cts_biotrans_libs = cts_biotrans_libs(formData)
+	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, biotrans_libs=form_cts_biotrans_libs, header=mark_safe("Reaction Libraries"))))
 
-	# html = html + '</td><td>'
+	form_cts_class_specific_reaction_libs = cts_class_specific_reaction_libs(formData)
+	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_class_specific_reaction_libs, header=mark_safe("Class-Specific Reaction Libraries"))))	
 
 	form_cts_reaction_options = cts_reaction_options(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_options, header=mark_safe("Reaction Options"))))
@@ -180,7 +190,7 @@ reaction_sys_CHOICES = (('0', 'Environmental'), ('1', 'Mammalian'))
 respiration_CHOICES = (('0', 'Make a selection'), ('1', 'Aerobic'), ('2', 'Anaerobic'))
 
 # Reaction Options
-gen_limit_CHOICES = (('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'))  # generation limit
+gen_limit_CHOICES = (('1', 1), ('2', 2), ('3', 3), ('4', 4))  # generation limit
 gen_limit_max = gen_limit_CHOICES[-1][1]  # not used as field, but referenced in many-a-place
 pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'),
                      ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'))  # population limit
@@ -235,26 +245,59 @@ class cts_respiration(forms.Form):
 	# 			required=False)
 
 
+@parsleyfy
+class cts_biotrans_libs(forms.Form):
+	biotrans_choices = (('cyp450', "Phase I (CYP450) Transformation"), ('ecbased', "EC-Based Transformation"),
+		('phaseII', "PHASE II Transformation"), ('hgut', "Human Gut Microbial Transformation"))
+	biotrans_libs = forms.ChoiceField(
+					label='Biotransformer Choices',
+					choices=biotrans_choices,
+					widget=forms.Select(),
+					required=False)
+
+
 # Reaction Libraries
 @parsleyfy
 class cts_reaction_libs(forms.Form):
 	abiotic_hydrolysis = forms.BooleanField(required=False, label='Abiotic Hydrolysis')
-	abiotic_reduction = forms.BooleanField(required=False, label='Abiotic Reduction')
-	photolysis = forms.BooleanField(required=False, label='Photolysis (under development)')
+	abiotic_reduction = forms.BooleanField(required=False, label='Abiotic Reduction', disabled=True)
+	photolysis = forms.BooleanField(required=False, label='Direct Photolysis (unranked)')  # unranked direct photolysis
+	ranked_photolysis = forms.BooleanField(required=False, label='Direct Photolysis (ranked) (under development)')  # ranked direct photolysis
 	aerobic_biodegrad = forms.BooleanField(required=False, label='Aerobic Biodegradation (under development)')
 	anaerobic_biodegrad = forms.BooleanField(required=False, label='Anaerobic Biodegradation (under development)')
 	mamm_metabolism = forms.BooleanField(required=False, label='Human Phase 1 Metabolism')
+	biotrans_metabolism = forms.BooleanField(
+		required=False,
+		label='Biotransformer Mammalian Metabolism'
+	)
+	envipath_metabolism = forms.BooleanField(
+		required=False,
+		label='Envipath microbial biotransformation'
+	)
 
 
 
 @parsleyfy
-class cts_biotrans_libs(forms.Form):
-	biotrans_choices = (('CYP450', "CYP450"), ('ECBASED', "ECBASED"), ('PHASEII', "PHASEII"), ('HGUT', "HGUT"), ('ENVMICRO', "ENVMICRO"), ('ALLHUMAN', "ALLHUMAN"), ('SUPERBIO', "SUPERBIO"))
-	biotrans_libs = forms.ChoiceField(
-					label='Biotransformer Choices',
-					choices=biotrans_choices,
-					widget=forms.RadioSelect(),
-					required=False)
+class cts_class_specific_reaction_libs(forms.Form):
+	pfas_choices = (('pfas_environmental', "Experimentally verified transformations"),
+		('pfas_metabolism', "Proposed and expermentally verified transformations"))
+	pfas_environmental = forms.ChoiceField(
+		label='PFAS Environmental (under development)',
+		choices=pfas_choices,
+		widget=forms.Select(),
+		required=False,
+		disabled=True
+	)
+	pfas_metabolism = forms.ChoiceField(
+		label='PFAS Metabolism (under development)',
+		choices=pfas_choices,
+		widget=forms.Select(),
+		required=False,
+		disabled=True
+	)
+	# pfas_environmental = forms.BooleanField(required=False, label='PFAS Environmental (under development)', disabled=True)
+	# pfas_metabolism = forms.BooleanField(required=False, label='PFAS Metabolism (under development)', disabled=True)
+
 
 
 

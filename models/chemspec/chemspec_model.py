@@ -84,10 +84,11 @@ class chemspec(object):
 				'pH_microspecies': pH_microspecies,
 				'isoelectricPoint_pH_increment': isoelectricPoint_pH_increment
 			}
-			self.speciation_inputs = json.dumps(self.speciation_inputs)
+			self.speciation_inputs = self.speciation_inputs
 
 		self.run_data = {
 			'title': "Chemical Speciation Output",
+			'run_type': self.run_type,
 			'jid': self.jid,
 			'time': datetime.datetime.strptime(self.jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S'),
 			'chem_struct': self.chem_struct,
