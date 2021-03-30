@@ -19,8 +19,8 @@ def ctsLandingPage(request):
     if os.getenv("ENV_NAME") == 'cgi_azure_docker_dev':
         html += render_to_string('03epa_drupal_section_title_cts.html',
             {
-                "message": bleach.clean('<b>NOTICE:</b> CTS is moving to \
-                    <a href="https://qed.epa.gov/cts">qed.epa.gov/cts</a> in the near future.<br>')
+                "message": bleach.clean('NOTICE: CTS is moving to \
+                    <a href="https://qed.epa.gov/cts">qed.epa.gov/cts</a> in the near future.')
             }
         )
     else:
