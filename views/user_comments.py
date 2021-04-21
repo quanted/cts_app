@@ -109,7 +109,7 @@ def send_email(subject, message):
 
     to_email = os.getenv("CTS_EMAIL")
     smtp_email = os.getenv("CTS_EMAIL")
-    smtp_pass = get_key(os.path.join(QED_ROOT, "secrets", "secret_key_email.txt"))
+    smtp_pass = get_key(os.path.join(QED_ROOT, "secrets", "secret_key_cts_email.txt"))
     smtp_email_server = "smtp.gmail.com"
     smtp_email_port = 465
 
