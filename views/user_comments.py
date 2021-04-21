@@ -107,7 +107,7 @@ def get_key(key_path):
 
 def send_email(subject, message):
 
-    to_email = os.getenv("CTS_EMAIL")
+    to_email = os.getenv("CTS_EMAIL_RECIPIENT")
     smtp_email = os.getenv("CTS_EMAIL")
     smtp_pass = get_key(os.path.join(QED_ROOT, "secrets", "secret_key_cts_email.txt"))
     smtp_email_server = "smtp.gmail.com"

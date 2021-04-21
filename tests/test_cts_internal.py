@@ -1,31 +1,64 @@
 import sys
+import os
 import requests
 import unittest
+import logging
+import json
 import numpy.testing as npt
 # import linkcheck_helper
 import cts_app.tests.linkcheck_helper as linkcheck_helper
 from cts_app.tests.test_objects import get_post_object
 from django.test import Client, TestCase
 
-test = {}
+from temp_config.set_environment import DeployEnv
 
-# servers = ["https://qedinternal.epa.gov/cts/", "http://127.0.0.1:8000/cts/"]
-servers = ["http://127.0.0.1:8000/cts/"]
+# Determine env vars to use:
+runtime_env = DeployEnv()
+runtime_env.load_deployment_environment()
 
-pages = ["", "rest/", "chemspec", "pchemprop", "gentrans",
-        "chemspec/input", "pchemprop/input", "gentrans/input",
-        "chemspec/batch", "pchemprop/batch", "gentrans/batch"]
+import django
+django.setup()
 
-# output_pages = ["chemspec/output", "pchemprop/output", "gentrans/output"]  # require POST
-workflow_endpoints = ["/cts/chemspec/output"]  # require POST  (returned a CSRF 403..)
+servers = [os.getenv("CTS_REST_SERVER")]
 
-# TODO: replace api_endpoints array with endpoints from cts
-api_endpoints = []
+print("SERVERS: {}".format(servers))
+
+pages = [
+    "/cts/",
+    "/cts/rest/",
+    "/cts/chemspec",
+    "/cts/pchemprop",
+    "/cts/gentrans",
+    "/cts/chemspec/input",
+    "/cts/pchemprop/input",
+    "/cts/gentrans/input",
+    "/cts/chemspec/batch",
+    "/cts/pchemprop/batch",
+    "/cts/gentrans/batch"
+]
+
+workflow_endpoints = [
+    "/cts/chemspec/output/"
+]
+
+api_endpoints = [
+    "/cts/rest/chemaxon/run",
+    "/cts/rest/epi/run",
+    "/cts/rest/measured/run",
+    "/cts/rest/testws/run",
+    "/cts/rest/opera/run"
+]
+
+api_endpoints_map = {
+    "chemaxon": "/cts/rest/chemaxon/run",
+    "epi": "/cts/rest/epi/run",
+    "measured": "/cts/rest/measured/run",
+    "testws": "/cts/rest/testws/run",
+    "opera": "/cts/rest/opera/run"
+}
 
 # following are lists of url's to be processed with tests below
 check_pages = [s + p for s in servers for p in pages]
-
-# workflow_test_urls = [s + p for s in servers for p in output_pages]
 
 print("checking pages: {}".format(check_pages))
 # print("checking workflow outputs at: {}".format(workflow_test_urls))
@@ -44,87 +77,144 @@ class TestCTSPages(TestCase):
     def teardown(self):
         pass
 
-    @staticmethod
     def test_cts_200():
+        """
+        Tests basic HTML pages.
+        """
         test_name = "Check page access "
-        try:
-            assert_error = False
-            response = [requests.get(p).status_code for p in check_pages]
-            try:
-                npt.assert_array_equal(response, 200, '200 error', True)
-            except AssertionError:
-                assert_error = True
-            except Exception as e:
-                # handle any other exception
-                print("Error '{0}' occured. Arguments {1}.".format(e.message, e.args))
-        except Exception as e:
-            # handle any other exception
-            print("Error '{0}' occured. Arguments {1}.".format(e.message, e.args))
-        finally:
-            linkcheck_helper.write_report(test_name, assert_error, check_pages, response)
-        return
+        response = [requests.get(p).status_code for p in check_pages]
+        npt.assert_array_equal(response, 200, '200 error', True)
 
-    @staticmethod
     def test_cts_workflows():
+        """
+        Tests workflow outputs.
+        """
 
         test_client = Client()
-
         test_name = "Check workflow outputs "
-        try:
-            assert_error = False
-            # response = [requests.get(p).status_code for p in check_pages]
+        response = []
 
-            response = []
-            for p in workflow_endpoints:
-                workflow = p.split('/')[0]  # assuming model/output url structure, grabbing "model" part
+        for p in workflow_endpoints:
+            workflow = p.split('/')[2]  # assuming /cts/model/output url structure, grabbing "model" part
+            url = os.getenv('CTS_REST_SERVER') + p
+            post_data = get_post_object(workflow)
 
-                post_data = get_post_object(workflow)
+            logging.info("url: {}".format(url))
+            logging.info("post: {}".format(post_data))
 
-                print("workflow: {}".format(workflow))
-                print("url: {}".format(p))
-                print("post: {}".format(post_data))
+            res = test_client.post(url, post_data)
 
-                res = test_client.post(p, get_post_object(workflow))
+            response.append(res.status_code)
+
+        npt.assert_array_equal(response, 200, '200 error', True)
+
+    def test_cts_api_chemaxon_endpoint(self):
+        """
+        Tests ChemAxon API endpoint.
+        """
+        test_name = "Check CTS API ChemAxon endpoint "
+        test_client = Client()
+        response = []
+        calc_name = "chemaxon"
+
+        calc_endpoint = api_endpoints_map[calc_name]
+        url = os.getenv('CTS_REST_SERVER') + calc_endpoint
+        post_data = get_post_object(calc_name)
+
+        logging.info("url: {}".format(url))
+        logging.info("post: {}".format(post_data))
+
+        res = test_client.post(url, post_data)
+        result = json.loads(res.content)
+
+        npt.assert_equal(False, 'error' in result, verbose=True)
+
+    def test_cts_api_epi_endpoint(self):
+        """
+        Tests EPI API endpoint.
+        """
+        test_name = "Check CTS API EPI Suite endpoint "
+        test_client = Client()
+        response = []
+        calc_name = "epi"
+
+        calc_endpoint = api_endpoints_map[calc_name]
+        url = os.getenv('CTS_REST_SERVER') + calc_endpoint
+        post_data = get_post_object(calc_name)
+
+        logging.info("url: {}".format(url))
+        logging.info("post: {}".format(post_data))
+
+        res = test_client.post(url, post_data)
+        result = json.loads(res.content)
+
+        npt.assert_equal(False, 'error' in result, verbose=True)
+
+    def test_cts_api_testws_endpoint(self):
+        """
+        Tests TESTWS API endpoint.
+        """
+        test_name = "Check CTS API TESTWS endpoint "
+        test_client = Client()
+        response = []
+        calc_name = "testws"
+
+        calc_endpoint = api_endpoints_map[calc_name]
+        url = os.getenv('CTS_REST_SERVER') + calc_endpoint
+        post_data = get_post_object(calc_name)
+
+        logging.info("url: {}".format(url))
+        logging.info("post: {}".format(post_data))
+
+        res = test_client.post(url, post_data)
+        result = json.loads(res.content)
+
+        npt.assert_equal(False, 'error' in result, verbose=True)
+
+    def test_cts_api_opera_endpoint(self):
+        """
+        Tests OPERA API endpoint.
+        """
+        test_name = "Check CTS API OPERA endpoint "
+        test_client = Client()
+        response = []
+        calc_name = "opera"
+
+        calc_endpoint = api_endpoints_map[calc_name]
+        url = os.getenv('CTS_REST_SERVER') + calc_endpoint
+        post_data = get_post_object(calc_name)
+
+        logging.info("url: {}".format(url))
+        logging.info("post: {}".format(post_data))
+
+        res = test_client.post(url, post_data)
+        result = json.loads(res.content)
+
+        npt.assert_equal(True, result.get('valid'), verbose=True)
 
 
-                response.append(res.status_code)
-            try:
+    def test_cts_api_measured_endpoint(self):
+        """
+        Tests Measured API endpoint.
+        """
+        test_name = "Check CTS API EPI's Measured endpoint "
+        test_client = Client()
+        response = []
+        calc_name = "measured"
 
-                print(">>> Response: {}".format(response))
+        calc_endpoint = api_endpoints_map[calc_name]
+        url = os.getenv('CTS_REST_SERVER') + calc_endpoint
+        post_data = get_post_object(calc_name)
 
-                npt.assert_array_equal(response, 200, '200 error', True)
-            except AssertionError:
-                assert_error = True
-            except Exception as e:
-                # handle any other exception
-                print("Error '{0}' occured. Arguments {1}.".format(e.message, e.args))
-        except Exception as e:
-            # handle any other exception
-            print("Error '{0}' occured. Arguments {1}.".format(e.message, e.args))
-        finally:
-            print("response: {}".format(response))
-            linkcheck_helper.write_report(test_name, assert_error, workflow_endpoints, response)
-        return
+        logging.info("url: {}".format(url))
+        logging.info("post: {}".format(post_data))
 
-    @staticmethod
-    def test_cts_api_endpoints_200():
-        test_name = "Check page access "
-        try:
-            assert_error = False
-            response = [requests.get(p).status_code for p in api_endpoints]
-            try:
-                npt.assert_array_equal(response, 200, '200 error', True)
-            except AssertionError:
-                assert_error = True
-            except Exception as e:
-                # handle any other exception
-                print("Error '{0}' occured. Arguments {1}.".format(e.message, e.args))
-        except Exception as e:
-            # handle any other exception
-            print("Error '{0}' occured. Arguments {1}.".format(e.message, e.args))
-        finally:
-            linkcheck_helper.write_report(test_name, assert_error, api_endpoints, response)
-        return
+        res = test_client.post(url, post_data)
+        result = json.loads(res.content)
+
+        npt.assert_equal(False, 'error' in result, verbose=True)
+
+
 
 # unittest will
 # 1) call the setup method,
