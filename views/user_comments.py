@@ -7,9 +7,16 @@ import logging
 import datetime
 import time
 import json
+import requests
+import smtplib
+import bleach
+from .misc import generate_error_page
+
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+QED_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
+recaptcha_verify_url = "https://www.google.com/recaptcha/api/siteverify"  # POST
 
 
 def handle_contact_post(request):
@@ -19,85 +26,113 @@ def handle_contact_post(request):
     TODO: Use DB instead of reading/writing to file.
     TODO: Cron job that sends email out, say weekly.
     """
-    comments, comments_json = None, None
-    comments_file_path = os.path.join(PROJECT_ROOT, 'cts_comments.json')
-    post_data = request.POST
-    name = request.POST.get('name', "none") or "none"  # additional or accounts for blank string
-    from_email = request.POST.get('email', "none") or "none"
-    comment = request.POST.get('comment')
+    name = bleach.clean(request.POST.get("name"))
+    from_email = bleach.clean(request.POST.get("email"))
+    comment = bleach.clean(request.POST.get("comment"))
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    recaptcha_response = request.POST.get("g-recaptcha-response")
+
+    valid_recaptcha = validate_recaptcha(recaptcha_response)
+
+    if not validate_recaptcha:
+        html = generate_error_page("Recaptcha not valid", "Sorry, the comment was not submitted. Please try again.")
+        response = HttpResponse()
+        response.write(html)
+        return response
+
     comment_obj = {
-        'name': name,
-        'from_email': from_email,
-        'comment': comment,
-        'timestamp': timestamp
+        "name": name,
+        "from_email": from_email,
+        "comment": comment,
+        "timestamp": timestamp
+    }
+
+    subject = "CTS comment from {}".format(from_email)
+    message = """
+    User: {}\n
+    Email: {}\n
+    Submitted: {}\n
+    Server: {}\n
+    Comment: {}\n
+    """.format(name, from_email, timestamp, os.getenv("CTS_REST_SERVER"), comment)
+
+    email_response = send_email(subject, message)
+
+    if "error" in email_response:
+        html = generate_error_page("Error validating recaptcha", "Sorry, the comment was not submitted. Please try again.")
+        response = HttpResponse()
+        response.write(html)
+        return response
+
+    return contacts_submission_view(request)
+
+def validate_recaptcha(recaptcha):
+    """
+    Checks user response to verify recaptcha validity.
+    """
+    if len(recaptcha) <= 0:
+        # error
+        return False
+
+    secret_key = get_key(os.path.join(QED_ROOT, "secrets", "secret_key_recaptcha.txt"))
+
+    post_obj = {
+        "secret": secret_key,  # shared key b/w site and recaptcha
+        "response": recaptcha  # user resp token provided by the recaptcha client-side integration on your site
     }
 
     try:
-        comments_file = open(comments_file_path, 'r')
-        comments_content = comments_file.read()
-        comments_file.close()
-        comments_json = json.loads(comments_content)
-    except FileNotFoundError as e:
-        comments_file = open(comments_file_path, 'w')
-        comments_json = {}
+        response = requests.post(url=recaptcha_verify_url, data=post_obj)
+        result = json.loads(response.content)
     except Exception as e:
-        logging.warning("Exception occurred handling contact submission: {}".format(e))
-        return
+        logging.error("user_comments validate_recaptcha error: {}".format(e))
+        return False
 
-    if not comments_json:
-        # Writes first entry to comments file:
-        main_comments_obj = {'num_comments': 1, 'comments': [comment_obj]}
-        comments_file.write(json.dumps(main_comments_obj))  # list of comments_json objects
-        comments_file.close()
-        return contacts_submission_view(request)
+    if not "success" in result or result["success"] != True:
+        return False
+    else:
+        return True 
 
-    # Adds comment to existing comments file:
-    comments_json['comments'].append(comment_obj)
-    comments_json['num_comments'] += 1
-    comments_file = open(comments_file_path, 'w')
-    comments_file.write(json.dumps(comments_json))
-    comments_file.close()
-    return contacts_submission_view(request)
+def get_key(key_path):
+    """
+    Gets site/secret keys on disk.
+    """
+    try:
+        with open(key_path, "r") as file:
+            return file.read()
+    except Exception as e:
+        logging.error("user_comments get_key error: {}".format(e))
+        return False
 
+def send_email(subject, message):
 
+    to_email = os.getenv("CTS_EMAIL")
+    smtp_email = os.getenv("CTS_EMAIL")
+    smtp_pass = get_key(os.path.join(QED_ROOT, "secrets", "secret_key_email.txt"))
+    smtp_email_server = "smtp.gmail.com"
+    smtp_email_port = 465
 
-# def send_email_using_smtp():
-#     """
-#     Handled contacts page comment submission by sending email
-#     to cts email using an smtp server.
-#     """
-#     to_email = ""  # address to send comment to
-#     post_data = request.POST
-#     name = str(request.POST.get('name', "no-name"))
-#     from_email = str(request.POST.get('email', "<none>"))
-#     comment = str(request.POST.get('comment'))
-#     email_timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-#     subject = "{}-{}".format(name, email_timestamp)
-    
-#     # TODO: Add validation for name, email addresses, and comments (check
-#     # for injected headers, code, etc.). Ensure spam and multiple-requests attacks
-#     # are blocked.
+    msg = "\r\n".join(
+        [
+            "From: {}".format(smtp_email),
+            "To: {}".format(to_email),
+            "Subject: {}".format(subject),
+            "",
+            message,
+        ]
+    )
 
-#     email_body = render_to_string('cts_email_submission_template.html', {
-#         'name': name,
-#         'from_email': from_email,
-#         'email_timestamp': email_timestamp,
-#         'comment': comment
-#     })
-
-#     if comment:
-#         try:
-#             send_mail(subject, email_body, from_email, [to_email], html_message=email_body)
-#             time.sleep(1)  # NOTE: Not sure if neccessary, and not sure if works as intended, which is to prevent a high-freq spamming to our email system.
-#         except BadHeaderError:
-#             return HttpResponse("Invalid header found.")
-#         return contacts_submission_view(request)
-#     else:
-#         return HttpResponse("Make sure all fields are entered and valid.")
-
-
+    try:
+        server = smtplib.SMTP_SSL(smtp_email_server, smtp_email_port)
+        server.ehlo()
+        server.login(smtp_email, smtp_pass)
+        server.sendmail(smtp_email, to_email, msg)
+        server.close()
+        return {"success": "Email sent."}
+    except Exception as e:
+        logging.warning("Error sending reset email: {}".format(e))
+        return {"error": "Unable to send email."}
 
 def contacts_submission_view(request):
     """
