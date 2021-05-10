@@ -6,6 +6,6 @@ html5lib==0.99
 pytz==2014.3
 redis
 reportlab==3.3.0
-requests==2.11.1
+requests==2.20.0
 tabulate
 xhtml2pdf==0.1b1
