@@ -23,7 +23,8 @@ def gentransOutputPage(request):
     abioticHydrolysis = bleach.clean(request.POST.get('abiotic_hydrolysis', ''))
     abioticRecuction = bleach.clean(request.POST.get('abiotic_reduction', ''))
     mammMetabolism = bleach.clean(request.POST.get('mamm_metabolism', ''))
-    photolysis = bleach.clean(request.POST.get('photolysis', ''))
+    photolysis_unranked = bleach.clean(request.POST.get('photolysis_unranked', ''))
+    photolysis_ranked = bleach.clean(request.POST.get('photolysis_ranked', ''))
     genLimit = request.POST.get('gen_limit')
     popLimit = request.POST.get('pop_limit')
     likelyLimit = request.POST.get('likely_limit')
@@ -37,7 +38,8 @@ def gentransOutputPage(request):
 
     gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
                                     mass, exact_mass, cas, abioticHydrolysis, abioticRecuction,
-                                    mammMetabolism, photolysis, pfas_environmental, pfas_metabolism,
-                                    genLimit, popLimit, likelyLimit, biotrans_metabolism, biotrans_libs, envipath_metabolism)
+                                    mammMetabolism, photolysis_unranked, photolysis_ranked, 
+                                    pfas_environmental, pfas_metabolism, genLimit, popLimit, 
+                                    likelyLimit, biotrans_metabolism, biotrans_libs, envipath_metabolism)
 
     return gentrans_obj

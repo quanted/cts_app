@@ -11,9 +11,9 @@ from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 
 class gentrans(object):
     def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
-                 exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis,
-                 pfas_environmental, pfas_metabolism, gen_limit, pop_limit, likely_limit,
-                 biotrans_metabolism, biotrans_libs, envipath_metabolism):
+                 exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis_unranked,
+                 photolysis_ranked, pfas_environmental, pfas_metabolism, gen_limit, pop_limit,
+                 likely_limit, biotrans_metabolism, biotrans_libs, envipath_metabolism):
 
         self.title = "Generate Transformation Products"
         self.jid = MetabolizerCalc().gen_jid()
@@ -37,7 +37,8 @@ class gentrans(object):
         self.abiotic_hydrolysis = abiotic_hydrolysis  # values: on or None
         self.abiotic_reduction = abiotic_reduction
         self.mamm_metabolism = mamm_metabolism
-        self.photolysis = photolysis
+        self.photolysis_unranked = photolysis_unranked
+        self.photolysis_ranked = photolysis_ranked
 
         # Class-specific reaction libraries
         self.pfas_environmental  = pfas_environmental
@@ -56,16 +57,23 @@ class gentrans(object):
         reactionLibs = {
             "hydrolysis": self.abiotic_hydrolysis,
             "abiotic_reduction": self.abiotic_reduction,
-            "photolysis": self.photolysis
+            "photolysis_unranked": self.photolysis_unranked,
+            "photolysis_ranked": self.photolysis_ranked,
+            "mammalian_metabolism": self.mamm_metabolism
         }
 
         self.trans_libs = []
-        for key, value in reactionLibs.items():
-            if value:
-                self.trans_libs.append(key)
+
+        if self.abiotic_hydrolysis and (self.photolysis_ranked or self.photolysis_unranked):
+            self.trans_libs.append("combined_photolysis_abiotic_hydrolysis")
+        elif self.abiotic_hydrolysis and self.abiotic_reduction:
+            self.trans_libs.append("combined_abioticreduction_hydrolysis")
+        else:        
+            for key, value in reactionLibs.items():
+                if value:
+                    self.trans_libs.append(key)
 
         if self.biotrans_metabolism:
-            # self.trans_libs = ""
             self.calc = "biotrans"
             self.metabolizer_request_post = {
                 'chemical': self.smiles,
@@ -84,7 +92,8 @@ class gentrans(object):
                 'generationLimit': self.gen_limit,
                 'populationLimit': 0,
                 'likelyLimit': 0.1,
-                'excludeCondition': "hasValenceError()"
+                'excludeCondition': "hasValenceError()",
+                'transformationLibraries': self.trans_libs
             }
             if len(self.trans_libs) > 0:
                 self.metabolizer_request_post.update({'transformationLibraries': self.trans_libs})
