@@ -226,7 +226,7 @@ def buildMetaboliteTableForPDF():
 		<div class="metaboliteInfo">
 			<div class="mol-info-wrapper">
 
-				{{product.image}}
+				{{product.image|safe}}
 
 				<div class="nodeWrapDiv"></div>
 				<table class="mol-info-table ctsTableStylin">
