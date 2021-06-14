@@ -55,9 +55,18 @@ def handle_contact_post(request):
     Submitted: {}\n
     Server: {}\n
     Comment: {}\n
-    """.format(name, from_email, timestamp, os.getenv("CTS_REST_SERVER"), comment)
+    """.format(
+        name,
+        from_email,
+        timestamp,
+        os.getenv("CTS_REST_SERVER").split("://")[1],
+        comment
+    )
 
-    email_response = send_email(subject, message)
+    if os.getenv('ENV_NAME') in ["epa_aws_dev", "epa_aws_stg", "epa_aws_prd"]:
+        email_response = send_email_epa(subject, message)
+    else:
+        email_response = send_email(subject, message)
 
     if "error" in email_response:
         html = generate_error_page("Error validating recaptcha", "Sorry, the comment was not submitted. Please try again.")
@@ -127,6 +136,33 @@ def send_email(subject, message):
         server = smtplib.SMTP_SSL(smtp_email_server, smtp_email_port)
         server.ehlo()
         server.login(smtp_email, smtp_pass)
+        server.sendmail(smtp_email, to_email, msg)
+        server.close()
+        return {"success": "Email sent."}
+    except Exception as e:
+        logging.warning("Error sending reset email: {}".format(e))
+        return {"error": "Unable to send email."}
+
+def send_email_epa(subject, message):
+
+    to_email = os.getenv("CTS_EMAIL_RECIPIENTS").replace(" ", "").split(",")  # list of recipients
+    smtp_email = os.getenv("CTS_EMAIL")
+    smtp_email_server = "smtp.epa.gov"
+    smtp_email_port = 25
+
+    msg = "\r\n".join(
+        [
+            "From: {}".format(smtp_email),
+            "To: {}".format(to_email),
+            "Subject: {}".format(subject),
+            "",
+            message,
+        ]
+    )
+
+    try:
+        server = smtplib.SMTP(smtp_email_server, smtp_email_port)
+        server.ehlo()
         server.sendmail(smtp_email, to_email, msg)
         server.close()
         return {"success": "Email sent."}
