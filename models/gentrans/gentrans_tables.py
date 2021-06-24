@@ -174,6 +174,7 @@ def table_metabolites(gentrans_obj):
 									"speciation_inputs": None,
 									"kow_ph": 7.4,
 									"structure": gentrans_obj.smiles,
+									"orig_smiles": gentrans_obj.orig_smiles,
 									"checkedCalcsAndProps": {},
 									"calc": gentrans_obj.calc,
 									'nodes': None,
