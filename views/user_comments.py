@@ -16,7 +16,7 @@ from .misc import generate_error_page
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 QED_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-recaptcha_verify_url = "https://www.google.com/recaptcha/api/siteverify"  # POST
+recaptcha_verify_url = "https://google.com/recaptcha/api/siteverify"  # POST
 
 
 def handle_contact_post(request):
