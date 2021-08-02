@@ -36,10 +36,13 @@ def gentransOutputPage(request):
 
     envipath_metabolism = bleach.clean(request.POST.get('envipath_metabolism', ''))
 
+    include_rates = bleach.clean(request.POST.get('include_rates', ''))
+
     gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
                                     mass, exact_mass, cas, abioticHydrolysis, abioticRecuction,
                                     mammMetabolism, photolysis_unranked, photolysis_ranked, 
                                     pfas_environmental, pfas_metabolism, genLimit, popLimit, 
-                                    likelyLimit, biotrans_metabolism, biotrans_libs, envipath_metabolism)
+                                    likelyLimit, biotrans_metabolism, biotrans_libs, envipath_metabolism,
+                                    include_rates)
 
     return gentrans_obj

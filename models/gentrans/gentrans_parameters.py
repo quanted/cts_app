@@ -51,12 +51,9 @@ def tmpl_reactionSysCTS():
 					{{field.label}}
 					{{biotrans_libs.biotrans_libs}}
 				</td>
-			{% elif field|is_checkbox %}
-				<td>{{field}}</td>
-				<td>{{field.label}}</td>
 			{% else %}
-				<td>{{field.label}}</td>
 				<td>{{field}}</td>
+				<td>{{field.label}}</td>
 			{% endif %}
 			</tr>
 		{% endfor %}
@@ -307,10 +304,12 @@ class cts_reaction_options(forms.Form):
 
 	gen_limit = forms.ChoiceField (
 					choices=gen_limit_CHOICES,
-					label='Max number of generations:',
+					label='Max number of generations',
 					required=False,
 					widget=forms.Select(attrs={'aria-label': 'select generation limit'})
-				)	
+				)
+
+	include_rates = forms.BooleanField(required=False, label='Include estimated transformation half-life (if available)', disabled=True)
 
 	# pop_limit = forms.ChoiceField (
 	# 				choices=pop_limit_CHOICES,

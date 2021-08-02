@@ -13,7 +13,7 @@ class gentrans(object):
     def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
                  exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis_unranked,
                  photolysis_ranked, pfas_environmental, pfas_metabolism, gen_limit, pop_limit,
-                 likely_limit, biotrans_metabolism, biotrans_libs, envipath_metabolism):
+                 likely_limit, biotrans_metabolism, biotrans_libs, envipath_metabolism, include_rates):
 
         self.title = "Generate Transformation Products"
         self.jid = MetabolizerCalc().gen_jid()
@@ -53,6 +53,8 @@ class gentrans(object):
         self.biotrans_libs = biotrans_libs
 
         self.envipath_metabolism = envipath_metabolism
+
+        self.include_rates = include_rates
 
         reactionLibs = {
             "hydrolysis": self.abiotic_hydrolysis,
