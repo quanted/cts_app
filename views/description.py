@@ -18,8 +18,8 @@ def descriptionPage(request, model='none', header='none'):
     xx = text_file2.read()
 
     #drupal template for header with bluestripe
-    #html = render_to_string('01epa_drupal_header.html', {})
-    html = render_to_string('01epa_drupal_header.html', {
+    #html = render_to_string('01cts_epa_drupal_header.html', {})
+    html = render_to_string('01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
@@ -97,7 +97,7 @@ def about_page(request, model='none', header='non'):
         header = "CTS Version History"
 
     #drupal template for header with bluestripe
-    html = render_to_string('01epa_drupal_header.html', {
+    html = render_to_string('01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
@@ -149,7 +149,7 @@ def flowcharts_page(request, chart='none', header='non'):
         header = ""
 
     #drupal template for header with bluestripe
-    html = render_to_string('01epa_drupal_header.html', {
+    html = render_to_string('01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })

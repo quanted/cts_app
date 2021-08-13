@@ -16,7 +16,7 @@ def generate_error_page(title=None, error_msg=None):
     """
     Generates error page to display to user if something went wrong.
     """
-    html = render_to_string('01epa_drupal_header.html', {
+    html = render_to_string('01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
