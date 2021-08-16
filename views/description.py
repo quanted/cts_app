@@ -24,7 +24,7 @@ def descriptionPage(request, model='none', header='none'):
         'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
 
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         'TITLE': header + ' Overview',
@@ -102,7 +102,7 @@ def about_page(request, model='none', header='non'):
         'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
 
     if text_file2:
         xx = text_file2.read()
@@ -154,7 +154,7 @@ def flowcharts_page(request, chart='none', header='non'):
         'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
 
     if img_filepath:
         html += """

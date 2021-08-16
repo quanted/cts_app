@@ -21,7 +21,7 @@ def generate_error_page(title=None, error_msg=None):
         'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
 
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         'TITLE': title,

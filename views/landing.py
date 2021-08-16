@@ -20,11 +20,12 @@ def ctsLandingPage(request):
         html += render_to_string('03epa_drupal_section_title_cts.html',
             {
                 "message": bleach.clean('NOTICE: CTS is moving to \
-                    <a href="https://qed.epa.gov/cts">qed.epa.gov/cts</a> in the near future.')
+                    <a href="https://qed.epa.gov/cts">qed.epa.gov/cts</a> in the near future.'),
+                "version": os.getenv("CTS_VERSION")
             }
         )
     else:
-        html += render_to_string('03epa_drupal_section_title_cts.html', {"message": ""})
+        html += render_to_string('03epa_drupal_section_title_cts.html', {"message": "", "version": os.getenv("CTS_VERSION")})
 
     main_text_html = render_to_string('cts_landing_text.html', {})
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {

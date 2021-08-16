@@ -180,7 +180,7 @@ def contacts_submission_view(request):
         'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         'TITLE': "Thank you for your comments!",
         'TEXT_PARAGRAPH': """An email has been sent to the CTS team.<br>

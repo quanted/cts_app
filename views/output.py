@@ -40,7 +40,7 @@ def outputPageView(request, model='none', header=''):
         'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {})
 
     # Uses CSV dropdown for gentrans workflow, regular button for the rest:
@@ -117,7 +117,7 @@ def generate_error_page(model, title=None, error_msg=None):
         'title': "CTS"
     })
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
 
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {
         'TITLE': title,

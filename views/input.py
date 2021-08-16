@@ -29,7 +29,7 @@ def inputPage(request, model='none', header='none'):
     })
 
     html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {})
+    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
     html += render_to_string('06cts_ubertext_start_index_drupal.html', {})
 
     inputPageFunc = getattr(inputmodule, model+'InputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
