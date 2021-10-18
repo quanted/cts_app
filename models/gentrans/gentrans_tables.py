@@ -186,7 +186,8 @@ def table_metabolites(gentrans_obj):
 									"mass": gentrans_obj.mass,
 									"formula": gentrans_obj.formula,
 									'service': "getTransProducts",
-									'metabolizer_post': gentrans_obj.metabolizer_request_post
+									'metabolizer_post': gentrans_obj.metabolizer_request_post,
+									"include_rates": gentrans_obj.include_rates
 								}
 							)
 
