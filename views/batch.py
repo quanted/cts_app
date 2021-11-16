@@ -19,28 +19,28 @@ def batchInputPage(request, model='none', header='none'):
     header = viewmodule.header
 
     #drupal template for header with bluestripe
-    html = render_to_string('01cts_epa_drupal_header.html', {
+    html = render_to_string('cts_app/01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
 
-    html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
+    html += render_to_string('cts_app/02epa_drupal_header_bluestripe_onesidebar.html', {})
+    html += render_to_string('cts_app/03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
 
-    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+    html += render_to_string('cts_app/06cts_ubertext_start_index_drupal.html', {
         # 'TITLE': 'Calculate Chemical Speciation',
         # 'TEXT_PARAGRAPH': xx
     })
 
 
-    html = html + render_to_string('04cts_uberbatchinput.html', {
+    html = html + render_to_string('cts_app/04cts_uberbatchinput.html', {
             'model': model,
             'model_attributes': header+' Batch Run'}, request=request)
-    html += render_to_string('04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
+    html += render_to_string('cts_app/04cts_uberinput_jquery.html', { 'model': model}) # loads scripts_pchemprop.js
     inputPageFunc = getattr(inputmodule, model+'BatchInputPage')  # function name = 'model'InputPage  (e.g. 'sipInputPage')
     html = html + inputPageFunc(request, model, header)
 
-    html = html + render_to_string('04cts_uberbatchinput_jquery.html',
+    html = html + render_to_string('cts_app/04cts_uberbatchinput_jquery.html',
         {
             'model':model,
             'header':header,
@@ -49,16 +49,16 @@ def batchInputPage(request, model='none', header='none'):
         })
 
 
-    html += render_to_string('07ubertext_end_drupal.html', {})
+    html += render_to_string('cts_app/07ubertext_end_drupal.html', {})
     # html += links_left.ordered_list(model='cts/' + model)  # fills out 05ubertext_links_left_drupal.html
     html += ordered_list(model='cts/' + model, page='batch')
 
     #scripts and footer
-    html += render_to_string('09epa_drupal_ubertool_css.html', {})
-    html += render_to_string('09epa_drupal_cts_css.html')
-    html += render_to_string('09epa_drupal_cts_scripts.html', request=request)
-    #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
-    html += render_to_string('10epa_drupal_footer.html', {})
+    html += render_to_string('cts_app/09epa_drupal_ubertool_css.html', {})
+    html += render_to_string('cts_app/09epa_drupal_cts_css.html')
+    html += render_to_string('cts_app/09epa_drupal_cts_scripts.html', request=request)
+    #html += render_to_string('cts_app/09epa_drupal_ubertool_scripts.html', {})
+    html += render_to_string('cts_app/10epa_drupal_footer.html', {})
 
 
     response = HttpResponse()
@@ -75,22 +75,22 @@ def batchOutputPage(request, model='none', header='none'):
 
 
     #drupal template for header with bluestripe
-    html = render_to_string('01cts_epa_drupal_header.html', {
+    html = render_to_string('cts_app/01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
 
-    html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
+    html += render_to_string('cts_app/02epa_drupal_header_bluestripe_onesidebar.html', {})
+    html += render_to_string('cts_app/03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
 
-    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+    html += render_to_string('cts_app/06cts_ubertext_start_index_drupal.html', {
         # 'TITLE': 'Calculate Chemical Speciation',
         # 'TEXT_PARAGRAPH': xx
     })
 
-    # html = html + render_to_string('04cts_uberoutput_end.html', {})
+    # html = html + render_to_string('cts_app/04cts_uberoutput_end.html', {})
 
-    html += render_to_string('04cts_uberbatch_start.html', {
+    html += render_to_string('cts_app/04cts_uberbatch_start.html', {
             'model': model,
             'model_attributes': header+' Batch Output'})
 
@@ -108,26 +108,26 @@ def batchOutputPage(request, model='none', header='none'):
 
     # Uses CSV dropdown for gentrans workflow, regular button for the rest:
     if model == 'gentrans':
-        html += render_to_string('04cts_uberoutput_end_gentrans.html')  # file download html    
+        html += render_to_string('cts_app/04cts_uberoutput_end_gentrans.html')  # file download html    
     else:
-        html += render_to_string('04cts_uberoutput_end.html')  # file download html
+        html += render_to_string('cts_app/04cts_uberoutput_end.html')  # file download html
 
-    html = html + render_to_string('cts_export.html', {}, request=request)
+    html = html + render_to_string('cts_app/cts_export.html', {}, request=request)
 
     batchOutputPageFunc = getattr(batchoutputmodule, model+'BatchOutputPage')  # function name = 'model'BatchOutputPage  (e.g. 'sipBatchOutputPage')
     html += batchOutputPageFunc(request)
 
 
-    html += render_to_string('07ubertext_end_drupal.html', {})
+    html += render_to_string('cts_app/07ubertext_end_drupal.html', {})
     # html += links_left.ordered_list(model='cts/' + model)  # fills out 05ubertext_links_left_drupal.html
     html += ordered_list(model='cts/' + model, page='batchoutput')
 
     #scripts and footer
-    html += render_to_string('09epa_drupal_ubertool_css.html', {})
-    html += render_to_string('09epa_drupal_cts_css.html')
-    html += render_to_string('09epa_drupal_cts_scripts.html', request=request)
-    #html += render_to_string('09epa_drupal_ubertool_scripts.html', {})
-    html += render_to_string('10epa_drupal_footer.html', {})
+    html += render_to_string('cts_app/09epa_drupal_ubertool_css.html', {})
+    html += render_to_string('cts_app/09epa_drupal_cts_css.html')
+    html += render_to_string('cts_app/09epa_drupal_cts_scripts.html', request=request)
+    #html += render_to_string('cts_app/09epa_drupal_ubertool_scripts.html', {})
+    html += render_to_string('cts_app/10epa_drupal_footer.html', {})
 
 
     response = HttpResponse()

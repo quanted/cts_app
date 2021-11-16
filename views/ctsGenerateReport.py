@@ -169,7 +169,7 @@ def textReceiver(request, model=''):
 	"""
 	Download text file.
 	"""
-	static_path = "{}/static_qed/cts/docs/sample_batch.txt".format(settings.PROJECT_ROOT.replace('\\', '/'))
+	static_path = "{}/collected_static/cts_app/docs/sample_batch.txt".format(settings.PROJECT_ROOT.replace('\\', '/'))
 	filein = open(static_path, 'rb')
 	sample_batch_text = filein.read().decode('utf-16')
 	filein.close()

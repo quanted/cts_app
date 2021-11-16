@@ -1,0 +1,70 @@
+<div id="isoelectric-point" class="plot" tabindex="0" aria-label="isoelectric point plot"></div>
+
+<script type="text/javascript">
+function plotIsoPt() {
+
+  var dataArr = JSON.parse($('#isoPtData').text());
+
+  var horiLine = [];
+  for (var i = 0; i < 14; i+=0.1) {
+    horiLine.push([i, 0]);
+  }
+
+  var title = "Isoelectric Point = " + {{ip}} //ip = isoelectric point value
+
+  $.jqplot ('isoelectric-point', [dataArr], {
+    title: {
+      text: title,
+      fontSize: '10pt'
+    },
+    axes: {
+      xaxis: {
+        label: 'pH',
+        min: 0,
+        max: 14,
+        tickInterval: 1,
+        labelOptions: {
+          fontSize: '8pt'
+        }
+      },
+      yaxis: {
+        label: 'Charge',
+        labelOptions: {
+          fontSize: '8pt'
+        }
+      }
+    },
+    seriesDefaults: {
+      showMarker: false
+    },
+    grid: {
+      background: '#ffffff'
+    },
+    series:[
+      {
+        lineWidth: 2
+      },
+      {
+        lineWidth: 1,
+        color: "#000000"
+      }
+    ]
+  });
+
+  // 508 compliance fixes:
+  // ++++++++++++++++++++++++++++++++++++++++++++++++++++
+  var plotCanvas = $('canvas').each(function() {
+    let plotType = $(this).parent('div').attr('id');
+    if (plotType == 'isoelectric-point') {
+      $(this).attr({'aria-label': "plot of isoelectric point vs pH"});
+    }
+  });
+  // ++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+}
+
+</script>
+
+<script type="text/javascript">
+plotIsoPt();
+</script>

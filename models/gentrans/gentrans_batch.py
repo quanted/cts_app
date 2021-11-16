@@ -17,7 +17,7 @@ def gentransBatchInputPage(request, model='', header='Transformation Products', 
     """
 
     html = """
-    <script src="/static_qed/cts/js/scripts_pchemprop.js"></script>
+    <script src="/static_qed/cts_app/js/scripts_pchemprop.js"></script>
     <div id="pchem_batch_wrap" hidden>
         <h3>1. Select transformation pathways for batch chemicals</h3>
     """
@@ -28,7 +28,7 @@ def gentransBatchInputPage(request, model='', header='Transformation Products', 
         <br>
         <h3>2. Select physicochemical properties for transformation products</h3>
     """
-    html += render_to_string('cts_pchem.html', {})
+    html += render_to_string('cts_app/cts_pchem.html', {})
 
     html += """
         <div class="input_nav">
@@ -68,18 +68,18 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
     # get pchemprop model for cts_gentrans_tree/cts_pchemprop_ajax_calls on output page..
     pchemprop_obj = pchemprop_output.pchempropOutputPage(request)  # backend calc/prop dict generation
 
-    # html = render_to_string('cts_downloads.html', 
+    # html = render_to_string('cts_app/cts_downloads.html', 
     #     {'run_data': mark_safe(json.dumps(gentrans_obj.run_data))})
 
-    html = render_to_string('cts_downloads.html', {'run_data': pchemprop_obj.run_data})
+    html = render_to_string('cts_app/cts_downloads.html', {'run_data': pchemprop_obj.run_data})
 
-    html += '<script src="/static_qed/cts/js/scripts_pchemprop.js" type="text/javascript" ></script>'
+    html += '<script src="/static_qed/cts_app/js/scripts_pchemprop.js" type="text/javascript" ></script>'
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
-    html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_limit})
+    html += render_to_string('cts_app/cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_limit})
 
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
-    html +=  render_to_string('cts_pchemprop_requests.html', 
+    html +=  render_to_string('cts_app/cts_pchemprop_requests.html', 
         {
             'structure': mark_safe(gentrans_obj.smiles),
             'calc': gentrans_obj.calc,

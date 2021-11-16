@@ -54,13 +54,13 @@ inTmpl = Template(getInputTemplate())
 
 def table_all(pchemprop_obj):
     html_all = '<br>'
-    html_all += '<script src="/static_qed/cts/js/scripts_pchemprop.js" type="text/javascript"></script>'
-    html_all += render_to_string('cts_downloads.html', {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
+    html_all += '<script src="/static_qed/cts_app/js/scripts_pchemprop.js" type="text/javascript"></script>'
+    html_all += render_to_string('cts_app/cts_downloads.html', {'run_data': mark_safe(json.dumps(pchemprop_obj.run_data))})
     html_all += input_struct_table(pchemprop_obj)
     html_all += output_pchem_table(pchemprop_obj)
 
     # Creates popup divs for p-chem table using qtip2 JS library:
-    html_all += render_to_string('cts_pchem_definitions_popups.html', {'pchem_defs': pchem_defs})
+    html_all += render_to_string('cts_app/cts_pchem_definitions_popups.html', {'pchem_defs': pchem_defs})
 
     return html_all
 
@@ -108,13 +108,13 @@ def output_pchem_table(pchemprop_obj):
     if pchemprop_obj.kow_ph:
         kow_ph = round(float(pchemprop_obj.kow_ph), 1)
 
-    pchemHTML = render_to_string('cts_pchem.html', {})
+    pchemHTML = render_to_string('cts_app/cts_pchem.html', {})
     pchemHTML += str(pchemprop_parameters.form(None))
     pchemHTML = pchemHtmlTemplate().render(Context(dict(pchemHtml=pchemHTML)))
 
     html += pchemHTML
 
-    html += render_to_string('cts_pchemprop_requests.html', {
+    html += render_to_string('cts_app/cts_pchemprop_requests.html', {
                                     "time": pchemprop_obj.jid,
                                     "kow_ph": kow_ph,
                                     "structure": pchemprop_obj.smiles,

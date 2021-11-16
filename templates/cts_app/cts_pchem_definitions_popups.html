@@ -1,0 +1,14 @@
+<!-- P-chem table popup definitions table template. Builds'em all. -->
+<!-- NOTE: pchem_key is the key each pchem definition is organized by, e.g., 'mp', 'vp', etc. -->
+{% for pchem_key, pchem_obj in pchem_defs.items %}
+	<div class="pchem-popup-tooltiptext" id="{{pchem_key}}">
+		<h4><b>{{pchem_obj.name}}</b></h4>
+		<p>{{pchem_obj.definition}}</p>
+		{% if pchem_obj.methods %}
+			<h5><b>Methods: </b></h5>
+			{% for name, definition in pchem_obj.methods.items %}
+				<p style="padding-left:10px;"><b>{{name}}:</b> {{definition}}</p>
+			{% endfor %}
+		{% endif %}
+	</div>
+{% endfor %}

@@ -1,0 +1,936 @@
+{{speciation_inputs|json_script:"speciation_inputs"}}
+{{nodes|json_script:"nodes"}}
+{{metabolizer_post|json_script:"metabolizer_post"}}
+{{checkedCalcsAndProps|json_script:"checkedCalcsAndProps"}}
+
+<script type="text/javascript">
+
+var kowPH; // pH for logD
+var smiles, name, mass, formula, time, orig_smiles, includeRates;
+
+var ctsWorkflows = ['chemspec', 'pchemprop', 'gentrans'];
+var ctsInputTypes = ['single', 'batch'];
+var checkedCalcsAndProps, structure; // format --> {'calc': ['checked_prop', ..], ..}
+var spinner_html = '<img src="/static_qed/cts_app/images/loader.gif" id="spinner" />';
+var calls_tracker = 0;  // keeps track of pchem data calls for metabolites
+var total_calls = 0;  // used for metabolite pchem data progress
+var socket = null; // web socket global var
+var node_tracker = null;
+var addDataToTable_tracker = null;
+var batch_data = [];  // list of data for csv, incoming responses
+var batch_chems = [];  // list of batch chemicals with molecular info
+var workflow;
+var run_type;
+var speciation_inputs;
+var nodejs_host, nodejs_port;
+var service;  // p-chem, speciation, transformation products
+var calc;
+
+var metabolizer_post;
+
+
+$(document).ready(function() {
+    // Some global and local variable delcarations:
+    checkedCalcsAndProps = JSON.parse(document.getElementById('checkedCalcsAndProps').textContent);
+    speciation_inputs = JSON.parse(document.getElementById('speciation_inputs').textContent);
+    structure = "{{structure}}";
+    kowPH = "{{kow_ph}}";
+    smiles = "{{structure}}";
+    orig_smiles = "{{orig_smiles}}";
+    name = "{{name}}";
+    mass = "{{mass}}";
+    formula = "{{formula}}";
+    time = "{{time}}";
+    workflow = "{{workflow}}";
+    batch_chems = JSON.parse(document.getElementById('nodes').textContent);
+    run_type = "{{run_type}}";
+    nodejs_host = "{{nodejs_host}}";
+    nodejs_port = {{nodejs_port}};
+    service = "{{service}}";
+    calc = "{{calc}}";
+    includeRates = "{{include_rates}}" == 'on' ? true : false;
+
+    console.log("Include Rates: ", includeRates)
+
+    metabolizer_post = JSON.parse(document.getElementById('metabolizer_post').textContent);
+
+    $('#id_kow_ph').val(kowPH);  // set ph on pchem table to user val
+
+    connectToSocket();
+
+    if (run_type == 'batch' || workflow == 'gentrans') {
+        blockInterface(true);
+    }
+
+    if (batch_chems != null) {
+
+        // calls_tracker = batch_chems.length;
+        calls_tracker = calculateTotalCalls([batch_chems.length], checkedCalcsAndProps);
+        total_calls = calls_tracker;
+        sessionStorage.setItem('calls_tracker', calls_tracker);
+        sessionStorage.setItem('total_calls', total_calls);
+
+        // block UI with progress bar
+        blockInterface(true);
+
+        $('#pdfExport, #htmlExport').hide();
+        $('#export_menu').hide();
+
+        startPchemPropDataCollection(calc, structure, checkedCalcsAndProps, kowPH, null, null, batch_chems);
+
+    }
+    else if (structure === null || structure.length == 0) {
+        return;
+    }
+    else {
+        calls_tracker = calculateTotalCalls([1], checkedCalcsAndProps);
+        total_calls = calls_tracker;
+        startPchemPropDataCollection(calc, structure, checkedCalcsAndProps, kowPH, null, null);
+    }
+
+    // Get Data button (pchem workflow) for gathering pchem props:
+    $('#btn-pchem-data').on('click', function() {
+        if (socket) {
+            socket.disconnect();
+        }
+        checkedCalcsAndProps = buildCheckedCalcsAndProps(); // from scripts_pchemprop.js
+        kowPH = $('#id_kow_ph').val();
+        connectToSocket();
+        calls_tracker = calculateTotalCalls([1], checkedCalcsAndProps);
+        total_calls = calls_tracker;
+        startPchemPropDataCollection(calc, structure, checkedCalcsAndProps, kowPH, null, null);
+    });
+
+    // TODO: Cancel button, which removes pending tasks from celery queues:
+    $('#btn-pchem-cancel').on('click', function () {
+        socket.emit('get_data', JSON.stringify({'cancel': true, 'pchem_request': checkedCalcsAndProps, 'service': service}));
+        if (typeof(blockInterface) == "function") {
+            // Check if progress bar JS module is being used (e.g., batch mode progress bar)
+            blockInterface(false);
+        }
+        $('#btn-pchem-cleardata').trigger('click');
+    });
+
+});
+
+
+function buildCheckedCalcsAndProps () {
+    // front end way to get checkedCalcsAndProps without
+    // calling cts-jchem rest
+    var calc_data_obj = {};
+
+    $('input.calc_checkbox:checked').each(function () {
+        var calc_name = $(this).attr('name'); 
+        var available_props = $('td.ChemCalcs_available.' + calc_name); // tbl cells of calc's available props..
+        var calc_prop_checkboxes = $(available_props).parent().find('input[type=checkbox]');
+
+        calc_data_obj[calc_name] = [];
+
+        $(calc_prop_checkboxes).each(function () {
+            if ($(this).is(':checked')) {
+                var prop_name = this.name;
+                calc_data_obj[calc_name].push(prop_name); 
+            }
+        });
+    });
+    return calc_data_obj;
+}
+
+
+function redirectToInputsPage() {
+    // Called when cancel button is selected.
+    // Triggered by 'cancel' socket event.
+
+    var currentUrl = window.location.href;
+    var workflow = null;
+    var inputType = null;
+
+    // Loop CTS workflows to match current one in URL:
+    for (var ind in ctsWorkflows) {
+        if (currentUrl.indexOf(ctsWorkflows[ind]) > -1) {
+            workflow = ctsWorkflows[ind];  // matched workflow in url with list
+        }
+    }
+
+    // Loop CTS input page types (input or batch) to match current one in URL:
+    if (run_type == "single") {
+        inputType = "input";
+    }
+    else if (run_type == "batch") {
+        inputType = "batch";
+    }
+    else {
+        inputType = "";
+    }
+
+    // Redirects after canceled request:
+    if (workflow && inputType) {
+        // Redirects to input page (single or batch)
+        console.log("Redirecting to " + workflow + "'s " + inputType + " page");
+        window.location.replace('/cts/' + workflow + '/' + inputType);
+    }
+    else if (workflow && inputType == null) {
+        // If only workflow, redirects to workflow main page..
+        window.location.replace('/cts/' + workflow);
+    }
+    else {
+        // Redirects to CTS main page if something goes wrong with redirect..
+        console.log("Couldn't get workflow type of input type, redirecting to /cts page..");
+        window.location.replace('/cts');
+    }
+
+    return;
+}
+
+
+function connectToSocket() {
+
+    if (typeof io !== 'undefined') {
+
+        if (socket && socket.connected) {
+            // Ignores connection attempt if already connected
+            return;
+        }
+        
+        // connect to socket.io!
+        if (nodejs_host == 'nginx') {
+            socket = io.connect();  // docker way
+        }
+        else {
+            if (nodejs_port && nodejs_port != 80) {
+                socket = io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
+            }
+            else {
+                socket = io.connect(nodejs_host, {'force new connection': true});
+            }
+        }
+
+    }
+    else {
+        socket = null;
+        return;
+    }
+
+    socket.on('cancel', function(cancelMessage) {
+        /*
+        Socket for canceling user request.
+        */
+        console.log("User request is canceled..");
+        var blockui_message = '';
+
+        if (service == "pchem" && workflow == "gentrans" && run_type == "single") {
+            // Checks if it's a pchem request on gentrans output page, and doesn't redirect to inputs..
+            blockui_message = '<div id="pchem_wait"><h3 class="popup_header">Request has been canceled.</h3><br><br><input onclick="blockInterface(false)" type="button" value="OK" id="btn-pchem-cancel"><br></div>';
+            return;
+        }
+
+        if (cancelMessage && typeof(blockInterface) == "function") {
+            blockui_message = '<div id="pchem_wait"><h3 class="popup_header">Request has been canceled. Returning to inputs section.</h3><br><br><input onclick="redirectToInputsPage()" type="button" value="OK" id="btn-pchem-cancel"><br></div>';
+            blockInterface(true, blockui_message);
+        }
+    });
+
+    // incoming data pushed to client from redis:
+    socket.on('message', function(data) {
+
+        data = JSON.parse(data);
+
+        console.log("Incoming pchemprop request data: ")
+        console.log(data);
+
+
+        if ('error' in data) {
+            blockui_message = '<div id="pchem_wait"><h3 class="popup_header">' + data['error'] + '. Returning to inputs section.</h3><br><br><input onclick="redirectToInputsPage()" type="button" value="OK" id="btn-pchem-cancel"><br></div>';
+            blockInterface(true, blockui_message);
+            return;
+        }
+
+
+        if (workflow == 'pchemprop' && run_type == 'single') {
+            calls_tracker--;
+            batch_data.push(data);
+            parseResponseToPchemTable(data, data_node, false, addDataToTable_tracker);
+            console.log("calls tracker " + calls_tracker);
+            if (calls_tracker <= 0) {
+                handleGeomean(workflow, run_type);
+                calls_tracker = 0;
+                batch_data = [];
+            }
+            return;
+        }
+
+        calls_tracker--;
+        sessionStorage.setItem('calls_tracker', calls_tracker);
+        console.log("calls tracker: " + calls_tracker);
+
+        if (window.location.href.indexOf('batch') > -1 || window.location.href.indexOf('testws') > -1) {
+
+            calls_tracker = parseInt(sessionStorage.getItem('calls_tracker'));
+            total_calls = parseInt(sessionStorage.getItem('total_calls'));
+
+            if (data['workflow'] == 'gentrans' || data['request_post']['workflow'] == 'gentrans') {
+                // workflow global var was getting set to false during
+                // gentrans batch, oddly enough...
+
+                if (data.prop == "products") {
+
+                    // Metabolites results from gentrans batch:
+
+                    // creating st instance for use of functions,
+                    // like getting single list of n-nested nodes (st.graph.nodes)
+                    init(data.data);
+                    st_array.push(st);  // add spacetree instance to array
+
+                    var products = st.graph.nodes;
+                    var product_data = [];
+                    for (product in products) {
+                        var product_gen = parseFloat(products[product]['data']['generation']);
+                        if (product_gen <= genMax) {
+                            product_data.push(products[product]['data']);
+                        }
+                    }
+
+                    batch_data.push(product_data);
+
+
+                }
+                else if (data.request_post.service == 'getChemInfo') {
+                    // add chem info data to correct product
+                    for (var parent_index in batch_data) {
+                        var parents_data_array = batch_data[parent_index];  // array of objects
+                        for (var product_index in parents_data_array) {
+                            var product_data_object = parents_data_array[product_index];
+                            if (data.request_post.chemical == product_data_object.smiles) {
+                                // add chem info to this product object:
+                                $.extend(batch_data[parent_index][product_index], data.data);
+                            }
+                        }
+                    }
+
+
+                    // Make pchem request after cheminfo single chemical is collected...
+                    if (Object.keys(checkedCalcsAndProps).length > 0) {
+
+                        total_calls = calls_tracker + calculateTotalCalls([1], checkedCalcsAndProps);
+                        calls_tracker = total_calls
+                        sessionStorage.setItem('calls_tracker', calls_tracker);
+                        sessionStorage.setItem('total_calls', total_calls);
+
+                        var pchem_data = {
+                            'chemical': data.data['chemical'],
+                            'ph': kowPH,
+                            'pchem_request': checkedCalcsAndProps,
+                            'run_type': run_type,
+                            'workflow': 'gentrans',
+                            'genKey': data.request_post['genKey'],
+                            'mass': data.data['mass'],
+                            'request_post': {'service': null}
+                        };
+
+                        var cache = [];
+                        var pchem_data_json = JSON.stringify(pchem_data, function(key, value) {
+                            if (typeof value === 'object' && value !== null) {
+                                if (cache.indexOf(value) !== -1) {
+                                    // Circular reference found, discard key
+                                    return;
+                                }
+                                // Store value in our collection
+                                cache.push(value);
+                            }
+                            return value;
+                        });
+                        cache = null; // Enable garbage collection
+
+                        socket.emit('get_data', pchem_data_json);
+
+                    }
+
+
+
+                }
+                else {
+
+                    var data_obj_genkey = data['genKey'];
+                    var data_obj_smiles = data['chemical'];
+
+                    // add p-chem data to the right metabolite in batch_data array
+                    for (var index in batch_data) {
+
+                        var batch_chem = batch_data[index];
+
+                        if (batch_chem.length > 0) {
+                            // batch chem has metabolites..
+                            for (prod_index in batch_chem) {
+
+                                var prod_obj = batch_chem[prod_index];
+
+                                var chemMatch = prod_obj['smiles'] == data_obj_smiles || prod_obj['chemical'] == data_obj_smiles;
+
+                                if (prod_obj['genKey'] == data_obj_genkey && chemMatch) {
+
+                                    var data_obj = {
+                                        'data': data['data'],
+                                        'prop': data['prop'],
+                                        'calc': data['calc']
+                                    }
+                                    if ('method' in data) { data_obj['method'] = data['method']; }
+
+                                    if (!('pchemprops' in prod_obj)) {
+                                        batch_data[index][prod_index]['pchemprops'] = [];
+                                    }
+                                    batch_data[index][prod_index]['pchemprops'].push(data_obj);
+
+                                }
+
+                            }
+                        }
+                        
+                    }
+
+                }
+
+
+            }
+            else {
+
+                // this is where checking for 'getChemInfo' service is important.
+                // if it's a product's chem info, it needs to be added to the proper
+                // batch_data chemical's product and not as an additional batch_data element
+
+                if (data.request_post.service == 'getChemInfo' || false) {
+                    // add chem info data to correct product
+                    for (var parent_index in batch_data) {
+                        var parents_data_array = batch_data[parent_index];  // array of objects
+                        for (var product_index in parents_data_array) {
+                            var product_data_object = parents_data_array[product_index];
+                            if (data.request_post.chemical == product_data_object.smiles) {
+                                // add chem info to this product object:
+                                $.extend(batch_data[parent_index][product_index], data.data);
+                            }
+                        }
+                    }
+                }
+                else {
+                    batch_data.push(data);
+                }
+
+            }
+
+        }
+        else {
+            batch_data.push(data);
+
+            // if ('service' in data['request_post'] && data['request_post']['service'] == 'getChemInfo') {
+            // if ('service' in data && data['service'] == 'getChemInfo') {
+            if (data.request_post && data.request_post.service == 'getChemInfo') {
+                // add data to node object of products tree:
+                for (var index in st.graph.nodes) {
+                    if (data['request_post']['genKey'] == st.graph.nodes[index]['data']['genKey']) {
+                        st.graph.nodes[index].name = data['data']['node_image'];
+                        st.graph.nodes[index].data.html = data['data']['popup_image']['html'];
+                        for (var k in data['data']) {
+                            if (k != 'node_image' && k != 'popup_image' && k != 'structureData') {
+                                st.graph.nodes[index].data[k] = data['data'][k]; 
+                            }
+                        }
+                    }
+                }
+                molecularInfoRequestStatus(true);
+
+                var is_gentrans_single = workflow == 'gentrans' && run_type == 'single';
+                if (is_gentrans_single && data['prop'] == 'products') {
+                    // initiate space tree with incoming socket data:
+                    // nodeHeight = 114
+                    // nodeWidth = 100
+                    init(data['data']);  // paint tree to canvas
+                }
+                var is_cheminfo = data.request_post && data.request_post.service == 'getChemInfo';
+                if (is_cheminfo) {
+                    // molecularInfoRequestStatus(false);  // all data retrieved, removed load status
+                    addLikelyBorderToProducts();  // adds border to products with accumlation > 10% (cts_gentrans_tree.html)
+                    redrawProductTree();  // redraws the tree (cts_gentrans_tree.html)
+                }
+
+            }
+        }
+
+        if (calls_tracker <= 0) {
+            console.log("All data retrieved!");
+            blockInterface(false);
+
+            var pchemprop_option = $('#gen-select-pchem').val();
+            var is_gentrans_single = workflow == 'gentrans' && run_type == 'single';
+
+            // For molecular info data for metabolites:
+            if (is_gentrans_single && data['prop'] == 'products') {
+                // initiate space tree with incoming socket data:
+                nodeHeight = 114
+                nodeWidth = 100
+                init(data['data']);  // paint tree to canvas
+                // display total number of products:
+                var total_products_html = "<h3><span>Total Products:" + data['total_products'] + "</span></h3>";
+                $('#total-products').html(total_products_html);
+                let uniqueProducts = calculateUniqueProducts();  // gets num of unique products from tree nodes
+                var unique_products_html = "<h3><span>Unique Products:" + uniqueProducts + "</span></h3>";
+                $('#unique-products').html(unique_products_html);
+            }
+            var is_cheminfo = data.request_post && data.request_post.service == 'getChemInfo';
+            if (is_cheminfo) {
+                molecularInfoRequestStatus(false);  // all data retrieved, removed load status
+                addLikelyBorderToProducts();  // adds border to products with accumlation > 10% (cts_gentrans_tree.html)
+                redrawProductTree();  // redraws the tree (cts_gentrans_tree.html)
+            }
+
+            // Notify user that p-chem data is available for download for
+            // gentrans single mode p-chem requests for products:
+            var is_gentrans_pchem = data['prop'] != 'products' && !(is_cheminfo) && workflow == 'gentrans' && run_type == 'single';
+            if (is_gentrans_pchem) {
+
+                var blockui_message = '<div id="pchem_wait"><h3 class="popup_header">Physicochemical data successfully retrieved!<br><br>The data can be downloaded at the top-right of the page.</h3><br><br><input onclick="blockInterface(false)" type="button" value="OK" id="btn-pchem-cancel"><br></div>';
+
+                blockInterface(true, blockui_message);
+
+                handleGeomean(workflow, run_type);  // calculates geomean
+
+                displayProductData();  // displays pchem and geomean data of product
+
+            }
+
+            // if batch, display link for CSV:
+            if (window.location.href.indexOf('batch') > -1) {
+                $('#export_menu').css('position', 'relative').show();
+                $('#export_menu').prepend('<h3>Batch results ready for download</h3>');
+                handleGeomean(workflow, run_type);
+            }
+
+            // TESTWS Test Page - Initially print JSON to textarea!
+            // TODO: CSV download using current csv code in CTS
+            if(window.location.href.indexOf('testws') > -1) {
+                // all calls complete, display batch_data as formatted json:
+                $('#testws-response').val(JSON.stringify(batch_data, undefined, 4));
+            }
+
+
+        }
+        else {
+            updateProgressBar(calls_tracker, total_calls);
+        }
+
+        if (!('node' in data) || data['node'] == null || data['node'] == false) {
+            return;
+        }
+
+        var data_node;
+        if ('data' in data['node']) {
+            data_node = data['node']['data'];
+        }
+        else {
+            data_node = data['node'];
+        }
+
+        parseResponseToPchemTable(data, data_node, false, addDataToTable_tracker);
+
+    });
+}
+
+
+function startPchemPropDataCollection(calc, structure, checkedCalcsAndProps, kowPH, node, currentNode, nodes) {
+    
+    if (checkedCalcsAndProps == null) { return; }
+
+    clearGeomeanColumn();  // clears geomean column of any content
+
+    // var num_pchem = parseFloat($('#gen-select-pchem').val()); // number of props
+    var addDataToTable = false; // whether to plot on visible pchem table or not..
+
+    // Determine whether data should be inserted into pchem table:
+    if (isPchemWorkflow() && window.location.href.indexOf('batch') < 0) { 
+        addDataToTable = true;
+    }
+    else if (currentNode != null && node.id == currentNode.id) { 
+        addDataToTable = true;
+    }
+    else { 
+        addDataToTable = false;
+    }
+
+    node_tracker = node;
+    addDataToTable_tracker = addDataToTable;
+
+    var pchem_data = {};
+
+    var pchem_data = {
+        'chemical': structure,
+        'ph': kowPH,
+        // 'node': node,
+        'pchem_request': checkedCalcsAndProps,
+        'service': null,
+        'workflow': workflow
+    };
+    if (node != null) {
+        var _node_data = {};
+        for (n in node.data) {
+            if (n != 'html') {
+                _node_data[n] = node['data'][n];
+            }
+        }
+        // pchem_data['node'] = _node_data;
+        pchem_data['nodes'] = [_node_data];
+    }
+
+
+    // adding new nodes stuff:
+    if (nodes != null) {
+        pchem_data['nodes'] = Array();
+        for (n in nodes) {
+            var _node = Object.assign({}, nodes[n]);
+            delete _node.html  // html key:val because it's huge
+            pchem_data['nodes'].push(_node);
+        }
+        // pchem_data['nodes'] = nodes;  // add nodes key (list of nodes)
+    }
+
+    if (run_type != null) {
+        pchem_data['run_type'] = run_type
+    }
+
+    // if (workflow == 'gentrans' && run_type == 'batch') {
+    if (workflow == 'gentrans' && service == 'getTransProducts') {
+        
+        calls_tracker = 0;
+        if (run_type == 'batch') {
+            for (node in nodes) {
+                calls_tracker++;
+            }
+        }
+        else if (run_type == 'single') {
+            calls_tracker = 1;
+        }
+        total_calls = calls_tracker;
+
+        sessionStorage.setItem('calls_tracker', calls_tracker);  //calls for products!
+        sessionStorage.setItem('total_calls', total_calls);
+
+        pchem_data['service'] = 'getTransProducts';
+        pchem_data['calc'] = calc;
+        pchem_data['workflow'] = 'gentrans';
+        pchem_data['gen_limit'] = genMax;
+
+        pchem_data['metabolizer_post'] = JSON.parse(JSON.stringify(metabolizer_post));
+
+        if (window.location.pathname.includes("biotrans")) {
+            pchem_data['calc'] = 'biotrans'
+        }
+
+    }
+
+
+    if (workflow == 'chemspec' && run_type == 'batch' ) {
+
+        for (node in nodes) {
+            calls_tracker++;
+        }
+        total_calls = calls_tracker;
+
+        sessionStorage.setItem('calls_tracker', calls_tracker);  //calls for products!
+        sessionStorage.setItem('total_calls', total_calls);
+
+        pchem_data['service'] = 'getSpeciationData';
+        pchem_data['calc'] = 'chemaxon';
+        pchem_data['workflow'] = 'chemspec';
+        pchem_data['speciation_inputs'] = speciation_inputs;
+
+    }
+
+    if (workflow == 'pchemprop' && run_type == 'single') {
+        pchem_data['mass'] = mass;
+    }
+
+    if (window.location.href.indexOf('testws') > -1) {
+        // todo: does this match with just test?
+        pchem_data['calc'] = "testws";
+        pchem_data['service'] = "pchemprops";
+    }
+
+
+    console.log("Pchem request: ")
+    console.log(pchem_data)
+
+
+    // var pchem_data_json = JSON.stringify(pchem_data);
+    var cache = [];
+    var pchem_data_json = JSON.stringify(pchem_data, function(key, value) {
+        if (typeof value === 'object' && value !== null) {
+            if (cache.indexOf(value) !== -1) {
+                // Circular reference found, discard key
+                return;
+            }
+            // Store value in our collection
+            cache.push(value);
+        }
+        return value;
+    });
+    cache = null; // Enable garbage collection
+
+
+    // Send data to cts_nodejs server:
+    socket.emit('get_data', pchem_data_json);
+
+
+    // adds spinners to table cells
+    for (var calc in checkedCalcsAndProps) {
+        for (var i = 0; i < checkedCalcsAndProps[calc].length; i++) {
+            var prop = checkedCalcsAndProps[calc][i]; // p-chem property..
+            var tblCell = $('.' + calc + '.' + prop); // table cell for spinner..
+            if (addDataToTable) { $(tblCell).html(spinner_html); }
+        }
+    }
+
+    // adds spinners to geomean column:
+    // addSpinnersToGeomeanColumn();
+
+}
+
+
+function parseListDataFromResults(data, node, addDataToTable) {
+    var calc = data['calc']; // sparc
+    var props = data['props']; // get sparc props list
+    var data_key = "";
+    if ('error' in data) {
+        for (prop in props) {
+            var prop_obj = {'calc': data['calc'], 'prop': prop, 'data': data['error']};
+            parseResponseToPchemTable(prop_obj, node, false, addDataToTable);  // note: hasData hardcoded to false!!
+        }
+    }
+    else { 
+        for (prop_data in data['data']) {
+            var prop_obj;
+            if ('error' in data) { 
+                prop_data = {'calc': data['calc'], 'prop': data['prop'], 'data': data['error']};
+            }
+            else { 
+                prop_obj = data['data'][prop_data];
+            }
+            parseResponseToPchemTable(prop_obj, node, false, addDataToTable);  // note: hasData hardcoded to false!!
+        }   
+    }
+}
+
+
+function isPchemWorkflow() {
+    var workflow_url = window.location.href;
+    if (workflow_url.indexOf("pchem") > -1) { return true; }
+    else { return false; }
+}
+
+
+function parseResponseToPchemTable(response, node, hasData, addDataToTable) {
+    // Map response to pchemprop output table.
+    // Every calc-prop data value comes here.
+
+    var calc = response['calc'];
+    var prop = response['prop'];
+    var table_cell = $('.' + calc + '.' + prop); // table cell for calc's prop..
+    var data;
+
+    // TODO: improve error handling to mitigate error checking like below..
+    if (response.hasOwnProperty('error')) { 
+        // $(table_cell).html("");
+        $(table_cell).html(response['error']);
+        return;
+    }
+
+    else if (!('data' in response)) {
+        $(table_cell.html("error processing data"));
+        return;
+    }
+    else if (calc == "epi") {
+        if (response.data.propertyvalue) {
+            data = response.data.propertyvalue;
+        }
+        else {
+            data = response['data'];
+        }
+    }
+    else { data = response['data']; }
+
+    // Add pchemprop data to node if gentrans workflow:
+    // if (!isPchemWorkflow()) {
+    if (workflow == 'gentrans' && run_type != 'batch') {
+
+        // get node object from spacetree:
+        for (node_index in st.graph.nodes) {
+            var some_node = st.graph.nodes[node_index];
+            if (some_node.data.genKey == node.genKey) {
+                node = some_node;
+            }
+        }
+
+        if (!node.data.hasOwnProperty('pchemprops')) {
+            node.data.pchemprops = []; // keys: calc, prop, data (single-level)..
+        }
+        var post_data = {"calc": calc, "prop": prop, "data": data};
+        if (response.hasOwnProperty('method')) { 
+            post_data['method'] = response['method'];
+        }
+        if (hasData == false) {
+            // node.data.pchemprops.push(post_data);
+            addPchemDataToNode(node, post_data);
+        }
+    }
+
+    if (response.hasOwnProperty('method') && response['method'] != null) {
+        var method = response['method'];
+        var has_spinner = $(table_cell).children('img#spinner').length;
+        if (has_spinner > 0) { $(table_cell).html(""); }
+        if (addDataToTable) {
+
+            // make sure data isn't already there..
+
+            var node_data = organizeData(calc, prop, data) + " " + method;
+            var cell_data = $(table_cell).html().split('<br>');  // (remove trailing blank array item)
+            cell_data.pop();
+
+            var new_cell_data = "";
+            var unique_data;
+
+            if (cell_data.length <= 0) {
+                new_cell_data = node_data + '<br>';
+            }
+            else {
+                unique_data = $.unique(cell_data);
+
+                for (item in cell_data) {
+                    new_cell_data += cell_data[item] + '<br>';
+                }
+
+                new_cell_data += node_data + '<br>';
+
+                var unique_array = new_cell_data.split('<br>');
+                unique_array.pop();
+
+                unique_array = $.unique(unique_array);
+
+                new_cell_data = "";
+                for (item in unique_array) {
+                    new_cell_data += unique_array[item] + '<br>';
+                }
+
+            }
+
+            $(table_cell).html(new_cell_data);
+
+
+        }
+    }
+    else { 
+        if (addDataToTable) { 
+            $(table_cell).html(organizeData(calc, prop, data));
+        }
+    }
+
+}
+
+
+
+function organizeData(calc, prop, data) {
+    // formats data for pchem table
+    if (!Number(data) && Number(data) != 0 && typeof data == "string") {
+        return data;  // doesn't do anything if it isn't a number (e.g., "N/A")
+    }
+    else if (typeof data == "object" && prop == "ion_con") {
+        return organizePkaData(data);
+    }
+    else {
+        data = Number(data); // makes sure data is Number before rounding
+    }
+
+    var roundList = ["water_sol", "vapor_press", "mol_diss", "mol_diss_air",
+                        "henrys_law_con","water_sol_ph"];
+
+    if (roundList.indexOf(prop) > -1) {
+        return data.toExponential(2);
+    }
+    else {
+        return data.toFixed(2);
+    }
+}
+
+
+
+function organizePkaData(data) {
+    // For multiple pKa values in a cell:
+    if (data == null ) {
+        return "none";  // return "none" to pchem table cell
+    }
+    var parsedData = "";
+    for (item in data) {
+        var itemVals = data[item];
+        for (var i = 0; i < itemVals.length; i++) {
+            var label = item + String(i + 1).sub() +  ': ';
+            try {
+                parsedData += '<div class="pka-wrapper">' + label + itemVals[i].toFixed(2) + '</div>';    
+            }
+            catch (e) {
+                if (e instanceof TypeError) {
+                    parsedData += '<div class="pka-wrapper">' + label + itemVals[i] + '</div>';  // probably a message instead of Number   
+                } 
+            }
+            
+        }
+    }
+    return parsedData;
+}
+
+
+
+function calculateTotalCalls(nodes_list, checkedCalcsAndProps) {
+    // get max calls for progress bar (max metabolites + calcs + props + any methods):
+    var num_nodes = 0;
+    for (var i = 0; i < nodes_list.length; i++) {
+        num_nodes += nodes_list[i];
+    }
+
+    // if (workflow == 'chemspec') { return num_nodes; }  // 1req/chem in chemspec workflow
+
+    var num_props = 0;
+    for (calc in checkedCalcsAndProps) {
+        if (checkedCalcsAndProps.hasOwnProperty(calc)) {
+            var props = checkedCalcsAndProps[calc];
+            for (var i = 0; i < props.length; i ++) {
+                var prop = props[i];
+                if (calc == "chemaxon") { 
+                    if (prop == 'kow_no_ph' || prop == 'kow_wph') { 
+                        num_props += 3;  // these chemaxon props have 3 methods
+                    }
+                    else { num_props += 1; }
+                }
+                else if (calc == "epi") {
+                    if (prop == "water_sol" || prop == "log_bcf" || prop == "koc") {
+                        num_props += 2;  // epi's water_sol, log_bcf, and koc has 2 methods
+                    }
+                    else { num_props += 1; }
+                }
+                else if (calc == "test") {
+                    if (prop == "log_bcf") {
+                        num_props += 4;  // bcf has 4 methods
+                    }
+                    else {
+                        num_props += 3;  // TESTWS has 3 methods
+                    }
+                }
+                else { num_props += 1; }
+            }
+        }
+    }
+    var total_calls = num_nodes * num_props;
+    return total_calls;
+}
+
+
+
+function jsonRepack(jsonobj) {
+  return JSON.parse(JSON.stringify(jsonobj));
+}
+
+</script>

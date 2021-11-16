@@ -20,7 +20,7 @@ def pchempropBatchInputPage(request, model='', header='Physicochemical Propertie
         <h3>Select physicochemical properties for batch chemicals</h3>
     """
 
-    html += render_to_string('cts_pchem.html', {})
+    html += render_to_string('cts_app/cts_pchem.html', {})
 
     html += """
         <div class="input_nav">
@@ -49,13 +49,13 @@ def pchempropBatchOutputPage(request, model='', header='Physicochemical Properti
     if isinstance(batch_chemicals, str):
         batch_chemicals = json.loads(batch_chemicals)
 
-    html = render_to_string('cts_downloads.html', 
+    html = render_to_string('cts_app/cts_downloads.html', 
         {'run_data': pchemprop_obj.run_data})
 
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
     # for pchemprop batch, use p-chem for selecting inputs for batch data:
-    html +=  render_to_string('cts_pchemprop_requests.html', 
+    html +=  render_to_string('cts_app/cts_pchemprop_requests.html', 
         {
             'checkedCalcsAndProps': pchemprop_obj.checkedCalcsAndPropsDict,
             'kow_ph': pchemprop_obj.kow_ph,
@@ -68,7 +68,7 @@ def pchempropBatchOutputPage(request, model='', header='Physicochemical Properti
         }
     )
 
-    html += render_to_string('cts_gentrans_tree.html', {'gen_max': 0})
+    html += render_to_string('cts_app/cts_gentrans_tree.html', {'gen_max': 0})
 
 
     # what about other places cts_pchemprop_ajax_calls is rendered WITHOUT "nodes"???

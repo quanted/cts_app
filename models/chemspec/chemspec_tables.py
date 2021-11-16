@@ -103,7 +103,7 @@ inTmpl = Template(getInputTemplate())
 
 
 def table_all(chemspec_obj):
-    html_all = render_to_string('cts_downloads.html', {'run_data': chemspec_obj.run_data})
+    html_all = render_to_string('cts_app/cts_downloads.html', {'run_data': chemspec_obj.run_data})
     html_all += table_inputs(chemspec_obj)
     html_all += table_outputs(chemspec_obj)
     return html_all
@@ -191,7 +191,7 @@ def getIsoPtResults(chemspec_obj):
             html += '<div id="isoPtData" class="hideData nopdf">'
             html += mark_safe(json.dumps(isoPtChartData))
             html += '</div>'
-            html += render_to_string('cts_plot_isoelectricPoint.html', {"ip": isoPt})
+            html += render_to_string('cts_app/cts_plot_isoelectricPoint.html', {"ip": isoPt})
         else:
             html += '<p>No isoelectric point</p>'
         html += '</div>'
@@ -269,7 +269,7 @@ def getPkaResults(chemspec_obj):
     # html += mark_safe(json.dumps(chemspec_obj.jchemPropObjects['pKa'].getChartData()))
     html += mark_safe(json.dumps(chemspec_obj.run_data['pka_chartdata']))
     html += '</div>'
-    html += render_to_string('cts_plot_microspecies_dist.html')
+    html += render_to_string('cts_app/cts_plot_microspecies_dist.html')
     html += '</td></table></div>'
 
     return html

@@ -47,12 +47,12 @@ def chemspecBatchOutputPage(request, model='', header='Chemical Speciation Prope
     if isinstance(batch_chemicals, str):
         batch_chemicals = json.loads(batch_chemicals)
 
-    html = render_to_string('cts_downloads.html', 
+    html = render_to_string('cts_app/cts_downloads.html', 
         {'run_data': chemspec_obj.run_data}, request=request)
 
     html += '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
 
-    html +=  render_to_string('cts_pchemprop_requests.html', 
+    html +=  render_to_string('cts_app/cts_pchemprop_requests.html', 
         {
             'checkedCalcsAndProps': {},
             'speciation_inputs': chemspec_obj.speciation_inputs,
@@ -65,7 +65,7 @@ def chemspecBatchOutputPage(request, model='', header='Chemical Speciation Prope
         }
     )
 
-    html += render_to_string('cts_gentrans_tree.html', {'gen_max': 0})
+    html += render_to_string('cts_app/cts_gentrans_tree.html', {'gen_max': 0})
 
 
     return html
