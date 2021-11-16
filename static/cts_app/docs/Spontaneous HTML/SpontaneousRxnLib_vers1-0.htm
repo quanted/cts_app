@@ -1,0 +1,159 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<p class=MsoNormal><img width=624 height=38
+src="SpontaneousRxnLib_vers1-0_files/image001.png"
+alt="Spontaneous Reaction Library&#13;&#10;&#13;&#10;"></p>
+
+<p class=MsoNormal>The Spontaneous Reaction Library has been developed as a
+component of the Chemical Transformation Simulator (CTS), a web-based software
+tool under development in EPA’s Office of Research and Development.  The library
+is implemented in CTS to predict the likely transformation products in the
+environment for an organic chemical of interest.  </p>
+
+<p class=MsoNormal>The Spontaneous Reaction Library contains aqueous reactions
+that occur very quickly and is intended to be combined with other CTS reaction
+libraries.  It was developed to capture the rapid transformation of intermediates
+that form due to other transformation processes (e.g., hydrolysis or
+photolysis).  </p>
+
+<p class=MsoNormal>Version 1.0 of the Spontaneous Reaction Library contains one
+reaction scheme:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="Scheme_24"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Dehydration of Geminal
+Diols</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img width=541 height=240 id="Picture 2"
+src="SpontaneousRxnLib_vers1-0_files/image002.png"></p>
+
+<p class=MsoNormal>This scheme is actually an equilibrium reaction between a
+geminal diol and a carbonyl compound; however, the carbonyl compound is
+dominant, except in the case of simple aldehydes (e.g., formaldehyde) (McMurry,
+2011, p. 731).  It is necessary to include the dehydration of geminal diols to
+correctly predict the observed products in many hydrolysis and photolysis studies. 
+</p>
+
+<p class=MsoNormal><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,1,1&#8208;trichloroethane (Gerkens and Franklin, 1989; Miyamoto
+and Urano, 1996; U.S. EPA, 1992)</p>
+
+<p class=MsoListParagraphCxSpLast><img width=576 height=99 id="Picture 136"
+src="SpontaneousRxnLib_vers1-0_files/image003.png"></p>
+
+<p class=MsoNormal style='margin-left:.5in'>The first two steps in this scheme
+are hydrolysis reactions that would be predicted by the Nucleophilic
+Substitution (geminal X) scheme in the CTS Abiotic Hydrolysis Reaction Library. 
+The diol produced by these two sequential steps will quickly be transformed
+into acetyl chloride.  The acetyl chloride will then be further hydrolyzed into
+acetic acid, as would be predicted by the Acid Halide Hydrolysis scheme in the
+CTS Abiotic Hydrolysis Reaction Library.  </p>
+
+<p class=MsoNormal><b>REFERENCES</b>:</p>
+
+<p class=MsoNormal>Gerkens, R.R. and J.A. Franklin.  1989.  The rate of
+degradation of 1,1,1-trichloroethane in water by hydrolysis and
+dehydrochlorination.  <i>Chemosphere</i>.  19(12): 1929-1937.</p>
+
+<p class=MsoNormal>McMurry, J.E.  2011.  <i>Organic Chemistry</i>, 8<sup>th</sup>
+ed.  Boston, MA:  Cengage Learning.</p>
+
+<p class=MsoNormal>Miyamoto, K. and K. Urano.  1996.  Reaction rates and
+intermediates and chlorinated organic compounds in water and soil.  <i>Chemosphere</i>. 
+32(12): 2399-2408.</p>
+
+<p class=MsoNormal>U.S. EPA (United States Environmental Protection Agency). 
+1992.  Environmental fate constants for organic chemicals under consideration
+for EPA’s Hazardous Waste Identification Rule. EPA/601/R-92/006.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

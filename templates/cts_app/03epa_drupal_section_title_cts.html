@@ -1,0 +1,28 @@
+<script>
+$(document).ready(function() {
+	// Focus on main <section> on document load (test fix for tabindex -1 for 508 compliance)
+	document.getElementById('main-content').setAttribute('tabindex', "0");
+});
+</script>
+<!-- start 03epa_drupal_section_title_cts.html -->
+<section id="main-content" class="main-content clearfix" role="main" lang="en" aria-label="main section">
+  <a href="/cts" class="microsite-link">
+  	<h2 class="microsite-name">
+  		CTS: Chemical Transformation Simulator <small class="version-title">{{version}}</small>
+  	</h2>
+  </a>
+
+  <h2 class="microsite-name" style="color: #AD0000">
+  	{{message|safe}}
+  </h2>
+
+	<div id="block-pane-epa-web-area-connect" class="block block-pane  block-pane-epa-web-area-connect">
+    <ul class="menu utility-menu"><li class="menu-item"><a
+            href="/cts/about/contact" class="menu-link">Contact Us</a></li></ul>
+	</div>
+
+
+	<div class="region-highlighted clearfix">  <div id="block-ds-extras-web-area-highlighted" class="block block-ds-extras  block-ds-extras-web-area-highlighted">
+<!--googleoff: all-->
+<!-- leaving the div and section open to contain the main body below -->
+<!-- end 03epa_drupal_section_title.html -->

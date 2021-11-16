@@ -12,7 +12,7 @@ from django.conf import settings
 
 
 def cts_stress_page(request):
-    html = render_to_string('cts_stress_page.html', request=request)
+    html = render_to_string('cts_app/cts_stress_page.html', request=request)
     response = HttpResponse()
     response.write(html)
     return response

@@ -1,0 +1,902 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:0in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:10.0pt;
+	line-height:115%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<p class=MsoNormal><img width=624 height=38
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image001.gif"
+alt="Abiotic Reduction Reaction Library&#13;&#10;&#13;&#10;"></p>
+
+<p class=MsoNormal>The Abiotic Reduction Reaction Library has been developed as
+a component of the Chemical Transformation Simulator (CTS), a web-based
+software tool under development in EPA’s Office of Research and Development. 
+The library is implemented in CTS to predict the likely reduction products under
+anaerobic conditions for an organic chemical of interest. </p>
+
+<p class=MsoNormal>Version 1.5 of the Abiotic Reduction Reaction Library
+contains eight reaction schemes:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a href="#Scheme1">Hydrogenolysis</a></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a href="#Scheme2">Vicinal Dehalogenation</a></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a href="#Scheme3">Nitroaromatic Reduction</a></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a href="#Scheme4">Aromatic Azo Reduction</a></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a href="#Scheme5">Sulfoxide Reduction</a></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a href="#Scheme6">N-Nitrosamine Reduction</a></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a href="#Scheme7">Quinone Reduction</a></p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><a href="#Scheme8">Isoxazole Cleavage</a></p>
+
+<p class=MsoNormal><a href="#RankingTable">Ranking of Abiotic Reduction
+Reaction Schemes</a></p>
+
+<p class=MsoNormal><a href="#VersionHistory">Version History</a></p>
+
+<p class=MsoNormal>The reaction schemes are written as generic reaction
+equations defining how a particular structural fragment will be modified by the
+transformation reaction.  These schemes are not balanced reactions showing all
+reactants and products (e.g., H<sub>2</sub>O, OH<sup>-</sup> and/or H<sup>+</sup>
+are not shown as reactants in the schemes).  Additionally, the structural
+fragments in the reaction schemes are written with a minimal amount of
+specificity.  For example, the inclusion of hydrogen atoms in the scheme
+implies that there is a requirement for a hydrogen atom to present be in the
+specified position for the reactions to proceed; otherwise, it is assumed that,
+for simplicity, hydrogen atoms are not explicitly included.  </p>
+
+<p class=MsoNormal>The schemes are encoded using the notation and structural
+query features from ChemAxon’s Marvin tools.  Definitions of some common
+symbols used in the reaction schemes are provided below:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>L[a<sub>1</sub>;a<sub>2</sub>;…] is a list of possible atoms (a<sub>1</sub>,
+a<sub>2</sub>, …) that can occupy the position within the fragment</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(A) is used to indicate an aliphatic carbon atom</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(a) is used to indicate an aromatic carbon atom</p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(s*) indicates substituent count is as drawn for the atom</p>
+
+<p class=MsoNormal>Examples are provided for each reaction scheme in the
+library.  As is the case for the reaction schemes themselves, the example
+reactions do not show all of the reactants and products involved in the reduction
+reaction.  The example chemical is shown as the only reactant, and the products
+are the major transformation products reported in the study.  These example
+transformations from the peer-reviewed literature and government regulatory
+reports were used to test the reaction schemes in the library.</p>
+
+<p class=MsoNormal>The schemes within the abiotic reduction library are ranked
+on a scale of one to seven according to their relative rate of transformation,
+with a higher rank indicating a faster transformation rate.   A database of
+measured rate constants or half-lives was compiled from a survey of
+peer-reviewed scientific literature and reports by government regulatory
+agencies to assign these ranks to each reaction scheme.  </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><a name=Scheme1><b><span style='font-size:16.0pt;line-height:
+115%;color:#365F91'>Hydrogenolysis</span></b></a></p>
+
+<p class=MsoNormal><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=108 id="Picture 10"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image002.gif"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Carbon tetrachloride (Elsner et al., 2004)</p>
+
+<p class=MsoListParagraphCxSpMiddle><img border=0 width=267 height=110
+id="Picture 1" src="AbioticReductionRxnLib_vers1-5rev_052721_files/image003.gif"></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Tetrachloroethene (Butler and Hayes, 1999)</p>
+
+<p class=MsoListParagraphCxSpMiddle><img border=0 width=297 height=89
+id="Picture 2" src="AbioticReductionRxnLib_vers1-5rev_052721_files/image004.gif"></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Dichlorodiphenyltrichloroethane (DDT) (Macalady et al., 1986;
+Larson and Weber, 1994)</p>
+
+<p class=MsoListParagraphCxSpMiddle style='page-break-after:avoid'><img
+border=0 width=513 height=102 id="Picture 13"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image005.gif"></p>
+
+<p class=MsoListParagraphCxSpMiddle>&nbsp;</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Tribromomethane (Perlinger et al., 1998)</p>
+
+<p class=MsoListParagraphCxSpLast><img border=0 width=364 height=104
+id="Picture 14"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image006.gif"></p>
+
+<p class=MsoNormal><b>REFERENCES</b>:</p>
+
+<p class=MsoNormal>Elsner, M. et al. Mechanisms and Products of
+Surface-Mediated Reductive Dehalogenation of Carbon Tetrachloride by Fe(II) on
+Goethite. <i>Environ. Sci. Technol.</i> <b>2004</b>, <i>38</i>, 2058-2066.</p>
+
+<p class=MsoNormal>Butler, E.C.; Hayes, K.F. Kinetics of the Transformation of
+Trichloroethylene and Tetrachloroethylene by Iron Sulfide. <i>Environ. Sci.
+Technol.</i> <b>1999</b>, <i>33</i>, 2021-2027.</p>
+
+<p class=MsoNormal>Macalady, D.L.; Tratnyek, P.G.; Grundl, T.J. Review Paper:
+Abiotic Reduction Reactions of Anthropogenic Organic Chemicals in Anaerobic
+Systems: A Critical Review. <i>J. Contam. Hydrol.</i> <b>1986</b>, <i>1</i>,
+1-28.</p>
+
+<p class=MsoNormal>Larson, R.A. and E.J. Weber.  <i>Reaction Mechanisms in
+Environmental Organic Chemistry</i>.  Boca Raton: CRC Press, Inc., 1994.</p>
+
+<p class=MsoNormal>Perlinger, J.A.; Buschmann, J.; Angst, W.; Schwarzenbach,
+R.P. Iron Porphyrin and Mercaptojuglone Mediated Reduction of Polyhalogenated
+Methanes and Ethanes in Homogeneous Aqueous Solution. <i>Environ. Sci. Technol.</i>
+<b>1998</b>, <i>32</i>, 2431-2437.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><a name=Scheme2><b><span style='font-size:16.0pt;line-height:
+115%;color:#365F91'>Vicinal Dehalogenation</span></b></a></p>
+
+<p class=MsoNormal><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><b><img border=0 width=636 height=190 id="Picture 11"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image007.gif"></b></p>
+
+<p class=MsoNormal><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Hexachloroethane (Perlinger et al., 1996)</p>
+
+<p class=MsoListParagraphCxSpMiddle><img border=0 width=353 height=113
+id="Picture 15"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image008.gif"></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,1,1,2-tetrachloro-2,2-bis(p-chlorophenyl)ethane (Alpha-chloro-DDT,
+DTE) (Macalady et al., 1986; Larson and Weber, 1994)</p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in'><img border=0
+width=575 height=113 id="Picture 16"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image009.gif"></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Tetrachloroethane (Butler and Hayes, 2000)</p>
+
+<p class=MsoListParagraphCxSpLast style='margin-left:.25in;text-indent:.25in'><img
+border=0 width=361 height=132 id="Picture 17"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image010.gif"></p>
+
+<p class=MsoNormal><b>REFERENCES</b>:</p>
+
+<p class=MsoNormal>Perlinger, J.A.; Angst, W.; Schwarzenbach, R.P. Kinetics of
+the Reduction of Hexachloroethane by Juglone in Solutions Containing Hydrogen
+Sulfide. <i>Environ. Sci. Technol.</i> <b>1996</b>, <i>30</i>, 3408-3417.</p>
+
+<p class=MsoNormal>Macalady, D.L.; Tratnyek, P.G.; Grundl, T.J. Review Paper:
+Abiotic Reduction Reactions of Anthropogenic Organic Chemicals in Anaerobic
+Systems: A Critical Review. <i>J. Contam. Hydrol.</i> <b>1986</b>, <i>1</i>,
+1-28.</p>
+
+<p class=MsoNormal>Larson, R.A. and E.J. Weber.  <i>Reaction Mechanisms in
+Environmental Organic Chemistry</i>.  Boca Raton: CRC Press, Inc., 1994.</p>
+
+<p class=MsoNormal>Butler, E.C.; Hayes, K.F. Kinetics of the Transformation of
+Halogenated Aliphatic Compounds by Iron Sulfide. <i>Environ. Sci. Technol.</i> <b>2000</b>,
+<i>34</i>, 422-429.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name=Scheme3><b><span
+style='font-size:16.0pt;line-height:115%;color:#365F91'>Nitroaromatic Reduction</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME:</b></p>
+
+<p class=MsoNormal><img border=0 width=628 height=200 id="Picture 3"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image011.jpg"></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>EXAMPLES:</b></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>P-Chloronitrobenzene (Klausen et al., 1995)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=250
+height=151 id="Picture 18"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image012.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3-Bromo-5-nitrobenzene-1,2-diamine (Weber and Adams, 1995; Larson
+and Weber, 1994)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=408
+height=138 id="Picture 19"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image013.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in;page-break-after:avoid'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,2,4,5-Tetrachloro-3-nitrobenzene (Macalady et al., 1986)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=408
+height=126 id="Picture 20"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image014.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>O,O-diethyl O-4-nitrophenyl Phosphorothioate (Parathion)
+(Macalady et al., 1986)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=330
+height=187 id="Picture 21"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image015.gif"></p>
+
+<p class=MsoNormal><b>REFERENCES:</b></p>
+
+<p class=MsoNormal>Klausen, J.; Trober, S.P.; Haderlein, S.B.; Schwarzenbach,
+R.P. Reduction of Substituted Nitrobenzenes by Fe(II) in Aqueous Mineral
+Suspensions. <i>Environ. Sci. Technol.</i> <b>1995</b>, <i>29</i>, 2396-2404.</p>
+
+<p class=MsoNormal>Weber, E.J.; Adams, R.L. Chemical- and Sediment-Mediated
+Reduction of the Azo Dye Disperse Blue 79. <i>Environ. Sci. Technol.</i> <b>1995</b>,
+<i>29</i>, 1163-1170.</p>
+
+<p class=MsoNormal>Larson, R.A. and E.J. Weber.  <i>Reaction Mechanisms in
+Environmental Organic Chemistry</i>.  Boca Raton: CRC Press, Inc., 1994.</p>
+
+<p class=MsoNormal>Macalady, D.L.; Tratnyek, P.G.; Grundl, T.J. Review Paper:
+Abiotic Reduction Reactions of Anthropogenic Organic Chemicals in Anaerobic
+Systems: A Critical Review. <i>J. Contam. Hydrol.</i> <b>1986</b>, <i>1</i>,
+1-28.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name=Scheme4><b><span
+style='font-size:16.0pt;line-height:115%;color:#365F91'>Aromatic Azo Reduction</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME:</b></p>
+
+<p class=MsoNormal><img border=0 width=628 height=111 id="Picture 4"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image016.jpg"></p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>EXAMPLES:</b></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in;page-break-after:avoid'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>5-amino-2-{2-[4-(dimethylamino)phenyl]diazen-1-yl}benzoic acid
+(Weber and Wolfe, 1987)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=624
+height=110 id="Picture 22"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image017.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Disperse Blue 79 (Weber and Adams, 1995; Larson and Weber, 1994)</p>
+
+<p class=MsoNormal><img border=0 width=624 height=138 id="Picture 23"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image018.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1-({4-[(E)-2-phenyldiazen-1-yl]phenyl}amino)propan-2-ol
+(Substituted 4-Aminoazobenzene) (Weber, 1996)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=624
+height=104 id="Picture 24"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image019.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in;page-break-after:avoid'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>4-[(E)-2-{4-[(2-hydroxypropyl)amino]phenyl}diazen-1-yl]benzonitrile
+(Substituted 4-cyano-4’-aminoazobenzene) (Zhang and Weber, 2009)</p>
+
+<p class=MsoNormal style='margin-left:.25in'><img border=0 width=624 height=96
+id="Picture 25"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image020.gif"></p>
+
+<p class=MsoNormal><b>REFERENCES: </b></p>
+
+<p class=MsoNormal>Weber, E.J.; Wolfe, N.L. Kinetic Studies of the Reduction of
+Aromatic Azo Compounds in Anaerobic Sediment/Water Systems. <i>Environ.
+Toxicol. Chem.</i> <b>1987</b>, <i>6</i>, 911-919.</p>
+
+<p class=MsoNormal>Weber, E.J.; Adams, R.L. Chemical- and Sediment-Mediated
+Reduction of the Azo Dye Disperse Blue 79. <i>Environ. Sci. Technol.</i> <b>1995</b>,
+<i>29</i>, 1163-1170.</p>
+
+<p class=MsoNormal>Larson, R.A. and E.J. Weber.  <i>Reaction Mechanisms in Environmental
+Organic Chemistry</i>.  Boca Raton: CRC Press, Inc., 1994.</p>
+
+<p class=MsoNormal>Weber, E.J. Iron-Mediated Reductive Transformations:
+Investigation of Reaction Mechanism. <i>Environ. Sci. Technol. </i><b>1996</b>,
+<i>30</i>, 716-719.</p>
+
+<p class=MsoNormal>Zhang, H.; Weber, E.J. Elucidating the Role of Electron
+Shuttles in Reductive Transformations in Anaerobic Sediments. <i>Environ. Sci.
+Technol.</i> <b>2009</b>, <i>43</i>, 1042-1048.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><a name=Scheme5><b><span style='font-size:16.0pt;line-height:
+115%;color:#365F91'>Sulfoxide Reduction</span></b></a></p>
+
+<p class=MsoNormal><b>SCHEME:</b></p>
+
+<p class=MsoNormal><img border=0 width=628 height=179 id="Picture 5"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image021.jpg"></p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>EXAMPLES:</b></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Phorate Sulfoxide (Larson and Weber, 1994)</p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:.25in'><img border=0
+width=470 height=107 id="Picture 26"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image022.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in;page-break-after:avoid'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Aldicarb Sulfoxide (Larson and Weber, 1994)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=433
+height=167 id="Picture 27"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image023.gif"></p>
+
+<p class=MsoNormal><b>REFERENCES:</b></p>
+
+<p class=MsoNormal>Larson, R.A. and E.J. Weber.  <i>Reaction Mechanisms in
+Environmental Organic Chemistry</i>.  Boca Raton: CRC Press, Inc., 1994.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><a name=Scheme6><b><span style='font-size:16.0pt;line-height:
+115%;color:#365F91'>N-Nitrosoamine Reduction</span></b></a></p>
+
+<p class=MsoNormal><b>SCHEME:</b></p>
+
+<p class=MsoNormal><img border=0 width=628 height=228 id="Picture 6"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image024.jpg"></p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>EXAMPLES:</b></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in;page-break-after:avoid'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Nitrosodiphenylamine (Larson and Weber, 1994)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=425
+height=115 id="Picture 28"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image025.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>N-Nitrosoatrazine (Larson and Weber, 1994)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=565
+height=162 id="Picture 29"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image026.gif"></p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Nitrosodimethylamine (Kulikova et al., 2009)</p>
+
+<p class=MsoNormal style='text-indent:.25in'><img border=0 width=332 height=96
+id="Picture 30"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image027.gif"></p>
+
+<p class=MsoNormal><b>REFERENCES:                            </b></p>
+
+<p class=MsoNormal>Larson, R.A. and E.J. Weber.  <i>Reaction Mechanisms in
+Environmental Organic Chemistry</i>.  Boca Raton: CRC Press, Inc., 1994.</p>
+
+<p class=MsoNormal>Kulikova, N.; Baker, M.; Gabryelski, W. Collision induced
+dissociation of protonated N-nitrosodimethylamine by ion trap mass
+spectrometry: Ultimate carcinogens in gas phase. <i>Int. J. Mass Spec.</i> <b>2009</b>,
+<i>288</i>, 75-83.</p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><a name=Scheme7><b><span style='font-size:16.0pt;line-height:
+115%;color:#365F91'>Quinone Reduction</span></b></a></p>
+
+<p class=MsoNormal><b>SCHEME:</b></p>
+
+<p class=MsoNormal><img border=0 width=628 height=365 id="Picture 7"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image028.jpg"></p>
+
+<p class=MsoNormal align=center style='text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal><b>EXAMPLES:</b></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Anilinohydroquinone (Colon et al., 2002)</p>
+
+<p class=MsoListParagraphCxSpMiddle><img border=0 width=329 height=115
+id="Picture 31"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image029.gif"></p>
+
+<p class=MsoListParagraphCxSpMiddle>&nbsp;</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2,6-dichlorophenolindophenol (Tonomura et al., 1978; Larson and
+Weber, 1994)</p>
+
+<p class=MsoListParagraphCxSpMiddle><img border=0 width=470 height=103
+id="Picture 32"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image030.gif"></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Tetramethoxycyclohexa-2,5-diene-1,4-dione (Ref ??)</p>
+
+<p class=MsoListParagraphCxSpLast><img border=0 width=524 height=159
+id="Picture 33"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image031.gif"></p>
+
+<p class=MsoNormal><b>REFERENCES:</b></p>
+
+<p class=MsoNormal>Colón, D.; Weber, E.J.; Baughman, G.L. Sediment-Associated
+Reactions of Aromatic Amines. 2. QSAR Development. <i>Environ. Sci. Technol.</i>
+<b>2002</b>, <i>36</i>, 2443-2450.</p>
+
+<p class=MsoNormal>Tonomura, B.; Nakatani, H.; Ohnishi, M.; Yamaguchi-Ito, J.;
+Hiromi, K. Reduction for 2,6-Dichlorophenolindophenol and Potassium
+Ferricyanide by L-Ascorbic Acid. <i>Anal. Biochem.</i> <b>1978</b>, <i>84</i>,
+370-383.</p>
+
+<p class=MsoNormal>Larson, R.A. and E.J. Weber.  <i>Reaction Mechanisms in
+Environmental Organic Chemistry</i>.  Boca Raton: CRC Press, Inc., 1994.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name=Scheme8><b><span
+style='font-size:16.0pt;line-height:115%;color:#365F91'>Isoxazole Cleavage</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME:</b></p>
+
+<p class=MsoNormal><img border=0 width=627 height=233 id="Picture 8"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image032.jpg"></p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>EXAMPLES:</b></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Sulfamethoxazole (Mohatt et al., 2011)</p>
+
+<p class=MsoListParagraphCxSpLast><img border=0 width=476 height=92
+id="Picture 34"
+src="AbioticReductionRxnLib_vers1-5rev_052721_files/image033.gif"></p>
+
+<p class=MsoNormal><b>REFERENCES: </b></p>
+
+<p class=MsoNormal>Mohatt, J.L.; Hu, L.; Finneran, K.T.; Strathmann, T.J.
+Microbially Mediated Abiotic Transformation of the Antimicrobial Agent
+Sulfamethoxazole under Iron-Reducing Soil Conditions. <i>Environ. Sci. Technol.</i>
+<b>2011</b>, <i>45</i>, 4793-4801.</p>
+
+<b><span style='font-size:16.0pt;line-height:115%;font-family:"Calibri",sans-serif;
+color:#365F91'><br clear=all style='page-break-before:always'>
+</span></b>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:115%;
+color:#365F91'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name=RankingTable><b><span style='font-size:16.0pt;
+line-height:115%;color:#365F91'>Ranking of </span></b></a><a name="_Hlk46499958"><b><span
+style='font-size:16.0pt;line-height:115%;color:#365F91'>Abiotic Reduction
+Reaction Schemes</span></b></a></p>
+
+<p class=MsoNormal>The schemes within the abiotic reduction library are ranked
+on a scale of one to seven according to their relative rate of transformation,
+with a higher rank indicating a faster transformation rate.   </p>
+
+<div align=center>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>Scheme</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>Rank</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrogenolysis</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Vicinal Dehalogenation</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Nitroaromatic
+  Reduction</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>5</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Aromatic Azo
+  Reduction</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Sulfoxide
+  Reduction</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>N-Nitrosoamine
+  Reduction</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Quinone
+  Reduction</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=210 valign=top style='width:157.25pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Isoxazole
+  Cleavage</p>
+  </td>
+  <td width=78 valign=top style='width:58.5pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>4</p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The following table defines the seven ranking levels, which
+span residence times of environmental relevance.  </p>
+
+<div align=center>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td width=77 style='width:.8in;border:solid windowtext 1.0pt;padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>Rank</p>
+  </td>
+  <td width=211 style='width:158.15pt;border:solid windowtext 1.0pt;border-left:
+  none;padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>Range of Median Transformation Half-Life</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=77 style='width:.8in;border:solid windowtext 1.0pt;border-top:none;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>7</p>
+  </td>
+  <td width=211 style='width:158.15pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>Less than 30 minutes</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=77 style='width:.8in;border:solid windowtext 1.0pt;border-top:none;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>6</p>
+  </td>
+  <td width=211 style='width:158.15pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>30 minutes to 200 minutes</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=77 style='width:.8in;border:solid windowtext 1.0pt;border-top:none;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>5</p>
+  </td>
+  <td width=211 style='width:158.15pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>200 minutes to 24 hours</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=77 style='width:.8in;border:solid windowtext 1.0pt;border-top:none;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>4</p>
+  </td>
+  <td width=211 style='width:158.15pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>24 hours to 7 days</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=77 style='width:.8in;border:solid windowtext 1.0pt;border-top:none;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>3</p>
+  </td>
+  <td width=211 style='width:158.15pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>7 days to 60 days</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=77 style='width:.8in;border:solid windowtext 1.0pt;border-top:none;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>2</p>
+  </td>
+  <td width=211 style='width:158.15pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>60 days to 1 year</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=77 style='width:.8in;border:solid windowtext 1.0pt;border-top:none;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>1</p>
+  </td>
+  <td width=211 style='width:158.15pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:2.9pt 5.75pt 2.9pt 5.75pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>Greater than 1 year</p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<b><span style='font-size:16.0pt;line-height:115%;font-family:"Calibri",sans-serif;
+color:#365F91'><br clear=all style='page-break-before:always'>
+</span></b>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:115%;
+color:#365F91'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name=VersionHistory><b><span style='font-size:16.0pt;
+line-height:115%;color:#365F91'>Version History</span></b></a></p>
+
+<p class=MsoNormal>Version 1.5 Revisions:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>The number of ranks was expanded from six to seven ranks to allow
+for greater resolution of the likelihood of production and accumulation of
+products formed by very fast reactions. The range of transformation half-lives
+remained the same for ranks one through four; however, the range of half-lives
+associated with ranks five and six were modified slightly, and rank seven was
+introduced for schemes with median observed half-lives less than 30 minutes.  </p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>The Hydrogenolysis and Vicinal Dehalogenation schemes were
+modified so that these reactions would not proceed for fluorinated aliphatics. Under
+environmentally relevant conditions, these reactions would not be expected to
+occur for fluorinated aliphatics due to the strength of the carbon-fluorine
+bond. In previous versions of the library, the halogen atoms in these schemes
+were denoted with the X symbol, which represents any halogen atom. The X symbol
+was replaced with a list atom (L[Cl;Br;I]) so that these dehalogenation
+reactions will only occur when the leaving halogen is chlorine, bromine or
+iodine.</p>
+
+</div>
+
+</body>
+
+</html>

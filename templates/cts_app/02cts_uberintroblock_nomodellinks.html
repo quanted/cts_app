@@ -1,0 +1,34 @@
+<!--start 02cts_uberintroblock_nomodellinks-->
+
+{% load static %}
+
+<!-- "Click" Menus -->
+<script type="text/javascript">
+$( document ).ready(function() {
+
+	$('.fadeMenu').hover(function(){
+		$(this).stop().animate({ backgroundColor:'#9AB2CB', color:'#34322D'},500);
+		}, function(){
+			$(this).stop().animate({ backgroundColor:'#dee7ef', color:'#34322D'},500);
+	});
+
+	// $('.fadeWorkflowMenu').hover(function(){
+	// 	$(this).stop().animate({ backgroundColor:'#99ecab', color:'#34322D'},500);
+	// 	}, function(){
+	// 		$(this).stop().animate({ backgroundColor:'#ccf5d5', color:'#34322D'},500);
+	// });
+
+});
+</script>
+
+<!-- Header Menu Bar -->
+<div id="header_menu_nav">
+  <ul></ul>
+</div>      
+<div id="header_menu_r">
+  <ul>
+    <!-- <li><a href="/cts/contact">Contact Us</a></li>-->
+  </ul>
+</div>
+
+<!--end 02cts_uberintroblock_nomodellinks-->

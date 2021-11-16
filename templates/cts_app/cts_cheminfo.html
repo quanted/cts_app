@@ -1,0 +1,48 @@
+<!-- Marvin Sketch Content -->
+<div id="chemEditDraw">
+	<table class="input_table tab tab_Chemical">
+		<tr>
+			<td><span>Draw Chemical Structure</span>
+			<input id="getSmilesButton" class="tab_chemicalButtons" type="button" value="Draw a chemical structure and Click Here"></td>
+		</tr>
+		<!-- begin Marvin4JS -->
+		<tr>
+			<td>
+				<div id="content" class="resizable"> 
+			
+					<!-- MarvinSketch Drawer -->
+					<!-- <iframe id="sketch" aria-label="draw chemical" src="/static_qed/cts_app/js/efs/marvin4js/editorws.html" class="sketcher-frame" style="overflow: hidden; min-width: 600px; min-height: 450px; border: 1px solid darkgray;"></iframe> -->
+
+					<!-- Ketcher Drawer -->
+					<iframe id="ifKetcher" src="/static_qed/cts_app/ketcher/ketcher_index.html" width="800" height="600"></iframe>
+
+				</div>
+		<!-- end Marvin4JS -->
+			</td>
+		</tr>
+	</table>
+</div> 
+
+
+
+<!-- Results Table Content -->
+<div id="chemEditResults">
+	<table id="chem-results-table" class="input_table tab tab_Chemical">
+		<tr>
+			<td id="results" colspan="2"><span><h3>Results</h3></span></td>
+		</tr>
+		{% for chem_obj in chem_objects %}
+		<tr>
+			<td class="label"><label for="{{chem_obj.name}}">{{chem_obj.label}}</label></td>
+			<td><textarea id="{{chem_obj.name}}" name="{{chem_obj.name}}" readonly></textarea></td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+
+<script>
+$(document).ready(function () {
+	// Sets Jchem Web Services URL for MarvinSketchJS:
+	initiateKetcherInstance("{{jchem_server}}");
+});
+</script>

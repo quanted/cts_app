@@ -1,0 +1,105 @@
+<p>
+The reaction libraries are composed of generalized reaction schemes that compose a
+reaction library for a given transformation process (e.g., abiotic hydrolysis, abiotic
+reduction, and mammalian metabolism) that are based on specific examples
+published in the peer-reviewed literature. Reaction libraries that allows us to
+&quot;encode&quot; the known process science published in the peer-reviewed literature. The
+reaction libraries are considered to be comprehensive based on the review of the
+current literature; however, updates will be made as additional studies are published.
+The encoding of process science is accomplished using Chemical Terms Language and
+Smart Reaction SMILES strings through cheminformatics applications. The execution
+of these reaction libraries provides dominant transformation pathways and products
+for the chemical of interest as a function of environmental conditions.
+</p>
+
+<br><br>
+
+<h3>Abiotic Hydrolysis Reaction Library</h3>
+<p>
+The current version of the Abiotic Hydrolysis Reaction Library contains 24 reaction
+schemes. In the documentation page, left click a reaction scheme to view the
+generalized reaction scheme, supporting reaction rules for reactivity, selectivity and
+exclusion, as well as example transformation pathways and associated references.
+Scroll to the bottom of the library documentation page to view a table showing the
+rank assignments for each scheme in the library.
+</p>
+
+<h4><a href="/static_qed/cts_app/docs/Hydrolysis Lib HTML/HydrolysisRxnLib_ver1-8.htm" target="_blank">Abiotic Hydrolysis Reaction Library</a> (last updated September 11, 2020)</h4>
+
+<br><br>
+
+<h3>Abiotic Reduction Reaction Library</h3>
+<p>
+The current version of the Abiotic Reduction Reaction Library contains eight reaction
+schemes. In the documentation page, left click a reaction scheme to view the
+generalized reaction scheme, supporting reaction rules for reactivity, selectivity and
+exclusion, as well as example transformation pathways and associated references.
+
+Scroll to the bottom of the library documentation page to view a table showing the
+rank assignments for each scheme in the library.
+</p>
+
+<h4><a href="/static_qed/cts_app/docs/Reduction HTML/AbioticReductionRxnLib_vers1-5rev_052721.htm" target="_blank">Abiotic Reduction Reaction Library</a> (last updated August 6, 2020)</h4>
+
+<br><br>
+
+<h3>Direct Photolysis Reaction Library</h3>
+<p>
+There are currently 154 reaction schemes in the Direct Photolysis Reaction Library.
+There are ranked and unranked versions of the library. The unranked library generates
+all possible phototransformation products and should not be run with other libraries.
+In the documentation pages for the ranked and unranked libraries, left click a reaction
+scheme to view the generalized reaction scheme, supporting reaction rules for
+reactivity, selectivity and exclusion, as well as example transformation pathways and
+associated references. Scroll to the bottom of the ranked library documentation page
+to view a table showing the rank assignments for each scheme in the library.
+</p>
+
+<h4><a href="/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-0a_051721.htm" target="_blank">Direct Photolysis Reaction Library (unranked)</a> (last updated April 21, 2020)</h4>
+
+<h4><a href="/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-3a_051721.htm" target="_blank">Direct Photolysis Reaction Library (ranked)</a> (last updated April 30, 2021)</h4>
+
+<br><br>
+
+<h3>Spontaneous Reaction Library</h3>
+<p>
+The Spontaneous Reaction Library contains aqueous reactions that occur very quickly
+and is intended to be combined with other CTS reaction libraries. It was developed to
+capture the rapid transformation of intermediates that form due to other
+transformation processes (e.g., hydrolysis or photolysis). The current version of
+Spontaneous Reaction Library contains one reaction scheme.
+</p>
+
+<h4><a href="/static_qed/cts_app/docs/Spontaneous HTML/SpontaneousRxnLib_vers1-0.htm" target="_blank">Spontaneous Reaction Library</a> (last updated July 7, 2020)</h4>
+
+<br><br>
+
+<h3>Human Phase 1 Metabolism Reaction Library</h3>
+<p>
+The Human Phase 1 Metabolism Reaction Library contains 159 reaction schemes
+based on cytochrome P450 (CYP450) phase one biotransformations. This reaction
+library was developed by ChemAxon. The reaction library is proprietary, so details of
+the reaction schemes cannot be viewed.
+</p>
+
+<h4><a href="/static_qed/cts_app/docs/Metabolizer HTML/MetabolizerDefaultLibrary_SchemeList.htm" target="_blank">List of Schemes Included in ChemAxon&#39;s Human Phase 1 Metabolism Reaction Library</a> (last updated July 2016)</h4>
+
+<br><br>
+
+<h3>Biotransformer Metabolism API</h3>
+<p>
+BioTransformer is a software tool that predicts small molecule metabolism in mammals, their gut microbiota, as well as the soil/aquatic microbiota. Moreover, it can also assist scientists in the identification of metabolites, which is based on the metabolism prediction. BioTransformer uses both a knowledge-based approach and a machine learning based approach to predict small molecules metabolism. In particular, BioTransformer consists of five independent modules: EC-based, CYP450, Phase II, Human Gut Microbial and Environmental Microbial.
+</p>
+
+<h4><a href="http://biotransformer.ca/">Visit biotransformer homepage</a><a class="exit-disclaimer" href="https://www.epa.gov/home/exit-epa" title="EPA's External Link Disclaimer">Exit</a>
+
+<br><br><br><br>
+
+<h3>enviPath Pathway Prediction API</h3>
+<p>
+enviPath is a database and prediction system for the microbial biotransformation of organic environmental contaminants. The database provides the possibility to store and view experimentally observed biotransformation pathways. The pathway prediction system provides different relative reasoning models to predict likely biotransformation pathways and products.
+</p>
+
+<h4><a href="https://envipath.org/">Visit enviPath homepage</a><a class="exit-disclaimer" href="https://www.epa.gov/home/exit-epa" title="EPA's External Link Disclaimer">Exit</a>
+
+<br><br>

@@ -1,0 +1,54 @@
+<!-- Google reCAPTCHA script -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<div class="node node-webform clearfix view-mode-full ">
+
+<p>Please contact us using the&nbsp;form below. Your contact information will be kept confidential.</p>
+
+<div class="box right">
+	<div class="slat-image"><a href="https://www.epa.gov/tips"><img alt="Report an environmental violation" src="/static_qed/images/badge.gif"></a></div>
+
+	<div class="slat-content">
+		<div><strong><a href="https://www.epa.gov/tips">Report a Violation</a></strong></div>
+
+		<p><small>Report possible violations of environmental laws and regulations.</small></p>
+	</div>
+</div>
+
+<div>
+<ul>
+	<li>See the <a href="/cts/about/errors">CTS errors page</a> for more information about a particular error message.</li>
+	<li>Do you have any suggestions for how we can make CTS better?</li>
+</ul>
+</div>
+
+<form class="webform-client-form" action="/cts/forms/contact/" method="post" accept-charset="UTF-8">
+	{% csrf_token %}
+	<div>
+
+	<div class="form-item webform-component webform-component-textfield webform-component--name form-item webform-component webform-component-textfield webform-component--name">
+		<label for="submitted-name">Name <span class="form-required" title="This field is required.">(Required)</span></label>
+		<input required="required" type="text" id="submitted-name" name="name" value="" size="60" maxlength="64" minlength="3" class="form-text">
+	</div>
+
+	<div class="form-item webform-component webform-component-email webform-component--email form-item webform-component webform-component-email webform-component--email">
+		<label for="submitted-email">Email Address <span class="form-required" title="This field is required.">(Required)</span></label>
+	 <input required="required" class="email form-text form-email" type="email" id="submitted-email" name="email" size="60" minlength="8" maxlength="64">
+	</div>
+
+	<div class="form-item webform-component webform-component-textarea webform-component--comments form-item webform-component webform-component-textarea webform-component--comments">
+		<label for="submitted-comments">Comments <span class="form-required" title="This field is required.">(Required)</span></label>
+		<div class="form-textarea-wrapper resizable textarea-processed resizable-textarea"><textarea required="required" id="submitted-comments" name="comment" cols="60" rows="5" class="form-textarea required"></textarea><div class="grippie"></div></div>
+	</div>
+
+	<!-- Adding reCAPTCHA widget for verifying commenter is a human -->
+	<div class="g-recaptcha" data-sitekey="6LcgGSkaAAAAAIR3Iif0aaegRAdp7_6S0b2AwN1B"></div>
+	<br>
+
+	<div class="form-actions"><input class="webform-submit button-primary form-submit" type="submit" name="op" value="Submit">
+	</div>
+
+	</div>
+</form>
+
+</div>

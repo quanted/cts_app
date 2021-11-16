@@ -1,0 +1,73 @@
+<!-- Molecular information and pchem data -->
+
+
+<script>
+$(document).ready(function() {
+    $("#pchemprop_table").css('display', 'table');
+    // 508 compliance additions
+    // +++++++++++++++++++++++++++++++
+    $('canvas').each(function() {
+        console.log($(this));
+    });
+    // +++++++++++++++++++++++++++++++
+});
+</script>
+
+<div class="intro-text" id="nav-info">
+    <ul><li><h4>Select (right click) a product in the tree below to view its molecular information.</h4></li>
+    <!-- <li><h4>Metabolites can be viewed by generation using the "Display up to" selection below,
+    or view a metabolite's progeny by left-clicking the metabolite of interest.</h4></li> -->
+    <li><h4>Left click a product in the tree below to view its transformation product and formation pathway.</h4></li>
+    <li><h4>Pan reaction pathways tree by holding down the left click button anywhere in the blue area and moving the mouse.</h4></li>
+    <li><h4>Zoom in and out with the mouse wheel.</h4></li></ul>
+</div>
+<br>
+<div id="metaboliteInfo">
+
+    <div id="spacetree-nav">
+        <h3><span>Display up to:</span></h3>
+        <select id="gen-select" aria-label="select generation limit to display in tree">
+            <option value="1" />1st gen </option>
+            <option value="2" />2nd gen </option>
+            <option value="3" />3rd gen </option>
+            <option value="4" />Show All </option>
+        </select>
+    </div>
+
+    <br><div id="total-products"></div>
+    <div id="unique-products"></div>
+
+    <h3 class="collapsible out_1 mol-info-header"><span></span>View Molecular Information</h3>
+    <div id="mol-info-wrapper">
+        <p class="intro-text">Select (right-click) a metabolite to view its molecular information.</p>
+        <br>
+        <div class="nodeWrapDiv"></div>
+        <table class="mol-info-table ctsTableStylin"></table>
+        <input type="button" id="node-as-parent-button" value="Get transformation products" style="display:none;" />
+    </div>
+
+    <br>
+
+    <h3 class="collapsible out_1"><span></span>Calculate Physicochemical Properties</h3>
+    <div id="pchemprop-wrapper">
+        Calculate physicochemical properties for:
+        <select id="gen-select-pchem" aria-label="select number of generations for p-chem calculation">
+        <option value=0 />selected metabolite </option>
+        <option value=1 />up to 1st generation </option>
+        <option value=2 />up to 2nd generation </option>
+        <option value=3 />up to 3rd generation </option>
+        <option value=4 />all metabolites </option>
+        </select>
+        <br><br>
+        <p>Select physicochemical properties to gather for selected metabolite, then click "Calculate data" below..</p>
+        {% autoescape off %}{{pchemHtml}}{% endautoescape %}
+        <br>
+        <input type="button" value="Calculate data" class="submit input_button btn-pchem" id="btn-pchem-getdata">
+        <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
+        <br>
+        <p class="gentransError">Must right-click a metabolite first</p>
+        <p class="selectNodeForData">Select (right-click) a node to view its physicochemical properties</p>
+        <p class="pchemSelectError"></p>
+    </div>
+
+</div>

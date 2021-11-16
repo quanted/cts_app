@@ -1,0 +1,43 @@
+<!--start 02cts_uberintroblock_wmodellinks-->
+
+<!-- "Click" Menus -->
+<script type="text/javascript">
+$( document ).ready(function() {
+	$('a#{{model}}').removeClass('fadeMenu').addClass('aSelected');
+	$('#output_tab').css('display', (pathPage == 'output' || 'out') ? 'inline' : 'none');
+    // fadeMenu
+	if ($('a#{{model}}').hasClass('aSelected')) {
+		$('.fadeMenu').hover(function(){
+			// $(this).stop().animate({ backgroundColor:'#356697', color:'#FFFFFF'},500);
+			$(this).stop().animate({ backgroundColor:'#9AB2CB', color:'#FFFFFF'},500);
+		}, function(){
+			$(this).stop().animate({ backgroundColor:'#dee7ef', color:'#34322D'},500);
+		});
+		// $('.fadeWorkflowMenu').hover(function(){
+		// 	// $(this).stop().animate({ backgroundColor:'#356697', color:'#FFFFFF'},500);
+		// 	$(this).stop().animate({ backgroundColor:'#99ecab', color:'#34322D'},500);
+		// }, function(){
+		// 	$(this).stop().animate({ backgroundColor:'#ccf5d5', color:'#34322D'},500);
+		// });
+	}
+});
+</script>
+
+<!-- Header Nav Bar -->
+<div id="header_menu_nav">
+  <ul>
+	<li><a class="fadeDesc_{{page}}" href="/cts/{{model}}/description"><span></span></a></li>
+	<li><a class="fadeInp_{{page}}" href="/cts/{{model}}/input"><span></span></a></li>
+	<li><a class="fadeBat_{{page}}" href="/cts/{{model}}/batch"><span></span></a></li>
+	<li id="output_tab"><a class="fadeOut_{{page}}" href="#"><span></span></a></li>
+	<!-- <li><a class="fadeHist_{{page}}" href="/cts/{{model}}/history"><span></span></a></li> -->
+  </ul>
+</div>
+   
+<div id="header_menu_r">
+  <ul>
+    <!--<li><a href="/cts/contact">Contact Us</a></li>-->
+  </ul>
+</div>
+
+<!--end 02cts_uberintroblock_wmodellinks-->

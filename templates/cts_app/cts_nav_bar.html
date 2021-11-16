@@ -1,0 +1,38 @@
+<!-- Nav bar from qed -> where ever on cts page -->
+
+<script>
+var NavBar = {
+
+	url_path: '',
+	url_items: [],
+
+	init: function () {
+		// initialize vars
+		NavBar.url_path = window.location.href;
+		NavBar.url_items = NavBar.url_path.split('/');
+		NavBar.setup();
+	},
+
+	setup: function () {
+		for (var i = 0; i < url_items.length; i++) {
+			$('#nav-bar-div').append(url_item );
+			if (i < url_items - 1) {
+				$('#nav-bar-div').append(">");  // append if not last item
+			}
+		}
+	},
+
+	clearVars: function () {
+		// garbage collection
+		$('#nav-bar-div').html('');
+		NavBar.url_path = '';
+		NavBar.url_items = [];
+	}
+
+};
+
+
+$(document).ready(NavBar.init);
+</script>
+
+<div id="nav-bar-div"></div>

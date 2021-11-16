@@ -1,0 +1,35 @@
+<!--start 04uberbatchinput-->
+<!-- <div class="articles"> -->
+<div class="articles_input">
+
+	<h2 class="model_header">{{ model_attributes }}</h2>
+	<ul class="nobullet">
+		<!-- <li><i>Upload a text file of chemicals organized into a single column </i>(<a href="/static_qed/cts_app/docs/sample_batch.txt" download="sample_batch.txt">View/download sample batch input file</a>):</li> -->
+		<form method="get" id="sample-batch-form" action="/cts/batch/sample">
+			<li><i>Upload a text file of SMILES strings organized into a single column </i>(<a href="#" id="sample-batch-link">View/download sample batch input file</a>):</li>
+		</form>
+	</ul>
+	<ul class="nobullet">
+		<li>
+			File to upload: <input type="file" id="upfile1" name="upfile" class="required input_button" aria-label="upload a batch input file" accept=".txt" />
+			<br>
+
+			<!-- section of html to load once chemicals file is uploaded -->
+			<div id="batchfilewrap" hidden>
+				
+				<br><br>
+				
+				<h3> List of chemicals from file: </h3>
+				<pre id="fileDisplayArea"><ol id="batch_list"></ol></pre>
+				
+			</div>
+
+		</li>
+	</ul>
+
+	<br>
+
+	<form method="post" id="form1" action="/cts/{{model}}/batchoutput/">
+		{% csrf_token %}
+		
+<!--end 04uberbatchinput-->

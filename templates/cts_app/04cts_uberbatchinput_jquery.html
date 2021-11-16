@@ -1,0 +1,275 @@
+<script type="text/javascript" src="/static_qed/cts_app/js/jquery.validate.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+	var spinner_html = '<img src="/static_qed/cts_app/images/loader.gif" id="spinner" />';
+	var nodejs_host = "{{nodejsHost}}";
+    var nodejs_port = {{nodejsPort}};
+
+	var validator = $("#form1").validate({
+		rules: {
+			upfile: "required"	
+			}
+	});
+
+	var nodes = [];  // array of batch chems with modecular info
+	var batch_chems = [];  // list of chemicals in batch file
+	var chem_calls = 0;  // keeps track of number of chem info requests & responses
+	var socketConn = connectToWebsocketServer();
+
+	$('#dialog').dialog();
+
+	// Do this stuff once file is uploaded:
+	$('#upfile1').change(function () {
+
+		var file = this.files[0];
+		var textType = /text.*/;
+
+		if (file.type.match(textType)) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				displayBatchFileChemicals(reader.result);			
+			}
+			reader.readAsText(file);
+		}
+		else {
+			$('#fileDisplayArea').html("File not supported!");
+		}
+
+	});
+
+	$('.submit').click(function (event) {
+		
+		// append nodes array to form for submission:
+		var nodes_input = $.parseHTML('<input type="hidden" name="nodes"/>');
+		$(nodes_input).val(JSON.stringify(nodes));
+		$('#form1').append(nodes_input);  // sends nodes array to backend
+
+		$('#form1').append('<input type="hidden" name="run_type" value="batch" />');
+		$('#form1').append('<input type="hidden" name="workflow" value="gentrans" />');
+
+	});
+
+	$('#sample-batch-link').on('click', function() {
+
+		// Request sample batch input file from server:
+		$('#sample-batch-form').attr({'action': '/cts/batch/sample', 'method': 'GET'}).submit();
+
+	});
+
+
+	$('.testws-submit').on('click', function () {
+
+		// TEST WS test page submit button event..
+
+		console.log(nodes);
+
+		checkedCalcsAndProps = buildCheckedCalcsAndProps();
+		calls_tracker = calculateTotalCalls([nodes.length], checkedCalcsAndProps);
+        total_calls = calls_tracker;
+        sessionStorage.setItem('calls_tracker', calls_tracker);
+        sessionStorage.setItem('total_calls', total_calls);
+
+        blockInterface(true);
+
+		startPchemPropDataCollection("", "", checkedCalcsAndProps, kowPH, null, null, nodes);
+
+	});
+
+
+	$('#csvTESTWSExport').click(function () {
+
+        // var jsonData = parseOutputForCSV();
+        var jsonData = {
+        	'batch_data': batch_data,  // batch_data from cts_pchemprop_requests.html
+        	'workflow': "testws",
+        	'checkedCalcsAndProps': checkedCalcsAndProps,
+        	'batch_chems': batch_chems
+        };
+
+        var cache = [];
+		var json_string = JSON.stringify(jsonData, function(key, value) {
+		    if (typeof value === 'object' && value !== null) {
+		        if (cache.indexOf(value) !== -1) {
+		            return;  // Circular reference found, discard key
+		        }
+		        cache.push(value);
+		    }
+		    return value;
+		});
+		cache = null;  // Enable garbage collection
+
+		$('table.getpdf').html("");
+		$('<tr style="display:none"><td><input type="hidden" name="csv_data"></td></tr>')
+				.appendTo('.getpdf')
+				.find('input')
+				.val(json_string);
+
+		$('form.post_form').attr({'action': '/cts/testing/testws/csv', 'method': 'POST'}).submit();
+
+	});
+
+
+	function connectToWebsocketServer() {
+		// connect to socket.io!
+        if (nodejs_host == 'nginx') {
+            return io.connect();  // docker way
+        }
+        else {
+            if (nodejs_port && nodejs_port != 80) {
+                return io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
+            }
+            else {
+                return io.connect(nodejs_host, {'force new connection': true});
+            }
+        }
+	}
+
+	function cleanInputFile(batch_chems) {
+		// Removes any blank chems, etc.
+		filteredChems = [];
+		for (chemInd in batch_chems) {
+			let chem = batch_chems[chemInd];
+			if (chem == "") {
+				continue;
+			}
+			filteredChems.push(chem);
+		}
+		return filteredChems;
+	}
+
+	function hasDuplicates(batch_chems) {
+		/*
+		Checks for duplicate chemicals in list.
+		Returns list of duplicate chemicals if they exist.
+		*/
+		var uniqueDuplicates = [...new Set(batch_chems.filter((item, index) => batch_chems.indexOf(item) != index))];
+		if (uniqueDuplicates.length > 0) {
+			// Alert user to remove duplicates from batch input file.
+			alert("Please remove duplicate chemicals from batch input file: " + uniqueDuplicates);
+			return true
+		}
+		return false;
+	}
+
+	function displayBatchFileChemicals(file_content) {
+
+		batch_chems = file_content.replace(/\r?\n|\r/g, ",").split(",");  // chemicals in array
+
+		batch_chems = cleanInputFile(batch_chems);
+
+		if (hasDuplicates(batch_chems)) {
+			return;  // NOTE: Sends alert to user in the function.
+		}
+
+		$('#batch_list').empty();  // clear any chems already in list
+		nodes = [];  // clear out list of molecule objects (todo: rename 'nodes')
+
+		// only allow ten max for now:
+		if (batch_chems.length > 10) {
+			alert("Only a maximum of 10 chemicals can be uploaded in batch mode at this time.");
+			return;
+		}
+
+		var batch_inputs = $('#pchem_batch_wrap');
+		$(batch_inputs).show();
+		$(batch_inputs).children().show();
+		$('#cont, #reactionpathways').hide();  // todo: separate html and js in cts_gentrans_tree.html
+
+		var chemInd = 1;
+		for (chem in batch_chems) {
+
+			var list_html = '<li id="chem' + chemInd + '">' +
+								spinner_html + batch_chems[chem] + '</li>';
+
+			$('#batch_list').append(list_html);
+
+		    var mol_info_request = JSON.stringify({
+		        'chemical': batch_chems[chem],
+		        'service': "getChemInfo",
+		        'id': 'chem'+chemInd
+		    });
+
+		    // Send data to cts_nodejs server:
+		    socketConn.emit('get_data', mol_info_request);
+
+		    chemInd += 1;
+		    // chem_calls += 1;  // increment chem info request counter
+
+		    nodes.push({"chemical": batch_chems[chem]});  // ensuring chemicals maintain order
+
+		}
+
+		$('#batchfilewrap').show();
+
+
+		// for chemspec batch mode:
+	    if (window.location.href.indexOf('chemspec/batch') > -1) {
+	        	
+	      	var pka_table = $('.input_table[name=CTS_Speciation_Pka]');
+	      	var pka_chkbox = $(pka_table).find('input#id_get_pka');
+
+	        $('.input_table.tab_Speciation, div#chemEditLookup').hide();
+	        $(pka_table).show();
+
+	        $('input[type="submit"]').prop('disabled', false).addClass('brightBorders');
+	        pka_table.find('input[type=number], input[type=text]').prop('readonly', false);
+            pka_table.removeClass('darken');
+            pka_chkbox.hide();
+	    }
+
+	}
+
+
+	socketConn.on('message', function(chemInfoResponse) {
+
+		var chemResponseObject = JSON.parse(chemInfoResponse);
+
+		var chemical_display;
+		if (chemResponseObject.status) {
+			// valid chemical, normal stuff...
+			chemical_display = chemResponseObject.data.chemical;
+		}
+		else {
+			// invalid chemical, display chemical and error, and don't use...
+			chemical_display = '<p class="redFont">' + chemResponseObject.chemical + " -- invalid chemical" + '</p>';  // ?????
+		}
+
+		// Expecting an 'id' key in 'request_post' to use for mapping responses to chemical list:
+		var batchLength = $('#batch_list > li').length;
+		var inc = 1;
+		for (var chem in batch_chems) {
+			var chemicalClass = 'chem' + inc;
+			if (chemResponseObject.request_post.id == chemicalClass) {
+				$('#' + chemicalClass).text(chemical_display);
+				nodes[inc - 1] = chemResponseObject.data;  // inserts data in correct order
+			}
+			inc += 1;
+		}
+
+	});
+
+	function getCookie(name) {
+	  var cookieValue = null;
+	  if (document.cookie && document.cookie !== '') {
+	    var cookies = document.cookie.split(';');
+	    for (var i = 0; i < cookies.length; i++) {
+	      var cookie = jQuery.trim(cookies[i]);
+	      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+	        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	        break;
+	      }
+	    }
+	  }
+	  return cookieValue;
+	}     
+
+	var csrftoken = getCookie('csrftoken');
+
+
+});
+
+</script>
+</form> <!-- end submit form -->
+</div> <!-- End "articles" div -->

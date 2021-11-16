@@ -1,0 +1,9 @@
+<script type="text/javascript" src="/static_qed/cts_app/js/cts_calc_requests.js"></script>
+<script type="text/javascript" src="/static_qed/cts_app/js/cts_loader.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		// render vars from django backend as json object
+	    json_object_from_django = {{ my_data|safe }};
+	    CalcRequestsHandler.init(json_object_from_django);
+   });
+</script>

@@ -1,0 +1,85 @@
+<script>
+$(document).ready(function () {
+	$('#testws-submit').on('click', function () {
+
+		$('#ws-response').val("");
+
+		var _smiles = $('#smiles-input').val();
+		var _prop = $('#pchem-prop').val();
+		var _method = $('#method').val();
+
+		$.ajax({
+	        url: "/cts/rest/testws/run",
+	        data: {
+	        	'chemical': _smiles,
+	        	'prop': _prop,
+	        	'method': _method
+	        },
+	        type: 'POST',
+	        dataType: 'json',
+	        timeout: 5000,
+	            beforeSend: function(xhr, settings) {
+		      xhr.setRequestHeader("X-CSRFToken", csrftoken);
+		    },
+	        success: function(res) {
+	            console.log(res);
+	            // alert(res);
+	            var display_data = res['data'];
+	            $('#ws-response').val(JSON.stringify(display_data, undefined, 4));
+	        },
+	        error: function (jqXHR, textStatus, errorThrown) {
+	        	console.log("error: " + errorThrown);
+	        }
+	    });
+
+		// TODO: Make request to CTS backend, which makes request to TEST WS to prevent CORS
+	})
+});
+</script>
+
+<style>
+	form > * {
+		padding: 4px;
+	}
+</style>
+
+<br><h1>TEST WS Test Page</h1><br>
+
+<div>
+
+	<h3>Inputs:</h3>
+	<form action="#">
+		<fieldset>
+		    <label for="smiles">SMILES: </label>
+		    <input id="smiles-input" value="C1=CC=CC=C1"><br><br>
+
+		    <label for="pchem-prop">Select a physicochemical property:</label>
+		    <select name="pchem-prop" id="pchem-prop">
+		      <option value="MP">melting point</option>
+		      <option value="BP">boiling point</option>
+		      <option value="WS" selected="selected">water solubility</option>
+		      <option value="VP">vapor pressure</option>
+		    </select><br><br>
+		 
+		    <label for="method">Select a method:</label>
+		    <select name="method" id="method">
+		    	<option value="fda">FDA</option>
+		        <option value="hc" selected="selected">Hierarchical Clustering</option>
+		        <option value="sm">Single Model</option>
+		        <option value="nn">Nearest Neighbor</option>
+		        <option value="gc">Group Contribution</option>
+		        <option value="consensus">Consensus</option>
+		    </select>
+
+		    <br><br>
+			<input type="button" value="Submit" id="testws-submit">
+
+		</fieldset>
+	</form>
+
+	<br><br>
+	<h3>Response:</h3>
+	<textarea id="ws-response" cols=60 rows=20></textarea>
+	<br><br>
+
+</div>

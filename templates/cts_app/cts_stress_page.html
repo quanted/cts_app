@@ -1,0 +1,139 @@
+<html>
+
+<head>
+	<title>CTS Stress Testing</title>
+	<LINK REL="SHORTCUT ICON" HREF="https://www.epa.gov/sites/all/themes/epa/favicon.ico" />
+	<!-- <link rel="stylesheet" href="cts_stress_styles.css"> -->
+	<link rel="stylesheet" href="/static_qed/cts_app/stylesheets/cts_stress_styles.css">
+	<!-- <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" href="/static_qed/css/bootstrap.min.css">
+</head>
+
+<body>
+<div class="container">
+	<div><h2>CTS Stress Testing</h2></div>
+	<br>
+	<br>
+	<div class="row">
+		<div class="col-md-6">
+			<h3> Inputs </h3>
+			<br>
+			<div class="row">
+				<div class="col-md-6 pdf-input-name"><b>Number of users:</b></div>
+				<div class="col-md-6 pdf-input-val"><input type="number" id="num-users" class="input-block-level"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 pdf-input-name"><b>Users per second:</b></div>
+				<div class="col-md-6 pdf-input-val"><input type="number" id="user-rate" class="input-block-level"></div>
+			</div><br>
+			<div class="row">
+				<div class="col-md-6 pdf-input-name"><b>Host:</b></div>
+				<div class="col-md-6 pdf-input-val"><input type="text" id="host" class="input-block-level"></div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 pdf-input-name"><b>Port:</b></div>
+				<div class="col-md-6 pdf-input-val"><input type="number" id="port" class="input-block-level"></div>
+			</div>
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-md-6"><b>User Scenarios:</b></div>
+				<div class="col-md-6">
+					<select id="scenario-dropdown" class="selectpicker">
+						<option>Test</option>
+						<option>Chemical Info</option>
+						<option>P-chem Requests</option>
+						<option>P-chem Requests (batch)</option>
+						<option>Transformation Requests</option>
+						<option disabled>Speciation Workflow</option>
+						<option disabled>P-chem Workflow</option>
+						<option disabled>Transformation Workflow</option>
+					</select>
+				</div>
+			</div>
+			<br>
+			<br>
+			<div class="row" id="protocol-row" style="display:none;">
+				<div class="col-md-6"><b>Select protocol to test:</b></div>
+				<div class="col-md-6">
+					<select id="protocol-dropdown" class="selectpicker">
+						<option>Websocket</option>
+						<option>HTTP</option>
+					</select>
+				</div>
+			</div>
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-md-6" id="batch-upload-div" style="display:none;">
+					Upload list of chemicals: <input type="file" id="upfile1" name="upfile" class="required input_button" accept=".txt" />
+					<br>
+				</div>
+			</div>
+			<br>
+			<br>
+			<div class="row">
+				<div class="btn-group calc-options" style="display:none;">
+					<button class="btn btn-primary calc-btn" data-toggle="button">chemaxon</button>
+					<button class="btn btn-primary calc-btn" data-toggle="button">epi</button>
+					<button class="btn btn-primary calc-btn" data-toggle="button">test</button>
+					<!-- <button class="btn btn-primary calc-btn" data-toggle="button">sparc</button> -->
+					<button class="btn btn-primary calc-btn" data-toggle="button">opera</button>
+					<button class="btn btn-primary calc-btn" data-toggle="button">measured</button>
+				</div>
+			</div>
+			<br>
+			<br>
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-md-offset-8">
+					<input type="button" value="start" id="start-test" class="btn btn-primary btn-large"> &nbsp;&nbsp;
+					<input type="button" value="stop" id="stop-test" class="btn btn-primary btn-large">
+				</div>
+			</div>
+		</div>
+	</div>
+	<br>
+	<br>
+	<br>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="row">
+				<div id="avg-lat" class="col-md-6 stats"></div>
+			</div>
+			<div class="row">
+				<div id="max-lat" class="col-md-6 stats"></div>
+			</div>
+			<div class="row">
+				<div id="min-lat" class="col-md-6 stats"></div>
+			</div>
+		</div>
+		<div class="col-md-6"></div>
+	</div>
+	<br>
+	<div id="color-codes" class="row">
+	</div>
+	<br>
+	<br>
+	<div class="chart-row">
+		<div id="scatter-chart" class="col-md-6">
+			<div class='content'></div>
+		</div>
+		<div id="histo-chart" class="col-md-6">
+			<div class="histo-content"></div>
+		</div>
+	</div>
+	<br>
+	<br>
+	<div class="row">
+		<input type="button" value="Download PDF" id="download-pdf-button" class="btn btn-primary btn-large">
+	</div>
+</div>
+
+<!-- Imports local JS bundle (using browserify) -->
+<!-- <script src="bundle.js" type="text/javascript"></script> -->
+<script src="/static_qed/cts_app/js/cts_stress_bundle.js"></script>
+
+</body>
+</html>

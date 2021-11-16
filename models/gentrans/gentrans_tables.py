@@ -81,12 +81,12 @@ def table_all(gentrans_obj):
 
 	html_all = table_inputs(gentrans_obj)
 	
-	html_all += '<script src="/static_qed/cts/js/scripts_pchemprop.js" type="text/javascript"></script>'
-	html_all += render_to_string('cts_downloads.html', {'run_data': gentrans_obj.run_data})
+	html_all += '<script src="/static_qed/cts_app/js/scripts_pchemprop.js" type="text/javascript"></script>'
+	html_all += render_to_string('cts_app/cts_downloads.html', {'run_data': gentrans_obj.run_data})
 	html_all += table_metabolites(gentrans_obj)
 
 	# Creates popup divs for p-chem table using qtip2 JS library:
-	html_all += render_to_string('cts_pchem_definitions_popups.html', {'pchem_defs': pchem_defs})
+	html_all += render_to_string('cts_app/cts_pchem_definitions_popups.html', {'pchem_defs': pchem_defs})
 
 	return html_all
 
@@ -169,8 +169,8 @@ def table_metabolites(gentrans_obj):
 	# if pchemprop_obj.kow_ph:
 	#     kow_ph = round(float(pchemprop_obj.kow_ph), 1)
 
-	html += render_to_string('cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
-	html += render_to_string('cts_pchemprop_requests.html',{
+	html += render_to_string('cts_app/cts_gentrans_tree.html', {'gen_max': gentrans_obj.gen_max})
+	html += render_to_string('cts_app/cts_pchemprop_requests.html',{
 									"speciation_inputs": None,
 									"kow_ph": 7.4,
 									"structure": gentrans_obj.smiles,
@@ -193,7 +193,7 @@ def table_metabolites(gentrans_obj):
 
 
 	# insert d3 test page template here:
-	# html += render_to_string('d3_tree_test_page.html')
+	# html += render_to_string('cts_app/d3_tree_test_page.html')
 
 
 	html += """
@@ -209,11 +209,11 @@ def build_pchem_table():
 	p-chem and structure data.
 	"""
 
-	pchemHTML = render_to_string('cts_pchem.html', {})
+	pchemHTML = render_to_string('cts_app/cts_pchem.html', {})
 	pchemHTML += str(pchemprop_parameters.form(None))  # recycling!
 
 	# html = '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">'
-	html = render_to_string('cts_gentrans_metabolites_nav.html', {'pchemHtml': pchemHTML})
+	html = render_to_string('cts_app/cts_gentrans_metabolites_nav.html', {'pchemHtml': pchemHTML})
 
 	return html
 
