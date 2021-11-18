@@ -23,6 +23,19 @@ def tmpl_respirationTable():
 	"""
 	return tmpl_respirationTable
 
+def tmpl_mammalian_choices():
+	tmpl_mammalian_choices = """
+	{% load filter_tags %}
+	{% with form|get_class as name %}
+
+	<td id="{{name}}">
+		{{form.mammalian_choices}}
+	</td>
+
+	{% endwith %}
+	"""
+	return tmpl_mammalian_choices
+
 
 # Define Custom Templates
 def tmpl_reactionSysCTS():
@@ -72,7 +85,7 @@ def tmpl_oecdGuidelines():
 	{% load filter_tags %}
 
 	<table id="oecd_selection" class="input_table">
-	<tr><th colspan="2">OECD Selection</th></tr>
+	<tr><th colspan="2">OCSPP Harmonized Guidelines</th></tr>
 	<tr>
 	{% for choice in form.oecd_selection %}
 		<td> {{choice}} </td>
@@ -125,7 +138,6 @@ tmpl_respirationTable = Template(tmpl_respirationTable())
 tmpl_oecdGuidelines = Template(tmpl_oecdGuidelines())
 
 
-
 # Method(s) called from *_inputs.py
 def form(formData, model='gentrans'):
 
@@ -148,6 +160,14 @@ def form(formData, model='gentrans'):
 	"""
 	form_cts_respiration = cts_respiration(formData)
 	html += tmpl_respirationTable.render(Context(dict(form=form_cts_respiration, header=mark_safe("Respiration"))))
+	html += '</tr></table>'
+
+	html += """<table id="mammalian_choices_tbl" class="input_table">
+	<tr><th colspan="3"> Select a mammalian library </th></tr>
+	<tr>
+	"""
+	form_cts_mammalian_choices = cts_mammalian_choices(formData)
+	html += Template(tmpl_mammalian_choices()).render(Context(dict(form=form_cts_mammalian_choices, header=mark_safe("Mammalian Choices"))))
 	html += '</tr></table>'
 
 	# html = html + '<table id="cts_reaction_options" class="tbl_wrap"><tr><td>' # table wrapper for react libs and options 
@@ -182,9 +202,10 @@ def form(formData, model='gentrans'):
 	return html
 
 
-reaction_pathway_CHOICES = (('0', 'Reaction System Guidelines'), ('1', 'OCSPP Guidelines'), ('2', 'User selected (advanced)'))
+reaction_pathway_CHOICES = (('0', 'Reaction System Guidelines'), ('1', 'OCSPP Harmonized Guidelines'), ('2', 'User selected (advanced)'))
 reaction_sys_CHOICES = (('0', 'Environmental'), ('1', 'Mammalian'))
-respiration_CHOICES = (('0', 'Make a selection'), ('1', 'Aerobic'), ('2', 'Anaerobic'))
+respiration_CHOICES = (('0', 'Make a selection'), ('1', 'Aerobic (abiotic)'), ('2', 'Aerobic (microbial)'), ('3', 'Anaerobic'))
+mammalian_CHOICES = (('0', 'ChemAxon Metabolizer'), ('1', 'Biotransformer'))
 
 # Reaction Options
 gen_limit_CHOICES = (('1', 1), ('2', 2), ('3', 3), ('4', 4))  # generation limit
@@ -195,8 +216,17 @@ pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'),
 # aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
 # anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))
 
-oecd_guidelines_CHOICES = (('0', 'Fate, Transport, and Transformation (Series 835)'), ('1', 'Health Effects (Series 870)'))
-ftt_CHOICES = (('0', 'Make a selection'), ('1', 'Laboratory Abiotic Transformation Guidelines'), ('2', 'Transformation in Water and Soil Test Guidelines'), ('3', 'Transformation Chemical-Specific Test Guidelines'))
+oecd_guidelines_CHOICES = (('0', 'Fate, Transport, and Transformation (Series 835)'), ('1', 'Metabolism and Pharmacokinetics (Series 870.7485)'))
+ftt_CHOICES = (
+	('0', 'Make a selection'),
+	('1', 'Hydrolysis (835.2120 or 835.2240)'),
+	('2', 'Direct Photolysis (835.2210 or 835.2240)'),
+	('3', 'Aerobic Transformation (835.4100, 835.4300, 835.3180, 835.3190, 835.3280)'),
+	('4', 'Anaerobic Transformation (835.4200, 835.4400, 835.3280, 835.5154)')
+	# ('1', 'Laboratory Abiotic Transformation Guidelines'),
+	# ('2', 'Transformation in Water and Soil Test Guidelines'),
+	# ('3', 'Transformation Chemical-Specific Test Guidelines')
+)
 labAbioTrans_CHOICES = (('0', 'Abiotic Hydrolysis (835.2120)'), ('1', 'Abiotic Reduction (no available guideline)'), ('2', 'Photolysis in Water (currently under development) (835.22440)'))
 transWaterSoil_CHOICES = (('0', 'Aerobic Soil Biodegradation (835.4100)'), ('1', 'Anaerobic Soil Biodegradation (currently under development) (835.4200)'))
 transChemSpec_CHOICES = [('0', 'Anaerobic Biodegradation in the Subsurface (currently under development) (835.5154)')]
@@ -240,6 +270,15 @@ class cts_respiration(forms.Form):
 	# 			choices=anaerobic_CHOICES,
 	# 			widget=forms.RadioSelect(),
 	# 			required=False)
+
+
+# Respiration
+@parsleyfy
+class cts_mammalian_choices(forms.Form):
+
+	mammalian_choices = forms.ChoiceField(
+				choices=mammalian_CHOICES,
+				required=False)
 
 
 @parsleyfy
@@ -335,7 +374,7 @@ class cts_oecd_guidelines(forms.Form):
 
 	# Main Selection Branch
 	oecd_selection = forms.ChoiceField(
-					label="OECD Selection",
+					label="OCSPP Harmonized Guidelines",
 					choices=oecd_guidelines_CHOICES,
 					widget=forms.RadioSelect(),
 					required=False)
@@ -370,7 +409,7 @@ class cts_oecd_guidelines(forms.Form):
 					required=False)
 
 
-class GentransInp(cts_reaction_paths, cts_reaction_sys, cts_respiration, cts_reaction_libs, cts_oecd_guidelines):
+class GentransInp(cts_reaction_paths, cts_reaction_sys, cts_respiration, cts_mammalian_choices, cts_reaction_libs, cts_oecd_guidelines):
 	pass
 
 
