@@ -11,14 +11,17 @@ $(document).ready(function() {
     var disableBiotrans = false;
     var disableEnvipath = false;
 
+    // TODO: Flags per feature conditionals instead of env name conditions
     if (
         envName == "gdit_aws_stg" || 
         envName == "cgi_azure_docker_dev" || 
-        envName == "saic_aws_docker_prod"
+        envName == "saic_aws_docker_prod" ||
+        envName == "epa_aws_stg" ||
+        envName == "epa_aws_prd"
     ) {
         // disablePhotolysis = true;
         // disableBiotrans = true;
-        disableEnvipath = true;
+        // disableEnvipath = true;
     }
 
     var gentrans_tables = '#oecd_selection, #ftt_selection, #health_selection, ' +
