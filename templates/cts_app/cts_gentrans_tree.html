@@ -534,16 +534,12 @@ function init(json){
 
                                 $(arrow_obj).prepend('<br><p><a href="' + link + '" target="_blank">' + latest_node_route + '</a></p>');  // add "routes"
 
-				 if (node['data']['qsar']) {
-				     console.log("Appending QSAR")
-                              	     $(arrow_obj).append(node['data']['qsar']);
-                            	 }
+                				if (node['data']['qsar']) {
+                				    console.log("Appending QSAR");
+                              	    $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
+                            	}
                             }
                             $('#reactionpathways').append(arrow_obj);
-			    console.log("Current node: ", current_node)
-			    console.log("CLicked node: ", node)
-			    console.log("next node: ", next_node)
-			
                         }
 
                     }
