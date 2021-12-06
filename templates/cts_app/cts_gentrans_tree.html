@@ -533,9 +533,17 @@ function init(json){
                                 var link = findReactionLinkSection(routes);
 
                                 $(arrow_obj).prepend('<br><p><a href="' + link + '" target="_blank">' + latest_node_route + '</a></p>');  // add "routes"
+
+				 if (node['data']['qsar']) {
+				     console.log("Appending QSAR")
+                              	     $(arrow_obj).append(node['data']['qsar']);
+                            	 }
                             }
                             $('#reactionpathways').append(arrow_obj);
-
+			    console.log("Current node: ", current_node)
+			    console.log("CLicked node: ", node)
+			    console.log("next node: ", next_node)
+			
                         }
 
                     }
@@ -1025,7 +1033,8 @@ function initiateHalflifeRequests() {
             console.log("QSAR route matches. Making request to epi qsar.")
             // makeQsarRequest(treeNode);
             let smiles = st.graph.nodes[ind - 1].data.smiles;
-            makeQsarRequest(smiles, route);
+	    let child = st.graph.nodes[ind].data.smiles;
+            makeQsarRequest(smiles, route, child);
         }
 
     }
@@ -1033,13 +1042,14 @@ function initiateHalflifeRequests() {
 }
 
 // function makeQsarRequest(node) {
-function makeQsarRequest(smiles, route) {
+function makeQsarRequest(smiles, route, child) {
 
     let requestObj = {
         'chemical': smiles,
         'prop': 'qsar',
         'calc': 'epi',
-        'route': route
+        'route': route,
+	'child': child
     };
 
     $.ajax({
@@ -1087,7 +1097,16 @@ function handleQsarResponse(response) {
 
     // TODO: Add the results to the reactions pathway arrow sections
 
-    return response['data']['data'];;
+    for (nodeInd in st.graph.nodes) {
+      let node = st.graph.nodes[nodeInd];
+      console.log("node smiles: ", node.data.smiles);
+      console.log("response smiles: ", response['data']['child'])
+      if (node.data.smiles == response['data']['child']) {
+        st.graph.nodes[nodeInd]['data']['qsar'] = response['data']['data'][0]['data'];
+      }
+    }
+
+    return response['data'];
 
 }
 
