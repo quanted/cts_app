@@ -10,6 +10,7 @@ $(document).ready(function() {
     var disablePhotolysis = false;
     var disableBiotrans = false;
     var disableEnvipath = false;
+    var disableQsar = false;
 
     // TODO: Flags per feature conditionals instead of env name conditions
     if (
@@ -22,6 +23,7 @@ $(document).ready(function() {
         // disablePhotolysis = true;
         // disableBiotrans = true;
         // disableEnvipath = true;
+        disableQsar = true;
     }
 
     var gentrans_tables = '#oecd_selection, #ftt_selection, #health_selection, ' +
@@ -316,7 +318,7 @@ $(document).ready(function() {
             $('select#id_gen_limit').children('option[value="3"], option[value="4"]').attr('disabled', false);
         }
 
-        if (ahydro_checked === true) {
+        if (ahydro_checked === true && disableQsar === false) {
             // Enables half-life checkbox for abiotiotic hydrolysis
             $('input#id_include_rates').attr('disabled', false);
         }
