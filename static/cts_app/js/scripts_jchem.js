@@ -30,24 +30,6 @@ function getKetcherInstance() {
   return ketcherFrame.contentWindow.ketcher;
 }
 
-function localGetDefaultServices(new_base) {
-  /*
-  This function is straight from marvin4js webservices.js in static_qed/cts/js/efs
-  */
-  if (!new_base) { return; }
-  var base = new_base + "/webservices";
-  var services = {
-      "clean2dws" : base + "/rest-v0/util/convert/clean",
-      "clean3dws" : base + "/rest-v0/util/convert/clean",
-      "molconvertws" : base + "/rest-v0/util/calculate/molExport",
-      "stereoinfows" : base + "/rest-v0/util/calculate/cipStereoInfo",
-      "reactionconvertws" : base + "/rest-v0/util/calculate/reactionExport",
-      "hydrogenizews" : base + "/rest-v0/util/convert/hydrogenizer",
-      "automapperws" : base + "/rest-v0/util/convert/reactionConverter"
-  };
-  return services;
-}
-
 // "wait" cursor during ajax events
 $(document).ajaxStart(function () {
     $('body').addClass('wait');
@@ -58,10 +40,14 @@ $(document).ajaxStart(function () {
 function loadCachedChemical() {
   var cachedMolecule = JSON.parse(sessionStorage.getItem('molecule'));
   if (cachedMolecule !== null) {
-    populateChemEditDOM(cachedMolecule);
-    // Checking for missing MarvinSketch, if there isn't
-    // <cml> data for it, then it requests it:
-    checkForKetcherData(cachedMolecule);
+
+    setTimeout(() => {
+      populateChemEditDOM(cachedMolecule);
+      // Checking for missing MarvinSketch, if there isn't
+      // <cml> data for it, then it requests it:
+      checkForKetcherData(cachedMolecule);
+    }, 1000);
+
   }
 }
 
@@ -91,15 +77,7 @@ function importMol(chemical) {
   getChemDetails(chemical_obj, function (molecule_info) {
     sessionStorage.setItem('molecule', JSON.stringify(molecule_info.data)); // set current chemical in session cache
     populateChemEditDOM(molecule_info.data);
-    // Scrolls to the top of the MarvinSketch div, plus the width of the 
-    // Heading table row (where it says "Draw Chemical Structure", etc.)
-    var chemHeader = $('#chemEditDraw').children('table')
-                .children('tbody').children('tr')[0];
-    var headerHeight = $(chemHeader).height();
-    $('html,body').animate({
-      scrollTop: $('#chemEditDraw').offset().top + headerHeight
-    }, 'slow');
-
+    scrollToResults();
   });
   clearChemicalEditorContent();  // clears marvinsketch and results table
 }
@@ -122,18 +100,23 @@ function importMolFromCanvas() {
       molecule_info['data']['chemical'] = molecule_info['data']['orig_smiles'];
       sessionStorage.setItem('molecule', JSON.stringify(molecule_info.data)); // set current chemical in session cache
       populateChemEditDOM(molecule_info.data);
-      // Scrolls to the top of the MarvinSketch div, plus the width of the 
-      // Heading table row (where it says "Draw Chemical Structure", etc.)
-      var chemHeader = $('#chemEditDraw').children('table')
-            .children('tbody').children('tr')[0];
-      var headerHeight = $(chemHeader).height();
-      $('html,body').animate({
-        scrollTop: $('#chemEditDraw').offset().top + headerHeight
-      }, 'slow');
+      scrollToResults();
     });
 
   });
 
+}
+
+function scrollToResults() {
+  // Scrolls to the top of the MarvinSketch div, plus the width of the 
+  // heading table row (where it says "Draw Chemical Structure", etc.)
+  var chemHeader = $('#chemEditLookup').children('table')
+        .children('tbody').children('tr')[0];
+  var headerHeight = $(chemHeader).height();
+
+  $('html,body').animate({
+    scrollTop: $('#chemEditLookup').offset().top + headerHeight
+  }, 'slow');
 }
 
 function getChemDetails(chemical_obj, callback) {
