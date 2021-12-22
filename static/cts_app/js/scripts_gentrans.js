@@ -8,7 +8,7 @@
 $(document).ready(function() {
 
     var disablePhotolysis = false;
-    var disableBiotrans = false;
+    var disableBiotrans = true;
     var disableEnvipath = false;
     var disableQsar = false;
 
