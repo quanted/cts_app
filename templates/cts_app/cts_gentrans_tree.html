@@ -536,7 +536,8 @@ function init(json){
 
                 				if (node['data']['qsar']) {
                 				    console.log("Appending QSAR");
-                              	    $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
+                              	    // $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
+                                    $(arrow_obj).append('<p>' + node['data']['qsar']['data'] + node['data']['qsar']['units'] + '</p>');
                             	}
                             }
                             $('#reactionpathways').append(arrow_obj);
@@ -1077,7 +1078,8 @@ function handleQsarResponse(response) {
                 "prop": "Ka Half-Life at pH 7",
                 "calc": "epi",
                 "method": null,
-                "data": "37.499"
+                "data": "37.499",
+                "units": "days"
             }
         ]
     }
