@@ -1100,8 +1100,11 @@ function handleQsarResponse(response) {
       console.log("node smiles: ", node.data.smiles);
       console.log("response smiles: ", response['data']['child'])
       if (node.data.smiles == response['data']['child']) {
-        st.graph.nodes[nodeInd]['data']['qsar']['data'] = response['data']['data'][0]['data'];
-        st.graph.nodes[nodeInd]['data']['qsar']['units'] = response['data']['data'][0]['units'];
+        let qsarObj = {
+            'data': response['data']['data'][0]['data'],
+            'units': response['data']['data'][0]['units']
+        };
+        st.graph.nodes[nodeInd]['data']['qsar'] = qsarObj;
       }
     }
 
