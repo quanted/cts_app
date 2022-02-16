@@ -42,6 +42,8 @@ class CSV(object):
 
 	def parseToCSV(self, run_data):
 
+		# logging.warning("RUN DATA: {}".format(run_data))
+
 		jid = JchemCalc().gen_jid()  # create timestamp
 		time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
@@ -88,6 +90,11 @@ class CSV(object):
 		# Add molecular info header if gentrans:
 		if run_data['workflow'] == 'gentrans':
 			self.molecular_info = self.molecular_info + ['production', 'accumulation', 'globalAccumulation', 'likelihood']
+
+			# TODO: Add QSAR here if it was selected as an option by the user
+			# Will need to pass qsar selection from input to output
+
+
 
 		# write parent info first and in order..
 		for prop in self.molecular_info:
@@ -444,77 +451,83 @@ def pchempropsForMetabolites(headers, rows, props, run_data, metabolites_data, c
 	TODO: Refactor to only one pchemprop function for any and all workflows
 	"""
 
-	if not run_data['checkedCalcsAndProps']:
-			return False
+	# if not run_data['checkedCalcsAndProps']:
+	# 		return False
 
-	for prop in props:
-		for calc, calc_props in run_data['checkedCalcsAndProps'].items():
-			
-			if not prop in calc_props:
-				continue  # move on to next iteration..
+	if run_data['checkedCalcsAndProps']:
 
-			for chem_data in metabolites_data:
-
-				if not 'pchemprops' in chem_data:
+		for prop in props:
+			for calc, calc_props in run_data['checkedCalcsAndProps'].items():
+				
+				if not prop in calc_props:
 					continue  # move on to next iteration..
 
-				for pchem in chem_data['pchemprops']:
+				for chem_data in metabolites_data:
 
-					if pchem.get('prop') != prop or pchem.get('calc') != calc:
+					if not 'pchemprops' in chem_data:
 						continue  # move on to next iteration..
 
-					if pchem['prop'] == "ion_con":
-						j = 1
-						if not pchem.get('data') or not 'pKa' in pchem['data']:
-							pchem['data'] = {'pKa': []}
-						for pka in pchem['data'].get('pKa', []):
-							header = "pka_{} ({})".format(j, calc)
-							j += 1
+					for pchem in chem_data['pchemprops']:
+
+						if pchem.get('prop') != prop or pchem.get('calc') != calc:
+							continue  # move on to next iteration..
+
+						if pchem['prop'] == "ion_con":
+							j = 1
+							if not pchem.get('data') or not 'pKa' in pchem['data']:
+								pchem['data'] = {'pKa': []}
+							for pka in pchem['data'].get('pKa', []):
+								header = "pka_{} ({})".format(j, calc)
+								j += 1
+								if not header in headers:
+									headers.append(header)
+									for i in range(0, len(rows)):
+										rows[i].append("")
+								header_index = headers.index(header)
+								for i in range(0, len(rows)):
+									if rows[i][2] == chem_data['smiles']:
+										rows[i][header_index] = roundData(prop, pka)
+
+						else:
+
+							if pchem.get('method'):
+								if prop == 'kow_wph':
+									header = "{} ({}, {})".format(csv_obj.new_phkow_key, calc, pchem['method'])	
+								else:
+									header = "{} ({}, {})".format(prop, calc, pchem['method'])
+							else:
+								if prop == 'kow_wph':
+									header = "{} ({})".format(csv_obj.new_phkow_key, calc)
+								else:
+									header = "{} ({})".format(prop, calc)
+
 							if not header in headers:
 								headers.append(header)
-								for i in range(0, len(rows)):
-									rows[i].append("")
+
 							header_index = headers.index(header)
+
 							for i in range(0, len(rows)):
-								if rows[i][2] == chem_data['smiles']:
-									rows[i][header_index] = roundData(prop, pka)
 
-					else:
+								if run_data['workflow'] == 'gentrans':
+									smiles_index = headers.index('smiles')
+									chem_smiles = rows[i][smiles_index]  # smiles after genKey column
+								else:
+									chem_smiles = rows[i][0]
 
-						if pchem.get('method'):
-							if prop == 'kow_wph':
-								header = "{} ({}, {})".format(csv_obj.new_phkow_key, calc, pchem['method'])	
-							else:
-								header = "{} ({}, {})".format(prop, calc, pchem['method'])
-						else:
-							if prop == 'kow_wph':
-								header = "{} ({})".format(csv_obj.new_phkow_key, calc)
-							else:
-								header = "{} ({})".format(prop, calc)
+								if chem_smiles != chem_data.get('smiles') or pchem.get('prop') != prop or chem_data.get('genKey') != rows[i][0]:
+									continue  # move on to next iteration..
 
-						if not header in headers:
-							headers.append(header)
+								if 'error' in chem_data or 'error' in pchem:
+									rows[i].insert(header_index, roundData(prop, pchem['data']))
+								else:
+					
+									rows[i].insert(header_index, roundData(prop, pchem['data']))
 
-						header_index = headers.index(header)
+			headers, rows = add_geomean_for_metabolites(run_data, metabolites_data, headers, rows, prop)
 
-						for i in range(0, len(rows)):
-
-							if run_data['workflow'] == 'gentrans':
-								smiles_index = headers.index('smiles')
-								chem_smiles = rows[i][smiles_index]  # smiles after genKey column
-							else:
-								chem_smiles = rows[i][0]
-
-							if chem_smiles != chem_data.get('smiles') or pchem.get('prop') != prop or chem_data.get('genKey') != rows[i][0]:
-								continue  # move on to next iteration..
-
-							if 'error' in chem_data or 'error' in pchem:
-								rows[i].insert(header_index, roundData(prop, pchem['data']))
-							else:
-				
-								rows[i].insert(header_index, roundData(prop, pchem['data']))
-
-		headers, rows = add_geomean_for_metabolites(run_data, metabolites_data, headers, rows, prop)
+	logging.warning("INCLUDE RATES: {}".format(run_data.get('includeRates')))
+	if run_data.get('includeRates') == True:
+		headers, rows = add_half_life_column(headers, rows, metabolites_data)
 
 
 
@@ -701,4 +714,28 @@ def renumber_likely_products(headers, rows):
 			new_genkey = "molecule {}-{}".format(parent_num, letter_id)
 			row[0] = new_genkey
 			letter_id = chr(ord(letter_id) + 1)  # increments letter
+	return headers, rows
+
+
+
+def add_half_life_column(headers, rows, metabolites_data):
+	"""
+	Adds half-life data to CSV. Inserts column after molecular info
+	"""
+	half_life_header = "Half life (days)"
+	half_life_index = headers.index("likelihood")
+
+	logging.warning("Headers: {}".format(headers))
+	logging.warning("rows: {}".format(rows))
+
+	logging.warning("Index of likelihood column: {}".format(half_life_index))
+
+	# TODO: Insert half-life column into headers and rows.
+
+	headers.insert(half_life_index, half_life_header)
+
+	# TODO: Loop rows and insert half-life for each node if it exist:
+
+	# TODO: Convert all half-lives to days
+
 	return headers, rows
