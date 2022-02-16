@@ -1,7 +1,6 @@
 import logging
 
 from django.views.decorators.http import require_POST
-from django.utils.encoding import smart_text
 from . import chemspec_model
 import bleach
 

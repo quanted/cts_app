@@ -1,7 +1,7 @@
 #  https://docs.djangoproject.com/en/1.6/intro/tutorial03/
 # from django.conf.urls import include, url, path
 from django.urls import include, path
-from .views import misc, landing, description, input, output, batch, ctsGenerateReport, cts_stress_view, user_comments
+from cts_app.views import misc, landing, description, input, output, batch, ctsGenerateReport, cts_stress_view, user_comments
 from django.conf import settings
 
 
@@ -11,12 +11,12 @@ urlpatterns = [
 ]
 
 # Adds stress testing URLs if deployed for local dev or on the dev server:
-if settings.MACHINE_ID == "developer":
-	urlpatterns.extend([
-		path('stress/testing/', cts_stress_view.cts_stress_page),
-		path('stress/html/', cts_stress_view.cts_stress_html_download),
-		path('stress/json/', cts_stress_view.cts_stress_json_download),
-	])
+# if settings.MACHINE_ID == "developer":
+# 	urlpatterns.extend([
+# 		path('stress/testing/', cts_stress_view.cts_stress_page),
+# 		path('stress/html/', cts_stress_view.cts_stress_html_download),
+# 		path('stress/json/', cts_stress_view.cts_stress_json_download),
+# 	])
 
 # All view functions here must be in '/views/worker.py'
 urlpatterns.extend([
