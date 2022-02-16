@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: quanted/cts-django
 
 jobs:
   build-and-push-image:
@@ -26,6 +26,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          # submodules: recursive
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
