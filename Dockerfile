@@ -29,7 +29,7 @@ RUN pip install uwsgi
 
 COPY uwsgi.ini /etc/uwsgi/
 RUN chown -R www-data:www-data /src/cts_app
-RUN chmod 755 /src/cts_app/docker_start.sh
+RUN chmod 755 /src/cts_app/docker-start.sh
 
 ENV DJANGO_SETTINGS_MODULE "settings"
 EXPOSE 8080
