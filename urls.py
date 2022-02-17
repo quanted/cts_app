@@ -42,6 +42,8 @@ urlpatterns.extend([
 	path('<slug:model>/', description.descriptionPage),
 ])
 
+urlpatterns = [path('cts/', include(urlpatterns))]
+
 
 
 # 404 Error view (file not found)
