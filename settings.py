@@ -114,8 +114,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, "static", "cts_app")
-STATIC_URL = '/cts/static/'
+# STATIC_ROOT = os.path.join(PROJECT_ROOT, "static", "cts_app")
+STATIC_ROOT = os.path.join(PROJECT_ROOT, "collected_static")
+# STATIC_URL = '/cts/static/'
+STATIC_URL = '/static_qed/'
 
 # Define ENVIRONMENTAL VARIABLES
 os.environ.update({
