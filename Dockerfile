@@ -39,4 +39,5 @@ ENV PATH="/src:/src/cts_app:${PATH}"
 #USER ${APP_USER}:${APP_USER}
 
 # CMD ["conda", "run", "-n", "pyenv", "--no-capture-output", "sh", "/src/cts_app/docker-start.sh"]
-CMD ["sh", "/src/cts_app/docker-start.sh"]
+# CMD ["sh", "/src/cts_app/docker-start.sh"]
+CMD ["ls", "-l", "/src/cts_app"]
