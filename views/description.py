@@ -7,6 +7,7 @@ import os
 import logging
 from cts_app.models import cts_acronyms
 from cts_app.models import cts_errors
+from django.conf import settings
 
 
 
@@ -14,7 +15,7 @@ def descriptionPage(request, model='none', header='none'):
 
     viewmodule = importlib.import_module('.views', 'cts_app.models.'+model)
     header = viewmodule.header
-    text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'cts_app/models/'+model+'/'+model+'_text.txt'),'r')
+    text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'models', model, model+'_text.txt'),'r')
     xx = text_file2.read()
 
     #drupal template for header with bluestripe
@@ -55,19 +56,23 @@ def about_page(request, model='none', header='non'):
         header = "About CTS"
 
     elif model == 'modules':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_modules_descriptions.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_modules_descriptions.txt'),'r')
+        text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_modules_descriptions.txt'),'r')
         header = "CTS Modules"
 
     elif model == 'pchemcalcs':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_pchemcalcs_descriptions.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_pchemcalcs_descriptions.txt'),'r')
+        text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_pchemcalcs_descriptions.txt'),'r')
         header = "Physicochemical Property Calculators"
 
     elif model == 'reactionlibs':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_reactionlibs_descriptions.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_reactionlibs_descriptions.txt'),'r')
+        text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_reactionlibs_descriptions.txt'),'r')
         header = "Reaction Libraries"
 
     elif model == 'manuscripts':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_manuscripts_descriptions.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_manuscripts_descriptions.txt'),'r')
+        text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_manuscripts_descriptions.txt'),'r')
         header = "CTS Manuscripts"
 
     elif model == 'acronyms':
@@ -76,11 +81,13 @@ def about_page(request, model='none', header='non'):
         header = "CTS Acronyms"
 
     elif model == 'flowcharts':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_flowcharts_descriptions.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_flowcharts_descriptions.txt'),'r')
+        text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_flowcharts_descriptions.txt'),'r')
         header = "CTS Flowcharts"
 
     elif model == 'help':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_help.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_help.txt'),'r')
+        text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_help.txt'),'r')
         header = "Help"
 
     elif model == 'errors':
@@ -89,11 +96,13 @@ def about_page(request, model='none', header='non'):
 
     elif model == 'contact':
         # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_contact.txt'),'r')
+        # text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_contact.txt'),'r')
         html_string = render_to_string('cts_app/cts_contacts_page.html', {}, request=request)
         header = "CTS Contact"
 
     elif model == 'versionhistory':
-        text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_version_history.txt'),'r')
+        # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_version_history.txt'),'r')
+        text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_version_history.txt'),'r')
         header = "CTS Version History"
 
     #drupal template for header with bluestripe
