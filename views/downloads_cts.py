@@ -723,19 +723,22 @@ def add_half_life_column(headers, rows, metabolites_data):
 	Adds half-life data to CSV. Inserts column after molecular info
 	"""
 	half_life_header = "Half life (days)"
-	half_life_index = headers.index("likelihood")
-
-	logging.warning("Headers: {}".format(headers))
-	logging.warning("rows: {}".format(rows))
-
-	logging.warning("Index of likelihood column: {}".format(half_life_index))
-
-	# TODO: Insert half-life column into headers and rows.
+	half_life_index = headers.index("likelihood") + 1
 
 	headers.insert(half_life_index, half_life_header)
 
-	# TODO: Loop rows and insert half-life for each node if it exist:
-
 	# TODO: Convert all half-lives to days
+
+	row_index = 0
+	for row in rows:
+		# Get metabolite data for given row:
+		met_data = {}
+		for data in metabolites_data:
+			if data['genKey'] == row[0]:
+				if data.get('qsar'):
+					rows[row_index].insert(half_life_index, data['qsar']['data'])
+				else:
+					rows[row_index].insert(half_life_index,  "N/A")
+		row_index += 1		
 
 	return headers, rows
