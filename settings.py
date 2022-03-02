@@ -131,6 +131,10 @@ os.environ.update({
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-SECRET_KEY = os.getenv('SECRET_KEY', "needtosetthesecretkey")
+try:
+    with open('secrets/secret_key_django_dropbox.txt') as f:
+        SECRET_KEY = f.read().strip()
+except IOError as e:
+    print("Secret file not set as env variable")
 
 WSGI_APPLICATION = 'wsgi.application'
