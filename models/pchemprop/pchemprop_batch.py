@@ -1,4 +1,5 @@
 import json
+import os
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -61,8 +62,8 @@ def pchempropBatchOutputPage(request, model='', header='Physicochemical Properti
             'kow_ph': pchemprop_obj.kow_ph,
             'speciation_inputs': 'null',
             'nodes': batch_chemicals,
-            'nodejs_host': settings.NODEJS_HOST,
-            'nodejs_port': settings.NODEJS_PORT,
+            'nodejs_host': os.getenv("NODEJS_HOST"),
+            'nodejs_port': os.getenv("NODEJS_PORT"),
             'workflow': "pchemprop",
             'run_type': "batch"
         }

@@ -29,3 +29,4 @@ settings_local.py
 *.pid
 secret.py
 cts_comments.json
+collected_static/

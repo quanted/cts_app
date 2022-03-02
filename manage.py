@@ -3,14 +3,8 @@
 import os
 import sys
 
-from temp_config.set_environment import DeployEnv
-
 
 def main():
-
-    runtime_env = DeployEnv()
-    runtime_env.load_deployment_environment()
-
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cts_app.settings')
     try:
         from django.core.management import execute_from_command_line

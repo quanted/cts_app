@@ -5,16 +5,9 @@ import unittest
 import logging
 import json
 import numpy.testing as npt
-# import linkcheck_helper
 import cts_app.tests.linkcheck_helper as linkcheck_helper
 from cts_app.tests.test_objects import get_post_object
 from django.test import Client, TestCase
-
-from temp_config.set_environment import DeployEnv
-
-# Determine env vars to use:
-runtime_env = DeployEnv()
-runtime_env.load_deployment_environment()
 
 import django
 django.setup()

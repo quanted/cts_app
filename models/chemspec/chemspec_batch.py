@@ -60,8 +60,8 @@ def chemspecBatchOutputPage(request, model='', header='Chemical Speciation Prope
             'workflow': "chemspec",
             'run_type': "batch",
             'run_data': chemspec_obj.run_data,
-            'nodejs_host': settings.NODEJS_HOST,
-            'nodejs_port': settings.NODEJS_PORT
+            'nodejs_host': os.getenv("NODEJS_HOST"),
+            'nodejs_port': os.getenv("NODEJS_PORT")
         }
     )
 

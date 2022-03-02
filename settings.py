@@ -64,6 +64,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cts_app',
+    'cts_app.filters',  # cts filters for pchem table
+    'cts_app.cts_api',
+    'cts_app.cts_testing',
     'corsheaders'
 )
 

@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -90,8 +91,8 @@ def gentransBatchOutputPage(request, model='', header='Transformation Products',
             'run_type': "batch",
             'run_data': pchemprop_obj.run_data,
             'speciation_inputs': 'null',
-            'nodejs_host': settings.NODEJS_HOST,
-            'nodejs_port': settings.NODEJS_PORT,
+            'nodejs_host': os.getenv("NODEJS_HOST"),
+            'nodejs_port': os.getenv("NODEJS_PORT"),
             'service': "getTransProducts",
             'metabolizer_post': metabolizer_post
         }

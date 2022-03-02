@@ -44,8 +44,8 @@ def batchInputPage(request, model='none', header='none'):
         {
             'model':model,
             'header':header,
-            'nodejsHost': settings.NODEJS_HOST,
-            'nodejsPort': settings.NODEJS_PORT
+            'nodejsHost': os.getenv("NODEJS_HOST"),
+            'nodejsPort': os.getenv("NODEJS_PORT")
         })
 
 
