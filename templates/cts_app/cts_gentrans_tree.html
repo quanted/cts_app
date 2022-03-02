@@ -32,6 +32,7 @@ var pchemSelectErrorMessage = "Must select at least one calculator and available
 var pchemNoCarbonMessage = "CTS does not process inorganic products";
 var epiQsarRoutes = [
     'halogenated aliphatics: elimination',
+    'halogenated aliphatics: nucleophilic substitution (no adjacent x)',
     'epoxide hydrolysis',
     'organophosphorus ester hydrolysis 1 (base-catalyzed)',
     'organophosphorus ester hydrolysis 2 (neutral or acid-catalyzed)',
@@ -1030,7 +1031,7 @@ function initiateHalflifeRequests() {
             console.log("QSAR route matches. Making request to epi qsar.")
             // makeQsarRequest(treeNode);
             let smiles = st.graph.nodes[ind - 1].data.smiles;
-	    let child = st.graph.nodes[ind].data.smiles;
+            let child = st.graph.nodes[ind].data.smiles;
             makeQsarRequest(smiles, route, child);
         }
 
@@ -1046,8 +1047,10 @@ function makeQsarRequest(smiles, route, child) {
         'prop': 'qsar',
         'calc': 'epi',
         'route': route,
-	'child': child
+        'child': child
     };
+
+    console.log("Making request to EPI for half life: ", requestObj)
 
     $.ajax({
         url: '/cts/rest/epi/run',
@@ -1098,7 +1101,7 @@ function handleQsarResponse(response) {
     for (nodeInd in st.graph.nodes) {
       let node = st.graph.nodes[nodeInd];
       console.log("node smiles: ", node.data.smiles);
-      console.log("response smiles: ", response['data']['child'])
+      console.log("response child smiles: ", response['data']['child'])
       if (node.data.smiles == response['data']['child']) {
         let qsarObj = {
             'data': response['data']['data'][0]['data'],

@@ -235,10 +235,6 @@ function connectToSocket() {
 
         data = JSON.parse(data);
 
-        console.log("Incoming pchemprop request data: ")
-        console.log(data);
-
-
         if ('error' in data) {
             blockui_message = '<div id="pchem_wait"><h3 class="popup_header">' + data['error'] + '. Returning to inputs section.</h3><br><br><input onclick="redirectToInputsPage()" type="button" value="OK" id="btn-pchem-cancel"><br></div>';
             blockInterface(true, blockui_message);
