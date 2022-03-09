@@ -1030,7 +1030,15 @@ function initiateHalflifeRequests() {
         if (epiQsarRoutes.includes(route.toLowerCase())) {
             console.log("QSAR route matches. Making request to epi qsar.")
             // makeQsarRequest(treeNode);
-            let smiles = st.graph.nodes[ind - 1].data.smiles;
+
+            let nodeGen = treeNode.data.genKey.split(' ')[1];  // e.g., "molecule 1.2" -> "1.2"
+
+            let parentObj = getParentNode(treeNode);
+
+            console.log("Parent object: ", parentObj)
+
+            // let smiles = st.graph.nodes[ind - 1].data.smiles;
+            let smiles = parentObj.data.smiles;
             let child = st.graph.nodes[ind].data.smiles;
             makeQsarRequest(smiles, route, child);
         }
@@ -1113,6 +1121,22 @@ function handleQsarResponse(response) {
 
     return response['data'];
 
+}
+
+function getParentNode(nodeObj) {
+    /*
+    Gets the parent's genKey from a given node.
+    Example: "1.3.2" -> "molecule 1.3"
+    */
+    console.log("Determining parent genkey for: ", nodeObj)
+    let currentGenArray = nodeObj.data.genKey.split(' ')[1].split('.');  // "molecule 1.2" -> ["1", "2"]
+    let parentGenkey = '';
+    for (let i = 0; i < currentGenArray.length - 1; i++) {
+        parentGenkey += currentGenArray[i] + '.';
+    }
+    let parentGenkey = "molecule " + parentGenkey.slice(0, -1);
+    let parentNode = searchForNodeByGenKey(parentGenkey, st.graph.nodes);
+    return parentNode;
 }
 
 </script>
