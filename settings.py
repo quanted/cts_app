@@ -1,6 +1,7 @@
 import os
 import logging
 import mimetypes
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -131,10 +132,6 @@ os.environ.update({
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-try:
-    with open('secrets/secret_key_django_dropbox.txt') as f:
-        SECRET_KEY = f.read().strip()
-except IOError as e:
-    print("Secret file not set as env variable")
+SECRET_KEY = str(os.getenv('SECRET_KEY', uuid.uuid1()))
 
 WSGI_APPLICATION = 'wsgi.application'
