@@ -1,7 +1,4 @@
-# FROM continuumio/miniconda3:4.10.3
 FROM python:3.10.2-alpine
-# FROM python:3.10.2-slim
-# FROM python:3.8-slim
 
 ARG APP_USER=www-data
 
@@ -35,5 +32,7 @@ EXPOSE 8080
 
 ENV PYTHONPATH="/src:/src/cts_app:${PYTHONPATH}"
 ENV PATH="/src:/src/cts_app:${PATH}"
+
+USER $APP_USER
 
 CMD ["sh", "/src/cts_app/docker-start.sh"]
