@@ -1,6 +1,6 @@
 FROM python:3.10.2-alpine
 
-ARG APP_USER=www-data
+ENV APP_USER=www-data
 
 RUN adduser -S $APP_USER -G $APP_USER
 
