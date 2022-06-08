@@ -496,6 +496,9 @@ function init(json){
 
                     var st_nodes = st.graph.nodes;  // actual nodes from spacetree
                     var node_gen_array = node['data']['genKey'].split("."); // split up gen path for node
+		    
+		    console.log("Selected node: ", node);
+		    console.log("Node generation array: ", node_gen_array);
 
                     $('#reactionpathways').html("");
 
@@ -507,6 +510,10 @@ function init(json){
 
 
                         var current_node = searchForNodeByGenKey(node_gen_id, st_nodes);
+
+
+			console.log("Current node in node_gen_array loop: ", current_node);
+
 
                         // add image to reaction pathways div:
                         var img_obj = $.parseHTML(current_node.name.trim())[0];
@@ -524,6 +531,9 @@ function init(json){
                             var next_node_id = buildGenKey(i + 1, node_gen_array);
                             var next_node = searchForNodeByGenKey(next_node_id, st_nodes);
 
+			    console.log("Next node / child node?", next_node)
+	
+
                             var routes = next_node.data.routes;
                             var arrow_obj = $.parseHTML(arrow_html);  //<div><img></div>
                             if (routes) {
@@ -535,10 +545,11 @@ function init(json){
 
                                 $(arrow_obj).prepend('<br><p><a href="' + link + '" target="_blank">' + latest_node_route + '</a></p>');  // add "routes"
 
-                				if (node['data']['qsar']) {
+                				//if (node['data']['qsar']) {
+				if (next_node['data']['qsar']) {
                 				    console.log("Appending QSAR");
                               	    // $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
-                                    $(arrow_obj).append('<p>' + node['data']['qsar']['data'] + node['data']['qsar']['units'] + '</p>');
+                                    $(arrow_obj).append('<p>' + next_node['data']['qsar']['data'] + next_node['data']['qsar']['units'] + '</p>');
                             	}
                             }
                             $('#reactionpathways').append(arrow_obj);
@@ -1034,7 +1045,9 @@ function initiateHalflifeRequests() {
             console.log("Parent object: ", parentObj)
             let smiles = parentObj.data.smiles;
             let child = st.graph.nodes[ind].data.smiles;
-            makeQsarRequest(smiles, route, child);
+	    let childNode = st.graph.nodes[ind];
+            //makeQsarRequest(smiles, route, child);
+            makeQsarRequest(parentObj, route, childNode);
         }
 
     }
@@ -1042,14 +1055,17 @@ function initiateHalflifeRequests() {
 }
 
 // function makeQsarRequest(node) {
-function makeQsarRequest(smiles, route, child) {
+//function makeQsarRequest(smiles, route, child) {
+function makeQsarRequest(parentObj, route, childNode) {
 
     let requestObj = {
-        'chemical': smiles,
+        'chemical': parentObj.data.smiles,
+	'parentGenkey': parentObj.data.genKey.split(' ')[1],
         'prop': 'qsar',
         'calc': 'epi',
         'route': route,
-        'child': child
+        'child': childNode.data.smiles,
+	'childGenkey': childNode.data.genKey.split(' ')[1]
     };
 
     console.log("Making request to EPI for half life: ", requestObj)
@@ -1102,9 +1118,19 @@ function handleQsarResponse(response) {
 
     for (nodeInd in st.graph.nodes) {
       let node = st.graph.nodes[nodeInd];
-      console.log("node smiles: ", node.data.smiles);
-      console.log("response child smiles: ", response['data']['child'])
-      if (node.data.smiles == response['data']['child']) {
+      console.log("node: ", node);
+      console.log("response: ", response);
+      //console.log("response child smiles: ", response['data']['child'])
+
+      let childGenkey = response['data']['childGenkey'];
+      let nodeGenkey = node.data.genKey.split(' ')[1]
+
+      console.log("Child genkey and node genkey: ", childGenkey, nodeGenkey)
+
+      if (node.data.smiles == response['data']['child'] && node.data.genKey.split(' ')[1] == response['data']['childGenkey']) {
+      //if (node.data.smiles == response['data']['parent']) {
+
+        console.log("A match has occurred.");
         let qsarObj = {
             'data': response['data']['data'][0]['data'],
             'units': response['data']['data'][0]['units']
