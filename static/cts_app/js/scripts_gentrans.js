@@ -11,6 +11,7 @@ $(document).ready(function() {
     var disableBiotrans = false;
     var disableEnvipath = false;
     var disableQsar = false;
+    var disablePfas = false;
 
     // TODO: Flags per feature conditionals instead of env name conditions
     if (
@@ -30,9 +31,7 @@ $(document).ready(function() {
                             '#cts_reaction_sys, #respiration_tbl, #mammalian_choices_tbl'; // tables to hide/show
 
     var unaviable_options = 'select[name=pop_limit], ' +
-        '#id_aerobic_biodegrad, #id_anaerobic_biodegrad' +
-        'select[name=pfas_environment] option' +
-        'select[name=pfas_metabolism] option';
+        '#id_aerobic_biodegrad, #id_anaerobic_biodegrad, #id_pfas_metabolism';
 
     if (typeof uberNavTabs == 'function') {
         uberNavTabs(
@@ -58,7 +57,9 @@ $(document).ready(function() {
 
     // disable checkboxes and submit button
     // $('#cts_reaction_libs input[type="checkbox"], input.submit').prop('disabled', true);
-    $('#cts_reaction_libs input[type="checkbox"], #id_biotrans_libs').prop('disabled', true);
+    $('#cts_reaction_libs input[type="checkbox"], \
+        #cts_class_specific_reaction_libs input[type="checkbox"], \
+        #id_biotrans_libs').prop('disabled', true);
 
     brightenBorder($('#cts_reaction_paths')); // brighten first table for user input
 
@@ -102,7 +103,11 @@ $(document).ready(function() {
             if (!disableEnvipath) {
                 $('#id_envipath_metabolism').prop({'checked': false, 'disabled':false}).trigger('change');
             }
-            brightenBorder($('#cts_reaction_libs'));
+            if (!disablePfas) {
+                // $('#id_pfas_metabolism').prop({'checked': false, 'disabled':false}).trigger('change');
+                $('#id_pfas_environmental').prop({'checked': false, 'disabled':false}).trigger('change');   
+            }
+            brightenBorder($('#cts_reaction_libs, #cts_class_specific_reaction_libs'));
         }
 
         clearHiddenInputs();
@@ -270,9 +275,9 @@ $(document).ready(function() {
     });
 
     // Enable submit only if a reaction library is selected
-    $('#cts_reaction_libs input:checkbox').on("change", function() {
+    $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').on("change", function() {
 
-        var checkedItems = $('#cts_reaction_libs input:checkbox:checked');
+        var checkedItems = $('#cts_reaction_libs input:checkbox:checked, #cts_class_specific_reaction_libs input:checkbox:checked');
 
         var mamm_meta_checked = $('#id_mamm_metabolism:checked').length > 0;
         var areduct_checked = $('#id_abiotic_reduction:checked').length > 0;
@@ -281,29 +286,39 @@ $(document).ready(function() {
         var photolysis_ranked_checked = $('#id_photolysis_ranked:checked').length > 0;
         var biotrans_checked = $('#id_biotrans_metabolism:checked').length > 0;
         var envipath_checked = $('#id_envipath_metabolism:checked').length > 0;
+        var pfas_environmental_checked = $('#id_pfas_environmental:checked').length > 0;
+        var pfas_metabolism_checked = $('#id_pfas_metabolism:checked').length > 0;
 
         if (mamm_meta_checked && checkedItems.length != 1) {
             alert("Mammalian metabolism reaction library cannot run with additional reaction libraries");
-            $('#cts_reaction_libs input:checkbox').prop('checked', false);
+            $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').prop('checked', false);
         }
         else if (biotrans_checked && checkedItems.length != 1) {
             alert("Biotransformer reaction library cannot run with additional reaction libraries");
-            $('#cts_reaction_libs input:checkbox').prop('checked', false);
+            $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').prop('checked', false);
         }
         else if (envipath_checked && checkedItems.length != 1) {
             alert("Envipath reaction library cannot run with additional reaction libraries");
-            $('#cts_reaction_libs input:checkbox').prop('checked', false); 
+            $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').prop('checked', false); 
         }
         else if (photolysis_unranked_checked && checkedItems.length != 1) {
             alert("Unranked direct photolysis reaction library cannot run with additional reaction libraries");
-            $('#cts_reaction_libs input:checkbox').prop('checked', false);
+            $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').prop('checked', false);
+        }
+        else if (pfas_environmental_checked && checkedItems.length != 1) {
+            alert("PFAS environmental reaction library cannot run with additional reaction libraries");
+            $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').prop('checked', false);   
+        }
+        else if (pfas_metabolism_checked && checkedItems.length != 1) {
+            alert("PFAS metabolism reaction library cannot run with additional reaction libraries");
+            $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').prop('checked', false);
         }
         else if (photolysis_ranked_checked && (photolysis_unranked_checked || areduct_checked)) {
             alert("Ranked direct photolysis reaction library can only be combined with abiotic hydrolysis library");
-            $('#cts_reaction_libs input:checkbox').prop('checked', false);
+            $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').prop('checked', false);
         }
 
-        if ($('#cts_reaction_libs input:checkbox:checked').length > 0) {
+        if ($('#cts_reaction_libs input:checkbox:checked, #cts_class_specific_reaction_libs input:checkbox:checked').length > 0) {
             $('input.submit').addClass('brightBorders');
         }
         else {
@@ -349,6 +364,8 @@ function clearReactionLib() {
     $('#id_envipath_metabolism').prop({'checked': false, 'disabled':true});
     $('input#id_include_rates').attr({'checked': false, 'disabled': true});
     $('#id_biotrans_libs').val("cyp450");
+    $('#id_pfas_metabolism').attr({'checked': false, 'disabled': true});
+    $('#id_pfas_environmental').attr({'checked': false, 'disabled': true});
 }
 
 

@@ -13,6 +13,7 @@ var hydrolysisLink = "/static_qed/cts_app/docs/Hydrolysis Lib HTML/HydrolysisRxn
 var reductionLink = "/static_qed/cts_app/docs/Reduction HTML/AbioticReductionRxnLib_vers1-5rev_052721.htm#";
 var unrankedPhotolysisLink = "/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-0a_051721.htm#"
 var rankedPhotolysisLink = "/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-3a_051721.htm#"
+var pfasEnvironmentalLink = "/static_qed/cts_app/docs/PFAS HTML/PFASEnvironmentalReactionLibrary_ver1-1.htm#";
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -496,9 +497,6 @@ function init(json){
 
                     var st_nodes = st.graph.nodes;  // actual nodes from spacetree
                     var node_gen_array = node['data']['genKey'].split("."); // split up gen path for node
-		    
-		    console.log("Selected node: ", node);
-		    console.log("Node generation array: ", node_gen_array);
 
                     $('#reactionpathways').html("");
 
@@ -508,12 +506,7 @@ function init(json){
                         var node_gen_id = buildGenKey(i, node_gen_array);
                         parsed_gen_array.push(node_gen_id);
 
-
                         var current_node = searchForNodeByGenKey(node_gen_id, st_nodes);
-
-
-			console.log("Current node in node_gen_array loop: ", current_node);
-
 
                         // add image to reaction pathways div:
                         var img_obj = $.parseHTML(current_node.name.trim())[0];
@@ -530,8 +523,6 @@ function init(json){
 
                             var next_node_id = buildGenKey(i + 1, node_gen_array);
                             var next_node = searchForNodeByGenKey(next_node_id, st_nodes);
-
-			    console.log("Next node / child node?", next_node)
 	
 
                             var routes = next_node.data.routes;
@@ -546,7 +537,7 @@ function init(json){
                                 $(arrow_obj).prepend('<br><p><a href="' + link + '" target="_blank">' + latest_node_route + '</a></p>');  // add "routes"
 
                 				//if (node['data']['qsar']) {
-				if (next_node['data']['qsar']) {
+				                if (next_node['data']['qsar']) {
                 				    console.log("Appending QSAR");
                               	    // $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
                                     $(arrow_obj).append('<p>' + next_node['data']['qsar']['data'] + next_node['data']['qsar']['units'] + '</p>');
@@ -611,6 +602,13 @@ function findReactionLinkSection(routes) {
         let sectionName = rankedPhotolysisReactionMap[reactionName];
         if(route.toLowerCase().includes(reactionName.toLowerCase())) {
             return rankedPhotolysisLink + sectionName;
+        }
+    }
+    // Checks PFAS reactions:
+    for (let reactionName in pfasEnvironmentalReactionMap) {
+        let sectionName = pfasEnvironmentalReactionMap[reactionName];
+        if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+            return pfasEnvironmentalLink + sectionName;
         }
     }
     return '/cts/about/reactionlibs';  // returns main RL page there isn't a pathway match
@@ -1127,8 +1125,7 @@ function handleQsarResponse(response) {
 
       console.log("Child genkey and node genkey: ", childGenkey, nodeGenkey)
 
-      if (node.data.smiles == response['data']['child'] && node.data.genKey.split(' ')[1] == response['data']['childGenkey']) {
-      //if (node.data.smiles == response['data']['parent']) {
+      if (node.data.smiles == response['data']['child'] && nodeGenkey == childGenkey) {
 
         console.log("A match has occurred.");
         let qsarObj = {

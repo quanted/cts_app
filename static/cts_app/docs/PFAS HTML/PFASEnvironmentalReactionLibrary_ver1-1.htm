@@ -1,0 +1,3833 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{mso-style-link:"Comment Text Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:0in;
+	font-size:10.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-link:"Header Char";
+	margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-link:"Footer Char";
+	margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{color:#0563C1;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#954F72;
+	text-decoration:underline;}
+p.MsoCommentSubject, li.MsoCommentSubject, div.MsoCommentSubject
+	{mso-style-link:"Comment Subject Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	font-size:10.0pt;
+	font-family:"Calibri",sans-serif;
+	font-weight:bold;}
+p.MsoRMPane, li.MsoRMPane, div.MsoRMPane
+	{margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:.5in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.CommentTextChar
+	{mso-style-name:"Comment Text Char";
+	mso-style-link:"Comment Text";}
+p.EndNoteBibliography, li.EndNoteBibliography, div.EndNoteBibliography
+	{mso-style-name:"EndNote Bibliography";
+	mso-style-link:"EndNote Bibliography Char";
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EndNoteBibliographyChar
+	{mso-style-name:"EndNote Bibliography Char";
+	mso-style-link:"EndNote Bibliography";
+	font-family:"Calibri",sans-serif;}
+span.HeaderChar
+	{mso-style-name:"Header Char";
+	mso-style-link:Header;}
+span.FooterChar
+	{mso-style-name:"Footer Char";
+	mso-style-link:Footer;}
+span.CommentSubjectChar
+	{mso-style-name:"Comment Subject Char";
+	mso-style-link:"Comment Subject";
+	font-weight:bold;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+ /* Page Definitions */
+ @page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link="#0563C1" vlink="#954F72" style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:115%'><img
+width=624 height=38
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image001.png"
+alt="PFAS Environmental Reaction Library&#13;&#10;S&#13;&#10;"></p>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:115%'>The PFAS
+Environmental Reaction Library has been developed as a component of the
+Chemical Transformation Simulator (CTS), a web-based software tool under
+development in EPA’s Office of Research and Development.  The library is
+implemented in CTS to predict the likely environmental transformation products
+of per- and polyfluoroalkyl substances (PFAS).  </p>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:115%'>Version 1.1 of
+the PFAS Environmental Reaction Library contains 59 reaction schemes:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.5in'><u>Decarboxylation
+Schemes</u></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.7in;text-indent:-.5in;line-height:normal'><a
+href="#EnvLib_Scheme_1">Decarboxylation: Alpha carboxy ether to ether</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.7in;text-indent:-.5in;line-height:normal'><a
+href="#EnvLib_Scheme_2">Decarboxylation: Alpha hydroxy fluorotelomer carboxylic
+acid to fluorotelomer aldehyde</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.7in;text-indent:-.5in;line-height:normal'><a
+href="#EnvLib_Scheme_3">Decarboxylation: Beta carboxy ketone to methyl ketone</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><u><span
+style='color:black'>Desulfonation Scheme</span></u></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_4">Desulfonation:
+Fluorotelomer sulfonate to fluorotelomer alcohol</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><u><span
+style='color:black'>Epoxidation Scheme</span></u></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_5">Epoxidation:
+Alkene to epoxide_PTP</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><u><span
+style='color:black'>Hydrolysis Schemes</span></u></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_6">Hydrolysis:
+Acid fluoride to carboxylic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_7">Hydrolysis:
+Alpha difluoro alcohol to acid fluoride</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_8">Hydrolysis:
+Alpha fluoro secondary alcohol to ketone</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_9">Hydrolysis:
+Amide to carboxylic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_10">Hydrolysis:
+Beta hydroxy fluorotelomer iodide to diol_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_11">Hydrolysis:
+Carboxylic acid ester to carboxylic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_12">Hydrolysis:
+Diperfluorophosphinate to perfluorophosphonate</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_13">Hydrolysis:
+Diphosphate ester to monophosphate ester</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_14">Hydrolysis:
+Epoxide to diol_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_15">Hydrolysis:
+Fluorotelomer acid to unsaturated telomer acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_16">Hydrolysis:
+Fluorotelomer iodide to fluorotelomer alcohol</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_17">Hydrolysis:
+Fluorotelomer urethane to fluorotelomer alcohol</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_18">Hydrolysis:
+Hydrodefluorination of PFC chain</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_19">Hydrolysis:
+Monophosphate ester to alcohol</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_20">Hydrolysis:
+Perfluorinated epoxide to beta keto carboxylic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_21">Hydrolysis:
+Sulfonamide to sulfonic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_22">Hydrolysis:
+Sulfonyl fluoride to sulfonic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_23">Hydrolysis:
+Unsaturated fluorotelomer iodide to beta hydroxy fluorotelomer iodide-PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><span style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><u><span
+style='color:black'>Hydroxylation Schemes</span></u></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_24">Hydroxylation:
+N-Alkyl sulfonamide to N-alkyl sulfonamide alcohol_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_25">Hydroxylation:
+Unsaturated fluorotelomer 2,4-dienoic acid to beta-hydroxy fluorotelomer acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_26">Hydroxylation:
+Unsaturated fluorotelomer acid to alpha hydroxy fluorotelomer acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_27">Hydroxylation:
+Unsaturated fluorotelomer acid to beta hydroxy fluorotelomer acid</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><u><span
+style='color:black'><span style='text-decoration:none'>&nbsp;</span></span></u></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><u><span
+style='color:black'>N-Deacetylation/N-Dealkylation Schemes</span></u></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_28">N-Deacetylation:
+N-acetyl sulfonamide to sulfonamide </a><span style='color:black'> </span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_29">N-Deacetylation:
+N-acetyl, N-alkyl sulfonamide to N-alkyl sulfonamide</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_30">N-Dealkylation:
+N-alkyl sulfonamide to sulfonamide</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><u><span
+style='color:black'>Oxidation Schemes</span></u></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_31">Oxidation:
+Alcohol to ketone</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_32">Oxidation:
+Alpha fluoro diol to acid fluoride and aldehyde with C-C bond cleavage_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_33">Oxidation:
+Alpha hydroxy fluorotelomer aldehyde to alpha hydroxy fluorotelomer carboxylic
+acid_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_34">Oxidation:
+Beta hydroxy fluorotelomer acid to beta keto fluorotelomer acid_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_35">Oxidation:
+Beta hydroxy gamma-delta unsaturated fluorotelomer acid to beta keto
+fluorotelomer acid_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_36">Oxidation:
+Beta oxidation of beta keto fluorotelomer acid</a><span class=MsoHyperlink>_PTP</span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_37">Oxidation:
+Beta oxidation of beta keto gamma-delta unsaturated fluorotelomer acid_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_38">Oxidation:
+Fluorotelomer alcohol to fluorotelomer aldehyde</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_39">Oxidation:
+Fluorotelomer alcohol to fluorotelomer carboxylic acid with loss of CF2 and
+methyl group</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_40">Oxidation:
+Fluorotelomer alcohol to fluorotelomer carboxylic acid with loss of methyl
+group</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_41">Oxidation:
+Fluorotelomer aldehyde to fluorotelomer carboxylic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_42">Oxidation:
+Fluorotelomer carboxylic acid to 2,3-unsaturated fluorotelomer carboxylic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_43">Oxidation:
+Fluorotelomer diol to alpha hydroxy fluorotelomer aldehyde_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_44">Oxidation:
+Fluorotelomer iodide to alpha beta unsaturated fluorotelomer iodide_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_45">Oxidation:
+Fluorotelomer polyethoxylate carboxylic acid to shortened fluorotelomer
+polyethoxylate_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_46">Oxidation:
+Fluorotelomer polyethoxylate to fluorotelomer polyethoxylate carboxylic acid_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_47">Oxidation:
+Fluorotelomer sulfone to fluorotelomer sulfonic acid and alkyl chain</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_48">Oxidation:
+Fluorotelomer sulfoxide to fluorotelomer sulfone</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_49">Oxidation:
+Fluorotelomer thioether to fluorotelomer sulfoxide</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_50">Oxidation:
+Hydrodefluorination with alpha oxidation</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_51">Oxidation:
+Hydrodefluorination with beta oxidation</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_52">Oxidation:
+N-Alkyl sulfonamide alcohol to N-alkyl sulfonamide carboxylic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_53">Oxidation:
+Sulfinic acid to sulfonic acid</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><u><span
+style='color:black'>Reduction Schemes</span></u></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_54">Reduction:
+2,3-Unsaturated fluorotelomer carboxylic acid to fluorotelomer carboxylic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_55">Reduction:
+Beta fluoro unsaturated telomer acid to beta H unsaturated telomer acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_56">Reduction:
+Hydrogenolysis of chlorinated perfluorinated ether_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_57">Reduction: Methyl
+ketone to alcohol</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_58">Reduction:
+Sulfonamide to sulfinic acid</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><a href="#EnvLib_Scheme_59">Reduction:
+Vicinal bis-defluorination of unsaturated carboxylic acid_PTP</a></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><span style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><a
+href="#Rank_Assignment">Rank Assignment</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><a
+href="#Version_history">Version History</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal>The reaction schemes are written as generic reaction
+equations defining how a particular structural fragment will be modified by the
+transformation reaction.  These schemes are not balanced reactions showing all
+reactants and products (e.g., H<sub>2</sub>O, OH<sup>-</sup> and/or H<sup>+</sup>
+are not shown as reactants in the schemes).  Additionally, the structural
+fragments in the reaction schemes are written with a minimal amount of
+specificity.  For example, the inclusion of hydrogen atoms in the scheme
+implies that there is a requirement for a hydrogen atom to present be in the
+specified position for the reactions to proceed; otherwise, it is assumed that,
+for simplicity, hydrogen atoms are not explicitly included.  </p>
+
+<p class=MsoNormal>The schemes are encoded using the notation and structural
+query features from ChemAxon’s Marvin tools.  Definitions of some common
+symbols used in the reaction schemes are provided below:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>L[a<sub>1</sub>;a<sub>2</sub>;…] is a list of possible atoms (a<sub>1</sub>,
+a<sub>2</sub>, …) that can occupy the position within the fragment</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(A) is used to indicate an aliphatic carbon atom</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(a) is used to indicate an aromatic carbon atom</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(H1) indicates that the atom is bonded to one hydrogen</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(H3) indicates that the atom is bonded to three hydrogens</p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(s*) indicates substituent count is as drawn for the atom</p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>AH is used to represent any atom including hydrogen</p>
+
+<p class=MsoNormal>Examples are provided for each reaction scheme in the
+library.  As is the case for the reaction schemes themselves, the example
+reactions do not show all of the reactants and products involved in the
+reduction reaction.  The example chemical is shown as the only reactant, and
+the products are the major transformation products reported in the study. 
+These example transformations from the peer-reviewed literature and government
+regulatory reports were used to test the reaction schemes in the library.</p>
+
+<p class=MsoNormal>The schemes within the Anaerobic Biotransformation Reaction
+Library are ranked on a scale of one to seven according to their relative rate
+of transformation, with a higher rank indicating a faster transformation
+rate.   A database of measured rate constants or half-lives was compiled from a
+survey of peer-reviewed scientific literature and reports by government
+regulatory agencies to assign these ranks to each reaction scheme.  </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><u><span style='font-size:
+16.0pt;line-height:107%'>Decarboxylation Schemes</span></u></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_1"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Decarboxylation: Alpha
+carboxy ether to ether</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><sup><span
+style='font-size:12.0pt;line-height:107%'><img border=0 width=628 height=168
+id="Picture 20" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image002.png"></span></sup></b></p>
+
+<p class=MsoNormal style='margin-bottom:0in;page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Hexafluoropropylene oxide dimer acid (HFPO-DA; DTXSID70880215) (Liberatore
+et al., 2020)</p>
+
+<p class=MsoListParagraphCxSpLast><b><sup><span style='font-size:12.0pt;
+line-height:115%'><img border=0 width=578 height=135 id="Picture 16"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image003.png"></span></sup></b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_2"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Decarboxylation: Alpha hydroxy fluorotelomer
+carboxylic acid to fluorotelomer aldehyde</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=628
+height=178 id="Picture 48"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image004.jpg"></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+page-break-after:avoid'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>&#945;-OH 5:3 FTCA (<span style='color:black'>Wang et al., 2012)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><sup><span style='font-size:
+12.0pt;line-height:107%'><img border=0 width=509 height=89 id="Picture 15"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image005.png"> </span></sup></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_3"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Decarboxylation: Beta carboxy ketone to methyl
+ketone</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><sup><span
+style='font-size:12.0pt;line-height:107%'><img border=0 width=539 height=147
+id="Picture 23" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image006.png"></span></sup></b></p>
+
+<p class=MsoNormal style='margin-bottom:0in'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:         </p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>&#946;-keto 7:3 FTCA (<span style='color:black'>Washington et al.,
+2015)</span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;line-height:normal'><span style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;line-height:normal'><span style='color:black'><img border=0
+width=529 height=86 id="Picture 24"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image007.png"></span></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><u><span style='font-size:
+16.0pt;line-height:107%'>Desulfonation Scheme</span></u></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_4"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Desulfonation:
+Fluorotelomer sulfonate to fluorotelomer alcohol</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%'><img border=0 width=628 height=131 id="Picture 49"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image008.png"></span></b></p>
+
+<p class=MsoNormal style='margin-bottom:0in;page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>6:2 fluorotelomer sulfonate (6:2 FTSA, DTXSID6067331; <span
+style='color:black'>Zhang et al., 2016; Shaw et al., 2019; Van Hamme et al.,
+2013)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><sup><span style='font-size:
+12.0pt;line-height:107%'><img border=0 width=624 height=110 id="Picture 1"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image009.png"> </span></sup></b></p>
+
+<p class=MsoNormal><b><sup><span style='font-size:16.0pt;line-height:107%'>&nbsp;</span></sup></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><u><span style='font-size:
+16.0pt;line-height:107%'>Epoxidation Scheme</span></u></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_5"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Epoxidation: Alkene to
+epoxide_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=628
+height=168 id="Picture 8"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image010.png"></p>
+
+<p class=MsoNormal>This scheme includes an exclude rule to prevent epoxide
+formation at the carbon-carbon double bond adjacent to the carboxylic acid
+group in beta fluoro unsaturated telomer acids or the carbon-carbon double bond
+adjacent to the aldehyde group in beta fluoro unsaturated telomer aldehydes.</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2H,8H-2,8-PFUDoA (Arakaki et al., 2010) Note that this
+transformation is not included in the proposed biodegradation pathway shown in
+Figure 1; however, in the discussion section, Arakaki et al (2010) state
+“cleavage probably requires oxidative reactions such as epoxidation of the C=C
+double bond”.</p>
+
+<p class=MsoListParagraphCxSpMiddle> </p>
+
+<p class=MsoListParagraphCxSpLast><img border=0 width=624 height=81
+id="Picture 32" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image011.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><u><span style='font-size:16.0pt;line-height:107%'>Hydrolysis
+Schemes</span></u></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_6"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Acid fluoride to carboxylic acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=588 height=198 id="Picture 11"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image012.png"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Acetyl fluoride (DTXSID3060326) (<span style='color:black'>Bunton
+and Fendler, 1966)</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal'><span
+style='color:black'><img border=0 width=566 height=180 id="Picture 17"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image013.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><a name="_Hlk99113644"><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2,3,3,3-Tetrafluoropropanoyl fluoride (DTXSID20536674) (Koster et
+al, 1994)</a></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal'><span
+style='color:black'><img border=0 width=624 height=190 id="Picture 6"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image014.png"></span></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_7"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Alpha difluoro alcohol to acid
+fluoride</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=554 height=186 id="Picture 14"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image015.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,1,2-trifluoropropan-1-ol (Koster et al., 1994)</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'><img border=0 width=464 height=138 id="Picture 79"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image016.png"></span></b></p>
+
+<b><span style='font-size:16.0pt;line-height:107%;font-family:"Calibri",sans-serif;
+color:#2F5496'><br clear=all style='page-break-before:always'>
+</span></b>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_8"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Alpha fluoro secondary alcohol to
+ketone</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="_Hlk103774723"><b>SCHEME</b>:</a></p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;color:red'><img
+border=0 width=628 height=182 id="Picture 102"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image017.png"></span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><a name="_Hlk99119990"><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,2,2,3,3,4,4-</a><a name="_Hlk99120212">heptafluorocyclobutanol</a>
+(<span style='color:black'>Andreades and England, 1961)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=196 id="Picture 5"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image018.png"> </p>
+
+<p class=MsoNormal style='margin-left:.5in'>The product shown in brackets is hexafluorocyclobutanone
+hydrate, an intermediate proposed by Andreades and England (1961).  This
+molecule is a geminal diol which will be transformed to the carbonyl form shown
+as the final product. </p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_9"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Hydrolysis: Amide to
+carboxylic acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=629 height=151 id="Picture 39"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image019.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Trifluoroacetamide (DTXSID1059868) (<span style='color:black'>Meresaar
+and Bratt, 1974)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=496 height=136
+id="Picture 85" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image020.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_10"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Beta hydroxy fluorotelomer iodide
+to diol_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><span style='font-size:16.0pt;line-height:107%'><img
+border=0 width=628 height=158 id="Picture 541"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image021.png"></span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-size:
+16.0pt;line-height:115%;font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3,3,4,4,5,5,6,6,7,7,8,8,8-tridecafluoro-1-iodooctan-2-ol (DTXSID70527451)
+(Ruan et al., 2013)<b><span style='font-size:16.0pt;line-height:115%'><img
+border=0 width=624 height=96 id="Picture 104"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image022.png"></span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_11"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Carboxylic acid ester to carboxylic
+acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="_Hlk103774956"><b>SCHEME</b>:</a></p>
+
+<p class=MsoNormal><img border=0 width=676 height=126 id="Picture 44"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image023.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>8:2 Fluorotelomer methacrylate (8:2 FTMAc, DTXSID8062101) (<span
+style='color:black'>Royer et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><sup><span style='font-size:
+12.0pt;line-height:107%'><img border=0 width=624 height=75 id="Picture 34"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image024.png"></span></sup></b></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>8:2 Fluorotelomer acrylate (8:2 FTAc, DTXSID5067348) (<span
+style='color:black'>Royer et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=73
+id="Picture 33" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image025.png"></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>8:2 Fluorotelomer stearate monoester (DTXSID601029611) (<span
+style='color:black'>Dasu et al., 2012)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><sup><span style='font-size:
+12.0pt;line-height:107%'><img border=0 width=624 height=74 id="Picture 35"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image026.png"></span></sup></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_12"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Hydrolysis:
+Diperfluorophosphinate to perfluorophosphonate</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="_Hlk103775031"><b>SCHEME</b>:</a></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><img border=0
+width=618 height=179 id="Picture 47"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image027.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>&nbsp;</b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>bis(nonafluorobutyl)phosphinic acid (DTXSID60556851) (<span
+style='color:black'>Mahmood and Shreeve, 1986)</span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal;page-break-after:
+avoid'><img border=0 width=694 height=84 id="Picture 105"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image028.png"></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_13"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Diphosphate ester to monophosphate
+ester</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=628
+height=104 id="Picture 547"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image029.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>6:2 Fluorotelomer phosphate diester (6:2 diPAP, DTXSID50561590) (<span
+style='color:black'>Lee et al, 2014; Lewis et al, 2016)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><sup><span style='font-size:
+12.0pt;line-height:107%'><img border=0 width=624 height=69 id="Picture 36"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image030.png"></span></sup></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_14"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Epoxide to diol_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><b><img border=0 width=628 height=198 id="Picture 40"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image031.png"></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2H,8H-8,9-oxirane-PFUDoA (<span style='color:black'>Arakaki et
+al., 2010). </span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=79
+id="Picture 42" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image032.png"></p>
+
+<p class=MsoNormal style='margin-left:.5in'>Note that this transformation is
+not included in the proposed biodegradation pathway shown in Figure 1; however,
+in the discussion section, Arakaki et al (2010) state “…cleavage probably
+requires oxidative reactions such as epoxidation of the C=C double bond. Epoxidation
+and hydroxylation of unsaturated fatty acids by cytochrome P450 have been
+identified in various organisms.”.</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_15"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Hydrolysis:
+Fluorotelomer acid to unsaturated telomer acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=149 id="Picture 548"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image033.png"></p>
+
+<p class=MsoNormal style='margin-bottom:0in'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2-(Perfluorooctyl) ethanoic acid (8:2 FTCA; DTXSID50451109) (<span
+style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=101
+id="Picture 60" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image034.png"></p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2-(Perfluorohexyl) ethanoic acid (6:2 FTCA; DTXSID50472556) (<span
+style='color:black'>Ruan et al., 2014)</span></p>
+
+<p class=MsoListParagraphCxSpLast><span style='color:black'><img border=0
+width=624 height=110 id="Picture 514"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image035.png"></span></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_16"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Fluorotelomer iodide to
+fluorotelomer alcohol</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=159 id="Picture 50"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image036.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1H,1H,2H,2H-Perfluorooctyl iodide (6:2 Fluorotelomer iodide; DTXSID2047565)
+(<span style='color:black'>Ruan et al., 2013)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=106 id="Picture 53"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image037.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_17"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydrolysis: Fluorotelomer urethane to fluorotelomer
+alcohol</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=114 id="Picture 55"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image038.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Toluene-2,4-di(8:2fluorotelomerurethane) (<span style='color:
+black'>Dasu and Lee, 2016)</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal'><span
+style='color:black'><img border=0 width=625 height=139 id="Picture 13"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image039.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Hexamethylene-1,6-di(8:2fluorotelomerurethane)
+(HMU) </span>(<span style='color:black'>Dasu and Lee, 2016)</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-left:.25in'>&nbsp;</p>
+
+<p class=MsoListParagraphCxSpLast style='margin-left:.25in'><img border=0
+width=625 height=50 id="Picture 26"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image040.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_18"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Hydrolysis:
+Hydrodefluorination of PFC chain</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><img border=0 width=628
+height=115 id="Picture 564"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image041.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2H,8H,8H-2-perfluorododecanoic acid (2H,8H,8H-2-PFUDoA) (<span
+style='color:black'>Arakaki et al., 2017)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=79
+id="Picture 64" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image042.png"></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_19"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'><br>
+Hydrolysis: Monophosphate ester to alcohol</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=614 height=161 id="Picture 565"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image043.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>[(3,3,4,4,5,5,6,6,6&#8208;Nonafluorohexyl)oxy]phosphonic acid (4:2
+monoPAP; DTXSID901026573 )(<span style='color:black'>Lee et al., 2010)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=112 id="Picture 61"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image044.png"></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>6:2 Fluorotelomer phosphate monoester (6:2 monoPAP; DTXSID90558000)
+(<span style='color:black'>Lee et al., 2010)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=92
+id="Picture 62" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image045.png"></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,10-Heptadecafluorodecyl
+dihydrogen phosphate (8:2 monoPAP; DTXSID60874027) (<span style='color:black'>Lee
+et al., 2010)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=80
+id="Picture 63" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image046.png"></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.25in;line-height:normal'><span style='color:black'>&nbsp;</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>10:2 Fluorotelomer dihydrogen phosphate (10:2 monoPAP; DTXSID20206380)
+(<span style='color:black'>Lee et al., 2010)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=79
+id="Picture 513"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image047.png"></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_20"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Hydrolysis:
+Perfluorinated epoxide to alpha keto carboxylic acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><sup><span
+style='font-size:12.0pt;line-height:107%'><img border=0 width=475 height=150
+id="Picture 30" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image048.png"></span></sup></b></p>
+
+<p class=MsoNormal style='margin-bottom:0in'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Hexafluoropropylene oxide (HFPO, DTXSID6029177) (<span
+style='color:black'>Kutsuna et al., 2018)</span></p>
+
+<p class=MsoNormal style='margin-left:.25in'><img border=0 width=488
+height=143 id="Picture 31"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image049.png"></p>
+
+<p class=MsoNormal style='margin-left:.5in'>Kutsana (2018) shows the formation
+of numerous possible intermediates in the proposed reaction pathway for the
+hydrolysis of HFPO; however, the “Hydrolysis: Perfluorinated epoxide to alpha
+keto carboxylic acid” scheme is written to capture only the overall
+transformation of HFPO to the final product (3,3,3&#8208;trifluoro&#8208;2&#8208;oxopropanoic
+acid).</p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_21"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>Hydrolysis: Sulfonamide to sulfonic acid</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=501 height=149 id="Picture 3"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image050.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Perfluorooctane sulfonamide (FOSA; DTXSID3038939) (<span
+style='color:black'>Benskin et al, 2013)</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal'><span
+style='color:black'><img border=0 width=624 height=94 id="Picture 515"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image051.png"></span></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_22"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Hydrolysis: Sulfonyl
+fluoride to sulfonic acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><b><sup><span style='font-size:12.0pt;line-height:107%'><img
+border=0 width=520 height=198 id="Picture 12"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image052.png"></span></sup></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2-acetamidobenzenesulfonyl fluoride (<span style='color:black'>Aberlin
+and Bunton, 1970)</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal'><span
+style='color:black'><img border=0 width=516 height=190 id="Picture 516"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image053.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>1,2,2,2-tetrafluoroethanesulfonyl
+fluoride (DTXSID50880177) (Knunyants and Sokolski, 1972)</span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;line-height:normal'><span
+style='color:black'><img border=0 width=484 height=125 id="Picture 517"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image054.png"></span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>1&#8208;chloro&#8208;1,2,2,2&#8208;tetrafluoroethanesulfonyl
+fluoride (Knunyants and Sokolski, 1972)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=569 height=125
+id="Picture 519"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image055.png"></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_23"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Hydrolysis: Unsaturated fluorotelomer
+iodide to beta hydroxy fluorotelomer iodide-PTP</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=626 height=178 id="Picture 57"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image056.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>(1Z)-3,3,4,4,5,5,6,6,7,7,8,8,8-tridecafluoro-1-iodooct-1-ene<span
+style='color:black'>) (Ruan et al., 2013)</span></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><img border=0 width=624 height=120
+id="Picture 143"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image057.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><u><span style='font-size:
+16.0pt;line-height:107%'>Hydroxylation Schemes</span></u></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_24"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Hydroxylation: N-Alkyl
+sulfonamide to N-alkyl sulfonamide alcohol_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=156 id="Picture 567"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image058.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>N-ethyl-perfluorooctanesulfonamide (N-EtFOSA; DTXSID1032646) (<span
+style='color:black'>Benskin et al., 2013)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=74
+id="Picture 523"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image059.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_25"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydroxylation: Unsaturated fluorotelomer
+2,4-dienoic acid to beta-hydroxy fluorotelomer acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=624 height=157
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image060.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>7:3 FTUUCA (Washington et al., 2015)</p>
+
+<p class=MsoListParagraphCxSpLast><img border=0 width=624 height=93
+id="Picture 28" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image061.png"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_26"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Hydroxylation: Unsaturated fluorotelomer acid
+to alpha hydroxy fluorotelomer acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=147 id="Picture 66"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image062.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>5:3 Fluorotelomer unsaturated carboxylic acid (5:3 FTUCA) (<span
+style='color:black'>Wang et al., 2012)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'>  <img border=0 width=624
+height=114 id="Picture 56"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image063.png"></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_27"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Hydroxylation:
+Unsaturated fluorotelomer acid to beta hydroxy fluorotelomer acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=145 id="Picture 72"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image064.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>7:3 Fluorotelomer unsaturated carboxylic acid (7:3 FTUCA; DTXSID30822919)
+(<span style='color:black'>Wang et al., 2009)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=84
+id="Picture 144"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image065.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><u><span style='font-size:
+16.0pt;line-height:107%'>N-Deacetylation/N-Dealkylation Schemes</span></u></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_28"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>N-Deacetylation:
+N-acetyl sulfonamide to sulfonamide  </span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=565 height=175 id="Picture 571"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image066.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2(perfluorooctanesulfonamido)acetic acid (FOSAA; DTXSID40440941) (<span
+style='color:black'>Rhoads et al., 2008)</span></p>
+
+<p class=MsoListParagraphCxSpLast><img border=0 width=624 height=94
+id="Picture 521"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image067.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_29"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>N-Deacetylation:
+N-acetyl, N-alkyl sulfonamide to N-alkyl sulfonamide</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'><img border=0 width=628 height=187 id="Picture 570"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image068.png"></span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>N-ethyl perfluorooctane sulfonamido acetate (N-EtFOSAA; DTXSID5062760)
+(<span style='color:black'>Benskin et al., 2013; Rhoads et al., 2008)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=90
+id="Picture 59" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image069.png"></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_30"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>N-Dealkylation: N-alkyl
+sulfonamide to sulfonamide</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=146 id="Picture 572"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image070.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>N-ethyl-perfluorooctanesulfonamide (N-EtFOSA; DTXSID1032646) (<span
+style='color:black'>Rhoads et al., 2008)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=88
+id="Picture 524"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image071.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><u><span style='font-size:
+16.0pt;line-height:107%'>Oxidation Schemes</span></u></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_31"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation: Alcohol to
+ketone</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=195 id="Picture 573"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image072.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3,3,4,4,5,5,6,6,7,7,8,8,9,9,9-Pentadecafluorononan-2-ol (7:2
+sFTOH; DTXSID10517598) (<span style='color:black'>Wang et al., 2009; Washington
+et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=100 id="Picture 529"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image073.png"></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_32"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Oxidation: Alpha fluoro diol to acid fluoride
+and aldehyde with C-C bond cleavage_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=153 id="Picture 574"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image074.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,1,1,2,2,4,5,5,6,6,7,7,7-tridecafluoroheptane-3,4-diol (<span
+style='color:black'>Arakaki et al., 2010)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=73
+id="Picture 65" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image075.png"></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_33"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation: Alpha
+hydroxy fluorotelomer aldehyde to alpha hydroxy fluorotelomer carboxylic
+acid_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=172 id="Picture 74"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image076.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3-Hydroxy-4,4,5,5,6,6,7,7,8,8,9,9,10,10,10-pentadecafluorodecanoic
+acid (<span style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=98
+id="Picture 531"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image077.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_34"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Oxidation: Beta hydroxy fluorotelomer acid to
+beta keto fluorotelomer acid_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=151 id="Picture 4"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image078.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3-Hydroxy-4,4,5,5,6,6,7,7,8,8,9,9,10,10,10-pentadecafluorodecanoic
+acid (Washington et al., 2015)</p>
+
+<p class=MsoListParagraphCxSpMiddle><img border=0 width=624 height=89
+id="Picture 41" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image079.png"></p>
+
+<p class=MsoListParagraphCxSpLast>&nbsp;</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_35"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation: Beta hydroxy
+gamma-delta unsaturated fluorotelomer acid to beta keto fluorotelomer acid_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=143 id="Picture 76"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image080.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt'>&#946;-OH 7:3 FTUCA </span>(<span
+style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoListParagraph style='margin-top:12.0pt;margin-right:0in;margin-bottom:
+0in;margin-left:.5in;line-height:normal;page-break-after:avoid'><img border=0
+width=624 height=78 id="Picture 68"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image081.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_36"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation: Beta
+oxidation of beta keto fluorotelomer acid_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'><img border=0 width=628 height=148 id="Picture 67"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image082.png"></span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3-Oxo-4,4,5,5,6,6,7,7,8,8,9,9,10,10,10-pentadecafluorodecanoic
+acid (<span style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoListParagraphCxSpLast><img border=0 width=624 height=99
+id="Picture 535"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image083.jpg"> </p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_37"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Oxidation: Beta oxidation of beta keto
+gamma-delta unsaturated fluorotelomer acid_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=137 id="Picture 77"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image084.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt'>&#946;-Keto 7:3 FTUCA </span>(<span
+style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'><img border=0 width=624 height=100
+id="Picture 108"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image085.png"></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>&nbsp;</b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_38"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Oxidation: Fluorotelomer alcohol to
+fluorotelomer aldehyde</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=169 id="Picture 70"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image086.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3,3,4,4,5,5,6,6,7,7,8,8,8-Tridecafluorooctan-1-ol (6:2 FTOH; DTXSID5044572)
+(<span style='color:black'>Zhao et al., 2013)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=101
+id="Picture 539"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image087.png"></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,1,2,2-Tetrahydroperfluoro-1-decanol (8:2 FTOH; DTXSID7029904) (<span
+style='color:black'>Wang et al., 2009)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=91
+id="Picture 540"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image088.png"></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_39"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Oxidation: Fluorotelomer alcohol to
+fluorotelomer carboxylic acid with loss of CF2 and methyl group</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img width=630 height=186
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image089.png" align=left
+hspace=12><b><br clear=all>
+</b><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1H,1H,1H,2H-Perfluoro-2-heptanol (5:2 sFTOH; DTXSID80597206) (<span
+style='color:black'>Zhao et al., 2013; Hamid et al., 2020)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=126 id="Picture 54"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image090.png"></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_40"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Oxidation: Fluorotelomer alcohol to
+fluorotelomer carboxylic acid with loss of methyl group</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=164 id="Picture 71"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image091.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1H,1H,1H,2H-Perfluoro-2-heptanol (5:2 sFTOH; DTXSID80597206) (<span
+style='color:black'>Zhao et al., 2013)</span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.25in;line-height:normal'><img border=0 width=624 height=125
+id="Picture 19" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image092.png"></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'><span
+style='color:black'>&nbsp;</span></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_41"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>Oxidation: Fluorotelomer aldehyde to fluorotelomer carboxylic
+acid</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=607 height=190 id="Picture 75"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image093.png"><b><sup><span
+style='font-size:12.0pt;line-height:107%'> </span></sup></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3,3,4,4,5,5,6,6,7,7,8,8,8-Tridecafluorooctanal (6:2 FTAL; DTXSID20895379)
+(<span style='color:black'>Zhang et al., 2013)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=102 id="Picture 538"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image094.png"></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,10-Heptadecafluorod (8:2 FTAL; DTXSID10895489)
+(<span style='color:black'>Martin et al., 2005)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=95
+id="Picture 559"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image095.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_42"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation:
+Fluorotelomer carboxylic acid to 2,3-unsaturated fluorotelomer carboxylic acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=147 id="Picture 18"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image096.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2H,2H,3H,3H-Perfluorooctanoic acid (5:3 FTCA; DTXSID20874028) (<span
+style='color:black'>Wang et al., 2012)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=104 id="Picture 542"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image097.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_43"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation:
+Fluorotelomer diol to alpha hydroxy fluorotelomer aldehyde_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=203 id="Picture 103"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image098.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>3,3,4,4,5,5,6,6,7,7,8,8,8-tridecafluorooctane-1,2-diol (<span
+style='color:black'>Ruan et al., 2013)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=114
+id="Picture 534"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image099.png"></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_44"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Oxidation: Fluorotelomer iodide to alpha beta
+unsaturated fluorotelomer iodide_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'><img border=0 width=629 height=173 id="Picture 80"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image100.png"></span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,1,1,2,2,3,3,4,4,5,5,6,6-tridecafluoro-8-iodooctane (DTXSID2047565)
+(<span style='color:black'>Ruan et al., 2013)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=108
+id="Picture 536"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image101.png"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_45"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation:
+Fluorotelomer polyethoxylate carboxylic acid to shortened fluorotelomer
+polyethoxylate_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=629 height=134 id="Picture 38"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image102.jpg"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in;page-break-after:
+avoid'><span style='font-size:12.0pt;line-height:115%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='font-size:12.0pt;line-height:115%'>30,30,31,31,32,32,33,33,34,34,35,35,35-tridecafluoro-3,6,9,12,15,18,21,24,27-nonaoxapentatriacontanoic
+acid (Fr</span><span style='font-size:12.0pt;line-height:115%'>ö</span><span
+style='font-size:12.0pt;line-height:115%'>mel and Knepper, 2010)</span> </p>
+
+<p class=MsoListParagraphCxSpLast> <img border=0 width=624 height=49
+id="Picture 45" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image103.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_46"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation:
+Fluorotelomer polyethoxylate to fluorotelomer polyethoxylate carboxylic acid_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=659 height=119 id="Picture 27"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image104.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in'><span
+style='font-size:12.0pt;line-height:115%;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>6:2 FTEO9<span style='font-size:12.0pt;line-height:115%'> (Fr</span><span
+style='font-size:12.0pt;line-height:115%'>ö</span><span style='font-size:12.0pt;
+line-height:115%'>mel and Knepper, 2010)</span> </p>
+
+<p class=MsoListParagraphCxSpLast><span style='font-size:12.0pt;line-height:
+115%'><img border=0 width=624 height=42 id="Picture 46"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image105.png"></span></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_47"></a><a name="_Hlk103927919"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Oxidation: Fluorotelomer sulfone to
+fluorotelomer sulfonic acid and alkyl chain</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=655 height=101 id="Picture 22"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image106.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='text-indent:-.25in;page-break-after:avoid'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>6:2 FtSO<sub>2</sub>AoS (DTXSID90894132) (Harding-Majanovic et
+al., 2015<span style='color:black'>)</span></p>
+
+<p class=MsoNormal style='margin-left:.25in;page-break-after:avoid'><img
+border=0 width=624 height=71 id="Picture 43"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image107.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_48"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Oxidation: Fluorotelomer sulfoxide to
+fluorotelomer sulfone</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'><img border=0 width=628 height=114
+id="Picture 82" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image108.png"></span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>4:2 FtSOAoS (Harding-Majanovic et al., 2015<span
+style='color:black'>)</span> <span style='color:black'><img border=0 width=624
+height=68 id="Picture 124"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image109.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle><span style='color:black'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>6:2 FtSOAoS (DTXSID90892592) (Harding-Majanovic et al., 2015)</p>
+
+<p class=MsoListParagraphCxSpMiddle><span style='color:black'><img border=0
+width=624 height=67 id="Picture 125"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image110.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle><span style='color:black'>&nbsp;</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>8:2 FtSOAoS (Hardin-Majanovic et al., 2015)</p>
+
+<p class=MsoListParagraphCxSpLast><span style='color:black'><img border=0
+width=625 height=63 id="Picture 127"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image111.png"></span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><span style='font-size:12.0pt;
+line-height:107%;color:red'>&nbsp;</span></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_49"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation:
+Fluorotelomer thioether to fluorotelomer sulfoxide</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><span style='font-size:12.0pt;line-height:107%;color:red'><img
+border=0 width=628 height=123 id="Picture 87"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image112.png"></span></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>4:2 Fluorotelomer thioether amido sulfonic acid (4:2 FtTAoS; DTXSID00892528)
+(Harding-Majanovic et al., 2015<span style='color:black'>) <img border=0
+width=623 height=73 id="Picture 118"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image113.png"></span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>6:2 Fluorotelomer thia propanoamido dimethyl ethyl sulfonate (6:2
+FtTAoS; DTXSID90892330) (Harding-Majanovic et al., 2015)<span style='color:
+black'> <img border=0 width=624 height=79 id="Picture 119"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image114.png"></span></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>8:2 Fluorotelomer thioether amido sulfonic acid (8:2 FtTAoS;
+DTXSID30892334) (Hardin-Majanovic et al., 2015)<span style='color:black'> <img
+border=0 width=624 height=69 id="Picture 121"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image115.png"></span></p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_50"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation:
+Hydrodefluorination with alpha oxidation</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=170 id="Picture 88"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image116.png"></p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>7:2 Fluorotelomer ketone (<span style='color:black'>Wang et al.,
+2009; Washington et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=103 id="Picture 543"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image117.png"></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_51"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation:
+Hydrodefluorination with beta oxidation</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=176 id="Picture 78"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image118.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2,3,4,4,5,5,6,6,7,7,8,8,8-Tridecafluorooct-2-enoic acid (<span
+style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'><img border=0 width=624 height=114 id="Picture 2"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image119.png"></span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_52"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Oxidation: N-Alkyl
+sulfonamide alcohol to N-alkyl sulfonamide carboxylic acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=179 id="Picture 94"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image120.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2-(N-(Perfluorobutylsulfonyl)-N-methylamino) ethanol (MeFBSE; DTXSID0067848
+(<span style='color:black'>Lange et al., 2018)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=120 id="Picture 544"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image121.png"></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2-Perfluorooctylsulfonyl-N-ethylaminoethyl alcohol (N-EtFOSE; DTXSID6027426)
+(<span style='color:black'>Lange et al., 2018; Benskin et al., 2013; Rhoads et
+al., 2008)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=86
+id="Picture 545"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image122.png"></p>
+
+<p class=MsoNormal style='margin-left:.5in'>&nbsp;</p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_53"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>Oxidation: Sulfinic acid to sulfonic acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'><img border=0 width=628 height=203 id="Picture 95"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image123.png"></span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,8-Heptadecafluorooctane-1-sulfinic
+Acid (PFOSI; DTXSID10904262) (<span style='color:black'>Rhoads et al., 2008)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=100 id="Picture 546"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image124.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><u><span style='font-size:
+16.0pt;line-height:107%'>Reduction Schemes</span></u></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_54"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Reduction:
+2,3-Unsaturated fluorotelomer carboxylic acid to fluorotelomer carboxylic acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=134 id="Picture 81"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image125.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2-Decenoic acid,
+4,4,5,5,6,6,7,7,8,8,9,9,10,10,10-pentadecafluoro- (7:3 FTUCA; DTXSID30822919) (<span
+style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoListParagraphCxSpMiddle><img border=0 width=624 height=91
+id="Picture 152"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image126.png"></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>4,4,5,5,6,6,6-Heptafluorohex-2-enoic acid (4:3 FTUCA;
+DTXSID30895360) (<span style='color:black'>Wang et al., 2012; Martin et al.,
+2005)</span></p>
+
+<p class=MsoListParagraphCxSpLast><img border=0 width=624 height=137
+id="Picture 153"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image127.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_55"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Reduction: Beta fluoro
+unsaturated telomer acid to beta H unsaturated telomer acid</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=152 id="Picture 83"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image128.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraphCxSpFirst style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>8:2 Fluorotelomer unsaturated carboxylic acid (8:2 FTUCA; DTXSID60825615)
+(<span style='color:black'>Zhang et al., 2016; Fasano et al., 2006)</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='margin-bottom:0in;line-height:normal'><img
+border=0 width=624 height=95 id="Picture 51"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image129.png"></p>
+
+<p class=MsoListParagraphCxSpLast style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal;page-break-after:avoid'><span style='font-family:Symbol;
+color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>5:2 Fluorotelomer unsaturated carboxylic acid (5:2 FTUCA; DTXSID201036278)
+(Wang et al., 2012)</p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=123 id="Picture 52"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image130.png"></p>
+
+<p class=MsoNormal><a name="EnvLib_Scheme_56"><b><span style='font-size:16.0pt;
+line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Reduction: Hydrogenolysis of chlorinated
+perfluorinated ether_PTP</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=628 height=173 id="Picture 7"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image131.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Chlorinated perfluorinated ether (<span style='color:black'>Washington
+et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=130 id="Picture 550"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image132.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_57"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Reduction: Methyl ketone
+to alcohol</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=624 height=185
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image133.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Methyl heptafluoropropyl ketone (5:2 Ketone) (<span
+style='color:black'>Wang et al., 2012)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624
+height=113 id="Picture 551"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image134.png"></p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Methyl Pentadecafluoroheptyl Ketone (7:2 Ketone) (<span
+style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><b><sup><span style='font-size:
+12.0pt;line-height:107%'><img border=0 width=624 height=108 id="Picture 552"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image135.png"> </span></sup></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_58"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>&nbsp;</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Reduction: Sulfonamide to sulfinic acid</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=498 height=161 id="Picture 99"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image136.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>2-(N-Ethylperfluorooctanesulfonamido) acetic acid (N-EtFOSAA; DTXSID5062760)
+(Boulanger<span style='color:black'> et al., 2005)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'> <img border=0 width=624 height=95
+id="Picture 150"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image137.png"></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.2in;line-height:normal'>&nbsp;</p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="EnvLib_Scheme_59"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Reduction: Vicinal
+bis-defluorination of unsaturated carboxylic acid_PTP</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>SCHEME</b>:</p>
+
+<p class=MsoNormal><img border=0 width=627 height=136 id="Picture 84"
+src="PFASEnvironmentalReactionLibrary_ver1-1_files/image138.png"></p>
+
+<p class=MsoNormal style='page-break-after:avoid'>&nbsp;</p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b>EXAMPLES</b>:</p>
+
+<p class=MsoListParagraph style='margin-bottom:0in;text-indent:-.25in;
+line-height:normal'><span style='font-family:Symbol;color:black'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>7:3 Fluorotelomer unsaturated carboxylic acid (7:3 FTUCA, DTXSID30822919)
+(<span style='color:black'>Washington et al., 2015)</span></p>
+
+<p class=MsoNormal style='margin-left:.5in'><img border=0 width=624 height=92
+id="Picture 21" src="PFASEnvironmentalReactionLibrary_ver1-1_files/image139.png"></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><a name="Rank_Assignment"><b><span
+style='font-size:16.0pt;line-height:107%;color:#2F5496'>Rank Assignment</span></b></a></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Rank Levels</span></b></p>
+
+<div align=center>
+
+<table class=MsoTable15Grid1LightAccent3 border=0 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;border-top:solid windowtext 1.5pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>Rank</span></p>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;border-top:solid windowtext 1.5pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>Upper Limit (days)</span></p>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;border-top:solid windowtext 1.5pt;
+  border-left:none;border-bottom:solid windowtext 1.0pt;border-right:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>Upper Limit in Other Units</span></p>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><b><span style='color:black'>7</span></b></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>0.020833333</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>30 minutes</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><b>6</b></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'>0.138888889</p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>200 minutes</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><b><span style='color:black'>5</span></b></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>1</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>1 day</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><b><span style='color:black'>4</span></b></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>7</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>1 week</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><b><span style='color:black'>3</span></b></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>60</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>2 months</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><b><span style='color:black'>2</span></b></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>365</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>1 year</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><b><span style='color:black'>1</span></b></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>3650</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>10 years</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=208 valign=top style='width:155.8pt;border:none;border-bottom:solid windowtext 1.5pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><b><span style='color:black'>&nbsp;</span></b></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;border:none;border-bottom:
+  solid windowtext 1.5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&nbsp;</span></p>
+  </td>
+  <td width=208 valign=top style='width:155.85pt;border:none;border-bottom:
+  solid windowtext 1.5pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0in;text-align:center;
+  line-height:normal'><span style='color:black'>&nbsp;</span></p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%;color:#2F5496'>Rank of Individual Reaction Schemes</span></b></p>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>#</b></p>
+  </td>
+  <td valign=top style='border:solid windowtext 1.0pt;border-left:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>Reaction
+  Scheme Name</b></p>
+  </td>
+  <td valign=top style='border:solid windowtext 1.0pt;border-left:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>Rank</b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext 1.0pt;
+  border-bottom:solid windowtext 1.0pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+  <td valign=top style='border:none;border-bottom:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>Decarboxylation</b></p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>1</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Decarboxylation:
+  Alpha carboxy ether to ether</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>1</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>2</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Decarboxylation:
+  Alpha hydroxy fluorotelomer carboxylic acid to fluorotelomer aldehyde</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>5</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Decarboxylation:
+  Beta carboxy ketone to methyl ketone</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext 1.0pt;
+  border-bottom:solid windowtext 1.0pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+  <td valign=top style='border:none;border-bottom:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>Desulfonation</b></p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Desulfonation:
+  Fluorotelomer sulfonate to fluorotelomer alcohol</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext 1.0pt;
+  border-bottom:solid windowtext 1.0pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+  <td valign=top style='border:none;border-bottom:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>Epoxidation</b></p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>5</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Epoxidation:
+  Alkene to epoxide_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext 1.0pt;
+  border-bottom:solid windowtext 1.0pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+  <td valign=top style='border:none;border-bottom:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>Hydrolysis</b></p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>6</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Acid fluoride to carboxylic acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>7</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>7</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Alpha difluoro alcohol to acid fluoride</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>7</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>8</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Alpha fluoro secondary alcohol to ketone</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>7</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>9</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Amide to carboxylic acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>10</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Beta hydroxy fluorotelomer Iodide to diol_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>11</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Carboxylic acid ester to carboxylic acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>12</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Diperfluorophosphinate to perfluorophosphonate</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>1</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>13</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Diphosphate ester to monophosphate ester</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>2</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>14</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Epoxide to diol_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>5</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>15</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Fluorotelomer acid to unsaturated telomer acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>16</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Fluorotelomer iodide to fluorotelomer alcohol</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>17</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Fluorotelomer urethane to fluorotelomer alcohol</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>2</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>18</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Hydrodefluorination of PFC chain</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>19</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Monophosphate ester to alcohol</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>20</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Perfluorinated epoxide to alpha keto carboxylic acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>7</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>21</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Sulfonamide to sulfonate</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>22</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Sulfonyl fluoride to sulfonate</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr style='height:7.6pt'>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt;height:7.6pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>23</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt;height:7.6pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydrolysis:
+  Unsaturated fluorotelomer iodide to beta hydroxy fluorotelomer iodide-PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt;height:7.6pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext 1.0pt;
+  border-bottom:solid windowtext 1.0pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+  <td valign=top style='border:none;border-bottom:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>Hydroxylation</b></p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>24</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydroxylation:
+  N-Alkyl sulfonamide to N-alkyl sulfonamide alcohol_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>25</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydroxylation:
+  Unsaturated fluorotelomer 2,4-dienoic acid to beta-hydroxy fluorotelomer acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>26</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydroxylation:
+  Unsaturated fluorotelomer acid to alpha hydroxy fluorotelomer acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>27</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Hydroxylation:
+  Unsaturated fluorotelomer acid to beta hydroxy fluorotelomer acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext 1.0pt;
+  border-bottom:solid windowtext 1.0pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+  <td valign=top style='border:none;border-bottom:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>N-Deacetylation</b><b><span
+  style='color:black'>/N-Dealkylation</span></b></p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>28</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>N-Deacetylation:
+  N-acetyl sulfonamide to sulfonamide  </p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>29</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>N-Deacetylation:
+  N-acetyl, N-alkyl sulfonamide to N-alkyl sulfonamide</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>30</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>N-Dealkylation:
+  N-alkyl sulfonamide to sulfonamide</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext 1.0pt;
+  border-bottom:solid windowtext 1.0pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+  <td valign=top style='border:none;border-bottom:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal;page-break-after:
+  avoid'><b>Oxidation</b></p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b><span
+  style='font-size:16.0pt;color:#2F5496'>&nbsp;</span></b></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>31</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Alcohol to ketone</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>32</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Alpha fluoro diol to acid fluoride and aldehyde with C-C bond cleavage_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>33</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Alpha hydroxy fluorotelomer aldehyde to alpha hydroxy fluorotelomer
+  carboxylic acid_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>34</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Beta hydroxy fluorotelomer acid to beta keto fluorotelomer acid_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>35</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation: 
+  Beta hydroxy gamma-delta unsaturated fluorotelomer acid to beta keto
+  fluorotelomer acid_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>36</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Beta oxidation of beta keto fluorotelomer acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>37</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Beta oxidation of beta keto gamma-delta unsaturated fluorotelomer acid_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>38</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer alcohol to fluorotelomer aldehyde</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>39</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer alcohol to fluorotelomer carboxylic acid with loss of CF2 and
+  methyl groups</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>40</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer alcohol to fluorotelomer carboxylic acid with loss of methyl
+  group</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>2</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>41</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer aldehyde to fluorotelomer carboxylic acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>6</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>42</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer carboxylic acid to 2,3-unsaturated fluorotelomer carboxylic
+  acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>2</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>43</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer diol to alpha hydroxy fluorotelomer aldehyde_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>44</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer iodide to alpha beta unsaturated fluorotelomer iodide_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>45</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer polyethoxylate carboxylic acid to shortened fluorotelomer
+  polyethoxylate_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>46</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer polyethoxylate to fluorotelomer polyethoxylate carboxylic
+  acid_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>47</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer sulfone to fluorotelomer sulfonic acid and alkyl chain</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>48</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer sulfoxide to fluorotelomer sulfone</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>49</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Fluorotelomer thioether to fluorotelomer sulfoxide</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>50</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Hydrodefluorination with alpha oxidation</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>51</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation: Hydrodefluorination
+  with beta oxidation</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>4</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>52</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  N-Alkyl sulfonamide alcohol to N-alkyl sulfonamide carboxylic acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>53</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Oxidation:
+  Sulfinic acid to sulfonic acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>5</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border-top:none;border-left:solid windowtext 1.0pt;
+  border-bottom:solid windowtext 1.0pt;border-right:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>&nbsp;</b></p>
+  </td>
+  <td valign=top style='border:none;border-bottom:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'><b>Reduction</b></p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>&nbsp;</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>54</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Reduction:
+  2,3-Unsaturated fluorotelomer carboxylic acid to fluorotelomer carboxylic
+  acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>55</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Reduction:
+  Beta fluoro unsaturated telomer acid to beta H unsaturated telomer acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>56</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Reduction:
+  Hydrogenolysis of chlorinated perfluorinated ether_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>57</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Reduction: Methyl
+  ketone to alcohol</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>58</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Reduction:
+  Sulfonamide to sulfinic acid</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='border:solid windowtext 1.0pt;border-top:none;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>59</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>Reduction:
+  Vicinal bis-defluorination of unsaturated carboxylic acid_PTP</p>
+  </td>
+  <td valign=top style='border-top:none;border-left:none;border-bottom:solid windowtext 1.0pt;
+  border-right:solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0in;line-height:normal'>3</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;page-break-after:avoid'><a
+name="Version_history"></a><a name="Scheme_25"><b><span style='font-size:16.0pt;
+color:#365F91'>Version History</span></b></a></p>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:12.65pt;page-break-after:
+avoid'><span style='color:black'>The development of version 1.0 of the CTS PFAS
+Environmental Reaction Library was described in detail in the following
+publication:</span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:0in;margin-bottom:10.0pt;
+margin-left:.5in;line-height:12.65pt'><span style='color:black'>E.J. Weber, C.
+Tebes-Stevens, J.W. Washington. 2022. Development of a PFAS reaction library:
+identifying plausible transformation pathways in environmental and biological
+systems.&nbsp;<i>Environmental Science: Processes &amp; Impacts</i>, 24, pp. 689–753.</span></p>
+
+<p class=MsoNormal style='margin-bottom:10.0pt;line-height:12.65pt'><span
+style='color:black'>Version 1.1 includes revisions to various reaction schemes
+and the addition of the following reaction schemes:</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Hydrolysis: Unsaturated fluorotelomer
+iodide to beta hydroxy fluorotelomer iodide-PTP</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Hydroxylation: Unsaturated fluorotelomer
+2,4-dienoic acid to beta-hydroxy fluorotelomer acid</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Oxidation: Beta hydroxy gamma-delta
+unsaturated fluorotelomer acid to beta keto fluorotelomer acid_PTP</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Oxidation: Beta oxidation of beta keto
+gamma-delta unsaturated fluorotelomer acid_PTP</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Oxidation: Fluorotelomer polyethoxylate
+carboxylic acid to shortened fluorotelomer polyethoxylate_PTP</span></p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Oxidation: Hydrodefluorination with
+beta oxidation</span></p>
+
+<p class=MsoNormal style='line-height:12.65pt'><span style='color:black'>Three
+schemes from the version 1.0 library were deleted, because they are covered by
+other schemes in the version 1.1 library:</span></p>
+
+<p class=MsoListParagraphCxSpFirst style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Hydrolysis: Alpha fluoro primary
+alcohol to aldehyde</span></p>
+
+<p class=MsoListParagraphCxSpMiddle style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Hydrolysis: Alpha hydroxy iodide to
+diol-PTP</span></p>
+
+<p class=MsoListParagraphCxSpLast style='text-indent:-.25in;line-height:12.65pt'><span
+style='font-family:Symbol;color:black'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><span style='color:black'>Oxidation: Alpha oxidation of alpha
+hydroxy fluorotelomer carboxylic acid to fluorotelomer aldehyde</span></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal style='page-break-after:avoid'><b><span style='font-size:
+16.0pt;line-height:107%'>REFERENCES</span></b><span style='font-size:16.0pt;
+line-height:107%'>:</span></p>
+
+<p class=EndNoteBibliography style='margin-bottom:0in'><span style='color:black'>Aberlin,
+M. E., &amp; Bunton, C. A. (1970). Spontaneous hydrolysis of sulfonyl
+fluorides. <i>The Journal of Organic Chemistry</i>, <i>35</i>(6), 1825–1828.
+https://doi.org/10.1021/jo00831a024<br>
+<br>
+Andreades, S., &amp; England, D. C. (1961). &#945;-HALOALCOHOLS. <i>Journal of
+the American Chemical Society</i>, <i>83</i>(22), 4670–4671.
+https://doi.org/10.1021/ja01483a047<br>
+<br>
+Arakaki, A., Ishii, Y., Tokuhisa, T., Murata, S., Sato, K., Sonoi, T., Tatsu,
+H., &amp; Matsunaga, T. (2010). Microbial biodegradation of a novel
+fluorotelomer alcohol, 1H,1H,2H,2H,8H,8H-perfluorododecanol, yields short
+fluorinated acids. <i>Applied Microbiology and Biotechnology</i>, <i>88</i>(5),
+1193–1203. https://doi.org/10.1007/s00253-010-2815-9<br>
+<br>
+Arakaki, A., Nakata, S., Tokuhisa, T., Ogawa, Y., Sato, K., Sonoi, T.,
+Donachie, S. P., &amp; Matsunaga, T. (2017). Quantitative and time-course
+analysis of microbial degradation of 1H,1H,2H,2H,8H,8H-perfluorododecanol in
+activated sludge. <i>Applied Microbiology and Biotechnology</i>, <i>101</i>(22),
+8259–8266. https://doi.org/10.1007/s00253-017-8538-4<br>
+<br>
+Benskin, J. P., Ikonomou, M. G., Gobas, F. A. P. C., Begley, T. H., Woudneh, M.
+B., &amp; Cosgrove, J. R. (2013). Biodegradation of N-ethyl perfluorooctane
+sulfonamido ethanol (EtFOSE) and EtFOSE-based phosphate diester (SAmPAP
+diester) in marine sediments. <i>Environmental Science &amp; Technology</i>, <i>47</i>(3),
+1381–1389. https://doi.org/10.1021/es304336r<br>
+<br>
+Boulanger, B., Vargo, J. D., Schnoor, J. L., &amp; Hornbuckle, K. C. (2005).
+Evaluation of perfluorooctane surfactants in a wastewater treatment system and
+in a commercial surface protection product. <i>Environmental Science &amp;
+Technology</i>, <i>39</i>(15), 5524–5530. https://doi.org/10.1021/es050213u<br>
+<br>
+Bunton, C. A., &amp; Fendler, J. H. (1966). The Hydrolysis of Acetyl Fluoride. <i>The
+Journal of Organic Chemistry</i>, <i>31</i>(7), 2307–2312.
+https://doi.org/10.1021/jo01345a053<br>
+<br>
+Dasu, K., &amp; Lee, L. S. (2016). Aerobic biodegradation of toluene-2,4-di(8:2
+fluorotelomer urethane) and hexamethylene-1,6-di(8:2 fluorotelomer urethane)
+monomers in soils. <i>Chemosphere</i>, <i>144</i>, 2482–2488.
+https://doi.org/10.1016/j.chemosphere.2015.11.021<br>
+<br>
+Dasu, K., Liu, J., &amp; Lee, L. S. (2012). Aerobic soil biodegradation of 8:2
+fluorotelomer stearate monoester. <i>Environmental Science &amp; Technology</i>,
+<i>46</i>(7), 3831–3836. https://doi.org/10.1021/es203978g<br>
+<br>
+Fasano, W. J., Carpenter, S. C., Gannon, S. A., Snow, T. A., Stadler, J. C., Kennedy,
+G. L., Buck, R. C., Korzeniowski, S. H., Hinderliter, P. M., &amp; Kemper, R.
+A. (2006). Absorption, distribution, metabolism, and elimination of 8-2
+fluorotelomer alcohol in the rat. <i>Toxicological Sciences: An Official
+Journal of the Society of Toxicology</i>, <i>91</i>(2), 341–355.
+https://doi.org/10.1093/toxsci/kfj160<br>
+<br>
+</span></p>
+
+<p class=EndNoteBibliography style='margin-bottom:0in'><span style='color:black'>Frömel,
+T., &amp; Knepper, T. P. (2010). Fluorotelomer ethoxylates: sources of highly
+fluorinated environmental contaminants part I: biotransformation.&nbsp;<i>Chemosphere</i>,&nbsp;<i>80</i>(11),
+1387-1392.<br>
+<br>
+</span></p>
+
+<p class=EndNoteBibliography style='margin-bottom:0in'><span style='color:black'>Hamid,
+H., Li, L. Y., &amp; Grace, J. R. (2020). Aerobic biotransformation of
+fluorotelomer compounds in landfill leachate-sediment. <i>The Science of the
+Total Environment</i>, <i>713</i>, 136547. https://doi.org/10.1016/j.scitotenv.2020.136547<br>
+<br>
+</span></p>
+
+<p class=EndNoteBibliography style='margin-bottom:0in'><span style='color:black'>Harding-Marjanovic,
+K. C., Houtz, E. F., Yi, S., Field, J. A., Sedlak, D. L., &amp; Alvarez-Cohen,
+L. (2015). Aerobic biotransformation of fluorotelomer thioether amido sulfonate
+(Lodyne) in AFFF-amended microcosms.&nbsp;<i>Environmental Science &amp; Technology</i>,&nbsp;<i>49</i>(13),
+7666-7674<br>
+<br>
+</span></p>
+
+<p class=EndNoteBibliography style='margin-bottom:0in'><span style='color:black'>Knunyants,
+I. L., &amp; Sokolski, G. A. (1972). Fluorinated ?-Sultones. <i>Angewandte
+Chemie</i>, <i>11</i>(7), 583–595. https://doi.org/10.1002/anie.197205831<br>
+<br>
+Köster, U., Speerschneider, P., Kerssebaum, R., Wittmann, H., &amp; Dekant, W.
+(1994). Role of cytochrome P450 2E1 in the metabolism of
+1,1,2,3,3,3-hexafluoropropyl methyl ether. <i>Drug Metabolism and Disposition:
+The Biological Fate of Chemicals</i>, <i>22</i>(5), 667–672.
+https://www.ncbi.nlm.nih.gov/pubmed/7835215<br>
+<br>
+Kutsuna, S. (2018). Rate constants and C C bond scission ratios for hydrolysis
+of 2,2,3-trifluoro-3-(trifluoromethyl)oxirane determined by means of a
+closed-circulation reactor. <i>Journal of Fluorine Chemistry</i>, <i>211</i>,
+109–118. https://doi.org/10.1016/j.jfluchem.2018.04.013<br>
+<br>
+Lange, C. C. (2018). Anaerobic biotransformation of N-methyl
+perfluorobutanesulfonamido ethanol and N-ethyl perfluorooctanesulfonamido
+ethanol. <i>Environmental Toxicology and Chemistry / SETAC</i>, <i>37</i>(3),
+768–779. https://doi.org/10.1002/etc.4014<br>
+<br>
+Lee, H., D’eon, J., &amp; Mabury, S. A. (2010). Biodegradation of polyfluoroalkyl
+phosphates as a source of perfluorinated acids to the environment. <i>Environmental
+Science &amp; Technology</i>, <i>44</i>(9), 3305–3310.
+https://doi.org/10.1021/es9028183<br>
+<br>
+Lee, H., Tevlin, A. G., Mabury, S. A., &amp; Mabury, S. A. (2014). Fate of
+polyfluoroalkyl phosphate diesters and their metabolites in biosolids-applied
+soil: biodegradation and plant uptake in greenhouse and field experiments. <i>Environmental
+Science &amp; Technology</i>, <i>48</i>(1), 340–349.
+https://doi.org/10.1021/es403949z<br>
+<br>
+Lewis, M., Kim, M. H., Liu, E. J., Wang, N., &amp; Chu, K.-H. (2016).
+Biotransformation of 6:2 polyfluoroalkyl phosphates (6:2 PAPs): Effects of
+degradative bacteria and co-substrates. <i>Journal of Hazardous Materials</i>, <i>320</i>,
+479–486. https://doi.org/10.1016/j.jhazmat.2016.08.036<br>
+<br>
+Liberatore, H. K., Jackson, S. R., Strynar, M. J., &amp; McCord, J. P. (2020).
+Solvent Suitability for HFPO-DA (“GenX” Parent Acid) in Toxicological Studies. <i>Environmental
+Science &amp; Technology Letters</i>, <i>7</i>(7), 477–481.
+https://doi.org/10.1021/acs.estlett.0c00323<br>
+<br>
+Liu, J., Wang, N., Szostek, B., Buck, R. C., Panciroli, P. K., Folsom, P. W.,
+Sulecki, L. M., &amp; Bellin, C. A. (2010). 6-2 Fluorotelomer alcohol aerobic
+biodegradation in soil and mixed bacterial culture. <i>Chemosphere</i>, <i>78</i>(4),
+437–444. https://doi.org/10.1016/j.chemosphere.2009.10.044<br>
+<br>
+Mahmood, T., &amp; Shreeve, J. M. (1986). New perfluoroalkylphosphonic and
+bis(perfluoroalkyl)phosphinic acids and their precursors. <i>Inorganic
+Chemistry</i>, <i>25</i>(18), 3128–3131. https://doi.org/10.1021/ic00238a006<br>
+<br>
+Martin, J. W., Mabury, S. A., &amp; O’Brien, P. J. (2005). Metabolic products
+and pathways of fluorotelomer alcohols in isolated rat hepatocytes. <i>Chemico-Biological
+Interactions</i>, <i>155</i>(3), 165–180.
+https://doi.org/10.1016/j.cbi.2005.06.007<br>
+<br>
+Meresaar, U., Bratt, L., Alakuijala, P., &amp; Oinonen, L. (1974). Hydrolysis
+of amides. Alkaline and general acid catalyzed alkaline hydrolysis of some
+substituted acetamides and benzamides. <i>Acta Chemica Scandinavica</i>, <i>28a</i>,
+715–722. https://doi.org/10.3891/acta.chem.scand.28a-0715<br>
+<br>
+Rhoads, K. R., Janssen, E. M. L., Luthy, R. G., &amp; Criddle, C. S. (2008).
+Aerobic biotransformation and fate of N-ethyl perfluorooctane
+sulfonamidoethanol (N-EtFOSE) in activated sludge. <i>Environmental Science
+&amp; Technology</i>, <i>42</i>(8), 2873–2878. https://doi.org/10.1021/es702866c<br>
+<br>
+Royer, L. A., Lee, L. S., Russell, M. H., Nies, L. F., &amp; Turco, R. F.
+(2015). Microbial transformation of 8:2 fluorotelomer acrylate and methacrylate
+in aerobic soils. <i>Chemosphere</i>, <i>129</i>, 54–61.
+https://doi.org/10.1016/j.chemosphere.2014.09.077<br>
+<br>
+Ruan, T., Sulecki, L. M., Wolstenholme, B. W., Jiang, G., Wang, N., &amp; Buck,
+R. C. (2014). 6:2 Fluorotelomer iodide in vitro metabolism by rat liver
+microsomes: comparison with [1,2-(14)C] 6:2 fluorotelomer alcohol. <i>Chemosphere</i>,
+<i>112</i>, 34–41. https://doi.org/10.1016/j.chemosphere.2014.02.068<br>
+<br>
+Ruan, T., Szostek, B., Folsom, P. W., Wolstenholme, B. W., Liu, R., Liu, J.,
+Jiang, G., Wang, N., &amp; Buck, R. C. (2013). Aerobic soil biotransformation
+of 6:2 fluorotelomer iodide. <i>Environmental Science &amp; Technology</i>, <i>47</i>(20),
+11504–11511. https://doi.org/10.1021/es4018128<br>
+<br>
+Shaw, D. M. J., Munoz, G., Bottos, E. M., Duy, S. V., Sauvé, S., Liu, J., &amp;
+Van Hamme, J. D. (2019). Degradation and defluorination of 6:2 fluorotelomer
+sulfonamidoalkyl betaine and 6:2 fluorotelomer sulfonate by Gordonia sp. strain
+NB4-1Y under sulfur-limiting conditions. <i>The Science of the Total
+Environment</i>, <i>647</i>, 690–698.
+https://doi.org/10.1016/j.scitotenv.2018.08.012<br>
+<br>
+</span></p>
+
+<p class=EndNoteBibliography style='margin-bottom:0in'><span style='color:#222222;
+background:white'>Van Hamme, J. D., Bottos, E. M., Bilbey, N. J., &amp; Brewer,
+S. E. (2013). Genomic and proteomic characterization of Gordonia sp. NB4-1Y in
+relation to 6: 2 fluorotelomer sulfonate biodegradation.&nbsp;<i>Microbiology</i>,&nbsp;<i>159</i>(Pt_8),
+1618-1628.</span></p>
+
+<p class=EndNoteBibliography style='margin-bottom:0in'><span style='color:black'><br>
+Wang, N., Buck, R. C., Szostek, B., Sulecki, L. M., &amp; Wolstenholme, B. W.
+(2012). 5:3 Polyfluorinated acid aerobic biotransformation in activated sludge
+via novel “one-carbon removal pathways.” <i>Chemosphere</i>, <i>87</i>(5),
+527–534. https://doi.org/10.1016/j.chemosphere.2011.12.056<br>
+<br>
+Wang, N., Szostek, B., Buck, R. C., Folsom, P. W., Sulecki, L. M., &amp;
+Gannon, J. T. (2009). 8-2 fluorotelomer alcohol aerobic soil biodegradation:
+pathways, metabolites, and metabolite yields. <i>Chemosphere</i>, <i>75</i>(8),
+1089–1096. https://doi.org/10.1016/j.chemosphere.2009.01.033<br>
+<br>
+Washington, J. W., Jenkins, T. M., &amp; Weber, E. J. (2015). Identification of
+Unsaturated and 2H Polyfluorocarboxylate Homologous Series and Their Detection
+in Environmental Samples and as Polymer Degradation Products. <i>Environmental
+Science &amp; Technology</i>, <i>49</i>(22), 13256–13263.
+https://doi.org/10.1021/acs.est.5b03379<br>
+<br>
+Zhang, H., Wen, B., Hu, X., Wu, Y., Pan, Y., Huang, H., Liu, L., &amp; Zhang,
+S. (2016). Uptake, Translocation, and Metabolism of 8:2 Fluorotelomer Alcohol
+in Soybean (Glycine max L. Merrill). <i>Environmental Science &amp; Technology</i>,
+<i>50</i>(24), 13309–13317. https://doi.org/10.1021/acs.est.6b03734<br>
+<br>
+Zhang, S., Lu, X., Wang, N., &amp; Buck, R. C. (2016). Biotransformation
+potential of 6:2 fluorotelomer sulfonate (6:2 FTSA) in aerobic and anaerobic
+sediment. <i>Chemosphere</i>, <i>154</i>, 224–230.
+https://doi.org/10.1016/j.chemosphere.2016.03.062<br>
+<br>
+Zhang, S., Szostek, B., McCausland, P. K., Wolstenholme, B. W., Lu, X., Wang,
+N., &amp; Buck, R. C. (2013). 6:2 and 8:2 fluorotelomer alcohol anaerobic
+biotransformation in digester sludge from a WWTP under methanogenic conditions.
+<i>Environmental Science &amp; Technology</i>, <i>47</i>(9), 4227–4235.
+https://doi.org/10.1021/es4000824<br>
+<br>
+Zhao, L., Folsom, P. W., Wolstenholme, B. W., Sun, H., Wang, N., &amp; Buck, R.
+C. (2013). 6:2 fluorotelomer alcohol biotransformation in an aerobic river
+sediment system. <i>Chemosphere</i>, <i>90</i>(2), 203–209.
+https://doi.org/10.1016/j.chemosphere.2012.06.035</span></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+<p class=MsoNormal><b><span style='font-size:16.0pt;line-height:107%;
+color:#2F5496'>&nbsp;</span></b></p>
+
+</div>
+
+</body>
+
+</html>

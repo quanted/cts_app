@@ -41,7 +41,7 @@ var reductionReactionMap = {
     'Isoxazole Cleavage': 'Scheme8'
 };
 
-// (Un)ranked Photolysis Library Pathways:
+// Unranked Photolysis Library Pathways:
 var photolysisReactionMap = {
     '5-OH Steroid Dehydration to Dienone': '_Toc40824968',
     '12-OH Steroid Dehydration to Trienone': '_Toc40824967',
@@ -201,7 +201,7 @@ var photolysisReactionMap = {
 };
 
 
-
+// Ranked Photolysis Library Pathways:
 var rankedPhotolysisReactionMap = {
     "1-Naphthoxy Photorearrangement (C2)": "_Toc42714169",
     "1-Naphthoxy Photorearrangement (C4)": "_Toc42714170",
@@ -367,4 +367,67 @@ var rankedPhotolysisReactionMap = {
     "Dehydration of Geminal Diols": "_Toc42714330",
     "Hydroxy Enal Tautomerization": "_Toc42714331",
     "Nitro Amidine Hydrolysis": "_Toc42714332"
+};
+
+// PFAS Environmental Reaction Pathways:
+var pfasEnvironmentalReactionMap = {
+    "Decarboxylation: Alpha carboxy ether to ether": "EnvLib_Scheme_1",
+    "Decarboxylation: Alpha hydroxy fluorotelomer carboxylic acid to fluorotelomer aldehyde": "EnvLib_Scheme_2",
+    "Decarboxylation: Beta carboxy ketone to methyl ketone": "EnvLib_Scheme_3",
+    "Desulfonation: Fluorotelomer sulfonate to fluorotelomer alcohol": "EnvLib_Scheme_4",
+    "Epoxidation: Alkene to epoxide_PTP": "EnvLib_Scheme_5",
+    "Hydrolysis: Acid fluoride to carboxylic acid": "EnvLib_Scheme_6",
+    "Hydrolysis: Alpha difluoro alcohol to acid fluoride": "EnvLib_Scheme_7",
+    "Hydrolysis: Alpha fluoro secondary alcohol to ketone": "EnvLib_Scheme_8",
+    "Hydrolysis: Amide to carboxylic acid": "EnvLib_Scheme_9",
+    "Hydrolysis: Beta Hydroxy fluorotelomer iodide to diol_PTP": "EnvLib_Scheme_10",
+    "Hydrolysis: Carboxylic acid ester to carboxylic acid": "EnvLib_Scheme_11",
+    "Hydrolysis: Diperfluorophosphinate to perfluorophosphonate": "EnvLib_Scheme_12",
+    "Hydrolysis: Diphosphate ester to monophosphate ester": "EnvLib_Scheme_13",
+    "Hydrolysis: Epoxide to diol_PTP": "EnvLib_Scheme_14",
+    "Hydrolysis: Fluorotelomer acid to unsaturated telomer acid": "EnvLib_Scheme_15",
+    "Hydrolysis: Fluorotelomer iodide to fluorotelomer alcohol": "EnvLib_Scheme_16",
+    "Hydrolysis: Fluorotelomer urethane to fluorotelomer alcohol": "EnvLib_Scheme_17",
+    "Hydrolysis: Hydrodefluorination of PFC chain": "EnvLib_Scheme_18",
+    "Hydrolysis: Monophosphate ester to alcohol": "EnvLib_Scheme_19",
+    "Hydrolysis: Perfluorinated epoxide to alpha-keto carboxylic acid": "EnvLib_Scheme_20",
+    "Hydrolysis: Sulfonamide to sulfonic acid": "EnvLib_Scheme_21",
+    "Hydrolysis: Sulfonyl fluoride to sulfonic acid": "EnvLib_Scheme_22",
+    "Hydrolysis: Unsaturated fluorotelomer iodide to beta hydroxy fluorotelomer iodide_PTP": "EnvLib_Scheme_23",
+    "Hydroxylation: N-Alkyl sulfonamide to N-alkyl sulfonamide alcohol_PTP": "EnvLib_Scheme_24",
+    "Hydroxylation: Unsaturated fluorotelomer 2,4-dienoic acid to beta-hydroxy fluorotelomer acid": "EnvLib_Scheme_25",
+    "Hydroxylation: Unsaturated fluorotelomer acid to alpha-hydroxy fluorotelomer acid": "EnvLib_Scheme_26",
+    "Hydroxylation: Unsaturated fluorotelomer acid to beta-hydroxy fluorotelomer acid": "EnvLib_Scheme_27",
+    "N-Deacetylation: N-acetyl sulfonamide to sulfonamide": "EnvLib_Scheme_28",
+    "N-Deacetylation: N-acetyl, N-alkyl sulfonamide to N-alkyl sulfonamide": "EnvLib_Scheme_29",
+    "N-Dealkylation: N-alkyl sulfonamide to sulfonamide": "EnvLib_Scheme_30",
+    "Oxidation: Alcohol to ketone": "EnvLib_Scheme_31",
+    "Oxidation: Alpha fluoro diol to acid fluoride and aldehyde with C-C bond cleavage_PTP": "EnvLib_Scheme_32",
+    "Oxidation: Alpha hydroxy fluorotelomer aldehyde to alpha hydroxy fluorotelomer carboxylic acid_PTP": "EnvLib_Scheme_33",
+    "Oxidation: Beta hydroxy fluorotelomer acid to beta keto fluorotelomer acid_PTP": "EnvLib_Scheme_34",
+    "Oxidation: Beta hydroxy gamma-delta unsaturated fluorotelomer acid to beta keto fluorotelomer acid_PTP": "EnvLib_Scheme_35",
+    "Oxidation: Beta oxidation of beta keto fluorotelomer acid_PTP": "EnvLib_Scheme_36",
+    "Oxidation: Beta oxidation of beta keto gamma-delta unsaturated fluorotelomer acid_PTP": "EnvLib_Scheme_37",
+    "Oxidation: Fluorotelomer alcohol to fluorotelomer aldehyde": "EnvLib_Scheme_38",
+    "Oxidation: Fluorotelomer alcohol to fluorotelomer carboxylic acid with loss of CF2 and methyl group": "EnvLib_Scheme_39",
+    "Oxidation: Fluorotelomer alcohol to fluorotelomer carboxylic acid with loss of methyl group": "EnvLib_Scheme_40",
+    "Oxidation: Fluorotelomer aldehyde to fluorotelomer carboxylic acid": "EnvLib_Scheme_41",
+    "Oxidation: Fluorotelomer carboxylic acid to 2,3-unsaturated fluorotelomer carboxylic acid": "EnvLib_Scheme_42",
+    "Oxidation: Fluorotelomer diol to alpha hydroxy fluorotelomer aldehyde_PTP": "EnvLib_Scheme_43",
+    "Oxidation: Fluorotelomer iodide to alpha-beta unsaturated fluorotelomer iodide_PTP": "EnvLib_Scheme_44",
+    "Oxidation: Fluorotelomer polyethoxylate carboxylic acid to shortened fluorotelomer polyethoxylate_PTP": "EnvLib_Scheme_45",
+    "Oxidation: Fluorotelomer polyethoxylate to fluorotelomer polyethoxylate carboxylic acid_PTP": "EnvLib_Scheme_46",
+    "Oxidation: Fluorotelomer sulfone to fluorotelomer sulfonic acid and alkyl chain": "EnvLib_Scheme_47",
+    "Oxidation: Fluorotelomer sulfoxide to fluorotelomer sulfone": "EnvLib_Scheme_48",
+    "Oxidation: Fluorotelomer thioether to fluorotelomer sulfoxide": "EnvLib_Scheme_49",
+    "Oxidation: Hydrodefluorination with alpha oxidation": "EnvLib_Scheme_50",
+    "Oxidation: Hydrodefluorination with beta oxidation": "EnvLib_Scheme_51",
+    "Oxidation: N-Alkyl sulfonamide alcohol to N-alkyl sulfonamide carboxylic acid": "EnvLib_Scheme_52",
+    "Oxidation: Sulfinic acid to sulfonic acid": "EnvLib_Scheme_53",
+    "Reduction: 2,3-Unsaturated fluorotelomer carboxylic acid to fluorotelomer carboxylic acid": "EnvLib_Scheme_54",
+    "Reduction: Beta fluoro unsaturated telomer acid to beta-H unsaturated telomer acid": "EnvLib_Scheme_55",
+    "Reduction: Hydrogenolysis of chlorinated perfluorinated ether_PTP": "EnvLib_Scheme_56",
+    "Reduction: Methyl ketone to alcohol": "EnvLib_Scheme_57",
+    "Reduction: Sulfonamide to sulfinic acid": "EnvLib_Scheme_58",
+    "Reduction: Vicinal bis-defluorination of unsaturated carboxylic acid_PTP": "EnvLib_Scheme_59"
 };

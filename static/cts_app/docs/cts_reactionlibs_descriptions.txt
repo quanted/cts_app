@@ -85,6 +85,15 @@ the reaction schemes cannot be viewed.
 
 <br><br>
 
+<h3>PFAS Environmental Reaction Library</h3>
+<p>
+The PFAS Environmental Reaction Library has been developed as a component of the Chemical Transformation Simulator (CTS), a web-based software tool under development in EPA&#39;s Office of Research and Development. The library is implemented in CTS to predict the likely environmental transformation products of per- and polyfluoroalkyl substances (PFAS). Version 1.1 of the PFAS Environmental Reaction Library contains 59 reaction schemes.
+</p>
+
+<h4><a href="/static_qed/cts_app/docs/PFAS HTML/PFASEnvironmentalReactionLibrary_ver1-1.htm" target="_blank">PFAS Environmental Reaction Library (last updated July 15, 2022)</a></h4>
+
+<br><br>
+
 <h3>Biotransformer Metabolism API</h3>
 <p>
 BioTransformer is a software tool that predicts small molecule metabolism in mammals, their gut microbiota, as well as the soil/aquatic microbiota. Moreover, it can also assist scientists in the identification of metabolites, which is based on the metabolism prediction. BioTransformer uses both a knowledge-based approach and a machine learning based approach to predict small molecules metabolism. In particular, BioTransformer consists of five independent modules: EC-based, CYP450, Phase II, Human Gut Microbial and Environmental Microbial.
