@@ -4,6 +4,8 @@ from django.urls import include, path
 from cts_app.views import misc, landing, description, input, output, batch, ctsGenerateReport, cts_stress_view, user_comments
 from django.conf import settings
 
+import login_middleware
+
 
 urlpatterns = [
 	path('rest/', include('cts_app.cts_api.urls')),
@@ -40,6 +42,7 @@ urlpatterns.extend([
 	path('batch/sample/', ctsGenerateReport.textReceiver),
 	path('docs/', misc.docsRedirect),
 	path('<slug:model>/', description.descriptionPage),
+	path('login/', login_middleware.login),
 ])
 
 urlpatterns = [path('cts/', include(urlpatterns))]

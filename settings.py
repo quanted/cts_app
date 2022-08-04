@@ -81,6 +81,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if PASSWORD_REQUIRED:
+    logging.warning("Password protection enabled")
+    MIDDLEWARE += [
+        'login_middleware.RequireLoginMiddleware'
+    ]
+    AUTH = True
+
 ROOT_URLCONF = 'urls'
 
 DATABASES = {
