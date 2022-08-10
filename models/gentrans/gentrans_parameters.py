@@ -331,7 +331,7 @@ class cts_class_specific_reaction_libs(forms.Form):
 	# 	required=False,
 	# 	disabled=True
 	# )
-	pfas_environmental = forms.BooleanField(required=False, label='PFAS Environmental (under development)', disabled=False)
+	pfas_environmental = forms.BooleanField(required=False, label='PFAS Environmental', disabled=False)
 	pfas_metabolism = forms.BooleanField(required=False, label='PFAS Metabolism (under development)', disabled=True)
 
 
