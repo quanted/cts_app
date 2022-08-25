@@ -14,6 +14,7 @@ var reductionLink = "/static_qed/cts_app/docs/Reduction HTML/AbioticReductionRxn
 var unrankedPhotolysisLink = "/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-0a_051721.htm#"
 var rankedPhotolysisLink = "/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-3a_051721.htm#"
 var pfasEnvironmentalLink = "/static_qed/cts_app/docs/PFAS HTML/PFASEnvironmentalReactionLibrary_ver1-1.htm#";
+var pfasMetabolicLink = "/static_qed/cts_app/docs/PFAS HTML/PFASMetabolicReactionLibrary_ver1-1.htm#";
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -582,6 +583,8 @@ function init(json){
 
 function findReactionLinkSection(routes) {
 
+    let selectedReactionLibs = metabolizer_post['transformationLibraries'];
+
     var route = routes.split(',').pop();
     // Checks hydrolysis reactions:
     for (let reactionName in hydrolysisReactionMap) {
@@ -604,11 +607,22 @@ function findReactionLinkSection(routes) {
             return rankedPhotolysisLink + sectionName;
         }
     }
-    // Checks PFAS reactions:
-    for (let reactionName in pfasEnvironmentalReactionMap) {
-        let sectionName = pfasEnvironmentalReactionMap[reactionName];
-        if(route.toLowerCase().includes(reactionName.toLowerCase())) {
-            return pfasEnvironmentalLink + sectionName;
+    // Checks PFAS Environmental reactions:
+    if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
+        for (let reactionName in pfasEnvironmentalReactionMap) {
+            let sectionName = pfasEnvironmentalReactionMap[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                return pfasEnvironmentalLink + sectionName;
+            }
+        }
+    }
+    // Checks PFAS Metabolic reactions:
+    else if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_metabolism') {
+        for (let reactionName in pfasMetabolicReactionMap) {
+            let sectionName = pfasMetabolicReactionMap[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                return pfasMetabolicLink + sectionName;
+            }
         }
     }
     return '/cts/about/reactionlibs';  // returns main RL page there isn't a pathway match

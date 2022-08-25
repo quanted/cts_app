@@ -31,7 +31,7 @@ $(document).ready(function() {
                             '#cts_reaction_sys, #respiration_tbl, #mammalian_choices_tbl'; // tables to hide/show
 
     var unaviable_options = 'select[name=pop_limit], ' +
-        '#id_aerobic_biodegrad, #id_anaerobic_biodegrad, #id_pfas_metabolism';
+        '#id_aerobic_biodegrad, #id_anaerobic_biodegrad';
 
     if (typeof uberNavTabs == 'function') {
         uberNavTabs(
@@ -104,7 +104,7 @@ $(document).ready(function() {
                 $('#id_envipath_metabolism').prop({'checked': false, 'disabled':false}).trigger('change');
             }
             if (!disablePfas) {
-                // $('#id_pfas_metabolism').prop({'checked': false, 'disabled':false}).trigger('change');
+                $('#id_pfas_metabolism').prop({'checked': false, 'disabled':false}).trigger('change');
                 $('#id_pfas_environmental').prop({'checked': false, 'disabled':false}).trigger('change');   
             }
             brightenBorder($('#cts_reaction_libs, #cts_class_specific_reaction_libs'));
