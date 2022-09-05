@@ -28,6 +28,11 @@ else:
     DEBUG = False
     CORS_ORIGIN_ALLOW_ALL = False
 
+if os.getenv("PASSWORD_REQUIRED", "False") == "True":
+    PASSWORD_REQUIRED = True
+else:
+    PASSWORD_REQUIRED = False 
+
 mimetypes.add_type("application/javascript", ".js", True)
 
 ALLOWED_HOSTS = ['*']
