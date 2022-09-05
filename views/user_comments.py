@@ -86,6 +86,9 @@ def validate_recaptcha(recaptcha):
 
     secret_key = get_key(os.path.join(QED_ROOT, "secrets", "secret_key_recaptcha.txt"))
 
+    if not secret_key:
+        secret_key = os.getenv("CTS_RECAPTCHA_KEY")
+
     post_obj = {
         "secret": secret_key,  # shared key b/w site and recaptcha
         "response": recaptcha  # user resp token provided by the recaptcha client-side integration on your site
@@ -119,6 +122,10 @@ def send_email(subject, message):
     to_email = os.getenv("CTS_EMAIL_RECIPIENTS").replace(" ", "").split(",")  # list of recipients
     smtp_email = os.getenv("CTS_EMAIL")
     smtp_pass = get_key(os.path.join(QED_ROOT, "secrets", "secret_key_cts_email.txt"))
+
+    if not smtp_pass:
+        smtp_pass = os.getenv("CTS_EMAIL_PASS")
+
     smtp_email_server = "smtp.gmail.com"
     smtp_email_port = 465
 
