@@ -9,6 +9,15 @@
 	<br><br><br>
 
 	<div class="manuscript-entry">
+	<a href="https://doi.org/10.1039/D1EM00445J"><h4>Development of a PFAS reaction library: identifying plausible transformation pathways in environmental and biological systems</h4></a>
+	<p>
+	E.J. Weber, C. Tebes-Stevens, J.W. Washington, R. Gladstone
+	<br>
+	<i>Environmental Science: Processes & Impacts</i>, <b>2022</b>, 24, pp. 689-753
+	</p>
+	</div>
+
+	<div class="manuscript-entry">
 	<a href="https://pubs.acs.org/doi/10.1021/acs.est.0c08745"><h4>Prioritizing Direct Photolysis Products Predicted by the Chemical Transformation Simulator: Relative Reasoning and Absolute Ranking</h4></a>
 	<p>C. Yuan, C. Tebes-Stevens, E.J. Weber
 	<br>
@@ -48,6 +57,8 @@
 	<br>
 	Proceedings of the 8<sup>th</sup> International Congress of Environmental Modelling and Software, <b>2016</b>.
 	</div>
+
+
 
 </div>
 

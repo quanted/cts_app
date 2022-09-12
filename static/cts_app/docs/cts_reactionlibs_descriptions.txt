@@ -9,7 +9,7 @@ CTS Reaction Libraries are composed of generalized reaction schemes that that sp
 When a user submits a molecule of interest in the CTS Generate Transformation Products workflow, CTS compares the molecule to the reactant side of each scheme within the Reaction Library. If CTS finds a match between a structural fragment within the molecule and the reactant side of a scheme, it modifies the fragment according to the scheme, leaving the rest of the molecule unchanged. Because a molecule may contain multiple structural fragments that match the reactant side of different reaction schemes, multiple products can be generated from the parent molecule. To predict which of these products are the most likely to accumulate, CTS calculates the &#34;production&#34; and &#34;accumulation&#34; of each product using an integer rank that has been assigned to each reaction scheme within the CTS Reaction Libraries based on reported transformation rates in the scientific literature.
 </p>
 
-<h4><a href="/static_qed/cts_app/docs/ProductionAccumulationHTML/MetabolizerAlgorithm_Nov2021.htm" target="_blank">Algorithm for Prediction of Likely Transformation Productions</a></h4>
+<h4><a href="/static_qed/cts_app/docs/ProductionAccumulationHTML/MetabolizerAlgorithm_Nov2021.htm" target="_blank">Algorithm for Prediction of Likely Transformation Products</a></h4>
 
 <br><br>
 

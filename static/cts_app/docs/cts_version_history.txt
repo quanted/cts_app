@@ -29,3 +29,12 @@
 <li>Modified options for selecting reaction libraries to incorporate predictions from EnviPath, Biotransformer, and CTS direct photolysis library</li>
 <li>Added version number to webpage header</li>
 </ul>
+
+<h3>CTS 1.3</h3>
+<p>CTS version 1.3 contains the following new features:</p>
+<ul>
+<li>Added CTS reaction libraries to predict environmental and metabolic transformations of PFAS chemicals</li>
+<li>Added documentation on the Reaction Libraries page to describe the algorithm for predicting likely transformation products using “production” and “accumulation” values</li>
+<li>Updated source code for BioTransformer and OPERA to resolve log4j security vulnerabilities</li>
+<li>Modified the Chemical Editor to retrieve chemical identification information from the new CCTE API due to the deprecation of the ACToRWS web services</li>
+</ul>
