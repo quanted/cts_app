@@ -763,7 +763,7 @@ function molecular_info_request_websocket(node) {
         'workflow': 'gentrans'
     };
 
-    if (node.id === 1) {
+    if (node.id === 1 && batch_chems.length < 1) {
         mol_info_request['chemical'] = orig_smiles;  // uses orig_smiles from cts_pchemprop_requests
     }
 
