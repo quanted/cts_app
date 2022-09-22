@@ -121,8 +121,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+# CTS_STATIC_ROOT = "/src/cts_app/static/cts_app/"
+
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
+    # CTS_STATIC_ROOT
 )
 
 STATICFILES_FINDERS = (
@@ -132,8 +135,8 @@ STATICFILES_FINDERS = (
 
 # STATIC_ROOT = os.path.join(PROJECT_ROOT, "static", "cts_app")
 STATIC_ROOT = os.path.join(PROJECT_ROOT, "collected_static")
-# STATIC_URL = '/cts/static/'
-STATIC_URL = '/static_qed/'
+STATIC_URL = '/cts/static/'
+# STATIC_URL = '/static_qed/'
 
 # Define ENVIRONMENTAL VARIABLES
 os.environ.update({
