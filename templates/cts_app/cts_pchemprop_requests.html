@@ -191,6 +191,9 @@ function connectToSocket() {
             // Ignores connection attempt if already connected
             return;
         }
+
+        console.log("NODEJS HOST: ", nodejs_host)
+        console.log("NODEJS PORT: ", nodejs_port)
         
         // connect to socket.io!
         if (nodejs_host == 'nginx') {
