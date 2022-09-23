@@ -63,14 +63,14 @@
   margin: 0 0 0 1.5em;
 }
 .collapse-open span {
-  background:url(/static_qed/images/collapsible/minus.gif) center left no-repeat;
+  background:url(/cts/static/cts_app/images/collapsible/minus.gif) center left no-repeat;
   display: block;
   float: left;
   padding: 9px 8px;
   cursor: default;
 }
 .collapse-close span {
-  background:url(/static_qed/images/collapsible/plus.gif) center left no-repeat;
+  background:url(/cts/static/cts_app/images/collapsible/plus.gif) center left no-repeat;
   display: block;
   float: left;
   padding: 9px 8px;

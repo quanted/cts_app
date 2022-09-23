@@ -1,18 +1,18 @@
 <!-- ### JIT REFERENCES ### -->
 <!-- CSS Files -->
-<link type="text/css" href="/static_qed/cts_app/stylesheets/style_gentrans_tree.css" rel="stylesheet" />
+<link type="text/css" href="/cts/static/cts_app/stylesheets/style_gentrans_tree.css" rel="stylesheet" />
 <!-- JIT Library File -->
-<script language="javascript" type="text/javascript" src="/static_qed/cts_app/js/Jit/jit.js"></script>
+<script language="javascript" type="text/javascript" src="/cts/static/cts_app/js/Jit/jit.js"></script>
 <!-- ### END JIT REFERENCES ### -->
-<script type="text/javascript" src="/static_qed/cts_app/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/cts/static/cts_app/js/jquery-ui.js"></script>
 
 <script>
 var labelType, useGradients, nativeTextSupport, animate;
 
-var hydrolysisLink = "/static_qed/cts_app/docs/Hydrolysis Lib HTML/HydrolysisRxnLib_ver1-8.htm#";
-var reductionLink = "/static_qed/cts_app/docs/Reduction HTML/AbioticReductionRxnLib_vers1-5rev_052721.htm#";
-var unrankedPhotolysisLink = "/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-0a_051721.htm#"
-var rankedPhotolysisLink = "/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-3a_051721.htm#"
+var hydrolysisLink = "/cts/static/cts_app/docs/Hydrolysis Lib HTML/HydrolysisRxnLib_ver1-8.htm#";
+var reductionLink = "/cts/static/cts_app/docs/Reduction HTML/AbioticReductionRxnLib_vers1-5rev_052721.htm#";
+var unrankedPhotolysisLink = "/cts/static/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-0a_051721.htm#"
+var rankedPhotolysisLink = "/cts/static/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-3a_051721.htm#"
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -26,8 +26,8 @@ var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
 var nodeWidth = 100; //default node width (image)
 var block_ui = false; // blocking UI load window boolean
-// var arrow_html = '<div id="arrow_wrap"><img class="reactpath_arrow" src="/static_qed/cts_app/images/arrow-right.jpg"/></div>';
-var arrow_html = '<div id="arrow_wrap"><img class="reactpath_arrow" src="/static_qed/cts_app/images/arrow2.png"/></div>';
+// var arrow_html = '<div id="arrow_wrap"><img class="reactpath_arrow" src="/cts/static/cts_app/images/arrow-right.jpg"/></div>';
+var arrow_html = '<div id="arrow_wrap"><img class="reactpath_arrow" src="/cts/static/cts_app/images/arrow2.png"/></div>';
 var pchemSelectErrorMessage = "Must select at least one calculator and available property first";
 var pchemNoCarbonMessage = "CTS does not process inorganic products";
 var epiQsarRoutes = [
@@ -912,7 +912,7 @@ function blockInterface(block, custom_message) {
             "-webkit-box-shadow": "3px 3px 15px #333",
             "-moz-box-shadow": "3px 3px 15px #333"
         },
-        message: '<div id="pchem_wait"><h2 class="popup_header">Retrieving data...</h2><br><img src="/static_qed/cts_app/images/loader.gif" style="margin-top:-16px" id="load_wheel"><br><br><div id="progressbar"></div><br><input onclick="cancelRequest()" type="button" value="Cancel" id="btn-pchem-cancel"><br></div>',
+        message: '<div id="pchem_wait"><h2 class="popup_header">Retrieving data...</h2><br><img src="/cts/static/cts_app/images/loader.gif" style="margin-top:-16px" id="load_wheel"><br><br><div id="progressbar"></div><br><input onclick="cancelRequest()" type="button" value="Cancel" id="btn-pchem-cancel"><br></div>',
         fadeIn: 500
     }
     var has_custom_message = custom_message != null && custom_message.length > 0;

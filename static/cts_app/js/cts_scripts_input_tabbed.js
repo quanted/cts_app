@@ -47,7 +47,7 @@ $( document ).ready(function() {
         if (valid) {
         	$.blockUI({
 			  css:{ "top":""+wintop+"", "left":""+winleft+"", "padding": "30px 20px", "width": "400px", "height": "200px", "border": "0 none", "border-radius": "4px", "-webkit-border-radius": "4px", "-moz-border-radius": "4px", "box-shadow": "3px 3px 15px #333", "-webkit-box-shadow": "3px 3px 15px #333", "-moz-box-shadow": "3px 3px 15px #333" },
-			  message: '<div id="pchem_wait"><h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/static_qed/cts_app/images/loader.gif" style="margin-top:-16px"></div>',
+			  message: '<div id="pchem_wait"><h2 class="popup_header">Processing Model Submission...</h2><br/><img src="/cts/static/cts_app/images/loader.gif" style="margin-top:-16px"></div>',
 			  fadeIn:  500
 			});
 			setTimeout(function() {$('#form').submit();}, 500);

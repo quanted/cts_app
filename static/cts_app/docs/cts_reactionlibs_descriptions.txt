@@ -24,7 +24,7 @@ Scroll to the bottom of the library documentation page to view a table showing t
 rank assignments for each scheme in the library.
 </p>
 
-<h4><a href="/static_qed/cts_app/docs/Hydrolysis Lib HTML/HydrolysisRxnLib_ver1-8.htm" target="_blank">Abiotic Hydrolysis Reaction Library</a> (last updated September 11, 2020)</h4>
+<h4><a href="/cts/static/cts_app/docs/Hydrolysis Lib HTML/HydrolysisRxnLib_ver1-8.htm" target="_blank">Abiotic Hydrolysis Reaction Library</a> (last updated September 11, 2020)</h4>
 
 <br><br>
 
@@ -39,7 +39,7 @@ Scroll to the bottom of the library documentation page to view a table showing t
 rank assignments for each scheme in the library.
 </p>
 
-<h4><a href="/static_qed/cts_app/docs/Reduction HTML/AbioticReductionRxnLib_vers1-5rev_052721.htm" target="_blank">Abiotic Reduction Reaction Library</a> (last updated August 6, 2020)</h4>
+<h4><a href="/cts/static/cts_app/docs/Reduction HTML/AbioticReductionRxnLib_vers1-5rev_052721.htm" target="_blank">Abiotic Reduction Reaction Library</a> (last updated August 6, 2020)</h4>
 
 <br><br>
 
@@ -55,9 +55,9 @@ associated references. Scroll to the bottom of the ranked library documentation 
 to view a table showing the rank assignments for each scheme in the library.
 </p>
 
-<h4><a href="/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-0a_051721.htm" target="_blank">Direct Photolysis Reaction Library (unranked)</a> (last updated April 21, 2020)</h4>
+<h4><a href="/cts/static/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-0a_051721.htm" target="_blank">Direct Photolysis Reaction Library (unranked)</a> (last updated April 21, 2020)</h4>
 
-<h4><a href="/static_qed/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-3a_051721.htm" target="_blank">Direct Photolysis Reaction Library (ranked)</a> (last updated April 30, 2021)</h4>
+<h4><a href="/cts/static/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-3a_051721.htm" target="_blank">Direct Photolysis Reaction Library (ranked)</a> (last updated April 30, 2021)</h4>
 
 <br><br>
 
@@ -70,7 +70,7 @@ transformation processes (e.g., hydrolysis or photolysis). The current version o
 Spontaneous Reaction Library contains one reaction scheme.
 </p>
 
-<h4><a href="/static_qed/cts_app/docs/Spontaneous HTML/SpontaneousRxnLib_vers1-0.htm" target="_blank">Spontaneous Reaction Library</a> (last updated July 7, 2020)</h4>
+<h4><a href="/cts/static/cts_app/docs/Spontaneous HTML/SpontaneousRxnLib_vers1-0.htm" target="_blank">Spontaneous Reaction Library</a> (last updated July 7, 2020)</h4>
 
 <br><br>
 
@@ -82,7 +82,7 @@ library was developed by ChemAxon. The reaction library is proprietary, so detai
 the reaction schemes cannot be viewed.
 </p>
 
-<h4><a href="/static_qed/cts_app/docs/Metabolizer HTML/MetabolizerDefaultLibrary_SchemeList.htm" target="_blank">List of Schemes Included in ChemAxon&#39;s Human Phase 1 Metabolism Reaction Library</a> (last updated July 2016)</h4>
+<h4><a href="/cts/static/cts_app/docs/Metabolizer HTML/MetabolizerDefaultLibrary_SchemeList.htm" target="_blank">List of Schemes Included in ChemAxon&#39;s Human Phase 1 Metabolism Reaction Library</a> (last updated July 2016)</h4>
 
 <br><br>
 

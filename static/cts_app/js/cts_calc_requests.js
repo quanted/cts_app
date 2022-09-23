@@ -4,7 +4,7 @@ var CalcRequestsHandler = {
 
 	// global vars:
 
-	spinner_html = '<img src="/static_qed/cts_app/images/loader.gif" id="spinner" />',
+	spinner_html = '<img src="/cts/static/cts_app/images/loader.gif" id="spinner" />',
 	calls_tracker = 0,  // calls tracker for data responses
 	total_calls = 0,  // total calls expected from backend 
 	socket = null,  // websocket var

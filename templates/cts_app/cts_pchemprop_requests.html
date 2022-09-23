@@ -11,7 +11,7 @@ var smiles, name, mass, formula, time, orig_smiles, includeRates;
 var ctsWorkflows = ['chemspec', 'pchemprop', 'gentrans'];
 var ctsInputTypes = ['single', 'batch'];
 var checkedCalcsAndProps, structure; // format --> {'calc': ['checked_prop', ..], ..}
-var spinner_html = '<img src="/static_qed/cts_app/images/loader.gif" id="spinner" />';
+var spinner_html = '<img src="/cts/static/cts_app/images/loader.gif" id="spinner" />';
 var calls_tracker = 0;  // keeps track of pchem data calls for metabolites
 var total_calls = 0;  // used for metabolite pchem data progress
 var socket = null; // web socket global var

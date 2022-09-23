@@ -81,7 +81,7 @@ def table_all(gentrans_obj):
 
 	html_all = table_inputs(gentrans_obj)
 	
-	html_all += '<script src="/static_qed/cts_app/js/scripts_pchemprop.js" type="text/javascript"></script>'
+	html_all += '<script src="/cts/static/cts_app/js/scripts_pchemprop.js" type="text/javascript"></script>'
 	html_all += render_to_string('cts_app/cts_downloads.html', {'run_data': gentrans_obj.run_data})
 	html_all += table_metabolites(gentrans_obj)
 

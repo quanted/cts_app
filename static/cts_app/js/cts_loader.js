@@ -9,7 +9,7 @@ var BlockInterface = {
 	div_width = "450px",
 	winleft = null,
 	wintop = null,
-	loader_img = '<img src="/static_qed/cts_app/images/loader.gif" style="margin-top:-16px" id="load_wheel">',
+	loader_img = '<img src="/cts/static/cts_app/images/loader.gif" style="margin-top:-16px" id="load_wheel">',
 	cancel_button = '<input onclick="cancelRequest()" type="button" value="Cancel" id="btn-pchem-cancel">',
 	div_message = '<div id="pchem_wait"><h2 class="popup_header">Retrieving data...</h2><br>' +
 					BlockInterface.loader_img + '<br><br><div id="progressbar"></div><br>' +

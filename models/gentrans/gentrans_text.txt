@@ -1,5 +1,5 @@
 <p>This workflow allows you to predict transformation products based on the selection and execution of the reaction libraries that encode the process science for transformation processes.  You have the option to enter an individual chemical through the Chemical Editor or through batch mode (select Batch tab).  Entering the Reaction Pathway Simulator will allow you to select your reaction library of interest based on your selection of reaction conditions. </p>
 
-<!--<img src="/static_qed/cts_app/images/gentrans/gentrans_desc.png" alt="Chemical Editor"></img>-->
+<!--<img src="/cts/static/cts_app/images/gentrans/gentrans_desc.png" alt="Chemical Editor"></img>-->
 
-<img src="/static_qed/cts_app/images/gentrans/gentrans_flow_diagram.png" alt="Generate Transformation Products Flow Diagram">
+<img src="/cts/static/cts_app/images/gentrans/gentrans_flow_diagram.png" alt="Generate Transformation Products Flow Diagram">
