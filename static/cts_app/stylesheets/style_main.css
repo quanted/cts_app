@@ -71,7 +71,7 @@ td {
   box-shadow: 3px 3px 15px #CCC;
   -webkit-box-shadow: 3px 3px 15px #CCC;
   -moz-box-shadow: 3px 3px 15px #CCC;*/
-  background: #F4F7ED url(/cts/static/images/logo_landing.png) no-repeat;
+  background: #F4F7ED url(/cts/static/cts_app/images/logo_landing.png) no-repeat;
 }
 #landing_links {
   width: 334px;
@@ -82,7 +82,7 @@ td {
   width: 334px;
   height: 334px;
   float: left;
-  background: url(/cts/static/images/eco.gif);
+  background: url(/cts/static/cts_app/images/eco.gif);
   margin-right: 10px;
   border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -95,7 +95,7 @@ td {
   width: 334px;
   height: 334px;
   float: left;
-  background: url(/cts/static/images/hh.gif);
+  background: url(/cts/static/cts_app/images/hh.gif);
   border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -107,7 +107,7 @@ td {
   width: 334px;
   height: 334px;
   float: left;
-  background: url(/cts/static/images/pop.gif);
+  background: url(/cts/static/cts_app/images/pop.gif);
   border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -119,7 +119,7 @@ td {
   width: 334px;
   height: 334px;
   float: left;
-  background: url(/cts/static/images/cts.gif);
+  background: url(/cts/static/cts_app/images/cts.gif);
   border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -506,7 +506,7 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.gif) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: 0 0;
 }
 #fadeExport_pdf * {
@@ -516,14 +516,14 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.gif) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: 0 -38px;
 }
 #fadeExport_html {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.gif) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: -34px 0;
 }
 #fadeExport_html * {
@@ -533,14 +533,14 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.gif) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: -34px -38px;
 }
 #fadeExport_csv {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.gif) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: -68px 0;
 }
 #fadeExport_csv * {
@@ -550,7 +550,7 @@ ul.nobullet {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.gif) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.gif) no-repeat;
   background-position: -68px -38px;
 }
 .popup {
@@ -563,7 +563,7 @@ ul.nobullet {
   z-index: 999999;
 }
 #popup_loader {
-  background: url(/cts/static/images/loader.gif);
+  background: url(/cts/static/cts_app/images/loader.gif);
   width: 32px;
   height: 32px;
   margin-top: 16px;
@@ -595,14 +595,14 @@ ul.nobullet {
   z-index: 99999;
 }
 .collapse-open span {
-    background:url(/cts/static/images/collapsible/minus.gif) center left no-repeat;
+    background:url(/cts/static/cts_app/images/collapsible/minus.gif) center left no-repeat;
     display: block;
     float: left;
     padding: 9px 8px;
     cursor: default;
 }
 .collapse-close span {
-    background:url(/cts/static/images/collapsible/plus.gif) center left no-repeat;
+    background:url(/cts/static/cts_app/images/collapsible/plus.gif) center left no-repeat;
     display: block;
     float: left;
     padding: 9px 8px;

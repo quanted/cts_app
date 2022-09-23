@@ -172,7 +172,7 @@ th {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.fw.png) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.fw.png) no-repeat;
   background-position: 0 0;
 }
 #fadeExport_pdf * {
@@ -182,14 +182,14 @@ th {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.fw.png) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.fw.png) no-repeat;
   background-position: 0 -38px;
 }
 #fadeExport_html {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.fw.png) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.fw.png) no-repeat;
   background-position: -34px 0;
 }
 #fadeExport_html * {
@@ -199,14 +199,14 @@ th {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.fw.png) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.fw.png) no-repeat;
   background-position: -34px -38px;
 }
 #fadeExport_csv {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.fw.png) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.fw.png) no-repeat;
   background-position: -68px 0;
 }
 #fadeExport_csv * {
@@ -216,7 +216,7 @@ th {
   display: inline-block;
   height: 38px;
   width: 34px;
-  background: url(/cts/static/images/export/export_sprite_small_new.fw.png) no-repeat;
+  background: url(/cts/static/cts_app/images/export/export_sprite_small_new.fw.png) no-repeat;
   background-position: -68px -38px;
 }
 .label {
