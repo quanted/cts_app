@@ -123,10 +123,10 @@ USE_TZ = True
 
 # CTS_STATIC_ROOT = "/src/cts_app/static/cts_app/"
 
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
-    # CTS_STATIC_ROOT
-)
+# STATICFILES_DIRS = (
+#     os.path.join(PROJECT_ROOT, 'static'),
+#     # CTS_STATIC_ROOT
+# )
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
