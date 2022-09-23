@@ -144,17 +144,17 @@ def flowcharts_page(request, chart='none', header='non'):
 
     if chart == 'cheminfo':
         # displays chemical information flowchart
-        img_filepath = settings.STATIC_URL'cts_app/docs/cts_flowchart_cheminfo.svg'
+        img_filepath = settings.STATIC_URL + 'cts_app/docs/cts_flowchart_cheminfo.svg'
         header = ""
 
     elif chart == 'standardization':
         # displays standardization flowchart
-        img_filepath = settings.STATIC_URL'cts_app/docs/cts_flowchart_smilesfilter.svg'
+        img_filepath = settings.STATIC_URL + 'cts_app/docs/cts_flowchart_smilesfilter.svg'
         header = ""
 
     elif chart == 'meltingpoint':
         # displays melting point request flowchart
-        img_filepath = settings.STATIC_URL'cts_app/docs/cts_flowchart_meltingpoint.svg'
+        img_filepath = settings.STATIC_URL + 'cts_app/docs/cts_flowchart_meltingpoint.svg'
         header = ""
 
     #drupal template for header with bluestripe
