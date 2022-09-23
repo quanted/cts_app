@@ -1,9 +1,9 @@
-<script type="text/javascript" src="{% static 'cts_app/js/jquery.validate.js' %}"></script>
+<script type="text/javascript" src="/cts/static/cts_app/js/jquery.validate.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
 
-	var spinner_html = '<img src="{% static \'cts_app/images/loader.gif\' %}" id="spinner" />';
+	var spinner_html = '<img src="/cts/static/cts_app/images/loader.gif" id="spinner" />';
 	var nodejs_host = "{{nodejsHost}}";
     var nodejs_port = {{nodejsPort}};
 
