@@ -208,7 +208,7 @@ function connectToSocket() {
             else {
                 console.log("Connecting with just host.")
                 // socket = io(nodejs_host).connect();
-                socket = io.connect(nodejs_host, {'force new connection': true});
+                socket = io(nodejs_host, {path: '/cts/socket.io'}).connect(nodejs_host, {'force new connection': true});
             }
         }
 
