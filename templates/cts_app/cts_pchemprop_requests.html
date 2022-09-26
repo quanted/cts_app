@@ -192,25 +192,21 @@ function connectToSocket() {
             return;
         }
 
-        console.log("NODEJS HOST: ", nodejs_host)
-        console.log("NODEJS PORT: ", nodejs_port)
+        socket = io(nodejs_host, {path: '/cts/ws/'}).connect({'force new connection': true});
         
-        // connect to socket.io!
-        if (nodejs_host == 'nginx') {
-            console.log("Connecting with explicit URL.")
-            socket = io.connect();  // docker way
-        }
-        else {
-            if (nodejs_port && nodejs_port != 80) {
-                console.log("Connecting with host and port.")
-                socket = io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
-            }
-            else {
-                console.log("Connecting with just host.")
-                // socket = io(nodejs_host).connect();
-                socket = io(nodejs_host, {path: '/cts/socket.io'}).connect(nodejs_host, {'force new connection': true});
-            }
-        }
+        // // connect to socket.io!
+        // if (nodejs_host == 'nginx') {
+        //     console.log("Connecting with explicit URL.")
+        //     socket = io.connect();  // docker way
+        // }
+        // else {
+        //     if (nodejs_port && nodejs_port != 80) {
+        //         socket = io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
+        //     }
+        //     else {
+        //         socket = io(nodejs_host, {path: '/cts/ws/'}).connect({'force new connection': true});
+        //     }
+        // }
 
     }
     else {
