@@ -182,13 +182,13 @@ def contacts_submission_view(request):
     Page that displays after an email has been sent by
     the user on the contacts page.
     """
-    html = render_to_string('01cts_epa_drupal_header.html', {
+    html = render_to_string('cts_app/01cts_epa_drupal_header.html', {
         'SITE_SKIN': os.environ['SITE_SKIN'],
         'title': "CTS"
     })
-    html += render_to_string('02epa_drupal_header_bluestripe_onesidebar.html', {})
-    html += render_to_string('03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
-    html += render_to_string('06cts_ubertext_start_index_drupal.html', {
+    html += render_to_string('cts_app/02epa_drupal_header_bluestripe_onesidebar.html', {})
+    html += render_to_string('cts_app/03epa_drupal_section_title_cts.html', {"version": os.getenv("CTS_VERSION")})
+    html += render_to_string('cts_app/06cts_ubertext_start_index_drupal.html', {
         'TITLE': "Thank you for your comments!",
         'TEXT_PARAGRAPH': """An email has been sent to the CTS team.<br>
             If a return email address was provided, we'll get back to you as soon as possible.<br><br>
@@ -198,12 +198,12 @@ def contacts_submission_view(request):
             </form>
             """
     })
-    html += render_to_string('07ubertext_end_drupal.html', {})
+    html += render_to_string('cts_app/07ubertext_end_drupal.html', {})
     html += ordered_list(model='cts')  # fills out 05ubertext_links_left_drupal.html
-    html += render_to_string('09epa_drupal_ubertool_css.html', {})
-    html += render_to_string('09epa_drupal_cts_css.html')
-    html += render_to_string('09epa_drupal_cts_scripts.html')
-    html += render_to_string('10epa_drupal_footer.html', {})
+    html += render_to_string('cts_app/09epa_drupal_ubertool_css.html', {})
+    html += render_to_string('cts_app/09epa_drupal_cts_css.html')
+    html += render_to_string('cts_app/09epa_drupal_cts_scripts.html')
+    html += render_to_string('cts_app/10epa_drupal_footer.html', {})
     response = HttpResponse()
     response.write(html)
     return response
