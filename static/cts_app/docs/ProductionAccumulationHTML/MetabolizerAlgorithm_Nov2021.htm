@@ -1,0 +1,472 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Times;
+	panose-1:2 2 6 3 5 4 5 2 3 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:10.0pt;
+	margin-left:0in;
+	line-height:115%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{color:#0563C1;
+	text-decoration:underline;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+ /* Page Definitions */
+ @page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US link="#0563C1" vlink="#954F72" style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<p class=MsoNormal><img width=624 height=38
+src="MetabolizerAlgorithm_Nov2021_files/image001.png"
+alt="Metabolizer Algorithm&#13;&#10;&#13;&#10;"></p>
+
+<p class=MsoNormal>The Chemical Transformation Simulator (CTS) module for
+prediction of transformation products is built on ChemAxon’s Metabolizer
+application (Pirok, 2012).  In Metabolizer, reaction products are predicted
+using a library of reaction schemes.  Each reaction scheme is assigned a fixed
+rank within the library.  Ranks are a dimensionless measure of the rate of the
+reaction scheme relative to other schemes in the library.  The ranks are used
+to calculate a “formation” of the product(s) formed according to the scheme.  This
+formation is then used to calculate the fractional “production” of each
+product.  </p>
+
+<p class=MsoNormal>The algorithm implemented in Metabolizer is based on
+first-order transformation kinetics and is best illustrated with a simple example. 
+Consider a parent chemical C which is transformed into three possible products,
+P<sub>1</sub>, P<sub>2</sub> and P<sub>3</sub>, through reactions with rate
+constants <i>k<sub>1</sub></i>, <i>k<sub>2</sub></i> and <i>k<sub>3</sub></i>:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><img width=166
+height=146 id="Picture 2" src="MetabolizerAlgorithm_Nov2021_files/image002.png"
+alt="Diagram&#10;&#10;Description automatically generated">                                                
+</p>
+
+<p class=MsoNormal>The overall rate of change in the concentration of the
+parent chemical is given by:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=170 height=36 src="MetabolizerAlgorithm_Nov2021_files/image003.png"></span></p>
+
+<p class=MsoNormal>The rate of change in the concentration of each product P<sub>i</sub>
+is given by:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=83 height=36 src="MetabolizerAlgorithm_Nov2021_files/image004.png"></span></p>
+
+<p class=MsoNormal>These equations can be integrated to give the concentration
+of the parent and the transformation products as a function of time:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=145 height=21 src="MetabolizerAlgorithm_Nov2021_files/image005.png"></span></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=242 height=39 src="MetabolizerAlgorithm_Nov2021_files/image006.png"></span></p>
+
+<p class=MsoNormal>where [C]<sub>0</sub> is the concentration of the parent at
+time zero.  These two equations can be combined to show that at any given time,
+the fraction of the total product formation in the form of product <i>P<sub>i</sub></i>
+is given by:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=196 height=39 src="MetabolizerAlgorithm_Nov2021_files/image007.png"></span></p>
+
+<p class=MsoNormal>This equation can be generalized for transformation of a
+chemical that is transformed according to <i>N<sub>r</sub></i> reactions as
+follows:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=76 height=46 src="MetabolizerAlgorithm_Nov2021_files/image008.png"></span></p>
+
+<p class=MsoNormal>If rate constants were available for each transformation
+reaction, it would be possible to calculate an exact percent production for
+each product using this equation.  In general, however, neither measured rate
+constants, nor algorithms to estimate rate constants are available for many
+transformation reactions.  </p>
+
+<p class=MsoNormal>In Metabolizer, an algorithm has been implemented to
+approximate a fractional production of each predicted product by categorizing
+the rate of each scheme with an integer rank on a scale of one to seven.  A
+rank of seven is assigned to the fastest transformation reactions and a rank of
+one is assigned to the slowest reaction schemes.  In the Metabolizer algorithm,
+the unitless “formation” value for product <i>i</i> (<i>f<sub>i</sub></i>) is
+defined as the number 7 raised to the power of the rank for the scheme that
+generates product <i>i</i>:</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=70 height=20 src="MetabolizerAlgorithm_Nov2021_files/image009.png"></span></p>
+
+<p class=MsoNormal>These “formation” values are analogous to rate constants.  If
+product <i>i</i> is a first-generation product, the “production” of product <i>i</i>
+is calculated according to the following equation:  </p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=75 height=48 src="MetabolizerAlgorithm_Nov2021_files/image010.png"></span></p>
+
+<p class=MsoNormal>where <i>N<sub>p</sub></i> is the number of products formed
+from all schemes that transform the parent molecule.  If product <i>i</i> forms
+from another product <i>k</i>, then its production will be a fraction of <i>P<sub>k</sub></i>;
+therefore, the production of product i is calculated as follows:</p>
+
+<p class=MsoNormal style='margin-left:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=112 height=59 src="MetabolizerAlgorithm_Nov2021_files/image011.png"></span></p>
+
+<p class=MsoNormal>The Metabolizer application also calculates “accumulation”
+values which take into account further degradation of each predicted product.  To
+define the accumulation, it’s useful to introduce an index for the generation
+level, so that <i>P<sub>i,n</sub></i><sub> </sub>is defined as the production
+of product <i>i</i> in generation <i>n</i>, and <i>f<sub>i,n</sub></i> is
+defined as the formation value for product <i>i</i> in generation <i>n</i>.  If
+product <i>i</i> is further degraded by <i>N<sub>i</sub></i> schemes in
+generation <i>n+1</i>, the “accumulation” of product <i>i</i> in generation <i>n</i>
+is calculated according to the following equation:  </p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:.5in'><span
+style='font-size:11.0pt;line-height:115%;font-family:"Calibri",sans-serif'><img
+width=205 height=59 src="MetabolizerAlgorithm_Nov2021_files/image012.png"></span></p>
+
+<p class=MsoNormal>If product <i>i</i> is a terminal product, then <i>N<sub>i</sub></i>
+is zero, and <i>A<sub>i,n</sub></i> is equal to <i>P<sub>i,n</sub></i>.</p>
+
+<p class=MsoNormal>In some cases, it is possible to generate the same product
+by more than one transformation pathway.  For example, if a parent molecule is
+susceptible to transformation by two schemes, A and B, then the same product
+might form from an A-B or B-A sequence of transformations.  For products that
+form from more than one pathway, Metabolizer calculates a “global accumulation”
+as the sum of the accumulation values for that product.</p>
+
+<p class=MsoNormal>The “formation” values used in Metabolizer have no units;
+however, for the libraries that we developed in-house, we associate our rank
+assignments with particular half-life ranges.  The figure below shows how
+formation values (plotted on a logarithmic scale on the left vertical axis) and
+rate-constants (plotted on a logarithmic scale on the right vertical axis) vary
+as a function of rank.  To be consistent with the Metabolizer algorithm, the
+half-life ranges were selected so that the rate constants associated with the
+midpoints of each half-life range would plot along a line with the
+approximately the same slope as that of the formation plotted against the rank. 
+</p>
+
+<p class=MsoNormal> </p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=601
+height=423 id="Picture 6" src="MetabolizerAlgorithm_Nov2021_files/image013.png"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>The table below defines the half-life ranges associated with
+each rank and provides the numerical values plotted in the figure above.  This
+table can be used to verify that the percent production values calculated with
+the rate constants are roughly the same as the percent production values
+calculated with the formation values.  For example, for a chemical that can be
+transformed according to three reaction schemes with ranks 6, 4 and 2, the
+production percentages are 98%, 2% and &lt;0.1%, respectively, whether these percentages
+are calculated with the formation values or the midpoint rate constants.</p>
+
+<div align=center>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td width=61 valign=top style='width:45.85pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>Rank</p>
+  </td>
+  <td width=92 valign=top style='width:69.3pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>Formation</p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>Half-life Range</p>
+  </td>
+  <td width=144 valign=top style='width:1.5in;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>Midpoint Half-life (days)</p>
+  </td>
+  <td width=156 valign=top style='width:116.75pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>Midpoint Rate Constant (per day)</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=61 valign=top style='width:45.85pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>1</p>
+  </td>
+  <td width=92 valign=top style='width:69.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>7</p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>&gt; 1 year</p>
+  </td>
+  <td width=144 valign=top style='width:1.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>---</p>
+  </td>
+  <td width=156 valign=top style='width:116.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>---</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=61 valign=top style='width:45.85pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>2</p>
+  </td>
+  <td width=92 valign=top style='width:69.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>49</p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>60 days &#8804; t<sub>½</sub> &lt; 1 year</p>
+  </td>
+  <td width=144 valign=top style='width:1.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>212.5</p>
+  </td>
+  <td width=156 valign=top style='width:116.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>0.00326</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=61 valign=top style='width:45.85pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>3</p>
+  </td>
+  <td width=92 valign=top style='width:69.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>343</p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>7 days &#8804; t<sub>½</sub> &lt; 60 days</p>
+  </td>
+  <td width=144 valign=top style='width:1.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>33.5</p>
+  </td>
+  <td width=156 valign=top style='width:116.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>0.0207</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=61 valign=top style='width:45.85pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>4</p>
+  </td>
+  <td width=92 valign=top style='width:69.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>2401</p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'><span style='color:black'>24 hours </span>&#8804; t<sub>½</sub>
+  &lt;<span style='color:black'> 7 days</span></p>
+  </td>
+  <td width=144 valign=top style='width:1.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'><span style='color:black'>4</span></p>
+  </td>
+  <td width=156 valign=top style='width:116.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>0.173</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=61 valign=top style='width:45.85pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>5</p>
+  </td>
+  <td width=92 valign=top style='width:69.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>16807</p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>200 min &#8804; t<sub>½</sub> &lt; 24 hours</p>
+  </td>
+  <td width=144 valign=top style='width:1.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>0.569</p>
+  </td>
+  <td width=156 valign=top style='width:116.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'><span style='color:black'>1.22</span></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=61 valign=top style='width:45.85pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>6</p>
+  </td>
+  <td width=92 valign=top style='width:69.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>117649</p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>30 min &#8804; t<sub>½</sub> &lt; 200 min</p>
+  </td>
+  <td width=144 valign=top style='width:1.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>0.0799</p>
+  </td>
+  <td width=156 valign=top style='width:116.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>8.68</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=61 valign=top style='width:45.85pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>7</p>
+  </td>
+  <td width=92 valign=top style='width:69.3pt;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>823543</p>
+  </td>
+  <td width=170 valign=top style='width:127.6pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>t<sub>½</sub> &lt; 30 min</p>
+  </td>
+  <td width=144 valign=top style='width:1.5in;border-top:none;border-left:none;
+  border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>0.0104</p>
+  </td>
+  <td width=156 valign=top style='width:116.75pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:4.0pt;text-align:center;
+  line-height:normal'>66.5</p>
+  </td>
+ </tr>
+</table>
+
+</div>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>REFERENCE</b></p>
+
+<p class=MsoNormal>Pirok, 2012. <i>Metabolizer and Humans</i>. </p>
+
+<p class=MsoNormal><a
+href="https://chemaxon.com/app/uploads/2012/11/Metabolizer-and-Humans.pdf">https://chemaxon.com/app/uploads/2012/11/Metabolizer-and-Humans.pdf</a></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

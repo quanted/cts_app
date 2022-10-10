@@ -88,6 +88,10 @@ $(document).ready(function () {
     			json_data['data'] = buildMetabolitesArray(csvType);
     			json_data['checkedCalcsAndProps'] = checkedCalcsAndProps;
     			json_data['geomeanDict'] = geomeanDict;  // gets global geomean for p-chem properties
+
+    			console.log("QSAR Half-life: ", includeRates)
+    			json_data['includeRates'] = includeRates;
+
     		}
 
     		// Sends key to backend to make likely CSV:

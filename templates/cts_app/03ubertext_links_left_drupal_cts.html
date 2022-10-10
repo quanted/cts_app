@@ -18,7 +18,9 @@
           {% if MODEL == valueValue %}
             <ul class="menu">
               <li class="menu-item"><a href="/{{ MODEL }}/input" title="Run {{ valueKey|safe }}" class="menu-link{% if PAGE == "input" or PAGE == "output" %} active-trail active{% endif %}">Run single chemical</a></li>
+              {% if not 'chemspec' in MODEL %}
               <li class="menu-item"><a href="/{{ MODEL }}/batch" title="Run {{ valueKey|safe }} Batch" class="menu-link{% if PAGE == "batch" or PAGE == "batchoutput" %} active-trail active{% endif %}">Run batch file</a></li>
+              {% endif %}
             </ul>
           {% endif %}
           </li>

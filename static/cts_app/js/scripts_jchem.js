@@ -136,7 +136,7 @@ function populateChemEditDOM(data) {
   $('#formula').val(data["formula"]); //Formula txtbox - results table
   $('#cas').val(data['cas']);
   $('#casrn').val(data['casrn']);
-  $('#dtxsid').val(data['dsstoxSubstanceId']);
+  $('#dtxsid').val(data['dtxsid']);
   $('#mass').val(data["mass"]); //Mass txtbox - results table
   $('#exactmass').val(data['exactMass']);
   try {

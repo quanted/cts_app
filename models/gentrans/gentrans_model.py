@@ -40,7 +40,7 @@ class gentrans(object):
         self.photolysis_unranked = photolysis_unranked
         self.photolysis_ranked = photolysis_ranked
 
-        # Class-specific reaction libraries
+        # Chemical class-specific reaction libraries
         self.pfas_environmental  = pfas_environmental
         self.pfas_metabolism  = pfas_metabolism
 
@@ -61,7 +61,9 @@ class gentrans(object):
             "abiotic_reduction": self.abiotic_reduction,
             "photolysis_unranked": self.photolysis_unranked,
             "photolysis_ranked": self.photolysis_ranked,
-            "mammalian_metabolism": self.mamm_metabolism
+            "mammalian_metabolism": self.mamm_metabolism,
+            "pfas_environmental": self.pfas_environmental,
+            "pfas_metabolism": self.pfas_metabolism
         }
 
         self.trans_libs = []

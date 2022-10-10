@@ -13,6 +13,8 @@ var hydrolysisLink = "/cts/static/cts_app/docs/Hydrolysis Lib HTML/HydrolysisRxn
 var reductionLink = "/cts/static/cts_app/docs/Reduction HTML/AbioticReductionRxnLib_vers1-5rev_052721.htm#";
 var unrankedPhotolysisLink = "/cts/static/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-0a_051721.htm#"
 var rankedPhotolysisLink = "/cts/static/cts_app/docs/Direct Photolysis HTML/DirectPhotolysisRxnLib_ver1-3a_051721.htm#"
+var pfasEnvironmentalLink = "/cts/static/cts_app/docs/PFAS HTML/PFASEnvironmentalReactionLibrary_ver1-1.htm#";
+var pfasMetabolicLink = "/cts/static/cts_app/docs/PFAS HTML/PFASMetabolicReactionLibrary_ver1-1.htm#";
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -32,6 +34,7 @@ var pchemSelectErrorMessage = "Must select at least one calculator and available
 var pchemNoCarbonMessage = "CTS does not process inorganic products";
 var epiQsarRoutes = [
     'halogenated aliphatics: elimination',
+    'halogenated aliphatics: nucleophilic substitution (no adjacent x)',
     'epoxide hydrolysis',
     'organophosphorus ester hydrolysis 1 (base-catalyzed)',
     'organophosphorus ester hydrolysis 2 (neutral or acid-catalyzed)',
@@ -504,7 +507,6 @@ function init(json){
                         var node_gen_id = buildGenKey(i, node_gen_array);
                         parsed_gen_array.push(node_gen_id);
 
-
                         var current_node = searchForNodeByGenKey(node_gen_id, st_nodes);
 
                         // add image to reaction pathways div:
@@ -522,6 +524,7 @@ function init(json){
 
                             var next_node_id = buildGenKey(i + 1, node_gen_array);
                             var next_node = searchForNodeByGenKey(next_node_id, st_nodes);
+	
 
                             var routes = next_node.data.routes;
                             var arrow_obj = $.parseHTML(arrow_html);  //<div><img></div>
@@ -534,9 +537,11 @@ function init(json){
 
                                 $(arrow_obj).prepend('<br><p><a href="' + link + '" target="_blank">' + latest_node_route + '</a></p>');  // add "routes"
 
-                				if (node['data']['qsar']) {
+                				//if (node['data']['qsar']) {
+				                if (next_node['data']['qsar']) {
                 				    console.log("Appending QSAR");
-                              	    $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
+                              	    // $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
+                                    $(arrow_obj).append('<p>' + next_node['data']['qsar']['data'] + next_node['data']['qsar']['units'] + '</p>');
                             	}
                             }
                             $('#reactionpathways').append(arrow_obj);
@@ -578,6 +583,8 @@ function init(json){
 
 function findReactionLinkSection(routes) {
 
+    let selectedReactionLibs = metabolizer_post['transformationLibraries'];
+
     var route = routes.split(',').pop();
     // Checks hydrolysis reactions:
     for (let reactionName in hydrolysisReactionMap) {
@@ -598,6 +605,24 @@ function findReactionLinkSection(routes) {
         let sectionName = rankedPhotolysisReactionMap[reactionName];
         if(route.toLowerCase().includes(reactionName.toLowerCase())) {
             return rankedPhotolysisLink + sectionName;
+        }
+    }
+    // Checks PFAS Environmental reactions:
+    if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
+        for (let reactionName in pfasEnvironmentalReactionMap) {
+            let sectionName = pfasEnvironmentalReactionMap[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                return pfasEnvironmentalLink + sectionName;
+            }
+        }
+    }
+    // Checks PFAS Metabolic reactions:
+    else if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_metabolism') {
+        for (let reactionName in pfasMetabolicReactionMap) {
+            let sectionName = pfasMetabolicReactionMap[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                return pfasMetabolicLink + sectionName;
+            }
         }
     }
     return '/cts/about/reactionlibs';  // returns main RL page there isn't a pathway match
@@ -738,7 +763,7 @@ function molecular_info_request_websocket(node) {
         'workflow': 'gentrans'
     };
 
-    if (node.id === 1) {
+    if (node.id === 1 && batch_chems && batch_chems.length < 1) {
         mol_info_request['chemical'] = orig_smiles;  // uses orig_smiles from cts_pchemprop_requests
     }
 
@@ -1027,10 +1052,14 @@ function initiateHalflifeRequests() {
 
         if (epiQsarRoutes.includes(route.toLowerCase())) {
             console.log("QSAR route matches. Making request to epi qsar.")
-            // makeQsarRequest(treeNode);
-            let smiles = st.graph.nodes[ind - 1].data.smiles;
-	    let child = st.graph.nodes[ind].data.smiles;
-            makeQsarRequest(smiles, route, child);
+            let nodeGen = treeNode.data.genKey.split(' ')[1];  // e.g., "molecule 1.2" -> "1.2"
+            let parentObj = getParentNode(treeNode);
+            console.log("Parent object: ", parentObj)
+            let smiles = parentObj.data.smiles;
+            let child = st.graph.nodes[ind].data.smiles;
+	    let childNode = st.graph.nodes[ind];
+            //makeQsarRequest(smiles, route, child);
+            makeQsarRequest(parentObj, route, childNode);
         }
 
     }
@@ -1038,15 +1067,20 @@ function initiateHalflifeRequests() {
 }
 
 // function makeQsarRequest(node) {
-function makeQsarRequest(smiles, route, child) {
+//function makeQsarRequest(smiles, route, child) {
+function makeQsarRequest(parentObj, route, childNode) {
 
     let requestObj = {
-        'chemical': smiles,
+        'chemical': parentObj.data.smiles,
+	'parentGenkey': parentObj.data.genKey.split(' ')[1],
         'prop': 'qsar',
         'calc': 'epi',
         'route': route,
-	'child': child
+        'child': childNode.data.smiles,
+	'childGenkey': childNode.data.genKey.split(' ')[1]
     };
+
+    console.log("Making request to EPI for half life: ", requestObj)
 
     $.ajax({
         url: '/cts/rest/epi/run',
@@ -1077,7 +1111,8 @@ function handleQsarResponse(response) {
                 "prop": "Ka Half-Life at pH 7",
                 "calc": "epi",
                 "method": null,
-                "data": "37.499"
+                "data": "37.499",
+                "units": "days"
             }
         ]
     }
@@ -1095,15 +1130,42 @@ function handleQsarResponse(response) {
 
     for (nodeInd in st.graph.nodes) {
       let node = st.graph.nodes[nodeInd];
-      console.log("node smiles: ", node.data.smiles);
-      console.log("response smiles: ", response['data']['child'])
-      if (node.data.smiles == response['data']['child']) {
-        st.graph.nodes[nodeInd]['data']['qsar'] = response['data']['data'][0]['data'];
+      console.log("node: ", node);
+      console.log("response: ", response);
+      //console.log("response child smiles: ", response['data']['child'])
+
+      let childGenkey = response['data']['childGenkey'];
+      let nodeGenkey = node.data.genKey.split(' ')[1]
+
+      console.log("Child genkey and node genkey: ", childGenkey, nodeGenkey)
+
+      if (node.data.smiles == response['data']['child'] && nodeGenkey == childGenkey) {
+
+        console.log("A match has occurred.");
+        let qsarObj = {
+            'data': response['data']['data'][0]['data'],
+            'units': response['data']['data'][0]['units']
+        };
+        st.graph.nodes[nodeInd]['data']['qsar'] = qsarObj;
       }
     }
 
     return response['data'];
 
+}
+
+function getParentNode(nodeObj) {
+    /*
+    Gets the parent's genKey from a given node.
+    Example: "1.3.2" -> "molecule 1.3"
+    */
+    let currentGenArray = nodeObj.data.genKey.split(' ')[1].split('.');  // "molecule 1.2" -> ["1", "2"]
+    let parentGenkey = '';
+    for (let i = 0; i < currentGenArray.length - 1; i++) {
+        parentGenkey += currentGenArray[i] + '.';
+    }
+    parentGenkey = "molecule " + parentGenkey.slice(0, -1);
+    return searchForNodeByGenKey(parentGenkey, st.graph.nodes);
 }
 
 </script>

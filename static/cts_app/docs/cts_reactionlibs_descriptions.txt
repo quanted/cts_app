@@ -1,16 +1,15 @@
 <p>
-The reaction libraries are composed of generalized reaction schemes that compose a
-reaction library for a given transformation process (e.g., abiotic hydrolysis, abiotic
-reduction, and mammalian metabolism) that are based on specific examples
-published in the peer-reviewed literature. Reaction libraries that allows us to
-&quot;encode&quot; the known process science published in the peer-reviewed literature. The
-reaction libraries are considered to be comprehensive based on the review of the
-current literature; however, updates will be made as additional studies are published.
-The encoding of process science is accomplished using Chemical Terms Language and
-Smart Reaction SMILES strings through cheminformatics applications. The execution
-of these reaction libraries provides dominant transformation pathways and products
-for the chemical of interest as a function of environmental conditions.
+CTS Reaction Libraries are composed of generalized reaction schemes that that specify how a molecular fragment will be modified by a particular transformation process (e.g., abiotic hydrolysis, abiotic reduction, and mammalian metabolism). The reaction schemes were developed based on reported transformation pathways and products from the peer-reviewed literature and regulatory reports. The reaction libraries are considered to be comprehensive based on review of the current literature; however, updates will be made as additional studies are published.
 </p>
+
+<br><br>
+
+<h3>Prediction of Transformation Pathways</h3>
+<p>
+When a user submits a molecule of interest in the CTS Generate Transformation Products workflow, CTS compares the molecule to the reactant side of each scheme within the Reaction Library. If CTS finds a match between a structural fragment within the molecule and the reactant side of a scheme, it modifies the fragment according to the scheme, leaving the rest of the molecule unchanged. Because a molecule may contain multiple structural fragments that match the reactant side of different reaction schemes, multiple products can be generated from the parent molecule. To predict which of these products are the most likely to accumulate, CTS calculates the &#34;production&#34; and &#34;accumulation&#34; of each product using an integer rank that has been assigned to each reaction scheme within the CTS Reaction Libraries based on reported transformation rates in the scientific literature.
+</p>
+
+<h4><a href="/cts/static/cts_app/docs/ProductionAccumulationHTML/MetabolizerAlgorithm_Nov2021.htm" target="_blank">Algorithm for Prediction of Likely Transformation Products</a></h4>
 
 <br><br>
 
@@ -83,6 +82,24 @@ the reaction schemes cannot be viewed.
 </p>
 
 <h4><a href="/cts/static/cts_app/docs/Metabolizer HTML/MetabolizerDefaultLibrary_SchemeList.htm" target="_blank">List of Schemes Included in ChemAxon&#39;s Human Phase 1 Metabolism Reaction Library</a> (last updated July 2016)</h4>
+
+<br><br>
+
+<h3>PFAS Environmental Reaction Library</h3>
+<p>
+The PFAS Environmental Reaction Library has been developed to predict the likely environmental transformation products of per- and polyfluoroalkyl substances (PFAS). Version 1.1 of the PFAS Environmental Reaction Library contains 59 reaction schemes. The library is designed to run by itself and cannot be combined with other CTS reaction libraries. In the library documentation pages, left click a reaction scheme to view the generalized reaction scheme, example transformation pathways, and associated references. Scroll to the bottom of the library documentation page to view a table showing the rank assignments for each scheme in the library.
+</p>
+
+<h4><a href="/cts/static/cts_app/docs/PFAS HTML/PFASEnvironmentalReactionLibrary_ver1-1.htm" target="_blank">PFAS Environmental Reaction Library (last updated July 15, 2022)</a></h4>
+
+<br><br>
+
+<h3>PFAS Metabolic Reaction Library</h3>
+<p>
+The PFAS Metabolic Library has been developed to predict the likely transformation products of PFAS chemicals in biological systems. Version 1.1 of the PFAS Metabolic Reaction Library contains 76 reaction schemes.  The library is designed to run by itself and cannot be combined with other CTS reaction libraries. In the library documentation pages, left click a reaction scheme to view the generalized reaction scheme, example transformation pathways, and associated references. Scroll to the bottom of the library documentation page to view a table showing the rank assignments for each scheme in the library.
+</p>
+
+<h4><a href="/cts/static/cts_app/docs/PFAS HTML/PFASMetabolicReactionLibrary_ver1-1.htm" target="_blank">PFAS Metabolic Reaction Library (last updated August 24, 2022)</a></h4>
 
 <br><br>
 
