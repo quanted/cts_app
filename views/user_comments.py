@@ -63,7 +63,7 @@ def handle_contact_post(request):
         comment
     )
 
-    if os.getenv('ENV_NAME') in ["epa_aws_dev", "epa_aws_stg", "epa_aws_prd"]:
+    if "epa.gov" in os.getenv('CTS_EMAIL'):
         email_response = send_email_epa(subject, message)
     else:
         email_response = send_email(subject, message)
