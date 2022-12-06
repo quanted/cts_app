@@ -3,6 +3,8 @@
 import os
 import sys
 
+# from temp_config.set_environment import DeployEnv
+
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cts_app.settings')

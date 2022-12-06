@@ -30,3 +30,5 @@ settings_local.py
 secret.py
 cts_comments.json
 collected_static/
+
+.env
