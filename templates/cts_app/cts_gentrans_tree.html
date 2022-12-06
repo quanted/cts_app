@@ -522,18 +522,20 @@ function init(json){
 
                         if (i < node_gen_array.length - 1) {
 
-                            var next_node_id = buildGenKey(i + 1, node_gen_array);
-                            var next_node = searchForNodeByGenKey(next_node_id, st_nodes);
+                            let next_node_id = buildGenKey(i + 1, node_gen_array);
+                            let next_node = searchForNodeByGenKey(next_node_id, st_nodes);
 	
 
-                            var routes = next_node.data.routes;
-                            var arrow_obj = $.parseHTML(arrow_html);  //<div><img></div>
+                            let routes = next_node.data.routes;
+                            let arrow_obj = $.parseHTML(arrow_html);  //<div><img></div>
                             if (routes) {
                                 // var latest_node_route = routes.split(',').pop();
-                                var latest_node_route = parseRouteName(routes);
+                                let latest_node_route = parseRouteName(routes);
                                 // todo: break up route name by capital letters (e.g., HydroxyAlphaHydroxlation --> Hydroxy \n Alpha \n Hydrolation)
 
-                                var link = findReactionLinkSection(routes);
+                                let link = findReactionLinkSection(routes);
+
+                                let rank = findReactionRate(routes);
 
                                 $(arrow_obj).prepend('<br><p><a href="' + link + '" target="_blank">' + latest_node_route + '</a></p>');  // add "routes"
 
@@ -543,6 +545,10 @@ function init(json){
                               	    // $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
                                     $(arrow_obj).append('<p>' + next_node['data']['qsar']['data'] + next_node['data']['qsar']['units'] + '</p>');
                             	}
+                                else {
+                                    // Adds qualitative rank descriptor if not requesting qsar half-life
+                                    $(arrow_obj).append('<p>' + rank + '</p>');
+                                }
                             }
                             $('#reactionpathways').append(arrow_obj);
                         }
@@ -585,7 +591,7 @@ function findReactionLinkSection(routes) {
 
     let selectedReactionLibs = metabolizer_post['transformationLibraries'];
 
-    var route = routes.split(',').pop();
+    let route = routes.split(',').pop();
     // Checks hydrolysis reactions:
     for (let reactionName in hydrolysisReactionMap) {
         let sectionName = hydrolysisReactionMap[reactionName];
@@ -626,6 +632,40 @@ function findReactionLinkSection(routes) {
         }
     }
     return '/cts/about/reactionlibs';  // returns main RL page there isn't a pathway match
+}
+
+
+function findReactionRate(routes) {
+    /*
+    Gets qualitative rate descriptor for a given reaction library.
+    Options: generalReactionLibrariesRanks, pfasEnvironmentalLibraryRanks, pfasMetabolicLibraryRanks
+    */
+    let generalLibs = ['abiotic_hydrolysis', 'abiotic_reduction', 'mamm_metabolism', 'photolysis_unranked', 'photolysis_ranked'];
+    let pfasEnvironmental = 'pfas_environmental';
+    let pfasMetabolism = 'pfas_metabolism';
+
+    let route = routes.split(',').pop();
+
+    let selectedReactionLibs = metabolizer_post['transformationLibraries'];
+
+    let reactionRank = '';
+
+    // Checks PFAS Environmental reactions:
+    if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
+        reactionRank = pfasEnvironmentalLibraryRanks[route];
+    }
+    // Checks PFAS Metabolic reactions:
+    else if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_metabolism') {
+        reactionRank = pfasMetabolicLibraryRanks[route];
+    }
+    else {
+        // NOTE: Should account for reaction libs that won't have reaction ranks (i.e., external
+        // libs like biotransformer and envipath).
+        reactionRank = generalReactionLibrariesRanks[route];
+    }
+
+    return reactionRank;
+
 }
 
 
