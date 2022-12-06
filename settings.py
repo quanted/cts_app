@@ -12,10 +12,10 @@ logging.basicConfig(
 
 logger.info("Starting CTS-APP django:settings.py")
 
-from temp_config.set_environment import DeployEnv
+# from temp_config.set_environment import DeployEnv
 
-runtime_env = DeployEnv()
-runtime_env.load_deployment_environment()
+# runtime_env = DeployEnv()
+# runtime_env.load_deployment_environment()
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 TEMPLATE_ROOT = os.path.join(PROJECT_ROOT, 'templates/')
