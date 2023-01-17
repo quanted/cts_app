@@ -634,6 +634,40 @@ function findReactionLinkSection(routes) {
     return '/cts/about/reactionlibs';  // returns main RL page there isn't a pathway match
 }
 
+function findReactionRate(routes) {
+    /*
+    Gets qualitative rate descriptor for a given reaction library.
+    Options: generalReactionLibrariesRanks, pfasEnvironmentalLibraryRanks, pfasMetabolicLibraryRanks
+    */
+    let generalLibs = ['abiotic_hydrolysis', 'abiotic_reduction', 'mamm_metabolism', 'photolysis_unranked', 'photolysis_ranked'];
+    let pfasEnvironmental = 'pfas_environmental';
+    let pfasMetabolism = 'pfas_metabolism';
+
+    let route = routes.split(',').pop();
+
+    let selectedReactionLibs = metabolizer_post['transformationLibraries'];
+
+    let reactionRank = '';
+
+    // Checks PFAS Environmental reactions:
+    if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
+        reactionRank = pfasEnvironmentalLibraryRanks[route];
+    }
+    // Checks PFAS Metabolic reactions:
+    else if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_metabolism') {
+        reactionRank = pfasMetabolicLibraryRanks[route];
+    }
+    else {
+        // NOTE: Should account for reaction libs that won't have reaction ranks (i.e., external
+        // libs like biotransformer and envipath).
+        reactionRank = generalReactionLibrariesRanks[route];
+    }
+
+    return reactionRank;
+
+}
+
+
 
 function findReactionRate(routes) {
     /*
