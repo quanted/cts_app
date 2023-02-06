@@ -112,18 +112,21 @@ $(document).ready(function() {
 
 
 	function connectToWebsocketServer() {
-		// connect to socket.io!
-        if (nodejs_host == 'nginx') {
-            return io.connect();  // docker way
-        }
-        else {
-            if (nodejs_port && nodejs_port != 80) {
-                return io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
-            }
-            else {
-                return io.connect(nodejs_host, {'force new connection': true});
-            }
-        }
+		/*
+		Connects to socket.io!
+		*/
+        // if (nodejs_host == 'nginx') {
+        //     return io.connect();  // docker way
+        // }
+        // else {
+        //     if (nodejs_port && nodejs_port != 80) {
+        //         return io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
+        //     }
+        //     else {
+        //         return io.connect(nodejs_host, {'force new connection': true});
+        //     }
+        // }
+        return io(nodejs_host, {path: '/cts/ws/'}).connect({'force new connection': true});
 	}
 
 	function cleanInputFile(batch_chems) {
