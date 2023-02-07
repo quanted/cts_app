@@ -67,6 +67,8 @@ def getReactPathSimData(gentrans_obj):
 	data = [
 		{'Libraries': libs},
 		{'Generation Limit': gentrans_obj.gen_limit},
+		{"Include rates": gentrans_obj.include_rates},
+		{"Tree type": gentrans_obj.tree_type},
 		# {'Population Limit': gentrans_obj.pop_limit},
 		# {'Likely Limit': gentrans_obj.likely_limit}
 	]

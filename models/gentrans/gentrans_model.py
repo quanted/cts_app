@@ -13,7 +13,7 @@ class gentrans(object):
     def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
                  exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis_unranked,
                  photolysis_ranked, pfas_environmental, pfas_metabolism, gen_limit, pop_limit,
-                 likely_limit, biotrans_metabolism, biotrans_libs, envipath_metabolism, include_rates):
+                 likely_limit, biotrans_metabolism, biotrans_libs, envipath_metabolism, include_rates, tree_type):
 
         self.title = "Generate Transformation Products"
         self.jid = MetabolizerCalc().gen_jid()
@@ -55,6 +55,8 @@ class gentrans(object):
         self.envipath_metabolism = envipath_metabolism
 
         self.include_rates = include_rates
+
+        self.tree_type = tree_type
 
         reactionLibs = {
             "hydrolysis": self.abiotic_hydrolysis,
@@ -101,6 +103,12 @@ class gentrans(object):
             }
             if len(self.trans_libs) > 0:
                 self.metabolizer_request_post.update({'transformationLibraries': self.trans_libs})
+
+             if self.tree_type == "simplified_tree":
+                # Simplified tree selected, sets 'unique_metabolites' key to true:
+                self.metabolizer_request_post.update({"unique_metabolites": True})
+            else:
+                self.metabolizer_request_post.update({"unique_metabolites": False})
 
         self.run_data = {
             'title': "Transformation Products Output",

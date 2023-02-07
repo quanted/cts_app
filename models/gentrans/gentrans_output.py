@@ -38,11 +38,13 @@ def gentransOutputPage(request):
 
     include_rates = bleach.clean(request.POST.get('include_rates', ''))
 
+    tree_type = bleach.clean(request.POST.get('tree_type', ''))
+
     gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
                                     mass, exact_mass, cas, abioticHydrolysis, abioticRecuction,
                                     mammMetabolism, photolysis_unranked, photolysis_ranked, 
                                     pfas_environmental, pfas_metabolism, genLimit, popLimit, 
                                     likelyLimit, biotrans_metabolism, biotrans_libs, envipath_metabolism,
-                                    include_rates)
+                                    include_rates, tree_type)
 
     return gentrans_obj

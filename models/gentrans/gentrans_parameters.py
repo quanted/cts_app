@@ -348,7 +348,16 @@ class cts_reaction_options(forms.Form):
 					widget=forms.Select(attrs={'aria-label': 'select generation limit'})
 				)
 
+	tree_type = forms.ChoiceField (
+					choices=tree_type_CHOICES,
+					label='Select tree type',
+					required=False,
+					widget=forms.Select(attrs={'aria-label': 'select tree type'})
+				)
+
 	include_rates = forms.BooleanField(required=False, label='Include estimated transformation half-life (if available)', disabled=True)
+
+
 
 	# pop_limit = forms.ChoiceField (
 	# 				choices=pop_limit_CHOICES,
