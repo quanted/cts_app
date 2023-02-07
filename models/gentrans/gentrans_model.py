@@ -104,7 +104,7 @@ class gentrans(object):
 			if len(self.trans_libs) > 0:
 				self.metabolizer_request_post.update({'transformationLibraries': self.trans_libs})
 
-			 if self.tree_type == "simplified_tree":
+			if self.tree_type == "simplified_tree":
 				# Simplified tree selected, sets 'unique_metabolites' key to true:
 				self.metabolizer_request_post.update({"unique_metabolites": True})
 			else:
