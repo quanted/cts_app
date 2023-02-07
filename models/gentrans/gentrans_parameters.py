@@ -212,6 +212,7 @@ gen_limit_CHOICES = (('1', 1), ('2', 2), ('3', 3), ('4', 4))  # generation limit
 gen_limit_max = gen_limit_CHOICES[-1][1]  # not used as field, but referenced in many-a-place
 pop_limit_CHOICES = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'),
                      ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'))  # population limit
+tree_type_CHOICES = (('full_tree', 'Full tree'), ('simplified_tree', 'Simplified tree'))
 
 # aerobic_CHOICES = (('0', 'Surface Water'), ('1', 'Surface Soil'), ('2', 'Vadose Zone'), ('3', 'Groundwater'))
 # anaerobic_CHOICES = (('0', 'Water Column'), ('1', 'Benthic Sediment'), ('2', 'Groundwater'))
@@ -347,6 +348,13 @@ class cts_reaction_options(forms.Form):
 					required=False,
 					widget=forms.Select(attrs={'aria-label': 'select generation limit'})
 				)
+
+	tree_type = forms.ChoiceField (
+						choices=tree_type_CHOICES,
+						label='Select tree type',
+						required=False,
+						widget=forms.Select(attrs={'aria-label': 'select tree type'})
+					)
 
 	include_rates = forms.BooleanField(required=False, label='Include estimated transformation half-life (if available)', disabled=True)
 

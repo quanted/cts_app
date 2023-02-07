@@ -277,17 +277,19 @@ $(document).ready(function() {
     // Enable submit only if a reaction library is selected
     $('#cts_reaction_libs input:checkbox, #cts_class_specific_reaction_libs input:checkbox').on("change", function() {
 
-        var checkedItems = $('#cts_reaction_libs input:checkbox:checked, #cts_class_specific_reaction_libs input:checkbox:checked');
+        let checkedItems = $('#cts_reaction_libs input:checkbox:checked, #cts_class_specific_reaction_libs input:checkbox:checked');
 
-        var mamm_meta_checked = $('#id_mamm_metabolism:checked').length > 0;
-        var areduct_checked = $('#id_abiotic_reduction:checked').length > 0;
-        var ahydro_checked = $('#id_abiotic_hydrolysis:checked').length > 0;
-        var photolysis_unranked_checked = $('#id_photolysis_unranked:checked').length > 0;
-        var photolysis_ranked_checked = $('#id_photolysis_ranked:checked').length > 0;
-        var biotrans_checked = $('#id_biotrans_metabolism:checked').length > 0;
-        var envipath_checked = $('#id_envipath_metabolism:checked').length > 0;
-        var pfas_environmental_checked = $('#id_pfas_environmental:checked').length > 0;
-        var pfas_metabolism_checked = $('#id_pfas_metabolism:checked').length > 0;
+        let mamm_meta_checked = $('#id_mamm_metabolism:checked').length > 0;
+        let areduct_checked = $('#id_abiotic_reduction:checked').length > 0;
+        let ahydro_checked = $('#id_abiotic_hydrolysis:checked').length > 0;
+        let photolysis_unranked_checked = $('#id_photolysis_unranked:checked').length > 0;
+        let photolysis_ranked_checked = $('#id_photolysis_ranked:checked').length > 0;
+        let biotrans_checked = $('#id_biotrans_metabolism:checked').length > 0;
+        let envipath_checked = $('#id_envipath_metabolism:checked').length > 0;
+        let pfas_environmental_checked = $('#id_pfas_environmental:checked').length > 0;
+        let pfas_metabolism_checked = $('#id_pfas_metabolism:checked').length > 0;
+
+        let tree_type_value = $('#id_tree_type').find(':selected').val();
 
         if (mamm_meta_checked && checkedItems.length != 1) {
             alert("Mammalian metabolism reaction library cannot run with additional reaction libraries");
@@ -333,7 +335,7 @@ $(document).ready(function() {
             $('select#id_gen_limit').children('option[value="3"], option[value="4"]').attr('disabled', false);
         }
 
-        if (ahydro_checked === true && disableQsar === false) {
+        if (ahydro_checked === true && disableQsar === false && tree_type_value === 'full_tree') {
             // Enables half-life checkbox for abiotiotic hydrolysis
             $('input#id_include_rates').attr('disabled', false);
         }
@@ -341,6 +343,18 @@ $(document).ready(function() {
             $('input#id_include_rates').attr('disabled', true);
         }
 
+    });
+
+    $('#id_tree_type').on('change', function() {
+        let tree_type_value = $('#id_tree_type').find(':selected').val();
+        let ahydro_checked = $('#id_abiotic_hydrolysis:checked').length > 0;
+        if (ahydro_checked === true && disableQsar === false && tree_type_value === 'full_tree') {
+            // Enables half-life checkbox for abiotiotic hydrolysis
+            $('input#id_include_rates').attr('disabled', false);
+        }
+        else {
+            $('input#id_include_rates').attr('disabled', true);
+        }
     });
 
 });
