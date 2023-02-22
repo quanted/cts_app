@@ -535,8 +535,6 @@ function init(json){
 
                                 let link = findReactionLinkSection(routes);
 
-                                let rank = findReactionRate(routes);
-
                                 $(arrow_obj).prepend('<br><p><a href="' + link + '" target="_blank">' + latest_node_route + '</a></p>');  // add "routes"
 
                 				//if (node['data']['qsar']) {
@@ -547,6 +545,7 @@ function init(json){
                             	}
                                 else {
                                     // Adds qualitative rank descriptor if not requesting qsar half-life
+                                    let rank = findReactionRate(routes);
                                     $(arrow_obj).append('<p>' + rank + '</p>');
                                 }
                             }
@@ -663,10 +662,13 @@ function findReactionRate(routes) {
         reactionRank = generalReactionLibrariesRanks[route];
     }
 
+    if (reactionRank === undefined) {
+        reactionRank = '';
+    }
+
     return reactionRank;
 
 }
-
 
 
 function parseRouteName(routes) {
