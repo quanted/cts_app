@@ -535,8 +535,6 @@ function init(json){
 
                                 let link = findReactionLinkSection(routes);
 
-                                let rank = findReactionRate(routes);
-
                                 $(arrow_obj).prepend('<br><p><a href="' + link + '" target="_blank">' + latest_node_route + '</a></p>');  // add "routes"
 
                 				//if (node['data']['qsar']) {
@@ -547,6 +545,7 @@ function init(json){
                             	}
                                 else {
                                     // Adds qualitative rank descriptor if not requesting qsar half-life
+                                    let rank = findReactionRate(routes);
                                     $(arrow_obj).append('<p>' + rank + '</p>');
                                 }
                             }
@@ -651,51 +650,35 @@ function findReactionRate(routes) {
 
     // Checks PFAS Environmental reactions:
     if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
-        reactionRank = pfasEnvironmentalLibraryRanks[route];
+        for (let reactionName in pfasEnvironmentalLibraryRanks) {
+            let rateDescriptor = pfasEnvironmentalLibraryRanks[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                reactionRank = rateDescriptor;
+            }
+        }
     }
     // Checks PFAS Metabolic reactions:
     else if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_metabolism') {
-        reactionRank = pfasMetabolicLibraryRanks[route];
+        for (let reactionName in pfasMetabolicLibraryRanks) {
+            let rateDescriptor = pfasMetabolicLibraryRanks[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                reactionRank = rateDescriptor;
+            }
+        }
     }
     else {
         // NOTE: Should account for reaction libs that won't have reaction ranks (i.e., external
         // libs like biotransformer and envipath).
-        reactionRank = generalReactionLibrariesRanks[route];
+        for (let reactionName in generalReactionLibrariesRanks) {
+            let rateDescriptor = generalReactionLibrariesRanks[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                reactionRank = rateDescriptor;
+            }
+        }
     }
 
-    return reactionRank;
-
-}
-
-
-
-function findReactionRate(routes) {
-    /*
-    Gets qualitative rate descriptor for a given reaction library.
-    Options: generalReactionLibrariesRanks, pfasEnvironmentalLibraryRanks, pfasMetabolicLibraryRanks
-    */
-    let generalLibs = ['abiotic_hydrolysis', 'abiotic_reduction', 'mamm_metabolism', 'photolysis_unranked', 'photolysis_ranked'];
-    let pfasEnvironmental = 'pfas_environmental';
-    let pfasMetabolism = 'pfas_metabolism';
-
-    let route = routes.split(',').pop();
-
-    let selectedReactionLibs = metabolizer_post['transformationLibraries'];
-
-    let reactionRank = '';
-
-    // Checks PFAS Environmental reactions:
-    if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
-        reactionRank = pfasEnvironmentalLibraryRanks[route];
-    }
-    // Checks PFAS Metabolic reactions:
-    else if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_metabolism') {
-        reactionRank = pfasMetabolicLibraryRanks[route];
-    }
-    else {
-        // NOTE: Should account for reaction libs that won't have reaction ranks (i.e., external
-        // libs like biotransformer and envipath).
-        reactionRank = generalReactionLibrariesRanks[route];
+    if (reactionRank === undefined) {
+        reactionRank = '';
     }
 
     return reactionRank;
