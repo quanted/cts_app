@@ -650,16 +650,31 @@ function findReactionRate(routes) {
 
     // Checks PFAS Environmental reactions:
     if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
-        reactionRank = pfasEnvironmentalLibraryRanks[route];
+        for (let reactionName in pfasEnvironmentalLibraryRanks) {
+            let rateDescriptor = pfasEnvironmentalLibraryRanks[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                reactionRank = rateDescriptor;
+            }
+        }
     }
     // Checks PFAS Metabolic reactions:
     else if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_metabolism') {
-        reactionRank = pfasMetabolicLibraryRanks[route];
+        for (let reactionName in pfasMetabolicLibraryRanks) {
+            let rateDescriptor = pfasMetabolicLibraryRanks[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                reactionRank = rateDescriptor;
+            }
+        }
     }
     else {
         // NOTE: Should account for reaction libs that won't have reaction ranks (i.e., external
         // libs like biotransformer and envipath).
-        reactionRank = generalReactionLibrariesRanks[route];
+        for (let reactionName in generalReactionLibrariesRanks) {
+            let rateDescriptor = generalReactionLibrariesRanks[reactionName];
+            if(route.toLowerCase().includes(reactionName.toLowerCase())) {
+                reactionRank = rateDescriptor;
+            }
+        }
     }
 
     if (reactionRank === undefined) {
