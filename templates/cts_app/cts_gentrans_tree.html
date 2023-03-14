@@ -541,7 +541,7 @@ function init(json){
 				                if (next_node['data']['qsar']) {
                 				    console.log("Appending QSAR");
                               	    // $(arrow_obj).append('<p>' + node['data']['qsar'] + ' days</p>');
-                                    $(arrow_obj).append('<p>' + next_node['data']['qsar']['data'] + next_node['data']['qsar']['units'] + '</p>');
+                                    $(arrow_obj).append('<p>' + next_node['data']['qsar']['data'] + ' ' + next_node['data']['qsar']['units'] + '</p>');
                             	}
                                 else {
                                     // Adds qualitative rank descriptor if not requesting qsar half-life
