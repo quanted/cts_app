@@ -1196,7 +1196,11 @@ function handleQsarResponse(response) {
 
       console.log("Child genkey and node genkey: ", childGenkey, nodeGenkey)
 
-      if (node.data.smiles == response['data']['child'] && nodeGenkey == childGenkey) {
+      let matchedSmiles = node.data.smiles == response['data']['child'] ||
+                            node.data.orig_smiles == response['data']['child'] ||
+                            node.data.chemical == response['data']['child'];
+
+      if (matchedSmiles && nodeGenkey == childGenkey) {
 
         console.log("A match has occurred.");
         let qsarObj = {
