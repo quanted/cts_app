@@ -27,7 +27,7 @@ logger.info(f"TEMPLATE_ROOT: {TEMPLATE_ROOT}")
 logger.info(f"DEPLOY_ENV: {DEPLOY_ENV}")
 
 if DEPLOY_ENV == "dev-kube":
-    DEBUG = True
+    DEBUG = False
     CORS_ORIGIN_ALLOW_ALL = True
 else:
     DEBUG = False
