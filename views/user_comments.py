@@ -35,7 +35,7 @@ def handle_contact_post(request):
 
     valid_recaptcha = validate_recaptcha(recaptcha_response)
 
-    if not validate_recaptcha:
+    if not validate_recaptcha or not recaptcha_response:
         html = generate_error_page("Recaptcha not valid", "Sorry, the comment was not submitted. Please try again.")
         response = HttpResponse()
         response.write(html)
