@@ -36,7 +36,7 @@ urlpatterns.extend([
 	path('<slug:model>/batchinput/', batch.batchInputPage),
 	path('<slug:model>/batchoutput/', batch.batchOutputPage),
 	path('<slug:model>/history/', misc.fileNotFound),
-	path('<slug:model>/pdf/', ctsGenerateReport.pdfReceiver),
+	# path('<slug:model>/pdf/', ctsGenerateReport.pdfReceiver),
 	path('<slug:model>/html/', ctsGenerateReport.htmlReceiver),
 	path('<slug:model>/csv/', ctsGenerateReport.csvReceiver),
 	path('batch/sample/', ctsGenerateReport.textReceiver),
