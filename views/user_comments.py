@@ -35,7 +35,7 @@ def handle_contact_post(request):
 
     valid_recaptcha = validate_recaptcha(recaptcha_response)
 
-    if not validate_recaptcha or not recaptcha_response:
+    if not valid_recaptcha:
         html = generate_error_page("Recaptcha not valid", "Sorry, the comment was not submitted. Please try again.")
         response = HttpResponse()
         response.write(html)
@@ -103,6 +103,8 @@ def validate_recaptcha(recaptcha):
 
     if not "success" in result or result["success"] != True:
         return False
+    elif not "score" in result or result["score"] < 0.6:
+        return False
     else:
         return True 
 
@@ -147,7 +149,7 @@ def send_email(subject, message):
         server.close()
         return {"success": "Email sent."}
     except Exception as e:
-        logging.warning("Error sending reset email: {}".format(e))
+        logging.warning("Error sending email: {}".format(e))
         return {"error": "Unable to send email."}
 
 def send_email_epa(subject, message):
@@ -174,7 +176,7 @@ def send_email_epa(subject, message):
         server.close()
         return {"success": "Email sent."}
     except Exception as e:
-        logging.warning("Error sending reset email: {}".format(e))
+        logging.warning("Error sending email: {}".format(e))
         return {"error": "Unable to send email."}
 
 def contacts_submission_view(request):
