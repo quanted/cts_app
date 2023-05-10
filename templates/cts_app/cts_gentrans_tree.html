@@ -23,7 +23,7 @@ var currentNode = null; //keeps up with selected node
 var genMax = {{ gen_max }};  // max generation limit
 var st = null; //spacetree instance globalized
 var st_array = []; // array of spacetree instances (batch)
-var json = null;  // spacetree json
+var spacetreeJson = null;  // spacetree json
 var nodeList = null; //list of # of nodes per depth
 var nodeHeight = 114; //default node height (image)
 var nodeWidth = 100; //default node width (image)
@@ -58,7 +58,7 @@ var epiQsarRoutes = [
   useGradients = nativeCanvasSupport;
   animate = !(iStuff || !nativeCanvasSupport);
 
-    json = "";
+    spacetreeJson = "";
     nodeList = null;
     st = null;
 
@@ -281,6 +281,7 @@ function addGenKey(jsonObj, json) {
      * the numbering scheme for metabolites that
      * identifies its depth and origin
      * returns: list of tot num of nodes per depth*/
+
     var depthList = new Array(genMax + 2).join('0').split('').map(parseFloat);  // array of 0's size of genMax
     var numNodesPerDepth = new Array(genMax + 2).join('0').split('').map(parseFloat);
     jsonObj.eachLevel(json, 0, genMax, function(node, depth) {
@@ -315,6 +316,10 @@ function init(json){
     }
     delete json['children']; //delete children element
     json.children = newChilds; //replace with array with valid ids
+
+
+    spacetreeJson = json;
+
 
     //Create a new ST instance
     st = new $jit.ST({
@@ -1054,8 +1059,6 @@ function addLikelyBorderToProducts() {
     var treeNode;  // tree node object
     var treeNodeHtmlObject;  // tree node's displayed HTML on the tree
 
-    console.log("adding likely border");
-
     for (var ind in st.graph.nodes) {
         treeNode = st.graph.nodes[ind];
         if (isNaN(treeNode.data.globalAccumulation)) {
@@ -1098,34 +1101,60 @@ function initiateHalflifeRequests() {
         return;
     }
 
+
     for (let ind in st.graph.nodes) {
         let treeNode = st.graph.nodes[ind];
 
         let route = treeNode.data.routes;
 
-        console.log("Index: ", ind)
-        console.log("Tree node: ", treeNode)
-        console.log("Route: ", route.toLowerCase());
-
         if (epiQsarRoutes.includes(route.toLowerCase())) {
             console.log("QSAR route matches. Making request to epi qsar.")
             let nodeGen = treeNode.data.genKey.split(' ')[1];  // e.g., "molecule 1.2" -> "1.2"
             let parentObj = getParentNode(treeNode);
-            console.log("Parent object: ", parentObj)
+            let uniqueSchemesCount = determineParentsUniqueRoutes(parentObj);
+            let productCount = getProductCount(parentObj);
             let smiles = parentObj.data.smiles;
-            let child = st.graph.nodes[ind].data.smiles;
-	       let childNode = st.graph.nodes[ind];
+            let child = treeNode.data.smiles;
+	        let childNode = treeNode;
             //makeQsarRequest(smiles, route, child);
-            makeQsarRequest(parentObj, route, childNode);
+            makeQsarRequest(parentObj, route, childNode, uniqueSchemesCount, productCount);
         }
 
     }
 
 }
 
+function determineParentsUniqueRoutes(parentObj) {
+    /*
+    For a given parent node in the tree, calculates the 
+    unique routes/schemes of its child nodes.
+    NOTE: Appends value to the parent node object.
+    */
+
+    // let nodes = st.graph.nodes;
+
+
+    let childNodes = $jit.json.getSubtree(spacetreeJson, parentObj.id)
+    let schemes = [];
+
+    childNodes['children'].forEach(child => {
+        schemes.push(child['data']['routes']);
+    });
+
+    return new Set(schemes).size;
+}
+
+function getProductCount(parentObj) {
+    /*
+    Returns number of children for a given product/parent.
+    */
+    let childNodes = $jit.json.getSubtree(spacetreeJson, parentObj.id)
+    return childNodes['children'].length;
+}
+
 // function makeQsarRequest(node) {
 //function makeQsarRequest(smiles, route, child) {
-function makeQsarRequest(parentObj, route, childNode) {
+function makeQsarRequest(parentObj, route, childNode, uniqueSchemesCount, productCount) {
 
     let requestObj = {
         'chemical': parentObj.data.smiles,
@@ -1134,7 +1163,9 @@ function makeQsarRequest(parentObj, route, childNode) {
         'calc': 'epi',
         'route': route,
         'child': childNode.data.smiles,
-        'childGenkey': childNode.data.genKey.split(' ')[1]
+        'childGenkey': childNode.data.genKey.split(' ')[1],
+        'uniqueSchemesCount': uniqueSchemesCount,
+        'productCount': productCount
     };
 
     console.log("Making request to EPI for half life: ", requestObj)
@@ -1187,15 +1218,8 @@ function handleQsarResponse(response) {
 
     for (nodeInd in st.graph.nodes) {
       let node = st.graph.nodes[nodeInd];
-      console.log("node: ", node);
-      console.log("response: ", response);
-      //console.log("response child smiles: ", response['data']['child'])
-
       let childGenkey = response['data']['childGenkey'];
       let nodeGenkey = node.data.genKey.split(' ')[1]
-
-      console.log("Child genkey and node genkey: ", childGenkey, nodeGenkey)
-
       let matchedSmiles = node.data.smiles == response['data']['child'] ||
                             node.data.orig_smiles == response['data']['child'] ||
                             node.data.chemical == response['data']['child'];
