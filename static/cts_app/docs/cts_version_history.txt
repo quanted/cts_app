@@ -38,3 +38,12 @@
 <li>Updated source code for BioTransformer and OPERA to resolve log4j security vulnerabilities</li>
 <li>Modified the Chemical Editor to retrieve chemical identification information from the new CCTE API due to the deprecation of the ACToRWS web services</li>
 </ul>
+
+<h3>CTS 2.0</h3>
+<p>CTS version 2.0 contains the following new features:</p>
+<ul>
+<li>Added qualitative description of the transformation rate below the reaction arrows at the bottom of the output page of the “Generate Transformation Products” workflow</li>
+<li>Added the option to choose between either a “Simplified Tree” or a “Full Tree” option for the transformation product tree</li>
+<li>Implemented the option to display estimated transformation half-life values from the EPI SuiteTM HYDROWIN module (available for selected abiotic hydrolysis schemes for molecules with one hydrolyzable functional group)</li>
+<li>Updated the CTS User Guide to include version 2.0 features</li>
+</ul>
