@@ -1099,28 +1099,36 @@ function initiateHalflifeRequests() {
         console.log("Include rates not selected. Skipping half-life requests.")
         return;
     }
-
+    
     for (let ind in st.graph.nodes) {
-        let treeNode = st.graph.nodes[ind];
 
-        let route = treeNode.data.routes;
+        // TODO: Account for a node that has no children. Would
+        // probably skip it with this method.
 
-        if (epiQsarRoutes.includes(route.toLowerCase())) {
-            console.log("QSAR route matches. Making request to epi qsar.")
-            let nodeGen = treeNode.data.genKey.split(' ')[1];  // e.g., "molecule 1.2" -> "1.2"
-            let parentObj = getParentNode(treeNode);
-            let uniqueSchemesCount = determineParentsUniqueRoutes(parentObj);
-            let productCount = getProductCount(parentObj);
-            let smiles = parentObj.data.smiles;
-            let child = st.graph.nodes[ind].data.smiles;
-	    let childNode = st.graph.nodes[ind];
-            //makeQsarRequest(smiles, route, child);
-            makeQsarRequest(parentObj, route, childNode, uniqueSchemesCount, productCount);
+        let parentNode = st.graph.nodes[ind];
+        let route = parentNode.data.routes;
+
+        let requestObj = {};
+        requestObj.uniqueSchemesCount = determineParentsUniqueRoutes(parentNode);
+        requestObj.productCount = getProductCount(parentNode);
+        requestObj.childNodes = getChildrenNodes(parentNode);
+        // requestObj.parentNode = parentNode;
+        requestObj.route = route;
+        requestObj.chemical = parentNode.data.smiles;
+        requestObj.prop = 'qsar';
+        requestObj.calc = 'epi';
+
+        if (requestObj.productCount > 0) {
+            console.log("QSAR route matches.")
+            let requestJson = JSON.stringify(requestObj)
+            makeQsarRequest(requestJson);
+
         }
 
     }
 
 }
+
 
 function determineParentsUniqueRoutes(parentObj) {
     /*
@@ -1150,36 +1158,55 @@ function getProductCount(parentObj) {
     return childNodes['children'].length;
 }
 
+function getChildrenNodes(parentObj) {
+    /*
+    Returns children nodes objects for a given parent node.
+    */
+    let childNodes = $jit.json.getSubtree(spacetreeJson, parentObj.id)
+    let children = [];
+
+    childNodes['children'].forEach(child => {
+        children.push(child['data']);
+    });
+
+    return children;
+}
+
 // function makeQsarRequest(node) {
 //function makeQsarRequest(smiles, route, child) {
-function makeQsarRequest(parentObj, route, childNode, uniqueSchemesCount, productCount) {
+// function makeQsarRequest(parentObj, route, childNode, uniqueSchemesCount, productCount) {
+function makeQsarRequest(requestObj) {
+    /*
+    Makes request to CTS backend, which makes requests
+    to EPI Suite for half-life values.
+    */
 
-    let requestObj = {
-        'chemical': parentObj.data.smiles,
-	    'parentGenkey': parentObj.data.genKey.split(' ')[1],
-        'prop': 'qsar',
-        'calc': 'epi',
-        'route': route,
-        'child': childNode.data.smiles,
-	    'childGenkey': childNode.data.genKey.split(' ')[1],
-        'uniqueSchemesCount': uniqueSchemesCount,
-        'productCount': productCount
-    };
 
     console.log("Making request to EPI for half life: ", requestObj)
+
 
     $.ajax({
         url: '/cts/rest/epi/run',
         type: 'POST',
         data: requestObj,
+        contentType: 'application/json',
         dataType: 'json',
         success: function(data) {
-            let results = handleQsarResponse(data)
-            console.log("Results: ", results)
-            return results;
+
+            let dataArray = data["data"]["data"];
+            // console.log("Data array: ", dataArray)
+
+            dataArray.forEach(dataObj => {
+                // console.log("Data obj: ", dataObj)
+                handleQsarResponse(dataObj);
+            });
+
+            // let results = handleQsarResponse(data)
+            // console.log("Results: ", results)
+            // return results;
         },
         error: function(jqXHR, textStatus, errorThrown) {
-          console.log("Error in qsar request: ", textStatus, jqXHR, errorThrown);
+          console.log("Error making qsar request: ", textStatus, jqXHR, errorThrown);
           return;
         }
     });
@@ -1202,32 +1229,62 @@ function handleQsarResponse(response) {
             }
         ]
     }
+
+    New example response:
+    {
+        "data": {
+            "data": [
+                {
+                    "data": "2.75e+03"
+                    "genKey": "molecule 1.1",
+                    "routes": "Carbamate Hydrolysis",
+                    "smiles": "Nc1cccc1",
+                    "accumulation": 25,
+                    "generation": 1,
+                    "production": 25,
+                    "likelihood": "LIKELY",
+                    "prop": "qsar",
+                    "valid": true
+                }
+            ]
+        }
+    }
+
     */
 
     var response = jsonRepack(response);
-    console.log("QSAR request returned: ", response)
+    // console.log("QSAR request returned: ", response)
 
     if (response.status == false) {
         console.log("Status is false: ", textStatus);
         return;
     }
 
+
     // TODO: Add the results to the reactions pathway arrow sections
 
     for (nodeInd in st.graph.nodes) {
       let node = st.graph.nodes[nodeInd];
-      let childGenkey = response['data']['childGenkey'];
-      let nodeGenkey = node.data.genKey.split(' ')[1]
-      let matchedSmiles = node.data.smiles == response['data']['child'] ||
-                            node.data.orig_smiles == response['data']['child'] ||
-                            node.data.chemical == response['data']['child'];
+      // let childGenkey = response['data']['childGenkey'];
+      // let nodeGenkey = node.data.genKey.split(' ')[1]
+      // let matchedSmiles = node.data.smiles == response['data']['child'] ||
+      //                       node.data.orig_smiles == response['data']['child'] ||
+      //                       node.data.chemical == response['data']['child'];
+
+
+      // let childGenkey = response['childGenkey'];
+      let childGenkey = response['genKey'];
+      // let nodeGenkey = node.data.genKey.split(' ')[1]
+      let nodeGenkey = node.data.genKey;
+      let matchedSmiles = node.data.smiles == response['smiles'] ||
+                            node.data.orig_smiles == response['smiles'] ||
+                            node.data.chemical == response['smiles'];
 
       if (matchedSmiles && nodeGenkey == childGenkey) {
-
         console.log("A match has occurred.");
         let qsarObj = {
-            'data': response['data']['data'][0]['data'],
-            'units': response['data']['data'][0]['units']
+            'data': response['data'],
+            'units': 'days'
         };
         st.graph.nodes[nodeInd]['data']['qsar'] = qsarObj;
       }
@@ -1236,7 +1293,6 @@ function handleQsarResponse(response) {
     return response['data'];
 
 }
-
 function getParentNode(nodeObj) {
     /*
     Gets the parent's genKey from a given node.
