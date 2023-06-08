@@ -1,5 +1,6 @@
 from django.template.loader import render_to_string
 from collections import OrderedDict
+import os
 
 # 03ubertext_links_left:
 def ordered_list(model=None, page=None):
@@ -17,7 +18,8 @@ def ordered_list(model=None, page=None):
             ])
         ),
         ('Documentation', OrderedDict([
-                ("CTS User's Guide", 'https://www.epa.gov/chemical-research/users-guide-chemical-transformation-simulator-cts'),
+                ("CTS User's Guide", 'cts/static/cts_app/docs/CTSv2_User_Guide_20230403.pdf'),
+                # ("CTS User's Guide", 'https://www.epa.gov/chemical-research/users-guide-chemical-transformation-simulator-cts'),
                 ('CTS Modules', 'cts/about/modules'),
                 ('Property Calculators', 'cts/about/pchemcalcs'),
                 ('Reaction Libraries', 'cts/about/reactionlibs'),
