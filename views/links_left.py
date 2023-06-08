@@ -17,7 +17,7 @@ def ordered_list(model=None, page=None):
             ])
         ),
         ('Documentation', OrderedDict([
-                ("CTS User's Guide", '/static_qed/cts_app/docs/CTSv2_User_Guide_20230403.pdf'),
+                ("CTS User's Guide", 'static_qed/cts_app/docs/CTSv2_User_Guide_20230403.pdf'),
                 # ("CTS User's Guide", 'https://www.epa.gov/chemical-research/users-guide-chemical-transformation-simulator-cts'),
                 ('CTS Modules', 'cts/about/modules'),
                 ('Property Calculators', 'cts/about/pchemcalcs'),
