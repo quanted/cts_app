@@ -66,6 +66,9 @@ function checkForKetcherData(cachedMolecule) {
 function importMol(chemical) {
   // Gets formula, iupac, smiles, mass, and marvin structure
   // for chemical in Lookup Chemical textarea
+
+  clearChemicalEditorContent(true);  // clears ketcher and results table
+
   if (typeof chemical !== 'string') {
     chemical = $('#id_chem_struct').val().trim();
   }
@@ -77,9 +80,8 @@ function importMol(chemical) {
   getChemDetails(chemical_obj, function (molecule_info) {
     sessionStorage.setItem('molecule', JSON.stringify(molecule_info.data)); // set current chemical in session cache
     populateChemEditDOM(molecule_info.data);
-    scrollToResults();
   });
-  clearChemicalEditorContent();  // clears marvinsketch and results table
+  
 }
 
 function importMolFromCanvas() {
@@ -87,6 +89,9 @@ function importMolFromCanvas() {
   Gets smiles, iupac, formula, mass for chemical 
   drawn in MarvinJS.
   */
+  clearChemicalEditorContent(false);  // clears ketcher and results table
+  $('#id_chem_struct').val(""); // clears 'Lookup Chemical' before loading new one from drawn molecule
+
   getKetcherInstance().getSmilesAsync().then((smilesFromStructre) => {
 
     if (smilesFromStructre.length < 1) {
@@ -100,23 +105,10 @@ function importMolFromCanvas() {
       molecule_info['data']['chemical'] = molecule_info['data']['orig_smiles'];
       sessionStorage.setItem('molecule', JSON.stringify(molecule_info.data)); // set current chemical in session cache
       populateChemEditDOM(molecule_info.data);
-      scrollToResults();
     });
 
   });
 
-}
-
-function scrollToResults() {
-  // Scrolls to the top of the MarvinSketch div, plus the width of the 
-  // heading table row (where it says "Draw Chemical Structure", etc.)
-  var chemHeader = $('#chemEditLookup').children('table')
-        .children('tbody').children('tr')[0];
-  var headerHeight = $(chemHeader).height();
-
-  $('html,body').animate({
-    scrollTop: $('#chemEditLookup').offset().top + headerHeight
-  }, 'slow');
 }
 
 function getChemDetails(chemical_obj, callback) {
@@ -143,7 +135,7 @@ function populateChemEditDOM(data) {
     getKetcherInstance().setMolecule(data.structureData.structure);
   }
   catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }
 
@@ -153,10 +145,10 @@ function displayErrorInTextbox(errorMessage) {
     errorMessage = "Name not recognized..";
   }
   $('#id_chem_struct').addClass("formError").val(errorMessage); //Enter SMILES txtbox
-  clearChemicalEditorContent();
+  clearChemicalEditorContent(true);
 }
 
-function clearChemicalEditorContent() {
+function clearChemicalEditorContent(clearDrawer) {
   // Clears MarvinSketch instance and results table
   $('#chemical').val("");
   $('#smiles').val("");
@@ -169,14 +161,8 @@ function clearChemicalEditorContent() {
   $('#dtxsid').val("");
   $('#mass').val("");
   $('#exactmass').val("");
-  try {
-    // ketcherInstance.clean();
-    // ketcherInstance.clear();
-    // ketcherInstance.formatterFactory.structService.clean();
-  }
-  catch (e) {
-    console.log("Error clearing chemical editor content: ", e)
-    return;
+  if (clearDrawer === true) {
+    getKetcherInstance().editor.struct(null); // https://github.com/epam/ketcher/issues/26
   }
 }
 
