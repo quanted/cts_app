@@ -1,6 +1,5 @@
 # FROM python:3.10-alpine
-# FROM python:3.10.12-slim
-FROM python:3.11.4-slim
+FROM python:3.10.12-slim
 
 ENV APP_USER=www-data
 
@@ -28,6 +27,7 @@ COPY . /src/cts_app
 
 RUN pip install -r /src/cts_app/requirements.txt
 RUN pip install uwsgi
+RUN pip install --upgrade pip
 
 COPY uwsgi.ini /etc/uwsgi/
 RUN chown -R $APP_USER:$APP_USER /src/cts_app
