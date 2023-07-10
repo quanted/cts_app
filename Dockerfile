@@ -19,7 +19,7 @@ ENV APP_USER=www-data
 #     && rm -rf /var/cache/apk/*
 
 RUN apt-get update && \
-    apt-get upgrade && \
+    apt-get upgrade -y && \
     apt-get install -y build-essential
 
 WORKDIR /src/cts_app
