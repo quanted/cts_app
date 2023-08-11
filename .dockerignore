@@ -1,1 +1,7 @@
-secrets/*
+secrets/
+env/
+.env
+.gitignore
+.git
+.gitmodules
+__pycache__/

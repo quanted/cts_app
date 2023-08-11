@@ -21,7 +21,7 @@ Thumbs.db
 .idea
 *.pem
 *.wsgi
-env/*
+env/
 build/*
 static/marvin4js-license.cxl
 settings_local.py
@@ -30,5 +30,5 @@ settings_local.py
 secret.py
 cts_comments.json
 collected_static/
-
+__pycache__/
 .env
