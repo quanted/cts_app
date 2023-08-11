@@ -5,3 +5,4 @@ env/
 .git
 .gitmodules
 __pycache__/
+.github/
