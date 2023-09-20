@@ -27,8 +27,8 @@ The PCP module is currently accessing:
 <br>
 <ol>
 	<!--<li>&nbsp;SPARC Performs Automated Reasoning in Chemistry (SPARC), which uses a mechanistic-based approach;</li>-->
-	<li>&nbsp;<a href="http://www2.epa.gov/tsca-screening-tools/epi-suitetm-estimation-program-interface" target="_blank" class="fadeMenu">EPI Suite</a>, which uses a fragment-based approach;</li>
-	<li>&nbsp;<a href="http://www2.epa.gov/chemical-research/toxicity-estimation-software-tool-test" target="_blank" class="fadeMenu">Toxicity Estimation Software Tool (TEST)</a>, which uses QSAR-based approaches; and </li>
+	<li>&nbsp;<a href="https://www.epa.gov/tsca-screening-tools/epi-suitetm-estimation-program-interface" target="_blank" class="fadeMenu">EPI Suite</a>, which uses a fragment-based approach;</li>
+	<li>&nbsp;<a href="https://www.epa.gov/chemical-research/toxicity-estimation-software-tool-test" target="_blank" class="fadeMenu">Toxicity Estimation Software Tool (TEST)</a>, which uses QSAR-based approaches; and </li>
 	<li>&nbsp;<a href="https://www.chemaxon.com/products/calculator-plugins/property-predictors/" target="_blank" class="fadeMenu">ChemAxon</a><a class="exit-disclaimer" href="https://www.epa.gov/home/exit-epa" title="EPA's External Link Disclaimer">Exit</a> plug-in calculators, which use an atom-based fragment approach. </li>
 	<li>&nbsp;<a href="https://doi.org/10.1186/s13321-018-0263-1" target="_blank" class="fadeMenu">OPERA</a><a class="exit-disclaimer" href="https://www.epa.gov/home/exit-epa" title="EPA's External Link Disclaimer">Exit</a>, which uses QSAR-based modeling.
 </ol>

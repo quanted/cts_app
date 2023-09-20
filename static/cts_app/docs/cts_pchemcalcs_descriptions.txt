@@ -17,8 +17,8 @@
 <br>
 
 <ul style="margin-left:10px;">
-<li><a href="http://www2.epa.gov/tsca-screening-tools/epi-suitetm-estimation-program-interface" target="_blank" class="fadeMenu">EPI Suite</a></li>
+<li><a href="https://www.epa.gov/tsca-screening-tools/epi-suitetm-estimation-program-interface" target="_blank" class="fadeMenu">EPI Suite</a></li>
 <li><a href="https://www.chemaxon.com/products/calculator-plugins/property-predictors/" target="_blank" class="fadeMenu">ChemAxon</a><a class="exit-disclaimer" href="https://www.epa.gov/home/exit-epa" title="EPA's External Link Disclaimer">Exit</a></li>
-<li><a href="http://www2.epa.gov/chemical-research/toxicity-estimation-software-tool-test" target="_blank" class="fadeMenu">TEST</a></li>
+<li><a href="https://www.epa.gov/chemical-research/toxicity-estimation-software-tool-test" target="_blank" class="fadeMenu">TEST</a></li>
 <li><a href="https://doi.org/10.1186/s13321-018-0263-1" target="_blank" class="fadeMenu">OPERA</a><a class="exit-disclaimer" href="https://www.epa.gov/home/exit-epa" title="EPA's External Link Disclaimer">Exit</a></li>
 </ul>
