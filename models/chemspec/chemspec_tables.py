@@ -236,10 +236,18 @@ def getPkaResults(chemspec_obj):
             roundedPka.append(round(val, chemspec_obj.pKa_decimals))
         for val in pkb:
             roundedPkb.append(round(val, chemspec_obj.pKa_decimals))
+
+        pkasolver_val = None
+        if chemspec_obj.run_data.get("pkasolver", {"data": None}).get("data", {"pka_list": None}).get("pka_list"):
+            pkasolver_val = chemspec_obj.run_data["pkasolver"]["data"]["pka_list"]
+
         pkaValues = {
             'Acidic pKa Value(s)': roundedPka,
-            'Basic pKa Value(s)': roundedPkb
+            'Basic pKa Value(s)': roundedPkb,
+            'Pkasolver Values(s)': pkasolver_val
         }
+
+
     except Exception as e:
         logging.info("no pka data.. moving on..")
         return ""
