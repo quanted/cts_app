@@ -52,6 +52,8 @@ class chemspec(object):
 		# Output stuff:
 		self.speciation_inputs = {}  # for batch mode use
 		speciation_results = {}  # speciation prop results
+		pkasolver_results = {}
+		jchemws_results = {}
 
 		if self.run_type != 'batch':
 			# Calls cts_rest to get speciation results:
@@ -69,8 +71,13 @@ class chemspec(object):
 			speciation_results = cts_rest.getChemicalSpeciationData(post_data)
 			speciation_results = json.loads(speciation_results.content)
 
-			if speciation_results.get('status'):
-				speciation_results = speciation_results['data'].get('data')
+			jchemws_results = speciation_results['data'].get('data')
+			
+			pkasolver_results = speciation_results["data"]["pkasolver"]
+
+			# TODO: Proper error message is status is NOT TRUE
+			# if speciation_results.get('status') == True:
+			# 	speciation_results = speciation_results['data'].get('data')
 
 		else:
 			# Batch speciation calls are done through nodejs/socket.io
@@ -99,4 +106,6 @@ class chemspec(object):
 			'exactMass': self.exactMass
 		}
 
-		self.run_data.update(speciation_results)
+		self.run_data["pkasolver"] = pkasolver_results
+
+		self.run_data.update(jchemws_results)
