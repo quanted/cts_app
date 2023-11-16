@@ -1,0 +1,11 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 20
+  # ignore:
+  # - dependency-name: python-dotenv
+  #   versions:
+  #   - 0.16.0
