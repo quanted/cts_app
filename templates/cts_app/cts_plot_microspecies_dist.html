@@ -1,9 +1,44 @@
-<div id="microspecies-distribution" class="plot" tabindex="0" aria-label="microspecies distribution"></div>
+<!-- <div id="microspecies-distribution" class="plot" tabindex="0" aria-label="microspecies distribution"></div> -->
+<!-- <div id="{{microDistPlotId}}" class="plot microspecies-distribution" tabindex="0" aria-label="microspecies distribution"></div> -->
 
 <script type="text/javascript">
-function plotMicroDist() {
 
-  var dataArr = JSON.parse($('#microDistData1').text());
+function toggleMicrospeciesTable(table_name) {
+  /*
+  Toggles between jchem and pkasolver microspecies tables with
+  parent, microspecies, and chart data.
+
+  TODO: Ensure the MS shown are pkasolver.
+  */
+
+  console.log("toggleMicrospeciesTable called: ", table_name)
+
+  if (table_name != 'jchem' && table_name != 'pkasolver') {
+    console.log("Table name doesn't match: ", table_name);
+    return;
+  }
+
+  if (table_name === 'jchem') {
+    // $('div#jchem-info').show();
+    // $('div#pkasolver-info').hide();
+    $('div#jchem-info').toggle();
+    // $('button#btn-jchem').css('background-color', '#112e51');
+    // $('button#btn-pkasolver').css('background-color', '#0071bc');
+  }
+  else if (table_name === 'pkasolver') {
+    // $('div#jchem-info').hide();
+    // $('div#pkasolver-info').show();
+    $('div#pkasolver-info').toggle();
+    // $('button#btn-pkasolver').css('background-color', '#112e51');
+    // $('button#btn-jchem').css('background-color', '#0071bc');
+  }
+
+}
+
+
+function plotMicroDist(calc, microDistDataId, microDistPlotId) {
+
+  var dataArr = JSON.parse($('#' + microDistDataId).text());
 
   var colorSet1 = ['#1a1423', '#1e7272', '#b55f3a', '#454545', '#372549'];
   var colorSet2 = ['#7bb399', '#1e7272', '#ba613b', '#454545', '#202020'];
@@ -55,7 +90,7 @@ function plotMicroDist() {
       linePattern: 'dotted'
     },
     {
-      label: 'microspecie11',
+      label: 'microspecies11',
       color: '#953579',
       linePattern: 'dotted'
     },
@@ -142,6 +177,7 @@ function plotMicroDist() {
   ];
   var plotData = [];
 
+
   //get keys for series labels, then convert back to list for plotting
   for (var key in dataArr) {
     if (dataArr.hasOwnProperty(key)) {
@@ -156,17 +192,19 @@ function plotMicroDist() {
 
 
   // getting parent div dimensions:
-  var parent_div_height = $('#microspecies-distribution').height();
-  var parent_div_width = $('#microspecies-distribution').width();
+  // var parent_div_height = $('#{{microDistPlotId}}').height();
+  // var parent_div_width = $('#{{microDistPlotId}}').width();
+  var parent_div_height = $('#' + microDistPlotId).height();
+  var parent_div_width = $('#' + microDistPlotId).width();
 
 
-  var plot = $.jqplot ('microspecies-distribution', plotData, {
+  var plot = $.jqplot (microDistPlotId, plotData, {
 
     height: parent_div_height,
     width: parent_div_width,
 
     title: {
-      text: 'Microspecies Distribution (%)',
+      text: calc + ' Microspecies Distribution (%)',
       fontSize: '10pt'
     },
     series: seriesInfo,
@@ -193,7 +231,8 @@ function plotMicroDist() {
     },
     // highlighter: {
     //   show: true,
-    //   sizeAdjust: 7.5
+    //   tooltipFormatString: '%.2f%'
+    //   // sizeAdjust: 7.5
     // },
     grid: {
       background: '#ffffff'
@@ -201,7 +240,8 @@ function plotMicroDist() {
   });
 
   // Binds highlighting feature when user hovers over lines:
-  $('div#microspecies-distribution').bind('jqplotMouseMove', function(event, xy, axesData, neighbor, plot) {
+  $('div#' + microDistPlotId).bind('jqplotMouseMove', function(event, xy, axesData, neighbor, plot) {
+
     // var drawingCanvas = $(".jqplot-highlight-canvas")[0];
     // var context = drawingCanvas.getContext('2d');
     var lineBounds = 6;  // linewidth + lineBounds for triggering highlight
@@ -220,22 +260,17 @@ function plotMicroDist() {
   });
 
   // Hoverover event for microspecies images: highlights plot line:
-  $('td#ms-cell').children('div.chemspec_molecule').hover(function() {
+  $('td#ms-cell.' + calc).children('div.chemspec_molecule').hover(function() {
     // Highlight associated microspecies line on plot on hover-in event:
-    // let drawingCanvas = $(".jqplot-highlight-canvas")[0];
-    // let context = drawingCanvas.getContext('2d');
-    // context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
-    var msNum = $(this).children('div.cts-chem-wrap').attr('id').split('microspecies')[1];
-    // highlightLine(msNum, context, plot);
+
+    let msNum = $(this).children('div.cts-chem-wrap').attr('id').split('microspecies')[1];
+
     highlightLine(msNum);
     highlightBorder(msNum);
   }, function() {
     // Hover-out event: removes border and plot highlights:
     highlightBorder();
     highlightLine();
-    // let drawingCanvas = $(".jqplot-highlight-canvas")[0];
-    // let context = drawingCanvas.getContext('2d');
-    // context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
   });
 
   function hitTestSegments(points, point, thickness) {
@@ -282,11 +317,12 @@ function plotMicroDist() {
   };
 
   // function highlightLine(msNum, context, plot) {
-    function highlightLine(msNum) {
+  function highlightLine(msNum) {
     /*
     Highlights microspecies line based on microspecies number/id.
     */
-    let drawingCanvas = $(".jqplot-highlight-canvas")[0];
+
+    let drawingCanvas = $('div#' + microDistPlotId).children('.jqplot-highlight-canvas')[0];
     let context = drawingCanvas.getContext('2d');
     context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
 
@@ -299,8 +335,11 @@ function plotMicroDist() {
         context.moveTo(p[0], p[1]);
       else context.lineTo(p[0], p[1]);
     }
-    var msDiv = $('div#microspecies' + (msNum)).parent('div.chemspec_molecule');
+
+    let msDiv = $('td#ms-cell.' + calc + ' div.chemspec_molecule').find('div#microspecies' + msNum).parent();
+
     var borderColor = $(msDiv).css('border-left-color');
+
     context.lineWidth = plot.series[msNum  - 1].lineWidth + 9;
     var outerBorderColor = borderColor.replace(')', ', 0.25)').replace('rgb', 'rgba');
     context.strokeStyle = outerBorderColor;
@@ -316,16 +355,24 @@ function plotMicroDist() {
     Highlights microspecies image border when user hovers
     over its MS distribution plot line.
     */
-    var msDiv = $('div#microspecies' + (msNum)).parent('div.chemspec_molecule');
+
+    let msDiv = $('td#ms-cell.' + calc + ' div.chemspec_molecule').find('div#microspecies' + msNum).parent('div.chemspec_molecule');
+
     $('div.cts-chem-wrap').each(function() {
       var divId = $(this).attr('id');
-      if (divId.split("microspecies").length != 2) { return 'continue'; }
+
+      if (divId.split("microspecies").length != 2) { 
+        return;
+      }
+
       var thisMsNum = parseInt(divId.split("microspecies")[1]);
+
       if (thisMsNum == msNum) {
         // Highlights border:
         $(msDiv).css('border-width', '10px');
       }
       else {
+        console.log("Unhighlighting border.")
         // Unhighlights border:
         $('div#' + divId).parent('div.chemspec_molecule').css('border-width', '5px');
       }
@@ -336,9 +383,8 @@ function plotMicroDist() {
   // Get series colors to make microspecies image border
   // the same as its series color
   var ms_num = 1;
-  $('td#ms-cell div.chemspec_molecule').find('svg').each(function () {
+  $('td#ms-cell.' + calc + ' div.chemspec_molecule').find('svg').each(function () {
       // add metabolites class:
-      // $(this).addClass("metabolite");  // doesn't work with svg
       $(this).attr('class', "metabolite");
       $(this).attr('id', "microspecies" + ms_num);
       ms_num += 1;
@@ -350,18 +396,24 @@ function plotMicroDist() {
     var color = plot['series'][series]['color']; // series color..
     var name = plot['series'][series]['label']; // series name..
     var linePattern = plot['series'][series]['linePattern'];
-    // $('#' + name).parent('div').css('border', '5px solid ' + color); // sets border color
-    // $('#' + name).css({'border': 'none', 'margin': '0px'}); // remove image border..
+
+    let msItem = $('td#ms-cell.' + calc + ' div.chemspec_molecule').find('div#' + name);
+
+    if (msItem.length < 1) {
+      console.log("Could not locate msItem.");
+      return;
+    }
+
     if (linePattern == 'dotted') {
-      $('#' + name).parent('div').css({'border': '5px solid ' + color, 'border-style': 'dotted'}); // sets border 
+      $(msItem).parent('div').css({'border': '5px solid ' + color, 'border-style': 'dotted'}); // sets border 
     }
     else if (linePattern == 'dashed') {
-      $('#' + name).parent('div').css({'border': '5px solid ' + color, 'border-style': 'dashed'}); // sets border
+      $(msItem).parent('div').css({'border': '5px solid ' + color, 'border-style': 'dashed'}); // sets border
     }
     else {
-      $('#' + name).parent('div').css('border', '5px solid ' + color); // sets border 
+      $(msItem).parent('div').css('border', '5px solid ' + color); // sets border 
     }
-    $('#' + name).css({'border': 'none', 'margin': '0px'}); // remove image border..
+    $(msItem).css({'border': 'none', 'margin': '0px'}); // remove image border..
   }
 
   // 508 compliance fixes:
@@ -369,7 +421,7 @@ function plotMicroDist() {
   let microspeciesCount = 0;
   var plotCanvas = $('canvas').each(function() {
     let plotType = $(this).parent('div').attr('id');
-    if (plotType == 'microspecies-distribution') {
+    if (plotType == microDistPlotId) {
       if ($(this).hasClass('jqplot-series-canvas')) {
         microspeciesCount += 1;
         $(this).attr({'aria-label': "microspecies" + microspeciesCount});  
@@ -386,6 +438,22 @@ function plotMicroDist() {
 
 <script type="text/javascript">
 $(document).ready(function () {
-  plotMicroDist();
+
+  let msCalcs = {{microDistCalcs}};
+
+  for (let calcInd in msCalcs.calcs) {
+    let calc = msCalcs.calcs[calcInd];
+    let capitalCalc = calc.charAt(0).toUpperCase() + calc.slice(1);  // capitalizes calc name
+    let microDistDataId = "microDistData" + capitalCalc;
+    let microDistPlotId = microDistDataId + "Plot";
+
+    plotMicroDist(calc, microDistDataId, microDistPlotId);
+
+  }
+
+  // console.log("Deafult toggling to jchem")
+  // toggleMicrospeciesTable('jchem');  // show jchem pka data as default
+
+
 });
 </script>

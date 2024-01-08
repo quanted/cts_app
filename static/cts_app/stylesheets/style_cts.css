@@ -452,7 +452,7 @@ body.wait *, body.wait
   margin-left: 30px;
 }
 
-#microspecies-distribution {
+#microspecies-distribution, .microspecies-distribution {
   /*margin-left: 30px;*/
   vertical-align: top;
   margin: 0px;

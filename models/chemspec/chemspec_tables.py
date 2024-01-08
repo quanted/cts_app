@@ -227,8 +227,6 @@ def getPkaResults(chemspec_obj):
 
     try:
         # acidic/basic pKa values:
-        # pka = chemspec_obj.jchemPropObjects['pKa'].getMostAcidicPka()
-        # pkb = chemspec_obj.jchemPropObjects['pKa'].getMostBasicPka()
         pka = chemspec_obj.run_data['pka']
         pkb = chemspec_obj.run_data['pkb']
         roundedPka, roundedPkb = [], []
@@ -254,31 +252,92 @@ def getPkaResults(chemspec_obj):
     else:
         html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
 
-    # pKa parent species:
-    html += '<table id="msMain" class="ctsTableStylin"><tr><td><h4 class="unstyle">Parent</h4>'
-    # html += wrap_molecule(chemspec_obj.jchemPropObjects['pKa'].getParent(), None, lgWidth, scale)
-    html += wrap_molecule(chemspec_obj.run_data['pka_parent'], None, lgWidth, scale)
-    html += '<br></td><td id="ms-cell"><h4 class="unstyle">Microspecies</h4>'
+    # # Show/hide buttons for microspecies chart data:
+    # html += """
+    # <button id=btn-jchem onclick="toggleMicrospeciesTable('jchem')">Jchem</button>
+    # <button id=btn-pkasolver onclick="toggleMicrospeciesTable('pkasolver')">Pkasolver</button>
+    # """
 
-    # pKa microspecies:
-    # microspeciesList = chemspec_obj.jchemPropObjects['pKa'].getMicrospecies()
-    microspeciesList = chemspec_obj.run_data['pka_microspecies']
-    try:
-        for item in microspeciesList:
-            html += wrap_molecule(item, None, mdWidth, scale)
-    except TypeError as te:
-        logging.info("no microspecies to plot..moving on")
-        html += 'No microspecies to plot'
+    html += create_microspecies_tables(chemspec_obj, ['jchem', 'pkasolver'])  # TODO: generalize hardcoded list
 
-    html += '</td><td><br>'
+    return html
 
-    # Microspecies Distribution Plot:
-    html += '<div id="microDistData1" class="hideData nopdf">'
-    # html += mark_safe(json.dumps(chemspec_obj.jchemPropObjects['pKa'].getChartData()))
-    html += mark_safe(json.dumps(chemspec_obj.run_data['pka_chartdata']))
-    html += '</div>'
-    html += render_to_string('cts_app/cts_plot_microspecies_dist.html')
-    html += '</td></table></div>'
+
+# def create_microspecies_tables(chemspec_obj, chart_data, calc):
+def create_microspecies_tables(chemspec_obj, calcs):
+    """
+    Builds microspecies table with parent, microspecies, and chart data.
+    Will have options to view jchem or pkasolver data.
+    """
+    html = ""
+
+    for calc in calcs:
+
+        # TODO: Get these IDs for divs under control
+
+        div_id = ""
+        ms_div_name = calc + "-info"  # <div> id for calc MS info
+        # html = ""
+        chart_data = None
+        microDistPlotId = None
+
+        logging.warning("create_microspecies_table calc: {}".format(calc))
+
+        if calc == "pkasolver":
+            
+            html += """<button id=btn-pkasolver onclick="toggleMicrospeciesTable('pkasolver')">Pkasolver</button>"""
+            
+            chart_data = chemspec_obj.run_data['pkasolver']['data']['chart_data']
+            div_id = "microDistDataPkasolver"
+            # html += '<div id="' + ms_div_name + '" style="display:none;">'  # defaults to hidden
+            html += '<div id="' + ms_div_name + '">'  # defaults to shown
+
+        elif calc == "jchem":
+            
+            html += """<button id=btn-jchem onclick="toggleMicrospeciesTable('jchem')">Jchem</button>"""
+            
+            chart_data = chemspec_obj.run_data['pka_chartdata']
+            div_id = "microDistDataJchem"
+            html += '<div id="' + ms_div_name + '">'  # defaults to shown
+
+        microDistPlotId = div_id + "Plot"
+
+        # pKa parent species:
+        html += '<table id="msMain" class="ctsTableStylin ' + calc + '"><tr><td><h4 class="unstyle">Parent</h4>'
+        html += wrap_molecule(chemspec_obj.run_data['pka_parent'], None, lgWidth, scale)
+        html += '<br></td><td id="ms-cell" class="' + calc + '"><h4 class="unstyle">Microspecies</h4>'
+
+        # pKa microspecies:
+        microspeciesList = chemspec_obj.run_data['pka_microspecies']
+        try:
+            for item in microspeciesList:
+                html += wrap_molecule(item, None, mdWidth, scale)
+        except TypeError as te:
+            logging.info("no microspecies to plot..moving on")
+            html += 'No microspecies to plot'
+
+        html += '</td><td><br>'
+
+        # Microspecies distribution plot data:
+        html += '<div id=' + div_id + ' class="hideData nopdf">'
+        html += mark_safe(json.dumps(chart_data))
+        html += '</div>'
+
+        # Chart div:
+        html += """
+        <div id="{}" class="plot microspecies-distribution" tabindex="0" aria-label="microspecies distribution"></div>
+        """.format(microDistPlotId)
+
+        html += '</td></table></div>'
+
+        html += '</div>' 
+
+    # One rendering for both chart data tables:
+    html += render_to_string('cts_app/cts_plot_microspecies_dist.html',
+        {
+            'microDistCalcs': mark_safe(json.dumps({"calcs": calcs}))
+        }
+    )
 
     return html
 
