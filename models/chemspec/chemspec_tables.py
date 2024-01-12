@@ -247,7 +247,7 @@ def getPkaResults(chemspec_obj):
 
 
     except Exception as e:
-        logging.info("no pka data.. moving on..")
+        logging.warning("no pka data.. moving on..\nException: {}".format(e))
         return ""
     else:
         html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
