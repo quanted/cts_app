@@ -247,7 +247,7 @@ def getPkaResults(chemspec_obj):
 
 
     except Exception as e:
-        logging.info("no pka data.. moving on..")
+        logging.warning("no pka data.. moving on..\nException: {}".format(e))
         return ""
     else:
         html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
@@ -281,8 +281,6 @@ def create_microspecies_tables(chemspec_obj, calcs):
         chart_data = None
         microDistPlotId = None
 
-        logging.warning("create_microspecies_table calc: {}".format(calc))
-
         if calc == "pkasolver":
             
             html += """<button id=btn-pkasolver onclick="toggleMicrospeciesTable('pkasolver')">Pkasolver</button>"""
@@ -292,6 +290,8 @@ def create_microspecies_tables(chemspec_obj, calcs):
             # html += '<div id="' + ms_div_name + '" style="display:none;">'  # defaults to hidden
             html += '<div id="' + ms_div_name + '">'  # defaults to shown
 
+            microspeciesList = chemspec_obj.run_data['pkasolver']['data']['pka_microspecies']
+
         elif calc == "jchem":
             
             html += """<button id=btn-jchem onclick="toggleMicrospeciesTable('jchem')">Jchem</button>"""
@@ -300,6 +300,9 @@ def create_microspecies_tables(chemspec_obj, calcs):
             div_id = "microDistDataJchem"
             html += '<div id="' + ms_div_name + '">'  # defaults to shown
 
+            microspeciesList = chemspec_obj.run_data['pka_microspecies']
+
+
         microDistPlotId = div_id + "Plot"
 
         # pKa parent species:
@@ -307,11 +310,10 @@ def create_microspecies_tables(chemspec_obj, calcs):
         html += wrap_molecule(chemspec_obj.run_data['pka_parent'], None, lgWidth, scale)
         html += '<br></td><td id="ms-cell" class="' + calc + '"><h4 class="unstyle">Microspecies</h4>'
 
-        # pKa microspecies:
-        microspeciesList = chemspec_obj.run_data['pka_microspecies']
         try:
             for item in microspeciesList:
                 html += wrap_molecule(item, None, mdWidth, scale)
+
         except TypeError as te:
             logging.info("no microspecies to plot..moving on")
             html += 'No microspecies to plot'
