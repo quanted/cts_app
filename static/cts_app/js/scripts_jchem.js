@@ -194,7 +194,7 @@ function ajaxCall(data_obj, callback) {
     data: data_obj,
     dataType: 'json',
     // timeout: 10000,
-    timeout: 20000,
+    timeout: 30000,
     tryCount: 0,
     retryLimit: 1,  // retry 1 time if failure
     beforeSend: function(xhr, settings) {
