@@ -235,9 +235,21 @@ def getPkaResults(chemspec_obj):
         for val in pkb:
             roundedPkb.append(round(val, chemspec_obj.pKa_decimals))
 
-        pkasolver_val = None
-        if chemspec_obj.run_data.get("pkasolver", {"data": None}).get("data", {"pka_list": None}).get("pka_list"):
-            pkasolver_val = chemspec_obj.run_data["pkasolver"]["data"]["pka_list"]
+        pkasolver_data = chemspec_obj.run_data.get("pkasolver", {}).get("data")
+        pkasolver_error = chemspec_obj.run_data.get("pkasolver", {}).get("error")
+
+        logging.warning("pkasolver_data: {}".format(pkasolver_data))
+        logging.warning("pkasolver_error: {}".format(pkasolver_error))
+
+        # if chemspec_obj.run_data.get("pkasolver", {"data": {}}).get("data", {"pka_list": {}}).get("pka_list"):
+        if pkasolver_data.get("pka_list"):
+            pkasolver_val = pkasolver_data.get("pka_list")
+        elif pkasolver_error:
+            pkasolver_val = [pkasolver_error]
+        else:
+            pkasolver_val = ["Unknown error occurred with pkasolver."]
+
+        logging.warning("pkasolver_val: {}".format(pkasolver_val))
 
         pkaValues = {
             'Acidic pKa Value(s)': roundedPka,
