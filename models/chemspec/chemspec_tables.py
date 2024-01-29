@@ -235,7 +235,7 @@ def getPkaResults(chemspec_obj):
         for val in pkb:
             roundedPkb.append(round(val, chemspec_obj.pKa_decimals))
 
-        pkasolver_data = chemspec_obj.run_data.get("pkasolver", {}).get("data")
+        pkasolver_data = chemspec_obj.run_data.get("pkasolver", {}).get("data", {})
         pkasolver_error = chemspec_obj.run_data.get("pkasolver", {}).get("error")
 
         logging.warning("pkasolver_data: {}".format(pkasolver_data))
