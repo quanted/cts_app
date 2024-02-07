@@ -224,6 +224,7 @@ def getPkaResults(chemspec_obj):
     <H4 class="out_1 collapsible" id="pka"><span></span>pKa</H4>
     <div class="out_">
     """
+    pkasolver_data = None
 
     try:
         # acidic/basic pKa values:
@@ -242,7 +243,7 @@ def getPkaResults(chemspec_obj):
         logging.warning("pkasolver_error: {}".format(pkasolver_error))
 
         # if chemspec_obj.run_data.get("pkasolver", {"data": {}}).get("data", {"pka_list": {}}).get("pka_list"):
-        if pkasolver_data.get("pka_list"):
+        if pkasolver_data and pkasolver_data.get("pka_list"):
             pkasolver_val = pkasolver_data.get("pka_list")
         elif pkasolver_error:
             pkasolver_val = [pkasolver_error]
@@ -270,13 +271,13 @@ def getPkaResults(chemspec_obj):
     # <button id=btn-pkasolver onclick="toggleMicrospeciesTable('pkasolver')">Pkasolver</button>
     # """
 
-    html += create_microspecies_tables(chemspec_obj, ['jchem', 'pkasolver'])  # TODO: generalize hardcoded list
+    html += create_microspecies_tables(chemspec_obj, ['jchem', 'pkasolver'], pkasolver_data)  # TODO: generalize hardcoded list
 
     return html
 
 
 # def create_microspecies_tables(chemspec_obj, chart_data, calc):
-def create_microspecies_tables(chemspec_obj, calcs):
+def create_microspecies_tables(chemspec_obj, calcs, pkasolver_data):
     """
     Builds microspecies table with parent, microspecies, and chart data.
     Will have options to view jchem or pkasolver data.
@@ -292,17 +293,22 @@ def create_microspecies_tables(chemspec_obj, calcs):
         # html = ""
         chart_data = None
         microDistPlotId = None
+        chart_data = None
+        microspeciesList = None
 
         if calc == "pkasolver":
+
+            if not pkasolver_data:
+                continue
             
             html += """<button id=btn-pkasolver onclick="toggleMicrospeciesTable('pkasolver')">Pkasolver</button>"""
             
-            chart_data = chemspec_obj.run_data['pkasolver']['data']['chart_data']
+            chart_data = pkasolver_data.get('chart_data')
+            microspeciesList = pkasolver_data.get('pka_microspecies')
+            
             div_id = "microDistDataPkasolver"
             # html += '<div id="' + ms_div_name + '" style="display:none;">'  # defaults to hidden
             html += '<div id="' + ms_div_name + '">'  # defaults to shown
-
-            microspeciesList = chemspec_obj.run_data['pkasolver']['data']['pka_microspecies']
 
         elif calc == "jchem":
             
@@ -334,7 +340,9 @@ def create_microspecies_tables(chemspec_obj, calcs):
 
         # Microspecies distribution plot data:
         html += '<div id=' + div_id + ' class="hideData nopdf">'
-        html += mark_safe(json.dumps(chart_data))
+        if chart_data:
+            html += mark_safe(json.dumps(chart_data))
+
         html += '</div>'
 
         # Chart div:
