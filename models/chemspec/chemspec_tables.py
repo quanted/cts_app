@@ -238,26 +238,18 @@ def getPkaResults(chemspec_obj):
 
         pkasolver_data = chemspec_obj.run_data.get("pkasolver", {}).get("data", {})
         pkasolver_error = chemspec_obj.run_data.get("pkasolver", {}).get("error")
+        pkasolver_val = validate_pka("pkasolver", pkasolver_data, pkasolver_error)
 
-        logging.warning("pkasolver_data: {}".format(pkasolver_data))
-        logging.warning("pkasolver_error: {}".format(pkasolver_error))
-
-        # if chemspec_obj.run_data.get("pkasolver", {"data": {}}).get("data", {"pka_list": {}}).get("pka_list"):
-        if pkasolver_data and pkasolver_data.get("pka_list"):
-            pkasolver_val = pkasolver_data.get("pka_list")
-        elif pkasolver_error:
-            pkasolver_val = [pkasolver_error]
-        else:
-            pkasolver_val = ["Unknown error occurred with pkasolver."]
-
-        logging.warning("pkasolver_val: {}".format(pkasolver_val))
+        molgpka_data = chemspec_obj.run_data.get("molgpka", {}).get("data", {})
+        molgpka_error = chemspec_obj.run_data.get("molgpka", {}).get("error")
+        molgpka_val = validate_pka("molgpka", molgpka_data, molgpka_error)
 
         pkaValues = {
             'Acidic pKa Value(s)': roundedPka,
             'Basic pKa Value(s)': roundedPkb,
-            'Pkasolver Values(s)': pkasolver_val
+            'Pkasolver Values(s)': pkasolver_val,
+            'MolGpka Values(s)': molgpka_val
         }
-
 
     except Exception as e:
         logging.warning("no pka data.. moving on..\nException: {}".format(e))
@@ -274,6 +266,16 @@ def getPkaResults(chemspec_obj):
     html += create_microspecies_tables(chemspec_obj, ['jchem', 'pkasolver'], pkasolver_data)  # TODO: generalize hardcoded list
 
     return html
+
+
+def validate_pka(calc_name, calc_data, calc_error=None):
+    if calc_data and calc_data.get("pka_list"):
+        pka_list = calc_data.get("pka_list")
+    elif calc_error:
+        pka_list = [calc_error]
+    else:
+        pka_list = ["Unknown error occurred with {}.".format(calc_name)]
+    return pka_list
 
 
 # def create_microspecies_tables(chemspec_obj, chart_data, calc):

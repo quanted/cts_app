@@ -54,6 +54,7 @@ class chemspec(object):
 		speciation_results = {}  # speciation prop results
 		pkasolver_results = {}
 		jchemws_results = {}
+		molgpka_results = {}
 
 		if self.run_type != 'batch':
 			# Calls cts_rest to get speciation results:
@@ -74,6 +75,9 @@ class chemspec(object):
 			jchemws_results = speciation_results['data'].get('data')
 			
 			pkasolver_results = speciation_results["data"]["pkasolver"]
+
+			molgpka_results = speciation_results["data"]["molgpka"]
+
 
 			# TODO: Proper error message is status is NOT TRUE
 			# if speciation_results.get('status') == True:
@@ -107,5 +111,7 @@ class chemspec(object):
 		}
 
 		self.run_data["pkasolver"] = pkasolver_results
+
+		self.run_data["molgpka"] = molgpka_results
 
 		self.run_data.update(jchemws_results)
