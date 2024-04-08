@@ -36,7 +36,7 @@ urlpatterns.extend([
 	path('<slug:model>/batchinput/', batch.batchInputPage),
 	path('<slug:model>/batchoutput/', batch.batchOutputPage),
 	path('<slug:model>/history/', misc.fileNotFound),
-	# path('<slug:model>/pdf/', ctsGenerateReport.pdfReceiver),
+	path('<slug:model>/pdf/', ctsGenerateReport.pdfReceiver),
 	path('<slug:model>/html/', ctsGenerateReport.htmlReceiver),
 	path('<slug:model>/csv/', ctsGenerateReport.csvReceiver),
 	path('batch/sample/', ctsGenerateReport.textReceiver),
@@ -49,12 +49,12 @@ urlpatterns = [path('cts/', include(urlpatterns))]
 
 
 
-# 404 Error view (file not found)
-handler404 = misc.fileNotFound
-# 500 Error view (server error)
-handler500 = misc.fileNotFound
-# 403 Error view (forbidden)
-handler403 = misc.fileNotFound
-# 408 Error view (request timeout)
-handler408 = misc.requestTimeout
+# # 404 Error view (file not found)
+# handler404 = misc.fileNotFound
+# # 500 Error view (server error)
+# handler500 = misc.fileNotFound
+# # 403 Error view (forbidden)
+# handler403 = misc.fileNotFound
+# # 408 Error view (request timeout)
+# handler408 = misc.requestTimeout
 
