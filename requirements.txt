@@ -12,4 +12,4 @@ rdkit==2023.3.1
 redis==4.4.4
 requests==2.31.0
 tabulate==0.8.9
-xhtml2pdf==0.2.5
+xhtml2pdf==0.2.15
