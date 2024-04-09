@@ -53,7 +53,7 @@ RUN micromamba run -n $CONDA_ENV pip uninstall -y xhtml2pdf && micromamba run -n
 
 # Security Issues Mitigations
 # ------------------------- #
-RUN apk del gfortran
+# RUN apk del gfortran
 RUN rm -R /opt/conda/pkgs/redis*
 #RUN rm -R /opt/conda/bin/redis*
 RUN rm -R /opt/conda/pkgs/postgres*
