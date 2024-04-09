@@ -54,10 +54,10 @@ RUN micromamba run -n $CONDA_ENV pip uninstall -y xhtml2pdf && micromamba run -n
 # Security Issues Mitigations
 # ------------------------- #
 # RUN apk del gfortran
-RUN rm -R /opt/conda/pkgs/redis*
-#RUN rm -R /opt/conda/bin/redis*
-RUN rm -R /opt/conda/pkgs/postgres*
-#RUN rm -R /opt/conda/bin/postgres*
+# RUN rm -R /opt/conda/pkgs/redis*
+# #RUN rm -R /opt/conda/bin/redis*
+# RUN rm -R /opt/conda/pkgs/postgres*
+# #RUN rm -R /opt/conda/bin/postgres*
 RUN find /opt/conda/pkgs/future* -name "*.pem" -delete || true
 RUN find /opt/conda/lib/python3.10/site-packages/future -name "*.pem" -delete || true
 RUN find /opt/conda/envs/pyenv -name "*.pem" -delete || true
