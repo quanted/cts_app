@@ -6,6 +6,8 @@ import json
 import logging
 import os
 import requests
+import pandas as pd
+import numpy as np
 from ..generate_timestamp import gen_jid
 from ..booleanize import booleanize
 from ...cts_api import cts_rest
@@ -49,6 +51,9 @@ class chemspec(object):
 		self.tautomer_pH = tautomer_pH
 		self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
 
+		self.run_data = {}
+		self.pka_dict_df = {}  # dataframe of pka dict
+
 		# Output stuff:
 		self.speciation_inputs = {}  # for batch mode use
 		speciation_results = {}  # speciation prop results
@@ -73,10 +78,10 @@ class chemspec(object):
 			speciation_results = json.loads(speciation_results.content)
 
 			jchemws_results = speciation_results['data'].get('data')
-			
 			pkasolver_results = speciation_results["data"]["pkasolver"]
-
 			molgpka_results = speciation_results["data"]["molgpka"]
+
+			self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
 
 
 			# TODO: Proper error message is status is NOT TRUE
@@ -97,7 +102,7 @@ class chemspec(object):
 			}
 			self.speciation_inputs = self.speciation_inputs
 
-		self.run_data = {
+		self.run_data.update({
 			'title': "Chemical Speciation Output",
 			'run_type': self.run_type,
 			'jid': self.jid,
@@ -108,10 +113,73 @@ class chemspec(object):
 			'formula': self.formula,
 			'mass': self.mass,
 			'exactMass': self.exactMass
-		}
+		})
 
 		self.run_data["pkasolver"] = pkasolver_results
 
 		self.run_data["molgpka"] = molgpka_results
 
 		self.run_data.update(jchemws_results)
+
+
+def organize_pka(jchemws_results, pkasolver_results, molgpka_results):
+	#chem Axon dataframe	
+	ca_df=DictToDF(jchemws_results["pka_dict"])
+
+	#pkasolver dataframe
+	solver_df=DictToDF(pkasolver_results["data"]["pka_dict"])
+
+	#MolGpKa -- addional formatting because MolGpKa does not round pka values
+	molg_df=DictToDF(molgpka_results["data"]["pka_dict"])
+	# RoundMolg(molg_df)
+
+	#combine all dataframes
+	full_table=pd.concat([solver_df,molg_df,ca_df],ignore_index=True)
+	full_table.insert(0,'Calculator',['pKaSolver','MolGpKa','Chem Axon'])
+
+	#sort dataframe so that pka site (columns) are sorted from lowest average pka to highest
+	final=FormatTable(full_table)
+	return final
+
+
+#makes dataframes from pka/atom index dictionaries
+def DictToDF(pka_dict):
+    #make a dataframe from dictionary-- will result in multiple columns for same atoms (i.e atom_idx=[0,0,5] there will be three columns
+    # df=pd.DataFrame([pka_dict.keys()],columns=pka_dict.values()).add_prefix('atom#_')
+    df=pd.DataFrame([pka_dict.values()],columns=pka_dict.keys()).add_prefix('atom#_')
+
+    #group columns with the same name (in this case, atom index) and merge the values of those columns using function MergeValues
+    df=df.groupby(level=0,axis=1).apply(lambda x:x.apply(MergeValues,axis=1))
+
+    return df
+
+
+def FormatTable(df):
+    col=[]
+    col_avg=[]
+    for c in df.iloc[:,1:]:
+        col.append(c)
+        col_val=[]
+        for i in df[c].index:
+            tmp=df[c][i]
+            if isinstance(tmp,str):
+                if ',' in tmp:
+                    new_tmp=tmp.split(',')
+                    for n in new_tmp:
+                        n=round(float(n),2)
+                        col_val.append(n)
+                else:
+                    n=round(float(tmp),2)
+                    col_val.append(n)
+        col_avg.append(np.mean(col_val))
+    d=dict(zip(col,col_avg))
+    sort_d=dict(sorted(d.items(),key=lambda item:item[1]))
+    col_order=list(sort_d.keys())
+    col_order.insert(0,'Calculator')
+    df= df.reindex(columns=col_order)
+    return df
+
+
+#merge columns with same names together
+def MergeValues(x):
+	return ', '.join(x[x.notnull()].astype(str))

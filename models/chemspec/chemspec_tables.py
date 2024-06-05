@@ -8,6 +8,7 @@ import datetime
 import logging
 import json
 import os
+import pandas as pd
 
 from django.template import Context, Template, defaultfilters
 from django.template.loader import render_to_string
@@ -219,6 +220,24 @@ def getMajorMsImages(chemspec_obj):
         return html
 
 
+def build_pka_comparison_table(chemspec_obj):
+    """
+    Builds table for pka values organized by calc and atom index.
+    Example:
+        Calculator | atom#_3 | atom#_n
+    0   pkasolver  | 4.19    | x 
+    1   molgpka    | 8.34    | x
+    2   chemaxon   | 4.54    | x
+    """
+    pka_dicts = chemspec_obj.pka_dict_df
+    if pka_dicts.empty:
+        return False
+
+    pka_dicts_html = pka_dicts.to_html(classes="ctsTableStylin", index=False)
+
+    return pka_dicts_html
+
+
 def getPkaResults(chemspec_obj):
     html = """
     <H4 class="out_1 collapsible" id="pka"><span></span>pKa</H4>
@@ -257,11 +276,15 @@ def getPkaResults(chemspec_obj):
     else:
         html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
 
+    pka_html = build_pka_comparison_table(chemspec_obj)
+
     # # Show/hide buttons for microspecies chart data:
     # html += """
     # <button id=btn-jchem onclick="toggleMicrospeciesTable('jchem')">Jchem</button>
     # <button id=btn-pkasolver onclick="toggleMicrospeciesTable('pkasolver')">Pkasolver</button>
     # """
+
+    html += pka_html
 
     html += create_microspecies_tables(chemspec_obj, ['jchem', 'pkasolver'], pkasolver_data)  # TODO: generalize hardcoded list
 
