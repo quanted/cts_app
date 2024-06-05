@@ -51,6 +51,24 @@ RUN micromamba run -n $CONDA_ENV pip uninstall -y xhtml2pdf && micromamba run -n
 #     /usr/local/lib/python3.10/site-packages/pip \
 #     /usr/local/lib/python3.10/site-packages/pip-23.0.1.dist-info
 
+# Security Issues Mitigations
+# ------------------------- #
+# RUN apk del gfortran
+# RUN rm -R /opt/conda/pkgs/redis*
+# #RUN rm -R /opt/conda/bin/redis*
+# RUN rm -R /opt/conda/pkgs/postgres*
+# #RUN rm -R /opt/conda/bin/postgres*
+RUN find /opt/conda/pkgs/future* -name "*.pem" -delete || true
+RUN find /opt/conda/lib/python3.10/site-packages/future -name "*.pem" -delete || true
+# RUN find /opt/conda/envs/pyenv -name "*.pem" -delete || true
+RUN find /opt/conda -name "*test.key" -delete || true
+RUN find /opt/conda/ -name 'test.key' -delete || true
+RUN find /opt/conda/ -name 'localhost.key' -delete || true
+RUN find /opt/conda/ -name 'server.pem' -delete || true
+RUN find /opt/conda/ -name 'client.pem' -delete || true
+RUN find /opt/conda/ -name 'password_protected.pem' -delete || true
+# ------------------------- #
+
 COPY uwsgi.ini /etc/uwsgi/
 RUN chown -R $APP_USER:$APP_USER /src/cts_app
 RUN chmod 755 /src/cts_app/docker-start.sh
