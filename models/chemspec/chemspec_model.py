@@ -144,40 +144,45 @@ def organize_pka(jchemws_results, pkasolver_results, molgpka_results):
 
 #makes dataframes from pka/atom index dictionaries
 def DictToDF(pka_dict):
-    #make a dataframe from dictionary-- will result in multiple columns for same atoms (i.e atom_idx=[0,0,5] there will be three columns
-    # df=pd.DataFrame([pka_dict.keys()],columns=pka_dict.values()).add_prefix('atom#_')
-    df=pd.DataFrame([pka_dict.values()],columns=pka_dict.keys()).add_prefix('atom#_')
+	#make a dataframe from dictionary-- will result in multiple columns for same atoms (i.e atom_idx=[0,0,5] there will be three columns
+	# df=pd.DataFrame([pka_dict.keys()],columns=pka_dict.values()).add_prefix('atom#_')
+	df=pd.DataFrame([pka_dict.values()],columns=pka_dict.keys()).add_prefix('atom#_')
 
-    #group columns with the same name (in this case, atom index) and merge the values of those columns using function MergeValues
-    df=df.groupby(level=0,axis=1).apply(lambda x:x.apply(MergeValues,axis=1))
+	#group columns with the same name (in this case, atom index) and merge the values of those columns using function MergeValues
+	df=df.groupby(level=0,axis=1).apply(lambda x:x.apply(MergeValues,axis=1))
 
-    return df
+	return df
 
 
 def FormatTable(df):
-    col=[]
-    col_avg=[]
-    for c in df.iloc[:,1:]:
-        col.append(c)
-        col_val=[]
-        for i in df[c].index:
-            tmp=df[c][i]
-            if isinstance(tmp,str):
-                if ',' in tmp:
-                    new_tmp=tmp.split(',')
-                    for n in new_tmp:
-                        n=round(float(n),2)
-                        col_val.append(n)
-                else:
-                    n=round(float(tmp),2)
-                    col_val.append(n)
-        col_avg.append(np.mean(col_val))
-    d=dict(zip(col,col_avg))
-    sort_d=dict(sorted(d.items(),key=lambda item:item[1]))
-    col_order=list(sort_d.keys())
-    col_order.insert(0,'Calculator')
-    df= df.reindex(columns=col_order)
-    return df
+	col=[]
+	col_avg=[]
+	for c in df.iloc[:,1:]:
+		col.append(c)
+		col_val=[]
+		for i in df[c].index:
+			tmp=df[c][i]
+
+			logging.warning("FormatTable tmp: {}".format(tmp))
+			logging.warning("FormatTable tmp type: {}".format(type(tmp)))
+
+			if isinstance(tmp,str):
+				logging.warning("FormatTable tmp: {}".format(tmp))
+				if ',' in tmp:
+					new_tmp=tmp.split(',')
+					for n in new_tmp:
+						n=round(float(n),2)
+						col_val.append(n)
+				else:
+					n=round(float(tmp),2)
+					col_val.append(n)
+		col_avg.append(np.mean(col_val))
+	d=dict(zip(col,col_avg))
+	sort_d=dict(sorted(d.items(),key=lambda item:item[1]))
+	col_order=list(sort_d.keys())
+	col_order.insert(0,'Calculator')
+	df= df.reindex(columns=col_order)
+	return df
 
 
 #merge columns with same names together
