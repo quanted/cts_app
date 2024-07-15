@@ -276,6 +276,8 @@ def getPkaResults(chemspec_obj):
     else:
         html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
 
+    html += chemspec_obj.pka_image_html  # adds <img> html for parent smiles with pkas highlighted
+
     pka_html = build_pka_comparison_table(chemspec_obj)
 
     # # Show/hide buttons for microspecies chart data:

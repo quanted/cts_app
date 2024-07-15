@@ -8,6 +8,10 @@ import os
 import requests
 import pandas as pd
 import numpy as np
+from rdkit import Chem
+from rdkit.Chem import Draw
+import base64
+
 from ..generate_timestamp import gen_jid
 from ..booleanize import booleanize
 from ...cts_api import cts_rest
@@ -54,6 +58,8 @@ class chemspec(object):
 		self.run_data = {}
 		self.pka_dict_df = {}  # dataframe of pka dict
 
+		self.pka_image_html = ""  # <img> of parent with pkas highlighted
+
 		# Output stuff:
 		self.speciation_inputs = {}  # for batch mode use
 		speciation_results = {}  # speciation prop results
@@ -80,6 +86,8 @@ class chemspec(object):
 			jchemws_results = speciation_results['data'].get('data')
 			pkasolver_results = speciation_results["data"]["pkasolver"]
 			molgpka_results = speciation_results["data"]["molgpka"]
+
+			self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
 
 			self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
 
@@ -188,3 +196,31 @@ def FormatTable(df):
 #merge columns with same names together
 def MergeValues(x):
 	return ', '.join(x[x.notnull()].astype(str))
+
+
+def draw_chem_with_pka(smiles, atom_indices):
+    """
+    Returns <img> of pkas highlighted where the src is
+    a base64 string of the image.
+
+    NOTE: Could be passed through nodeWrapper for a popup
+    info table, but probably not needed.
+    """
+
+    mol=Chem.MolFromSmiles(smiles)
+    cp=Chem.Mol(mol)
+
+    for i in atom_indices:
+        label= "atom#_" + str(i) 
+        cp.GetAtomWithIdx(i).SetProp("atomNote",label)
+
+    # d2d = Chem.Draw.rdMolDraw2D.MolDraw2DSVG(350,300)
+    d2d = Draw.rdMolDraw2D.MolDraw2DCairo(300,300)
+    d2d.drawOptions().setHighlightColour((0.8,0.8,0.8))
+    d2d.DrawMolecule(cp,highlightAtoms=atom_indices)
+    d2d.FinishDrawing()
+
+    b64_encoded_png = base64.b64encode(d2d.GetDrawingText())
+    html_img = '<img src="data:image/png;base64,' + b64_encoded_png.decode('utf-8') + '">'
+
+    return html_img
