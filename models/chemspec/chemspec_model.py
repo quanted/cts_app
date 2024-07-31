@@ -89,13 +89,14 @@ class chemspec(object):
 
 			# molgpka_results["data"]["molgpka_index"] = list(molgpka_results["data"]["pka_dict"].keys())
 			if molgpka_results.get("data") and not "molgpka_index" in molgpka_results["data"]:
+
 				molgpka_pka_list = []
 				for key,val in molgpka_results["data"]["pka_dict"].items():
 					molgpka_pka_list.extend([int(key)] * len(val.split(",")))
 				
 				molgpka_results["data"]["molgpka_index"] = molgpka_pka_list
 
-				self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
+			self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
 
 			self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
 
