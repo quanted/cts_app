@@ -94,13 +94,27 @@ $(document).ready(function() {
         }
     });
 
+    var pchemprop = $('th.chemprop').children('input[type=checkbox]')[0];
+
+    console.log("pchemprop: ", pchemprop)
+
+    $(pchemprop).change(function() {
+        var checkbox = $(this);
+        console.log('checkbox ', checkbox);
+    });
+
+    // $('th.chemprop').children('input[type=checkbox]')[0].change(function() {
+    //     var checkbox = $(this);
+    //     console.log("chemprop header clicked: ", checkbox);
+    // });
+
     //Initialize all checkboxes to be unchecked:
     $("input:checkbox").prop('checked', false);
 
     //Start with the cells containing classes ChemCalcs_available or ChemCalcs_unavailable;
     //Make them slightly transparent, then darken a column that's selected.
-    $('.ChemCalcs_available').fadeTo(0, 0.75);  
-    $('.ChemCalcs_unavailable').fadeTo(0, 0.75);
+    $('.ChemCalcs_available').fadeTo(0, 0.75).not('td.colorKey');
+    $('.ChemCalcs_unavailable').fadeTo(0, 0.75).not('td.colorKey');
 
     pchempropTableLogic();
 
@@ -163,7 +177,7 @@ function pchempropTableLogic(checkbox) {
         var colClass = $(checkbox).attr('name');
         // if ($(this).is(':checked')) { $('td.' + colClass).fadeTo(0, 1); }
         if ($(checkbox).is(':checked')) { $('td.' + colClass).fadeTo(0, 1); }
-        else { $('td.' + colClass).fadeTo(0, 0.75); }
+        else { $('td.' + colClass).fadeTo(0, 0.75).not('td.colorKey'); }
     // });
 }
 

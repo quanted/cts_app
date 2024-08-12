@@ -65,27 +65,34 @@ table,td
   border: 1px solid black;
   border-width: 1px;
   border-spacing: 2px;
-  border-style: outset;
+  /*border-style: outset;*/
   border-color: white;
   border-collapse: separate;
-  background-color: #E7EADC;
+  /*background-color: #E7EADC;*/
+  background-color: #F7F9F4;
   font-size: 1.3em;
 }
 table
 {
-  background-color: #EEF0E6;
+  /*background-color: #EEF0E6;*/
+  background-color: #F7F9F4;
   padding: 1px;
   border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
 }
 th {
-  background-color: #E7EADC;
+  /*background-color: #E7EADC;*/
+  background-color: #dee0db;
   border: none;
   text-align: center;
   padding: 1px 4px;
   font-size: 1.5em;
 }
+
+/*td {
+  border-collapse: separate;
+}*/
 
 /* CTS Inputs */
 
@@ -242,12 +249,22 @@ input.tab_ChemCalcs, span.tab_ChemCalcs {
   font-size: 1.1em;
 }
 .ChemCalcs_available {
-  background-color: #356697;
-  color: #F7F9F4;
+  /*background-color: #356697;*/
+  /*background-color: #F7F9F4;*/
+  /*background-color: #c5c7c3;*/
+  background-color: #dee0db;
+  /*color: #F7F9F4;*/
+  /*color: #212121;*/
+  /*color: #191919;*/
+  color: black;
 }
 .ChemCalcs_unavailable {
-  background-color: #bc2f2f;
-  color: #F7F9F4;
+  /*background-color: #bc2f2f;*/
+  background-color: #F7F9F4;
+  /*color: #F7F9F4;*/
+  /*color: #212121;*/
+  /*color: #191919;*/
+  color: black;
 }
 .tab_Transform ul {
   list-style: none;
@@ -507,7 +524,8 @@ body.wait *, body.wait
 .ctsTableStylin th {
   /*font-size: 12px;*/
   font-size: 1.0em;
-  background-color: #E7EADC;
+  /*background-color: #E7EADC;*/
+  background-color: #dee0db;
   font-weight: bold;
 }
 
@@ -770,7 +788,9 @@ div.run_type {
 }
 
 .pchem_label {
-  background-color: #EEF0E6;
+  /*background-color: #EEF0E6;*/
+  /*background-color: #dee0db;*/
+  background-color: #f7f9f4;
 }
 
 #pchem_parent_wrap {

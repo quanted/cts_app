@@ -4,6 +4,13 @@ $(document).ready(function() {
   // Focus on main <section> on document load (test fix for tabindex -1 for 508 compliance)
   document.getElementById('main-content').setAttribute('tabindex', "0");
 
+  let currUrl = window.location.href;
+  if (currUrl.includes('pchemprop/output')) {
+    $('#main-content').css('max-width', '80em');
+  }
+  else {
+    $('#main-content').css('max-width', '60em'); 
+  }
 
   // Home
   $('#home').hover(

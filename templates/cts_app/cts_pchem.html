@@ -3,15 +3,13 @@
 <table id="pchemprop_table" class="input_table tab tab_ChemCalcs" style="display:none;">
 	<tr>
 		<th></th>
-		<th class="calc-header"><input aria-label="select epi" class="calc_checkbox" id="id_epi_select" name="epi" type="checkbox"><br><label for="id_epi_select">EPI Suite</p></th>
-		<th class="calc-header"><input aria-label="select opera" class="calc_checkbox" id="id_opera_select" name="opera" type="checkbox"><br><label for="id_opera_select">OPERA</p></th>
-		<th class="calc-header"><input aria-label="select test" class="calc_checkbox" id="id_test_select" name="test" type="checkbox"><br><label for="id_test_select">TEST</p></th>
+		<th class="calc-header"><input aria-label="select epi" class="calc_checkbox" id="id_epi_select" name="epi" type="checkbox"><br><label for="id_epi_select">EPI Suite</th>
+		<th class="calc-header"><input aria-label="select opera" class="calc_checkbox" id="id_opera_select" name="opera" type="checkbox"><br><label for="id_opera_select">OPERA</th>
+		<th class="calc-header"><input aria-label="select test" class="calc_checkbox" id="id_test_select" name="test" type="checkbox"><br><label for="id_test_select">TEST</th>
 		<th class="calc-header"><input aria-label="select chemaxon" class="calc_checkbox" id="id_chemaxon_select" name="chemaxon" type="checkbox" readonly><br><label for="id_chemaxon_select">ChemAxon</label></th>
-		{% if SPARC_AVAILABLE %}
-		<th class="calc-header"><input aria-label="select sparc" class="calc_checkbox" id="id_sparc_select" name="sparc" type="checkbox"><br><label for="id_sparc_select">SPARC</p></th>
-		{% endif %}
+		<th class="calc-header"><input aria-label="select equation" class="calc_checkbox" id="id_equation_select" name="equation" type="checkbox"><br><label for="id_equation_select">Equation</th>
 		<th>Geometric Mean</th>
-		<th class="calc-header"><input aria-label="select measured" class="calc_checkbox" id="id_measured_select" name="measured" type="checkbox"><br><label for="id_measured_select">Measured</p></th>
+		<th class="calc-header"><input aria-label="select measured" class="calc_checkbox" id="id_measured_select" name="measured" type="checkbox"><br><label for="id_measured_select">Measured</th>
         <!-- <th>Average</th> -->
 	</tr>
 	<tr>
@@ -19,9 +17,7 @@
 		<td></td>
 		<td></td>
 		<td></td>
-		{% if SPARC_AVAILABLE %}
 		<td></td>
-		{% endif %}
 		<td></td>
 		<td></td>
 		<td></td>
@@ -37,9 +33,7 @@
 		<td id="id_melting_point_OPERA" class="ChemCalcs_available opera melting_point"></td>
 		<td id="id_melting_point_TEST" class="ChemCalcs_available test melting_point"></td>
 		<td id="id_melting_point_ChemAxon" class="ChemCalcs_unavailable chemaxon melting_point"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_melting_point_SPARC" class="ChemCalcs_unavailable sparc melting_point"></td>
-		{% endif %}
+		<td id="id_melting_point_equation" class="ChemCalcs_unavailable equation melting_point"></td>
 		<td id="id_melting_point_geomean" class="ChemCalcs_available geomean melting_point"></td>
 		<td id="id_melting_point_Measured" class="ChemCalcs_available measured melting_point"></td>
 		</tr>
@@ -52,9 +46,7 @@
 		<td id="id_boiling_point_OPERA" class="ChemCalcs_available opera boiling_point"></td>
 		<td id="id_boiling_point_TEST" class="ChemCalcs_available test boiling_point"></td>
 		<td id="id_boiling_point_ChemAxon" class="ChemCalcs_unavailable chemaxon boiling_point"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_boiling_point_SPARC" class="ChemCalcs_available sparc boiling_point"></td>
-		{% endif %}
+		<td id="id_boiling_point_equation" class="ChemCalcs_unavailable equation boiling_point"></td>
 		<td id="id_boiling_point_geomean" class="ChemCalcs_available geomean boiling_point"></td>
 		<td id="id_boiling_point_Measured" class="ChemCalcs_available measured boiling_point"></td>
 		</tr>
@@ -67,9 +59,7 @@
 		<td id="id_water_sol_OPERA" class="ChemCalcs_available opera water_sol"></td>
 		<td id="id_water_sol_TEST" class="ChemCalcs_available test water_sol"></td>
 		<td id="id_water_sol_ChemAxon" class="ChemCalcs_available chemaxon water_sol"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_water_sol_SPARC" class="ChemCalcs_available sparc water_sol"></td>
-		{% endif %}
+		<td id="id_water_sol_equation" class="ChemCalcs_unavailable equation water_sol"></td>
 		<td id="id_water_sol_geomean" class="ChemCalcs_available geomean water_sol"></td>
 		<td id="id_water_sol_Measured" class="ChemCalcs_available measured water_sol"></td>
 		</tr>
@@ -82,42 +72,10 @@
 		<td id="id_vapor_press_OPERA" class="ChemCalcs_available opera vapor_press"></td>
 		<td id="id_vapor_press_TEST" class="ChemCalcs_available test vapor_press"></td>
 		<td id="id_vapor_press_ChemAxon" class="ChemCalcs_unavailable chemaxon vapor_press"></td>		
-		{% if SPARC_AVAILABLE %}
-		<td id="id_vapor_press_SPARC" class="ChemCalcs_available sparc vapor_press"></td>
-		{% endif %}
+		<td id="id_vapor_press_equation" class="ChemCalcs_unavailable equation vapor_press"></td>
 		<td id="id_vapor_press_geomean" class="ChemCalcs_available geomean vapor_press"></td>
 		<td id="id_vapor_press_Measured" class="ChemCalcs_available measured vapor_press"></td>
 		</tr>
-
-		
-
-		{% if SPARC_AVAILABLE %}
-		<tr>
-		<th class="chemprop"><input aria-label="select molecular dissusivity in water" id="id_mol_diss" name="mol_diss" type="checkbox" /><span><label for="id_mol_diss">Molecular Diffusivity in Water (cm<sup>2</sup>/s)</label></span></th>
-		<td id="id_mol_diss_EPI" class="ChemCalcs_unavailable epi mol_diss"></td>
-		<td id="id_mol_diss_OPERA" class="ChemCalcs_unavailable opera mol_diss"></td>
-		<td id="id_mol_diss_TEST" class="ChemCalcs_unavailable test mol_diss"></td>
-		<td id="id_mol_diss_ChemAxon" class="ChemCalcs_unavailable chemaxon mol_diss"></td>
-		<td id="id_mol_diss_SPARC" class="ChemCalcs_available sparc mol_diss"></td>
-		<td id="id_mol_diss_geomean" class="ChemCalcs_available geomean mol_diss"></td>
-		<td id="id_mol_diss_Measured" class="ChemCalcs_unavailable measured mol_diss"></td>
-		</tr>
-		{% endif %}
-
-
-
-		{% if SPARC_AVAILABLE %}
-		<tr>	
-		<th class="chemprop"><input aria-label="select molecular diffusivity in air" id="id_mol_diss_air" name="mol_diss_air" type="checkbox" /><span><label for="id_mol_diss_air">Molecular Diffusivity in Air (cm<sup>2</sup>/s)</label></span></th>
-		<td id="id_mol_diss_air_EPI" class="ChemCalcs_unavailable epi mol_diss_air"></td>
-		<td id="id_mol_diss_air_OPERA" class="ChemCalcs_unavailable opera mol_diss_air"></td>
-		<td id="id_mol_diss_air_TEST" class="ChemCalcs_unavailable test mol_diss_air"></td>
-		<td id="id_mol_diss_air_ChemAxon" class="ChemCalcs_unavailable chemaxon mol_diss_air"></td>
-		<td id="id_mol_diss_air_SPARC" class="ChemCalcs_available sparc mol_diss_air"></td>
-		<td id="id_mol_diss_air_geomean" class="ChemCalcs_available geomean mol_diss_air"></td>
-		<td id="id_mol_diss_air_Measured" class="ChemCalcs_unavailable measured mol_diss_air"></td>
-		</tr>
-		{% endif %}
 
 
 	
@@ -127,9 +85,7 @@
 		<td id="id_ion_con_OPERA" class="ChemCalcs_available opera ion_con"></td>
 		<td id="id_ion_con_TEST" class="ChemCalcs_unavailable test ion_con"></td>
 		<td id="id_ion_con_ChemAxon" class="ChemCalcs_available chemaxon ion_con"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_ion_con_SPARC" class="ChemCalcs_available sparc ion_con"></td>
-		{% endif %}
+		<td id="id_ion_con_equation" class="ChemCalcs_unavailable equation ion_con"></td>
 		<td id="id_ion_con_geomean" class="ChemCalcs_unavailable geomean ion_con"></td>
 		<td id="id_ion_con_Measured" class="ChemCalcs_unavailable measured ion_con"></td>
 		</tr>
@@ -142,9 +98,7 @@
 		<td id="id_henrys_law_con_OPERA" class="ChemCalcs_available opera henrys_law_con"></td>
 		<td id="id_henrys_law_con_TEST" class="ChemCalcs_unavailable test henrys_law_con"></td>
 		<td id="id_henrys_law_con_ChemAxon" class="ChemCalcs_unavailable chemaxon henrys_law_con"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_henrys_law_con_SPARC" class="ChemCalcs_available sparc henrys_law_con"></td>
-		{% endif %}
+		<td id="id_henrys_law_con_equation" class="ChemCalcs_unavailable equation henrys_law_con"></td>
 		<td id="id_henrys_law_con_geomean" class="ChemCalcs_available geomean henrys_law_con"></td>
 		<td id="id_henrys_law_con_Measured" class="ChemCalcs_available measured henrys_law_con"></td>
 		</tr>
@@ -156,9 +110,7 @@
 		<td id="id_kow_no_ph_OPERA" class="ChemCalcs_available opera kow_no_ph"></td>
 		<td id="id_kow_no_ph_TEST" class="ChemCalcs_unavailable test kow_no_ph"></td>
 		<td id="id_kow_no_ph_ChemAxon" class="ChemCalcs_available chemaxon kow_no_ph"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_kow_no_ph_SPARC" class="ChemCalcs_available sparc kow_no_ph"></td>
-		{% endif %}
+		<td id="id_kow_no_ph_equation" class="ChemCalcs_unavailable equation kow_no_ph"></td>
 		<td id="id_kow_no_ph_geomean" class="ChemCalcs_available geomean kow_no_ph"></td>
 		<td id="id_kow_no_ph_Measured" class="ChemCalcs_available measured kow_no_ph"></td>
 		</tr>
@@ -170,9 +122,7 @@
 		<td id="id_koc_OPERA" class="ChemCalcs_available opera koc"></td>
 		<td id="id_koc_TEST" class="ChemCalcs_unavailable test koc"></td>
 		<td id="id_koc_ChemAxon" class="ChemCalcs_unavailable chemaxon koc"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_koc_SPARC" class="ChemCalcs_unavailable sparc koc"></td>
-		{% endif %}
+		<td id="id_koc_equation" class="ChemCalcs_unavailable equation koc"></td>
 		<td id="id_koc_geomean" class="ChemCalcs_available geomean koc"></td>
 		<td id="id_koc_Measured" class="ChemCalcs_unavailable measured koc"></td>
 		</tr>
@@ -183,9 +133,7 @@
 		<td id="id_log_bcf_OPERA" class="ChemCalcs_available opera log_bcf"></td>
 		<td id="id_log_bcf_TEST" class="ChemCalcs_available test log_bcf"></td>
 		<td id="id_koc_ChemAxon" class="ChemCalcs_unavailable chemaxon log_bcf"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_log_bcf_SPARC" class="ChemCalcs_unavailable sparc log_bcf"></td>
-		{% endif %}
+		<td id="id_log_bcf_equation" class="ChemCalcs_unavailable equation log_bcf"></td>
 		<td id="id_log_bcf_geomean" class="ChemCalcs_available geomean log_bcf"></td>
 		<td id="id_log_bcf_Measured" class="ChemCalcs_unavailable measured log_bcf"></td>
 		</tr>
@@ -196,11 +144,35 @@
 		<td id="id_log_baf_OPERA" class="ChemCalcs_unavailable opera log_baf"></td>
 		<td id="id_log_baf_TEST" class="ChemCalcs_unavailable test log_baf"></td>
 		<td id="id_koc_ChemAxon" class="ChemCalcs_unavailable chemaxon log_baf"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_log_baf_SPARC" class="ChemCalcs_unavailable sparc log_baf"></td>
-		{% endif %}
+		<td id="id_log_baf_equation" class="ChemCalcs_unavailable equation log_baf"></td>
 		<td id="id_log_baf_geomean" class="ChemCalcs_available geomean log_baf"></td>
 		<td id="id_log_baf_Measured" class="ChemCalcs_unavailable measured log_baf"></td>
+		</tr>
+
+
+
+		<tr>
+		<th class="chemprop"><input aria-label="select molecular dissusivity in water" id="id_mol_diss" name="mol_diss" type="checkbox" /><span><label for="id_mol_diss">Molecular Diffusivity in Water (cm<sup>2</sup>/s)</label></span></th>
+		<td id="id_mol_diss_EPI" class="ChemCalcs_unavailable epi mol_diss"></td>
+		<td id="id_mol_diss_OPERA" class="ChemCalcs_unavailable opera mol_diss"></td>
+		<td id="id_mol_diss_TEST" class="ChemCalcs_unavailable test mol_diss"></td>
+		<td id="id_mol_diss_ChemAxon" class="ChemCalcs_unavailable chemaxon mol_diss"></td>
+		<td id="id_mol_diss_equation" class="ChemCalcs_available equation mol_diss"></td>
+		<td id="id_mol_diss_geomean" class="ChemCalcs_available geomean mol_diss"></td>
+		<td id="id_mol_diss_Measured" class="ChemCalcs_unavailable measured mol_diss"></td>
+		</tr>
+
+
+
+		<tr>	
+		<th class="chemprop"><input aria-label="select molecular diffusivity in air" id="id_mol_diss_air" name="mol_diss_air" type="checkbox" /><span><label for="id_mol_diss_air">Molecular Diffusivity in Air (cm<sup>2</sup>/s)</label></span></th>
+		<td id="id_mol_diss_air_EPI" class="ChemCalcs_unavailable epi mol_diss_air"></td>
+		<td id="id_mol_diss_air_OPERA" class="ChemCalcs_unavailable opera mol_diss_air"></td>
+		<td id="id_mol_diss_air_TEST" class="ChemCalcs_unavailable test mol_diss_air"></td>
+		<td id="id_mol_diss_air_ChemAxon" class="ChemCalcs_unavailable chemaxon mol_diss_air"></td>
+		<td id="id_mol_diss_air_equation" class="ChemCalcs_available equation mol_diss_air"></td>
+		<td id="id_mol_diss_air_geomean" class="ChemCalcs_available geomean mol_diss_air"></td>
+		<td id="id_mol_diss_air_Measured" class="ChemCalcs_unavailable measured mol_diss_air"></td>
 		</tr>
 	
 
@@ -217,9 +189,7 @@
 		<td id="id_kow_wph_OPERA" class="ChemCalcs_available opera kow_wph"></td>
 		<td id="id_kow_wph_TEST" class="ChemCalcs_unavailable test kow_wph"></td>
 		<td id="id_kow_wph_ChemAxon" class="ChemCalcs_available chemaxon kow_wph"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_kow_wph_SPARC" class="ChemCalcs_available sparc kow_wph"></td>
-		{% endif %}
+		<td id="id_kow_wph_equation" class="ChemCalcs_unavailable equation kow_wph"></td>
 		<td id="id_kow_wph_geomean" class="ChemCalcs_available geomean kow_wph"></td>
 		<td id="id_kow_wph_Measured" class="ChemCalcs_unavailable measured kow_wph"></td>
 		</tr>
@@ -231,9 +201,7 @@
 		<td id="id_water_sol_ph_OPERA" class="ChemCalcs_unavailable opera water_sol_ph"></td>
 		<td id="id_water_sol_ph_TEST" class="ChemCalcs_unavailable test water_sol_ph"></td>
 		<td id="id_water_sol_ph_ChemAxon" class="ChemCalcs_available chemaxon water_sol_ph"></td>
-		{% if SPARC_AVAILABLE %}
-		<td id="id_water_sol_ph_SPARC" class="ChemCalcs_unavailable sparc water_sol_ph"></td>
-		{% endif %}
+		<td id="id_water_sol_ph_equation" class="ChemCalcs_unavailable equation water_sol_ph"></td>
 		<td id="id_water_sol_ph_geomean" class="ChemCalcs_available geomean water_sol_ph"></td>
 		<td id="id_water_sol_ph_Measured" class="ChemCalcs_unavailable measured water_sol_ph"></td>
 		</tr>
