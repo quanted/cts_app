@@ -30,7 +30,8 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.chemaxon = bleach.clean(request.POST.get('chemaxon', ''))
     pchemprop_obj.test = bleach.clean(request.POST.get('test', ''))
     pchemprop_obj.epi = bleach.clean(request.POST.get('epi', ''))
-    pchemprop_obj.sparc = bleach.clean(request.POST.get('sparc', ''))
+    # pchemprop_obj.sparc = bleach.clean(request.POST.get('sparc', ''))
+    pchemprop_obj.equation = bleach.clean(request.POST.get('equation', ''))
     pchemprop_obj.measured = bleach.clean(request.POST.get('measured', ''))
     pchemprop_obj.opera = bleach.clean(request.POST.get('opera', ''))
 
