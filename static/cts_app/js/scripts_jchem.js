@@ -92,7 +92,8 @@ function importMolFromCanvas() {
   clearChemicalEditorContent(false);  // clears ketcher and results table
   $('#id_chem_struct').val(""); // clears 'Lookup Chemical' before loading new one from drawn molecule
 
-  getKetcherInstance().getSmilesAsync().then((smilesFromStructre) => {
+  // getKetcherInstance().getSmilesAsync().then((smilesFromStructre) => {
+  getKetcherInstance().getSmiles().then((smilesFromStructre) => {
 
     if (smilesFromStructre.length < 1) {
       displayErrorInTextbox("Draw a chemical first..");
