@@ -41,14 +41,19 @@ pchem_defs = {
 	},
 	"mdw": {
 		'name': "Molecular Diffusivity in Water",
-		'definition': "The proportionality constant of molar flux due to molecular diffusion in water and the concentration gradient of the chemical in water. Molecular diffusion in water is the process in which solutes are transported at the microscopic level as the result of their spontaneous movement from regions of higher concentrations to regions of lower concentrations.",
-		'methods': None,
+		'definition': "A measure of the rate of transport in water due to a gradient in concentration, also known as the molecular diffusion coefficient in water.",
+		'methods': {
+			'W-C': "Wilke-Change equation",
+			'H-L': "Hayduk and Laudie equation"
+		},
 		'cts_props': ['mol_diss']
 	},
 	"mda": {
 		'name': "Molecular Diffusivity in Air",
-		'definition': "The proportionality constant of molar flux due to molecular diffusion in air and the concentration gradient of the chemical in air. Molecular diffusion in air is the process in which gases are transported at the microscopic level as the result of their spontaneous movement from regions of higher concentrations to regions of lower concentrations.",
-		'methods': None,
+		'definition': "A measure of the rate of transport in air due to a gradient in concentration, also known as the molecular diffusion coefficient in air.",
+		'methods': {
+			'FSG': "Fuller, Schettler, and Giddings equation"
+		},
 		'cts_props': ['mol_diss_air']
 	},
 	"ic": {
