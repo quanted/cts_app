@@ -13,32 +13,18 @@ from parsley.decorators import parsleyfy
 # that folder entirely.
 # TODO: Consider using calculators' props attribute in pchempropAvailable() below
 ####################################################################################
-props_list = ['melting_point', 'boiling_point', 'water_sol', 'vapor_press', 'mol_diss', 'ion_con',
-			'henrys_law_con', 'kow_no_ph', 'kow_wph', 'koc', 'water_sol_ph', 'log_bcf', 'log_baf', 'mol_diss_water', 'mol_diss_air']
 
-# List of each provider's available properties (see props list):
-chemaxon_props = ['ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available', 
-					'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 
-# NOTE: temporarily setting koc for epi to unavailable
-epi_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
 
-# NOTE: temporarily setting kow_no_ph for test to unavailable
-test_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
- 				'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
-
-equation_props = ['ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_available']
-
-# NOTE: Measured data is from EPI measured values
-measured_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable',
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
-
-opera_props = ['ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available',
-				'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_available', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable', 'ChemCalcs_unavailable']
-####################################################################################
-
+# NOTE: This stuff should all be in the calculator classes so it's definied in one place.
+available_props = {
+	"chemaxon": ["water_sol", "ion_con", "kow_no_ph", "kow_wph", "water_sol_ph"],
+	"epi": ["melting_point", "boiling_point", "water_sol", "vapor_press", "henrys_law_con", "kow_no_ph", "koc", "log_bcf", "log_baf"],
+	"test": ["melting_point", "boiling_point", "water_sol", "vapor_press", "log_bcf"],
+	"equation": ["mol_diss", "mol_diss_air"],
+	"measured": ["melting_point", "boiling_point", "water_sol", "vapor_press", "henrys_law_con", "kow_no_ph"],
+	"opera": ["melting_point", "boiling_point", "water_sol", "vapor_press", "ion_con", "henrys_law_con", "kow_no_ph", "koc", "log_bcf", "kow_wph"]
+}
 
 
 # Method(s) called from *_inputs.py
@@ -86,25 +72,12 @@ def pchempropAvailable(calculator, prop):
 	Returns: (boolean) whether prop is available for that calculator.
 	"""
 
-	calcDict = {}
+	calc_props = available_props.get(calculator)
 
-	if calculator == "chemaxon":
-		calcDict = dict(zip(props_list, chemaxon_props))
-	elif calculator == "epi":
-		calcDict = dict(zip(props_list, epi_props))
-	elif calculator == "test":
-		calcDict = dict(zip(props_list, test_props))
-	elif calculator == "equation":
-		calcDict = dict(zip(props_list, equation_props))
-	elif calculator == "measured":
-		calcDict = dict(zip(props_list, measured_props))
-	elif calculator == "opera":
-		calcDict = dict(zip(props_list, opera_props))
+	if not calc_props:
+		return False
 
-	if prop in calcDict:
-		if 'unavailable' in calcDict[prop]:
-			return False
-		else:
-			return True
-
-	return False
+	if prop in calc_props:
+		return True
+	else:
+		return False
