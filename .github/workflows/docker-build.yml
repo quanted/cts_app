@@ -39,7 +39,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.CTS_DJANGO_IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ github.ref_name }}
+            type=raw,value=${{ github.ref_name }}-${{github.sha}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
