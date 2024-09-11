@@ -10,8 +10,8 @@ n = 2  # number of decimal places to round values
 
 
 class PChemProp(object):
-    def __init__(self, run_type, chem_struct=None, smiles=None, name=None, formula=None, exactMass=None, mass=None,
-                 cas=None, chemaxon=None, epi=None, test=None, equation=None, measured=None, opera=None, melting_point=None,
+    def __init__(self, run_type, chem_struct=None, smiles=None, preferredName=None, name=None, formula=None, exactMass=None, mass=None,
+                 casrn=None, cas=None, dtxsid=None, chemaxon=None, epi=None, test=None, equation=None, measured=None, opera=None, melting_point=None,
                  boiling_point=None, water_sol=None, water_sol_ph=None, vapor_press=None, mol_diss=None, mol_diss_air=None,
                  ion_con=None, henrys_law_con=None, kow_no_ph=None, kow_wph=None, kow_ph=None, koc=None, log_bcf=None, log_baf=None):
         
@@ -28,6 +28,10 @@ class PChemProp(object):
         self.exactMass = "{} g/mol".format(exactMass)
         self.mass = "{} g/mol".format(mass)
         self.cas = cas
+
+        self.preferredName = preferredName
+        self.casrn = casrn  # preferred cas
+        self.dtxsid = dtxsid
 
         # chemical properties (values 'on' or None) -- django params
         self.melting_point = melting_point

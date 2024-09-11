@@ -12,8 +12,8 @@ from ...cts_calcs.calculator_metabolizer import MetabolizerCalc
 
 class gentrans(object):
 
-	def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, mass,
-				 exactMass, cas, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis_unranked,
+	def __init__(self, run_type, chem_struct, smiles, orig_smiles, preferredName, name, formula, mass,
+				 exactMass, casrn, cas, dtxsid, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis_unranked,
 				 photolysis_ranked, pfas_environmental, pfas_metabolism, gen_limit, pop_limit,
 				 likely_limit, biotrans_metabolism, biotrans_libs, envipath_metabolism, include_rates, tree_type):
 
@@ -32,6 +32,10 @@ class gentrans(object):
 		self.mass = '{} g/mol'.format(mass)
 		self.exactMass = '{} g/mol'.format(exactMass)
 		self.cas = cas
+
+		self.preferredName = preferredName
+		self.casrn = casrn  # preferred cas
+		self.dtxsid = dtxsid
 
 		self.calc = "metabolizer"
 

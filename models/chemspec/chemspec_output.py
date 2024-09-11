@@ -19,6 +19,10 @@ def chemspecOutputPage(request):
     mass = bleach.clean(request.POST.get('mass', ''))
     exact_mass = bleach.clean(request.POST.get('exactmass', ''))
 
+    preferredName = bleach.clean(request.POST.get('preferredName', ''))
+    casrn = bleach.clean(request.POST.get('casrn', ''))
+    dtxsid = bleach.clean(request.POST.get('dtxsid', ''))
+
     # Checmial Speciation tab - checkboxes
     get_pka = bleach.clean(request.POST.get('get_pka', ''))
     get_taut = bleach.clean(request.POST.get('get_taut', ''))
@@ -37,8 +41,8 @@ def chemspecOutputPage(request):
     
     sterMaxNumStructs = bleach.clean(request.POST.get('stereoisomers_maxNoOfStructures', ''))
 
-    chemspec_obj = chemspec_model.chemspec(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
-                    cas, mass, exact_mass, get_pka, get_taut, get_stereo, pKaDecs, pKaPhLow, 
+    chemspec_obj = chemspec_model.chemspec(run_type, chemStruct, smiles, orig_smiles, preferredName, iupac, formula, 
+                    casrn, cas, dtxsid, mass, exact_mass, get_pka, get_taut, get_stereo, pKaDecs, pKaPhLow, 
                     pKaPhUp, pKaPhInc, phMicroSpec, isoElectPtPhInc, 
                     tautMaxNumStructs, tautMaxNumStructsPh, sterMaxNumStructs)
 

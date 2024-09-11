@@ -1,6 +1,7 @@
 from django.views.decorators.http import require_POST
 from . import pchemprop_model
 import bleach
+import logging
 
 
 @require_POST
@@ -17,7 +18,8 @@ def pchempropOutputPage(request, metabolite=False):
     # Chemical from Chemical Editor
     pchemprop_obj.chem_struct = bleach.clean(request.POST.get('chem_struct', ''))
 
-    pchemprop_obj.smiles = bleach.clean(request.POST.get('smiles', ''))
+    pchemprop_obj.smiles = bleach.clean(request.POST.get('smiles', ''))   
+
     # pchemprop_obj.iupac = bleach.clean(request.POST.get('iupac', ''))
     pchemprop_obj.name = bleach.clean(request.POST.get('iupac', ''))
     pchemprop_obj.formula = bleach.clean(request.POST.get('formula', ''))
@@ -25,6 +27,10 @@ def pchempropOutputPage(request, metabolite=False):
     pchemprop_obj.orig_smiles = bleach.clean(request.POST.get('orig_smiles', ''))
     pchemprop_obj.exactMass = bleach.clean(request.POST.get('exactmass', ''))
     pchemprop_obj.cas = bleach.clean(request.POST.get('cas', ''))
+
+    pchemprop_obj.preferredName = bleach.clean(request.POST.get('preferredName', ''))
+    pchemprop_obj.casrn = bleach.clean(request.POST.get('casrn', ''))
+    pchemprop_obj.dtxsid = bleach.clean(request.POST.get('dtxsid', ''))
 
     # Pchem Properties Column Checkboxes
     pchemprop_obj.chemaxon = bleach.clean(request.POST.get('chemaxon', ''))

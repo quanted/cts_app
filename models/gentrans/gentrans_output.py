@@ -17,6 +17,10 @@ def gentransOutputPage(request):
 	orig_smiles = bleach.clean(request.POST.get('orig_smiles', ''))
 	exact_mass = bleach.clean(request.POST.get('exactmass', ''))
 	cas = bleach.clean(request.POST.get('cas', ''))
+
+	preferredName = bleach.clean(request.POST.get('preferredName', ''))
+    casrn = bleach.clean(request.POST.get('casrn', ''))
+    dtxsid = bleach.clean(request.POST.get('dtxsid', ''))
 	
 	# Reaction Pathway Simulator tab fields
 	abioticHydrolysis = bleach.clean(request.POST.get('abiotic_hydrolysis', ''))
@@ -39,8 +43,8 @@ def gentransOutputPage(request):
 
 	tree_type = bleach.clean(request.POST.get('tree_type', ''))
 
-	gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, iupac, formula, 
-									mass, exact_mass, cas, abioticHydrolysis, abioticRecuction,
+	gentrans_obj = gentrans_model.gentrans(run_type, chemStruct, smiles, orig_smiles, preferredName, iupac, formula, 
+									mass, exact_mass, casrn, cas, dtxsid, abioticHydrolysis, abioticRecuction,
 									mammMetabolism, photolysis_unranked, photolysis_ranked, 
 									pfas_environmental, pfas_metabolism, genLimit, popLimit, 
 									likelyLimit, biotrans_metabolism, biotrans_libs, envipath_metabolism,

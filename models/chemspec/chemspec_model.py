@@ -19,9 +19,9 @@ from ...cts_api import cts_rest
 
 
 class chemspec(object):
-	def __init__(self, run_type, chem_struct, smiles, orig_smiles, name, formula, cas, mass, exactMass, get_pka, get_taut,
-				 get_stereo, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
-				 isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
+	def __init__(self, run_type, chem_struct, smiles, orig_smiles, preferredName, name, formula, casrn, cas, dtxsid, mass,
+					exactMass, get_pka, get_taut, get_stereo, pKa_decimals, pKa_pH_lower, pKa_pH_upper, pKa_pH_increment, pH_microspecies,
+					isoelectricPoint_pH_increment, tautomer_maxNoOfStructures, tautomer_pH, stereoisomers_maxNoOfStructures):
 
 		self.title = "Calculate Chemical Speciation"
 		self.jid = gen_jid()
@@ -31,9 +31,18 @@ class chemspec(object):
 		self.chem_struct = chem_struct  # SMILE of chemical on 'Chemical Editor' tab
 		self.smiles = smiles
 		self.orig_smiles = orig_smiles
+
+		self.preferredName = preferredName
+
 		self.name = name
 		self.formula = formula
+		
+		self.casrn = casrn  # preferred cas
+
 		self.cas = cas
+
+		self.dtxsid = dtxsid
+
 		self.mass = "{} g/mol".format(mass)
 		self.exactMass = "{} g/mol".format(exactMass)
 
