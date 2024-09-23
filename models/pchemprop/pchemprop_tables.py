@@ -127,7 +127,8 @@ def output_pchem_table(pchemprop_obj):
                                     'workflow': 'pchemprop',
                                     'run_type': 'single',
                                     'nodejs_host': os.getenv("NODEJS_HOST"),
-                                    'nodejs_port': os.getenv("NODEJS_PORT")
+                                    'nodejs_port': os.getenv("NODEJS_PORT"),
+                                    'chem_info': pchemprop_obj.chem_info
                                 }
                             )
 

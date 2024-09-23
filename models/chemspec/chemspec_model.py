@@ -46,6 +46,19 @@ class chemspec(object):
 		self.mass = "{} g/mol".format(mass)
 		self.exactMass = "{} g/mol".format(exactMass)
 
+		self.chem_info = {
+			'chem_struct': self.chem_struct,
+			'smiles': self.smiles,
+			'name': self.name,
+			'formula': self.formula,
+			'exactMass': self.exactMass,
+			'mass': self.mass,
+			'cas': self.cas,
+			'preferredName': self.preferredName,
+			'casrn': self.casrn,
+			'dtxsid': self.dtxsid
+		}
+
 		# Checkboxes:
 		self.get_pka = booleanize(get_pka)  # convert 'on'/'off' to bool
 		self.get_taut = booleanize(get_taut)
@@ -96,18 +109,18 @@ class chemspec(object):
 			pkasolver_results = speciation_results["data"]["pkasolver"]
 			molgpka_results = speciation_results["data"]["molgpka"]
 
-			# molgpka_results["data"]["molgpka_index"] = list(molgpka_results["data"]["pka_dict"].keys())
-			if molgpka_results.get("data") and not "molgpka_index" in molgpka_results["data"]:
+			# # molgpka_results["data"]["molgpka_index"] = list(molgpka_results["data"]["pka_dict"].keys())
+			# if molgpka_results.get("data") and not "molgpka_index" in molgpka_results["data"]:
 
-				molgpka_pka_list = []
-				for key,val in molgpka_results["data"]["pka_dict"].items():
-					molgpka_pka_list.extend([int(key)] * len(val.split(",")))
+			# 	molgpka_pka_list = []
+			# 	for key,val in molgpka_results["data"]["pka_dict"].items():
+			# 		molgpka_pka_list.extend([int(key)] * len(val.split(",")))
 				
-				molgpka_results["data"]["molgpka_index"] = molgpka_pka_list
+			# 	molgpka_results["data"]["molgpka_index"] = molgpka_pka_list
 
-			self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
-
-			self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
+			if not "error" in molgpka_results:
+				self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
+				self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
 
 
 			# TODO: Proper error message is status is NOT TRUE
@@ -217,28 +230,28 @@ def MergeValues(x):
 
 
 def draw_chem_with_pka(smiles, atom_indices):
-    """
-    Returns <img> of pkas highlighted where the src is
-    a base64 string of the image.
+	"""
+	Returns <img> of pkas highlighted where the src is
+	a base64 string of the image.
 
-    NOTE: Could be passed through nodeWrapper for a popup
-    info table, but probably not needed.
-    """
+	NOTE: Could be passed through nodeWrapper for a popup
+	info table, but probably not needed.
+	"""
 
-    mol=Chem.MolFromSmiles(smiles)
-    cp=Chem.Mol(mol)
+	mol=Chem.MolFromSmiles(smiles)
+	cp=Chem.Mol(mol)
 
-    for i in atom_indices:
-        label= "atom#_" + str(i) 
-        cp.GetAtomWithIdx(i).SetProp("atomNote",label)
+	for i in atom_indices:
+		label= "atom#_" + str(i) 
+		cp.GetAtomWithIdx(i).SetProp("atomNote",label)
 
-    # d2d = Chem.Draw.rdMolDraw2D.MolDraw2DSVG(350,300)
-    d2d = Draw.rdMolDraw2D.MolDraw2DCairo(300,300)
-    d2d.drawOptions().setHighlightColour((0.8,0.8,0.8))
-    d2d.DrawMolecule(cp,highlightAtoms=atom_indices)
-    d2d.FinishDrawing()
+	# d2d = Chem.Draw.rdMolDraw2D.MolDraw2DSVG(350,300)
+	d2d = Draw.rdMolDraw2D.MolDraw2DCairo(300,300)
+	d2d.drawOptions().setHighlightColour((0.8,0.8,0.8))
+	d2d.DrawMolecule(cp,highlightAtoms=atom_indices)
+	d2d.FinishDrawing()
 
-    b64_encoded_png = base64.b64encode(d2d.GetDrawingText())
-    html_img = '<img src="data:image/png;base64,' + b64_encoded_png.decode('utf-8') + '">'
+	b64_encoded_png = base64.b64encode(d2d.GetDrawingText())
+	html_img = '<img src="data:image/png;base64,' + b64_encoded_png.decode('utf-8') + '">'
 
-    return html_img
+	return html_img

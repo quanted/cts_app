@@ -37,6 +37,19 @@ class gentrans(object):
 		self.casrn = casrn  # preferred cas
 		self.dtxsid = dtxsid
 
+		self.chem_info = {
+			'chem_struct': self.chem_struct,
+			'smiles': self.smiles,
+			'name': self.name,
+			'formula': self.formula,
+			'exactMass': self.exactMass,
+			'mass': self.mass,
+			'cas': self.cas,
+			'preferredName': self.preferredName,
+			'casrn': self.casrn,
+			'dtxsid': self.dtxsid
+		}
+
 		self.calc = "metabolizer"
 
 		# Reaction Libraries

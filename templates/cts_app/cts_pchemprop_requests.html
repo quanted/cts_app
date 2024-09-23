@@ -2,6 +2,7 @@
 {{nodes|json_script:"nodes"}}
 {{metabolizer_post|json_script:"metabolizer_post"}}
 {{checkedCalcsAndProps|json_script:"checkedCalcsAndProps"}}
+{{chem_info|json_script:"chem_info"}}
 
 <script type="text/javascript">
 
@@ -25,6 +26,7 @@ var speciation_inputs;
 var nodejs_host, nodejs_port;
 var service;  // p-chem, speciation, transformation products
 var calc;
+var chem_info
 
 var metabolizer_post;
 
@@ -53,6 +55,8 @@ $(document).ready(function() {
     console.log("Include Rates: ", includeRates)
 
     metabolizer_post = JSON.parse(document.getElementById('metabolizer_post').textContent);
+
+    chem_info = JSON.parse(document.getElementById('chem_info').textContent);
 
     $('#id_kow_ph').val(kowPH);  // set ph on pchem table to user val
 
@@ -576,6 +580,8 @@ function startPchemPropDataCollection(calc, structure, checkedCalcsAndProps, kow
         // pchem_data['node'] = _node_data;
         pchem_data['nodes'] = [_node_data];
     }
+
+    pchem_data['chem_info'] = chem_info;
 
 
     // adding new nodes stuff:
