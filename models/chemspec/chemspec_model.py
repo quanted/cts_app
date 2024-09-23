@@ -78,7 +78,7 @@ class chemspec(object):
 		self.stereoisomers_maxNoOfStructures = stereoisomers_maxNoOfStructures
 
 		self.run_data = {}
-		self.pka_dict_df = {}  # dataframe of pka dict
+		self.pka_dict_df = None  # dataframe of pka dict
 
 		self.pka_image_html = ""  # <img> of parent with pkas highlighted
 

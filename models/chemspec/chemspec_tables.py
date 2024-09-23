@@ -230,7 +230,7 @@ def build_pka_comparison_table(chemspec_obj):
     2   chemaxon   | 4.54    | x
     """
     pka_dicts = chemspec_obj.pka_dict_df
-    if pka_dicts.empty:
+    if not pka_dicts:
         return False
 
     pka_dicts_html = pka_dicts.to_html(classes="ctsTableStylin", index=False)
