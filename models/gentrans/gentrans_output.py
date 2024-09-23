@@ -19,8 +19,8 @@ def gentransOutputPage(request):
 	cas = bleach.clean(request.POST.get('cas', ''))
 
 	preferredName = bleach.clean(request.POST.get('preferredName', ''))
-    casrn = bleach.clean(request.POST.get('casrn', ''))
-    dtxsid = bleach.clean(request.POST.get('dtxsid', ''))
+	casrn = bleach.clean(request.POST.get('casrn', ''))
+	dtxsid = bleach.clean(request.POST.get('dtxsid', ''))
 	
 	# Reaction Pathway Simulator tab fields
 	abioticHydrolysis = bleach.clean(request.POST.get('abiotic_hydrolysis', ''))
