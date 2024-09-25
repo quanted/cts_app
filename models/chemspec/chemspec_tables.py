@@ -231,7 +231,7 @@ def build_pka_comparison_table(chemspec_obj):
     """
     pka_dicts = chemspec_obj.pka_dict_df
     if pka_dicts.empty:
-        return False
+        return ""
 
     pka_dicts_html = pka_dicts.to_html(classes="ctsTableStylin", index=False)
 
