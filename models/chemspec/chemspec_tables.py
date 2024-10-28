@@ -264,11 +264,16 @@ def getPkaResults(chemspec_obj):
 		molgpka_error = chemspec_obj.run_data.get("molgpka", {}).get("error")
 		molgpka_val = validate_pka("molgpka", molgpka_data, molgpka_error)
 
+		measured_data = chemspec_obj.run_data.get("measured", {}).get("data", {})
+		measured_error = chemspec_obj.run_data.get("measured", {}).get("error")
+		measured_val = validate_pka("measured", measured_data, measured_error)
+
 		pkaValues = {
 			'Acidic pKa Value(s)': roundedPka,
 			'Basic pKa Value(s)': roundedPkb,
 			'Pkasolver Values(s)': pkasolver_val,
-			'MolGpka Values(s)': molgpka_val
+			'MolGpka Values(s)': molgpka_val,
+			'Measured Values(s)': measured_val
 		}
 
 	except Exception as e:

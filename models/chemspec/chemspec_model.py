@@ -88,44 +88,31 @@ class chemspec(object):
 		pkasolver_results = {}
 		jchemws_results = {}
 		molgpka_results = {}
+		measured_results = {}
 
 		if self.run_type != 'batch':
 			# Calls cts_rest to get speciation results:
 			# speciation_url = os.environ.get('CTS_REST_SERVER') + "/cts/rest/speciation/run"
 			post_data = self.__dict__  # payload is class attributes as dict
-			# post_data['chemical'] = self.chem_struct  # cts rest uses 'chemical'
 			post_data['chemical'] = self.smiles
 			post_data['service'] = "getSpeciationData"
 			post_data['run_type'] = "single"
-			# speciation_results = requests.post(speciation_url,
-			# 						data=json.dumps(post_data),
-			# 						allow_redirects=True,
-			# 						verify=False,
-			# 						timeout=30)
+
 			speciation_results = cts_rest.getChemicalSpeciationData(post_data)
 			speciation_results = json.loads(speciation_results.content)
 
-			jchemws_results = speciation_results['data'].get('data')
+			jchemws_results = speciation_results["data"].get("data")
 			pkasolver_results = speciation_results["data"]["pkasolver"]
 			molgpka_results = speciation_results["data"]["molgpka"]
+			measured_results = speciation_results["data"]["measured"]
 
-			# # molgpka_results["data"]["molgpka_index"] = list(molgpka_results["data"]["pka_dict"].keys())
-			# if molgpka_results.get("data") and not "molgpka_index" in molgpka_results["data"]:
 
-			# 	molgpka_pka_list = []
-			# 	for key,val in molgpka_results["data"]["pka_dict"].items():
-			# 		molgpka_pka_list.extend([int(key)] * len(val.split(",")))
-				
-			# 	molgpka_results["data"]["molgpka_index"] = molgpka_pka_list
+			logging.warning("chemspec_model measured_results: {}".format(measured_results))
+
 
 			if not "error" in molgpka_results:
 				self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
 				self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
-
-
-			# TODO: Proper error message is status is NOT TRUE
-			# if speciation_results.get('status') == True:
-			# 	speciation_results = speciation_results['data'].get('data')
 
 		else:
 			# Batch speciation calls are done through nodejs/socket.io
@@ -153,10 +140,9 @@ class chemspec(object):
 			'mass': self.mass,
 			'exactMass': self.exactMass
 		})
-
 		self.run_data["pkasolver"] = pkasolver_results
-
 		self.run_data["molgpka"] = molgpka_results
+		self.run_data["measured"] = measured_results
 
 		self.run_data.update(jchemws_results)
 
