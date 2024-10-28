@@ -160,7 +160,7 @@ def organize_pka(jchemws_results, pkasolver_results, molgpka_results):
 
 	#combine all dataframes
 	full_table=pd.concat([solver_df,molg_df,ca_df],ignore_index=True)
-	full_table.insert(0,'Calculator',['pKaSolver','MolGpKa','Chem Axon'])
+	full_table.insert(0,'Calculator',['pKaSolver','MolGpKa','ChemAxon'])
 
 	#sort dataframe so that pka site (columns) are sorted from lowest average pka to highest
 	final=FormatTable(full_table)

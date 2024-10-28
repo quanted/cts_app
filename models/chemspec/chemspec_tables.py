@@ -345,7 +345,7 @@ def create_microspecies_tables(chemspec_obj, calcs, pkasolver_data):
 
 		elif calc == "jchem":
 			
-			html += """<button id=btn-jchem onclick="toggleMicrospeciesTable('jchem')">Jchem</button>"""
+			html += """<button id=btn-jchem onclick="toggleMicrospeciesTable('jchem')">ChemAxon</button>"""
 			
 			chart_data = chemspec_obj.run_data['pka_chartdata']
 			div_id = "microDistDataJchem"
