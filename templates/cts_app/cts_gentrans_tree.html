@@ -594,9 +594,10 @@ function init(json){
 
 function findReactionLinkSection(routes) {
 
-    let selectedReactionLibs = metabolizer_post['transformationLibraries'];
-
+    let selectedReactionLibs = metabolizer_post['transformationLibraries'] || null;
     let route = routes.split(',').pop();
+
+
     // Checks hydrolysis reactions:
     for (let reactionName in hydrolysisReactionMap) {
         let sectionName = hydrolysisReactionMap[reactionName];
@@ -618,6 +619,12 @@ function findReactionLinkSection(routes) {
             return rankedPhotolysisLink + sectionName;
         }
     }
+
+    if (!selectedReactionLibs) {
+        return '/cts/about/reactionlibs';
+    }
+
+
     // Checks PFAS Environmental reactions:
     if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
         for (let reactionName in pfasEnvironmentalReactionMap) {
@@ -645,14 +652,16 @@ function findReactionRate(routes) {
     Options: generalReactionLibrariesRanks, pfasEnvironmentalLibraryRanks, pfasMetabolicLibraryRanks
     */
     let generalLibs = ['abiotic_hydrolysis', 'abiotic_reduction', 'mamm_metabolism', 'photolysis_unranked', 'photolysis_ranked'];
-    let pfasEnvironmental = 'pfas_environmental';
-    let pfasMetabolism = 'pfas_metabolism';
 
     let route = routes.split(',').pop();
 
-    let selectedReactionLibs = metabolizer_post['transformationLibraries'];
+    let selectedReactionLibs = metabolizer_post['transformationLibraries'] || null;
 
     let reactionRank = '';
+
+    if (!selectedReactionLibs) {
+        return '';
+    }
 
     // Checks PFAS Environmental reactions:
     if (selectedReactionLibs.length == 1 && selectedReactionLibs[0] == 'pfas_environmental') {
