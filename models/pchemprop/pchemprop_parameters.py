@@ -22,7 +22,7 @@ available_props = {
 	"epi": ["melting_point", "boiling_point", "water_sol", "vapor_press", "henrys_law_con", "kow_no_ph", "koc", "log_bcf", "log_baf"],
 	"test": ["melting_point", "boiling_point", "water_sol", "vapor_press", "log_bcf"],
 	"equation": ["mol_diss", "mol_diss_air"],
-	"measured": ["melting_point", "boiling_point", "water_sol", "vapor_press", "henrys_law_con", "kow_no_ph"],
+	"measured": ["melting_point", "boiling_point", "water_sol", "vapor_press", "henrys_law_con", "kow_no_ph", "koc", "log_bcf", "log_baf"],
 	"opera": ["melting_point", "boiling_point", "water_sol", "vapor_press", "ion_con", "henrys_law_con", "kow_no_ph", "koc", "log_bcf", "kow_wph"]
 }
 
