@@ -269,11 +269,11 @@ def getPkaResults(chemspec_obj):
 		measured_val = validate_pka("measured", measured_data, measured_error)
 
 		pkaValues = {
-			'Acidic pKa Value(s)': roundedPka,
-			'Basic pKa Value(s)': roundedPkb,
-			'Pkasolver Values(s)': pkasolver_val,
-			'MolGpka Values(s)': molgpka_val,
-			'Measured Values(s)': measured_val
+			'Acidic pKa Values': roundedPka,
+			'Basic pKa Values': roundedPkb,
+			'Pkasolver Values': pkasolver_val,
+			'MolGpka Values': molgpka_val,
+			'Measured Values': measured_val
 		}
 
 	except Exception as e:
