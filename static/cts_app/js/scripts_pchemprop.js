@@ -288,7 +288,9 @@ function addMeasuredTooltip(tooltipElements, tooltipHtml) {
 
         let text = dataObj.source + ' <i>(click to copy)</i>';
 
-        $(this).qtip({
+        const tooltipElement = $(this);
+
+        $(tooltipElement).qtip({
             content: {
                 text: text
             },
@@ -302,8 +304,10 @@ function addMeasuredTooltip(tooltipElements, tooltipHtml) {
             },
             events: {
                 render: function(event, api) {
-                    $(this).on('click', function() {
-                        navigator.clipboard.writeText(dataObj.description);
+                    $(tooltipElement).on('click', function() {
+                        navigator.clipboard.writeText(dataObj.source).then(() => {
+                            console.log("Copied.")
+                        });
                     });
                 }
             }
