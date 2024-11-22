@@ -130,6 +130,10 @@ $(document).ready(function() {
     //     pchempropTableLogic();
     // });
 
+    if (window.location.href.includes("pchemprop/output")) {
+        addRefToMeasuredValues();  // adds tooltip of ref to measured pka value    
+    }
+
 });
 
 
@@ -237,4 +241,81 @@ function tipPchemTable() {
     }
 
   });
+}
+
+    
+// Adds reference into to measured p-chem values
+function addRefToMeasuredValues() {
+
+    $('td[id*="Measured"]').on('mouseenter', function() {
+
+        // TODO: Skip if spinner still in cell.
+        if ($(this).find('img#spinner').length > 0) {
+            console.log("Data hasn't returned for adding tooltip.");
+            return;
+        }
+
+        $(this).html(function(_, html) {
+            if (html.includes("tooltip-line")) {
+                // Tooltips already added.
+                return;
+            }
+            // Adds <span> wrappers for tooltips
+            let dataSplit = html.split("<br>");
+            if (!dataSplit[dataSplit.length - 1]) {
+                dataSplit.pop();
+            }
+            let newHtml = "";
+            for (let datum in dataSplit) {
+                let val = dataSplit[datum].split(" ")[0]  // data
+                let acronym = dataSplit[datum].split(" ")[1]  // source acronym
+                newHtml += '<span class="tooltip-line" id="' + acronym + '">' + dataSplit[datum] + '</span><br>';
+            }
+            $(this).html(newHtml);
+            let dataElements = $(this).children('span.tooltip-line');
+            addMeasuredTooltip(dataElements, "testing testing");
+        });
+
+    });
+
+}
+
+function addMeasuredTooltip(tooltipElements, tooltipHtml) {
+
+    $(tooltipElements).each(function(index) {
+
+        let dataObj = findDataForMeasuredRef(this);
+
+        let text = dataObj.source + ' <i>(click to copy)</i>';
+
+        $(this).qtip({
+            content: {
+                text: text
+            },
+            style: {
+                classes: 'qtip-light'
+            },
+            position: {
+                my: 'bottom right',
+                at: 'center right',
+                target: 'mouse'
+            },
+            events: {
+                render: function(event, api) {
+                    $(this).on('click', function() {
+                        navigator.clipboard.writeText(dataObj.description);
+                    });
+                }
+            }
+        });
+    });
+}
+
+
+function findDataForMeasuredRef(tooltipElement) {
+    let acronym = $(tooltipElement).attr('id');
+    let dataObj = batch_data.filter(function(item) {
+        return item.method === acronym;
+    })[0];
+    return dataObj;
 }
