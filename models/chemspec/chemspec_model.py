@@ -105,12 +105,8 @@ class chemspec(object):
 			pkasolver_results = speciation_results["data"]["pkasolver"]
 			molgpka_results = speciation_results["data"]["molgpka"]
 			measured_results = speciation_results["data"]["measured"]
-
-
-			logging.warning("chemspec_model measured_results: {}".format(measured_results))
-			logging.warning("pkasolver_results: {}".format(pkasolver_results))
 			
-			if not "error" in molgpka_results and pkasolver_results.get("valid"):
+			if not "error" in molgpka_results or "error" in pkasolver_results:
 				self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
 				self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
 
