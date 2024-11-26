@@ -105,8 +105,10 @@ class chemspec(object):
 			pkasolver_results = speciation_results["data"]["pkasolver"]
 			molgpka_results = speciation_results["data"]["molgpka"]
 			measured_results = speciation_results["data"]["measured"]
-			
-			if not "error" in molgpka_results or "error" in pkasolver_results:
+
+			valid_pka_results = validate_pka_results(jchemws_results, pkasolver_results, molgpka_results)
+
+			if valid_pka_results:
 				self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
 				self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
 
@@ -143,7 +145,23 @@ class chemspec(object):
 		self.run_data.update(jchemws_results)
 
 
+def validate_pka_results(jchemws_results, pkasolver_results, molgpka_results):
+	"""
+	Validates pka results for comparison table.
+	"""
+	if "error" in molgpka_results or "error" in pkasolver_results or "error" in jchemws_results:
+		return False
+	if not jchemws_results.get("pka_dict") or len(jchemws_results["pka_dict"]) < 1:
+		return False
+	if not pkasolver_results["data"].get("pka_dict") or len(pkasolver_results["data"]["pka_dict"]) < 1:
+		return False
+	if not molgpka_results["data"].get("pka_dict") or len(molgpka_results["data"]["pka_dict"]) < 1:
+		return False
+	return True
+
+
 def organize_pka(jchemws_results, pkasolver_results, molgpka_results):
+
 	#chem Axon dataframe	
 	ca_df=DictToDF(jchemws_results["pka_dict"])
 
