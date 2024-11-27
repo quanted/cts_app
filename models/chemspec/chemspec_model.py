@@ -106,6 +106,11 @@ class chemspec(object):
 			molgpka_results = speciation_results["data"]["molgpka"]
 			measured_results = speciation_results["data"]["measured"]
 
+			logging.warning("jchemws_results: {}".format(jchemws_results))
+			logging.warning("pkasolver_results: {}".format(pkasolver_results))
+			logging.warning("molgpka_results: {}".format(molgpka_results))
+			logging.warning("measured_results: {}".format(measured_results))
+
 			valid_pka_results = validate_pka_results(jchemws_results, pkasolver_results, molgpka_results)
 
 			if valid_pka_results:
@@ -237,19 +242,23 @@ def draw_chem_with_pka(smiles, atom_indices):
 	NOTE: Could be passed through nodeWrapper for a popup
 	info table, but probably not needed.
 	"""
-
 	mol=Chem.MolFromSmiles(smiles)
 	cp=Chem.Mol(mol)
 
-	for i in atom_indices:
-		label= "atom#_" + str(i) 
-		cp.GetAtomWithIdx(i).SetProp("atomNote",label)
+	try:
 
-	# d2d = Chem.Draw.rdMolDraw2D.MolDraw2DSVG(350,300)
-	d2d = Draw.rdMolDraw2D.MolDraw2DCairo(300,300)
-	d2d.drawOptions().setHighlightColour((0.8,0.8,0.8))
-	d2d.DrawMolecule(cp,highlightAtoms=atom_indices)
-	d2d.FinishDrawing()
+		for i in atom_indices:
+			label= "atom#_" + str(i)
+			cp.GetAtomWithIdx(i).SetProp("atomNote",label)
+
+		d2d = Draw.rdMolDraw2D.MolDraw2DCairo(300,300)
+		d2d.drawOptions().setHighlightColour((0.8,0.8,0.8))
+		d2d.DrawMolecule(cp,highlightAtoms=atom_indices)
+		d2d.FinishDrawing()
+
+	except Exception as e:
+		logging.error("chemspec_model draw_chem_with_pka exception: {}".format(e))
+		return ""
 
 	b64_encoded_png = base64.b64encode(d2d.GetDrawingText())
 	html_img = '<img src="data:image/png;base64,' + b64_encoded_png.decode('utf-8') + '">'
