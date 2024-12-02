@@ -38,7 +38,14 @@ function toggleMicrospeciesTable(table_name) {
 
 function plotMicroDist(calc, microDistDataId, microDistPlotId) {
 
-  var dataArr = JSON.parse($('#' + microDistDataId).text());
+  let dataArr;
+  try {
+    dataArr = JSON.parse($('#' + microDistDataId).text());
+  }
+  catch (e) {
+    console.error("plotMicroDist: error parsing chart data: ", e);
+    return;
+  }
 
   var colorSet1 = ['#1a1423', '#1e7272', '#b55f3a', '#454545', '#372549'];
   var colorSet2 = ['#7bb399', '#1e7272', '#ba613b', '#454545', '#202020'];

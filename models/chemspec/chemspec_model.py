@@ -106,11 +106,6 @@ class chemspec(object):
 			molgpka_results = speciation_results["data"]["molgpka"]
 			measured_results = speciation_results["data"]["measured"]
 
-			logging.warning("jchemws_results: {}".format(jchemws_results))
-			logging.warning("pkasolver_results: {}".format(pkasolver_results))
-			logging.warning("molgpka_results: {}".format(molgpka_results))
-			logging.warning("measured_results: {}".format(measured_results))
-
 			valid_pka_results = validate_pka_results(jchemws_results, pkasolver_results, molgpka_results)
 
 			if valid_pka_results:
@@ -206,12 +201,7 @@ def FormatTable(df):
 		col_val=[]
 		for i in df[c].index:
 			tmp=df[c][i]
-
-			logging.warning("FormatTable tmp: {}".format(tmp))
-			logging.warning("FormatTable tmp type: {}".format(type(tmp)))
-
 			if isinstance(tmp,str):
-				logging.warning("FormatTable tmp: {}".format(tmp))
 				if ',' in tmp:
 					new_tmp=tmp.split(',')
 					for n in new_tmp:
