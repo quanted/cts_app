@@ -911,7 +911,7 @@ function calculateTotalCalls(nodes_list, checkedCalcsAndProps) {
                     else { num_props += 1; }
                 }
                 else if (calc == "epi") {
-                    if (prop == "water_sol" || prop == "log_bcf" || prop == "koc") {
+                    if (prop == "water_sol" || prop == "log_bcf") {
                         num_props += 2;  // epi's water_sol, log_bcf, and koc has 2 methods
                     }
                     else { num_props += 1; }
