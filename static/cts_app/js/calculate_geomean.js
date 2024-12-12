@@ -165,9 +165,28 @@ function addSpinnersToGeomeanColumn() {
     Adds spinning wheels to geomean column while p-chem
     data is being retrieved.
     */
-    $('.geomean').each(function(i, obj) {
-        $(this).html(spinner_html);
-    });   
+    const pchemRows = document.querySelectorAll("#pchemprop_table tbody tr");
+    const totalRows = pchemRows.length;
+
+    pchemRows.forEach((row, index) => {
+        if (index === 0 || index === totalRows - 1) {
+            return;
+        }
+        const cells = row.querySelectorAll("td");
+        const geomeanCell = row.querySelector(".geomean");
+        let hasData = false;
+        for (let i = 0; i < cells.length - 1; i++) {
+            const cellContent = cells[i].innerHTML;
+            if (cellContent !== "") {
+                hasData = true;
+                break;
+            }
+        }
+        if (hasData && geomeanCell) {
+            geomeanCell.innerHTML = spinner_html;
+        }
+    });
+
 }
 
 
