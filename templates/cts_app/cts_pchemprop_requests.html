@@ -502,7 +502,9 @@ function connectToSocket() {
             // if batch, display link for CSV:
             if (window.location.href.indexOf('batch') > -1) {
                 $('#export_menu').css('position', 'relative').show();
-                $('#export_menu').prepend('<h3>Batch results ready for download</h3>');
+                if (!$('#export_menu h3').length) {
+                    $('#export_menu').prepend('<h3>Batch results ready for download</h3>');
+                }
                 handleGeomean(workflow, run_type);
             }
 
