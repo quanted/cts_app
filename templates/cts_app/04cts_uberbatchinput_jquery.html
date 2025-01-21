@@ -236,7 +236,9 @@ $(document).ready(function() {
 		}
 		else {
 			// invalid chemical, display chemical and error, and don't use...
-			chemical_display = '<p class="redFont">' + chemResponseObject.chemical + " -- invalid chemical" + '</p>';  // ?????
+			let chem = chemResponseObject.request_post.chemical;
+			let error = chemResponseObject.error || "invalid chemical";
+			chemical_display = chem + " -- " + error;
 		}
 
 		// Expecting an 'id' key in 'request_post' to use for mapping responses to chemical list:
