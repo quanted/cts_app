@@ -61,7 +61,8 @@ RUN find /opt/conda/ -name 'server.pem' -delete || true
 RUN find /opt/conda/ -name 'client.pem' -delete || true
 RUN find /opt/conda/ -name 'password_protected.pem' -delete || true
 
-RUN find /opt/conda/ -type d -name "test" -exec find {} -type f -name "*.pem" -delete || true
+# RUN find /opt/conda/ -type d -name "test" -exec find {} -type f -name "*.pem" -delete \; || true
+RUN find /opt/conda/ -type d -name "test" -exec sh -c 'find "{}" -type f -name "*.pem" -delete' \; || true
 
 # ------------------------- #
 
