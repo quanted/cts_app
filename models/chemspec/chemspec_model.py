@@ -106,11 +106,17 @@ class chemspec(object):
 			molgpka_results = speciation_results["data"]["molgpka"]
 			measured_results = speciation_results["data"]["measured"]
 
+
+			# logging.warning("jchemws_results: {}".format(jchemws_results))
+			logging.warning("pkasolver_results: {}".format(pkasolver_results))
+			logging.warning("molgpka_results: {}".format(molgpka_results))
+
 			valid_pka_results = validate_pka_results(jchemws_results, pkasolver_results, molgpka_results)
 
 			if valid_pka_results:
 				self.pka_image_html = draw_chem_with_pka(molgpka_results["data"]["molgpka_smiles"], molgpka_results["data"]["molgpka_index"])
-				self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
+				# self.pka_dict_df = organize_pka(jchemws_results, pkasolver_results, molgpka_results)
+				self.pka_dict_df = FormatTableUpdated(jchemws_results, pkasolver_results, molgpka_results)
 
 		else:
 			# Batch speciation calls are done through nodejs/socket.io
@@ -171,6 +177,11 @@ def organize_pka(jchemws_results, pkasolver_results, molgpka_results):
 	#MolGpKa -- addional formatting because MolGpKa does not round pka values
 	molg_df=DictToDF(molgpka_results["data"]["pka_dict"])
 	# RoundMolg(molg_df)
+
+	print("ca_df: {}".format(ca_df))	
+	print("solver_df: {}".format(solver_df))
+	print("molg_df: {}".format(molg_df))
+
 
 	#combine all dataframes
 	full_table=pd.concat([solver_df,molg_df,ca_df],ignore_index=True)
@@ -254,3 +265,224 @@ def draw_chem_with_pka(smiles, atom_indices):
 	html_img = '<img src="data:image/png;base64,' + b64_encoded_png.decode('utf-8') + '">'
 
 	return html_img
+
+
+
+
+
+
+
+def MakeMultilevelHeader(dict,tuple_lst):
+	#make a multi level index using the tuples where level 0 is the category and level 1 is the atom index
+	cols=pd.MultiIndex.from_tuples(tuple_lst)
+
+	#make dataframe with pka values and multilevel column headers (transpose so that multilevel lables are column headers and not index
+	df=pd.DataFrame([dict.values()],columns=cols)
+	return df
+
+
+def SortLow2High(df):
+	col_avg=[]
+	col_idx=[]
+	#look at only pka data (removes calculator name col and acid/base row)
+	for c in df.iloc[1:4,1:]:
+		col_idx.append(c)
+		#average of column
+		col_val=round(df.iloc[1:4,c].mean(),2)
+		col_avg.append(col_val)
+	#make dictionary with column index (key) and column average
+	d=dict(zip(col_idx,col_avg))
+	#sort sort (low to high) columns based on value, if value is the same then sort by key
+	sort_d=dict(sorted(d.items(), key=lambda kv: (kv[1], kv[0])))
+	col_order=list(sort_d.keys())
+	#reindex dataframe so with new column order
+	new=df.reindex(columns=col_order)
+	#make the last row (atom#_) row the header
+	new.rename(columns=new.iloc[4],inplace=True)
+	#remove the last row
+	new.drop(new.index[4], inplace = True)
+	#add calculator column
+	new.insert(0,'Calculator',['','Chem Axon','MolGpKa','pKaSolver'])
+	return new
+
+
+def handle_speciation_data(speciation_results):
+	"""
+	Parses data into objects for creating table.
+	"""
+	ca_dict = {}
+	ca_tuples = []
+
+	# Extract lists for comparison
+	pka_list = speciation_results.get('pka', [])
+	pkb_list = speciation_results.get('pkb', [])
+
+	pka_list = [round(x, 2) for x in pka_list]
+	pkb_list = [round(x, 2) for x in pkb_list]
+
+
+	print("pka_list: {}".format(pka_list))
+	print("pkb_list: {}".format(pkb_list))
+	
+	# Process each atom number and value in pka_dict
+	for atom_num_str, value in speciation_results.get('pka_dict', {}).items():
+
+
+		print("atom_num_str: {}".format(atom_num_str))
+
+		print("value: {}".format(value))
+
+		atom_num = int(atom_num_str)
+		
+		# Check if value appears in pka list (acid)
+		if value in pka_list:
+			key = ("acid", atom_num)
+			ca_dict[key] = value
+			ca_tuples.append(key)
+			
+		# Check if value appears in pkb list (base)
+		elif value in pkb_list:
+			key = ("base", atom_num)
+			ca_dict[key] = value
+			ca_tuples.append(key)
+
+	return ca_dict, ca_tuples
+
+
+# def FormatTableUpdated(smiles, speciation_results):
+def FormatTableUpdated(jchemws_results, pkasolver_results, molgpka_results):
+
+	ca_dict, ca_tuples = handle_speciation_data(jchemws_results)
+
+	print("ca_dict: {}".format(ca_dict))
+	print("ca_tuples: {}".format(ca_tuples))
+
+	ca_df = MakeMultilevelHeader(ca_dict,ca_tuples)
+
+	print("ca_df: {}".format(ca_df))
+
+	mg_dict = molgpka_results["data"].get("mg_dict", {})
+	mg_tuples = molgpka_results["data"].get("mg_tuples", [])
+
+	mg_dict = {eval(k): v for k, v in mg_dict.items()}  # convert keys to tuples
+	mg_tuples = [eval(x) for x in mg_tuples]  # convert items to tuples
+
+	solver_dict = pkasolver_results["data"].get("pkasolver_dict", {})
+	
+	solver_dict = {float(k): v for k, v in solver_dict.items()}
+
+
+	
+
+
+	print(">>> mg_dict: {}".format(mg_dict))
+	print("mg_tuples: {}".format(mg_tuples))
+	print("solver_dict: {}".format(solver_dict))
+
+
+
+	# TODO: Convert mg and solver result tuples from string to actual tuples.
+
+
+	
+	####Molgpka
+	#make dataframe from dictionary and tuples; tuples are column multilevel headers
+	molg_df=MakeMultilevelHeader(mg_dict,mg_tuples)
+	
+	####pkasolver
+	#make a dataframe from dictionary 
+	solver_df=pd.DataFrame([solver_dict.keys()],columns=solver_dict.values())
+	
+	#combine pka values with the same atom index
+	solver_df=solver_df.groupby(level=0,axis=1).apply(lambda x:x.apply(list,axis=1))
+
+	logging.warning("solver_df: {}".format(solver_df))
+	logging.warning("ca_df: {}".format(ca_df))
+	logging.warning("molg_df: {}".format(molg_df))
+
+	
+	#concat chem axon and molg pka using multilevel index
+	both=pd.concat([ca_df,molg_df],ignore_index=True)
+	
+	#grab categrory information from level 0 of multilevel indexing,make it a new row
+	both.loc[len(both)]=both.columns.get_level_values(0)
+	
+	#drop top level in multilevelindexing
+	both.columns=both.columns.droplevel()
+	
+	#group pka preds for a particular site in chemaxon/molg df
+	test=both.groupby(level=0,axis=1).apply(lambda x:x.apply(list,axis=1))
+	
+	#handle cases where pkasolver has more or fewer sites than molg/chemaxon
+	#note: comparing num of pka preds/site for pkasolver and molg because I doubt chemaxon will predict >1 pka/site
+	for c in solver_df.columns:
+		v=solver_df[c][0]
+		if c in test.columns:
+			ca=test.loc[0,c]
+			mg=test.loc[1,c]
+			#if there are more pkasolver preds for a particular site than preds from molg
+			if len(v) > len(mg):       
+				for i in range(len(mg)):
+					if np.isnan(ca[i])==False:
+						#get average pka for molg and chemaxon at a particular site/category
+						avg=((ca[i]+mg[i])/len(mg))
+					else:
+						avg=mg[i]
+					#sort solver preds based on how close (smallest diff) pred is to avg
+					tmp=sorted(v,key=lambda x: abs(avg-x)) 
+					solver_df[c][0]=tmp
+					
+			#if there are more molg preds for particular site than preds from pkasolver
+			#just concat because all values will be low --> high
+			else:
+				all=pd.concat([test,solver_df],ignore_index=True)
+		else:
+			all=pd.concat([test,solver_df],ignore_index=True)
+  
+	#add 'Calculators' column
+	all.insert(0,'Calculator',['Chem Axon','MolGpKa',' ','pKaSolver'])
+	
+	#sort by calculator so that acid/base row is at the top
+	all.sort_values(by='Calculator',ignore_index=True,inplace=True)
+
+	 #seperate out listed values from pkasolver  
+	for c in all.iloc[1:,1:].columns:
+		for i in all.iloc[1:,1:].index:
+			x=all[c][i]
+			if np.isnan(x).all()==True:
+				all.loc[i,c]=np.nan
+			elif len(x) > 1:
+					all.loc[i,[c,str(c)]]=x[0],x[1] #duplicate columns names, must store one as a string and one as int
+			else:
+					all.loc[i,c]=x[0]
+	#separate out type
+	for c in all.iloc[1:,1:].columns:
+		for t in all.iloc[:1,:1].index:
+			x=all[c][t]
+			if isinstance(x, (str,float)):
+				break
+			elif len(x) > 1:
+			   all.loc[t,[c,str(c)]]=x[0],x[1] #duplicate columns names, must store one as a string and one as int
+			else:
+					all.loc[t,c]=x[0]
+			
+	#add 'atom#_' prefix
+	all=all.iloc[:,1:].add_prefix('atom#_')
+	
+	#add 'Calculators' column
+	all.insert(0,'Calculator',[' ','Chem Axon','MolGpKa','pKaSolver'])
+	
+	## temporary formatting for column sorting 
+	## needed because of duplicate column names
+	#add atom header as a row
+	all.loc[len(all)]=all.columns.get_level_values(0)
+	
+	#rename columns as 0,1,2,3...n
+	all.columns=range(all.columns.size)
+
+	#sort table for lowest avg. pka to highest avg. pka
+	table=SortLow2High(all)
+
+	print("Updated pka comparison table: {}".format(table))
+
+	return table
