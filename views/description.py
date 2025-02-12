@@ -5,8 +5,7 @@ import importlib
 from .links_left import ordered_list
 import os
 import logging
-from cts_app.models import cts_acronyms
-from cts_app.models import cts_errors
+from cts_app.models import cts_acronyms, cts_errors, cts_measured_refs
 from django.conf import settings
 
 
@@ -103,6 +102,15 @@ def about_page(request, model='none', header='non'):
         # text_file2 = open(os.path.join(os.environ['PROJECT_PATH'], 'collected_static/cts_app/docs/cts_version_history.txt'),'r')
         text_file2 = open(os.path.join(settings.STATIC_ROOT, 'cts_app', 'docs', 'cts_version_history.txt'),'r')
         header = "CTS Version History"
+
+    elif model == 'measured-pka-refs':
+        # renders django template to display measured pka refs table:
+        html_string = render_to_string('cts_app/cts_measured_refs.html',
+            {
+                'cts_measured_refs': cts_measured_refs.cts_measured_refs,
+                'cts_measured_refs_headers': cts_measured_refs.cts_measured_refs_headers
+            })
+        header = "CTS Acronyms"
 
     #drupal template for header with bluestripe
     html = render_to_string('cts_app/01cts_epa_drupal_header.html', {

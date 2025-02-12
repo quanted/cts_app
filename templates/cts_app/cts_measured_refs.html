@@ -1,0 +1,47 @@
+<table id="measured-pka-refs-table">
+	<tr>
+		{% for header in cts_measured_refs_headers %}
+			<th>{{header}}</th>
+		{% endfor %}
+	</tr>
+	{% for ref_row in cts_measured_refs %}
+	<tr>
+		{% for item in ref_row %}
+			<td>{{item}}</td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+</table>
+
+<script type="text/javascript">
+
+	document.addEventListener("DOMContentLoaded", function() {
+		// Get search parameter from URL
+	    const urlParams = new URLSearchParams(window.location.search);
+	    const searchText = urlParams.get('search');
+	    
+	    if (searchText) {
+	        // Find and scroll to the matching reference
+	        findAndScrollToReference(searchText);
+	    }
+	});
+
+	function findAndScrollToReference(searchText) {
+	    // Get all table rows except the header
+	    const rows = document.querySelectorAll('#measured-pka-refs-table tr:not(:first-child)');
+	    
+	    // Convert search text to lowercase for case-insensitive matching
+	    const searchLower = searchText.toLowerCase();
+
+	    for (let i = 0; i < rows.length; i++) {
+	        const inText = rows[i].cells[0].textContent.toLowerCase();
+	        if (inText === searchLower) {
+	            // Match found - highlight the row
+	            rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });  // Scrolls the row into view
+	            rows[i].style.backgroundColor = '#fff9c4';  // hightlights row
+	            break;
+	        }
+	    }
+	}
+	
+</script>

@@ -79,7 +79,7 @@ class chemspec(object):
 
 		self.run_data = {}
 		self.pka_dict_df = None  # dataframe of pka dict
-
+		self.measured_df = None  # dataframe for measured pka
 		self.pka_image_html = ""  # <img> of parent with pkas highlighted
 
 		# Output stuff:
@@ -106,10 +106,12 @@ class chemspec(object):
 			molgpka_results = speciation_results["data"]["molgpka"]
 			measured_results = speciation_results["data"]["measured"]
 
+			# TODO: Error handling
+			self.measured_df = create_measured_pka_table(measured_results)
 
 			# logging.warning("jchemws_results: {}".format(jchemws_results))
-			logging.warning("pkasolver_results: {}".format(pkasolver_results))
-			logging.warning("molgpka_results: {}".format(molgpka_results))
+			# logging.warning("pkasolver_results: {}".format(pkasolver_results))
+			# logging.warning("molgpka_results: {}".format(molgpka_results))
 
 			valid_pka_results = validate_pka_results(jchemws_results, pkasolver_results, molgpka_results)
 
@@ -149,6 +151,42 @@ class chemspec(object):
 		self.run_data["measured"] = measured_results
 
 		self.run_data.update(jchemws_results)
+
+
+def create_measured_pka_table(measured_results):
+	"""
+	Creates dataframe for measured pka table.
+	"""
+	# NOTE: Ensure error handling is happening before created_measured_pka_table is called:
+	
+	measured_dict = dict(measured_results["data"])
+	measured_dict["Calculator"] = "Measured"
+
+	measured_dict["Full_Reference"] = create_full_ref_link(measured_dict)
+
+	pka_vals = {k: round(v, 2) for k, v in measured_dict.items() if k.startswith("pKa_")}
+	pka_headers = ["pKa_{}".format(i + 1) for i in range(len(pka_vals))]
+
+	all_headers = ["Calculator"] + pka_headers + ['InText','DOI','Full_Reference']
+
+	measured_df = pd.DataFrame([measured_dict], columns=all_headers)
+
+	return measured_df
+
+
+def create_full_ref_link(measured_dict):
+	"""
+	Full ref link that will open refs page with InText in param.
+	"""
+	full_ref = measured_dict.get("Full_Reference")
+	intext = measured_dict.get("InText")
+
+	if not intext or not isinstance(intext, str):
+		return "N/A"
+
+	wrapped_full_ref = f"<a href='/cts/about/measured-pka-refs?search={intext}' target='_blank'>Click for ref</a>"
+
+	return wrapped_full_ref
 
 
 def validate_pka_results(jchemws_results, pkasolver_results, molgpka_results):
@@ -354,12 +392,12 @@ def FormatTableUpdated(jchemws_results, pkasolver_results, molgpka_results):
 
 	ca_dict, ca_tuples = handle_speciation_data(jchemws_results)
 
-	print("ca_dict: {}".format(ca_dict))
-	print("ca_tuples: {}".format(ca_tuples))
+	# print("ca_dict: {}".format(ca_dict))
+	# print("ca_tuples: {}".format(ca_tuples))
 
 	ca_df = MakeMultilevelHeader(ca_dict,ca_tuples)
 
-	print("ca_df: {}".format(ca_df))
+	# print("ca_df: {}".format(ca_df))
 
 	mg_dict = molgpka_results["data"].get("mg_dict", {})
 	mg_tuples = molgpka_results["data"].get("mg_tuples", [])
@@ -371,19 +409,11 @@ def FormatTableUpdated(jchemws_results, pkasolver_results, molgpka_results):
 	
 	solver_dict = {float(k): v for k, v in solver_dict.items()}
 
-
-	
-
-
-	print(">>> mg_dict: {}".format(mg_dict))
-	print("mg_tuples: {}".format(mg_tuples))
-	print("solver_dict: {}".format(solver_dict))
-
-
+	# print(">>> mg_dict: {}".format(mg_dict))
+	# print("mg_tuples: {}".format(mg_tuples))
+	# print("solver_dict: {}".format(solver_dict))
 
 	# TODO: Convert mg and solver result tuples from string to actual tuples.
-
-
 	
 	####Molgpka
 	#make dataframe from dictionary and tuples; tuples are column multilevel headers
@@ -396,9 +426,9 @@ def FormatTableUpdated(jchemws_results, pkasolver_results, molgpka_results):
 	#combine pka values with the same atom index
 	solver_df=solver_df.groupby(level=0,axis=1).apply(lambda x:x.apply(list,axis=1))
 
-	logging.warning("solver_df: {}".format(solver_df))
-	logging.warning("ca_df: {}".format(ca_df))
-	logging.warning("molg_df: {}".format(molg_df))
+	# logging.warning("solver_df: {}".format(solver_df))
+	# logging.warning("ca_df: {}".format(ca_df))
+	# logging.warning("molg_df: {}".format(molg_df))
 
 	
 	#concat chem axon and molg pka using multilevel index

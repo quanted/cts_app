@@ -220,6 +220,18 @@ def getMajorMsImages(chemspec_obj):
 		return html
 
 
+def build_measured_pka_table(chemspec_obj):
+	"""
+	Returns HTML for measured pka table.
+	Headers: Calculator, Pka_1, Pka_2, Pka_3, Pka_4, Pka_5, Pka_6, InText, DOI, Full_Reference
+	"""
+	measured_df = chemspec_obj.measured_df
+	if measured_df is None:
+		return ""
+	measured_html = measured_df.to_html(classes="ctsTableStylin", index=False, escape=False)
+	return measured_html
+
+
 def build_pka_comparison_table(chemspec_obj):
 	"""
 	Builds table for pka values organized by calc and atom index.
@@ -286,13 +298,16 @@ def getPkaResults(chemspec_obj):
 
 	pka_html = build_pka_comparison_table(chemspec_obj)
 
+	html += pka_html
+
 	# # Show/hide buttons for microspecies chart data:
 	# html += """
 	# <button id=btn-jchem onclick="toggleMicrospeciesTable('jchem')">Jchem</button>
 	# <button id=btn-pkasolver onclick="toggleMicrospeciesTable('pkasolver')">Pkasolver</button>
 	# """
 
-	html += pka_html
+	measured_html = build_measured_pka_table(chemspec_obj)
+	html += measured_html
 
 	html += create_microspecies_tables(chemspec_obj, ['jchem', 'pkasolver'], pkasolver_data)  # TODO: generalize hardcoded list
 
