@@ -291,8 +291,8 @@ def getPkaResults(chemspec_obj):
 	except Exception as e:
 		logging.warning("no pka data.. moving on..\nException: {}".format(e))
 		return ""
-	else:
-		html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
+	# else:
+	# 	html += tmpl.render(Context(dict(data=pkaValues, id="pkaValues")))
 
 	html += chemspec_obj.pka_image_html  # adds <img> html for parent smiles with pkas highlighted
 
