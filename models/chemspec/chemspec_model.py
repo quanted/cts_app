@@ -106,8 +106,13 @@ class chemspec(object):
 			molgpka_results = speciation_results["data"]["molgpka"]
 			measured_results = speciation_results["data"]["measured"]
 
+
+			logging.warning("measured_results: {}".format(measured_results))
+
+
 			# TODO: Error handling
-			self.measured_df = create_measured_pka_table(measured_results)
+			if measured_results.get("status") == True and "data" in measured_results:
+				self.measured_df = create_measured_pka_table(measured_results)
 
 			# logging.warning("jchemws_results: {}".format(jchemws_results))
 			# logging.warning("pkasolver_results: {}".format(pkasolver_results))
@@ -158,7 +163,8 @@ def create_measured_pka_table(measured_results):
 	Creates dataframe for measured pka table.
 	"""
 	# NOTE: Ensure error handling is happening before created_measured_pka_table is called:
-	
+
+
 	measured_dict = dict(measured_results["data"])
 	measured_dict["Calculator"] = "Measured"
 
