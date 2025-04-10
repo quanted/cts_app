@@ -134,7 +134,7 @@ def output_pchem_table(pchemprop_obj):
 
     html += """
         <br>
-        <input type="button" value="Calculate data" class="submit input_button btn-pchem" id="btn-pchem-data">
+        <input type="button" value="Submit" class="submit input_button btn-pchem" id="btn-pchem-data">
         <input type="button" value="Clear data" class="input_button btn-pchem" id="btn-pchem-cleardata">
         <input type="button" value="Cancel" class="input_button btn-pchem" id="btn-pchem-cancel">
     </div>
