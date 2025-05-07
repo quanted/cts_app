@@ -141,6 +141,12 @@ function submitButtonLogic() {
     // Enable submit only when a calculator is 
     // checked AND an available property:
 
+    if (window.location.href.indexOf("pchemprop/input")) {
+        // NOTE: Handled separately in cts_pchem_inputs.html
+        console.log("pchemprop/input - skipping submitButtonLogic()");
+        return;
+    }
+
     var calc_checkbox = $('input[type=checkbox].calc_checkbox');
 
     // disable submit if no calculator is checked (and not gentrans/batch)
