@@ -1,0 +1,562 @@
+<style>
+    .container {
+        width: 100%;
+    }
+    
+    .chips-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 20px;
+        align-items: flex-start;
+    }
+    
+    .calculators-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        margin-top: 5%;
+        margin-bottom: 5%;
+        overflow-x: auto;
+    }
+    
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        height: 32px;
+        border-radius: 16px;
+        padding: 0 12px;
+        background-color: #F1F0F1;
+        cursor: pointer;
+        user-select: none;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .chip.selected {
+        background-color: #0071bc;
+        color: white;
+    }
+    
+    .chip:hover {
+        background-color: #dee0db;
+    }
+    
+    .chip.selected:hover {
+        background-color: #112e51;
+    }
+    
+    .chip-text {
+        margin-right: 8px;
+    }
+    
+    .chip-icon {
+        width: 18px;
+        height: 18px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .selected .chip-icon {
+        display: flex;
+    }
+    
+    .instructions {
+        margin-bottom: 20px;
+        color: #666;
+    }
+
+    .properties-div {
+        padding: 2%;
+        margin-bottom: 10%;
+    }
+
+    .properties-div .chip {
+        width: 65%;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 16px;
+        margin-top: 5%;
+    }
+
+    .pchem-header {
+        margin: 0;
+    }
+
+    #select-all-calcs-chip, #select-all-props-chip {
+        margin-top: 0;
+    }
+
+    .ph-dependent-align {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .ph-dependent-align h5 {
+        margin-bottom: 0;
+    }
+
+    .ph-dependent-align input {
+        margin-top: 0;   
+    }
+
+    .divider {
+        height: 1px;
+        background-color: #e0e0e0;
+        margin: 30px 0;
+    }
+
+</style>
+
+<div class="container tab_ChemCalcs" style="display: none;">
+
+    <div class="section-header">
+        <h3 class="pchem-header">Select calculators</h3>
+        <div class="chip" onclick="toggleAllCalculators(this)" id="select-all-calcs-chip">
+            <span class="chip-icon">✓</span>
+            <span class="chip-text">Select All</span>
+        </div>
+    </div>
+
+    <div class="calculators-container" id="calculators"></div>
+
+    <div class="divider"></div>
+
+    <div class="section-header">
+        <h3 class="pchem-header">Select properties</h3>        
+        <div class="chip" onclick="toggleAllProperties(this)" id="select-all-props-chip">
+            <span class="chip-icon">✓</span>
+            <span class="chip-text">Select All</span>
+        </div>
+    </div>
+
+    <div class="properties-div">
+        <h5>Neutral Species Properties</h5>
+        <div class="chips-container" id="neutral-properties"></div>
+        <div class="ph-dependent-align">
+            <h5>pH-Dependent Properties at pH: </h5>
+            <input aria-label="ph value for ph-dependent inputs" class="numberInput" id="id_kow_ph" max="14" min="0" name="kow_ph" step="0.1" type="number" value="7.4" />
+        </div>
+        <div class="chips-container" id="ph-properties"></div>
+    </div>
+</div>
+
+
+<script>
+
+    // TODO: Make global object so it can be referenced everywhere
+    let availablePropsByCalc = {
+        "epi": [
+            "melting_point",
+            "boiling_point",
+            "water_sol",
+            "vapor_press",
+            "henrys_law_con",
+            "kow_no_ph",
+            "koc",
+            "log_bcf",
+            "log_baf"
+        ],
+        "opera": [
+            "melting_point",
+            "boiling_point",
+            "water_sol",
+            "vapor_press",
+            "ion_con",
+            "henrys_law_con",
+            "kow_no_ph",
+            "koc",
+            "log_bcf", 
+            "kow_wph"
+        ],
+        "test": [
+            "melting_point",
+            "boiling_point",
+            "water_sol",
+            "vapor_press",
+            "log_bcf"
+        ],
+        "chemaxon": [
+            "water_sol",
+            "ion_con",
+            "kow_no_ph",
+            "kow_wph",
+            "water_sol_ph"
+        ],
+        "equation": [
+            "mol_diss",
+            "mol_diss_air"
+        ],
+        "measured": [
+            "melting_point",
+            "boiling_point",
+            "water_sol",
+            "vapor_press",
+            "henrys_law_con",
+            "kow_no_ph",
+            "koc",
+            "log_bcf",
+            "log_baf"
+        ]
+    };
+
+    const allProps = [
+        "melting_point",
+        "boiling_point",
+        "water_sol",
+        "vapor_press",
+        "ion_con",
+        "henrys_law_con",
+        "kow_no_ph",
+        "koc",
+        "log_bcf",
+        "log_baf",
+        "mol_diss",
+        "mol_diss_air",
+        "kow_wph",
+        "water_sol_ph"
+    ];
+
+    const neutralProps = [
+        "melting_point",
+        "boiling_point",
+        "water_sol",
+        "vapor_press",
+        "ion_con",
+        "henrys_law_con",
+        "kow_no_ph",
+        "koc",
+        "log_bcf",
+        "log_baf",
+        "mol_diss",
+        "mol_diss_air"
+    ];
+
+    const phProps = [
+        "kow_wph",
+        "water_sol_ph"  
+    ];
+
+    const propertyDisplayNames = {
+        "melting_point": "Melting Point (°C)",
+        "boiling_point": "Boiling Point (°C)",
+        "water_sol": "Water Solubility (mg/L)",
+        "vapor_press": "Vapor Pressure (mmHg)",
+        "ion_con": "Ionization Constant",
+        "henrys_law_con": "Henry's Law Constant (atm-m³/mol)",
+        "kow_no_ph": "Octanol/Water Partition Coefficient (log)",
+        "koc": "Organic Carbon Partition Coefficient (log(L/kg))",
+        "log_bcf": "Bioconcentration Factor (log(L/kg))",
+        "log_baf": "Bioaccumulation Factor (log(L/kg))",
+        "mol_diss": "Molecular Diffusivity in Water (cm²/s)",
+        "mol_diss_air": "Molecular Diffusivity in Air (cm²/s)",
+        "kow_wph": "Octanol/Water Partition Coefficient pH-dependent (log)",
+        "water_sol_ph": "Water Solubility pH-dependent (mg/L)",
+    };
+
+    let selectedPropsByCalc = {
+        "chemaxon": [],
+        "epi": [],
+        "test": [],
+        "equation": [],
+        "measured": [],
+        "opera": []
+    };
+
+    const calcDisplayMap = {
+        "chemaxon": "ChemAxon",
+        "epi": "EPI Suite",
+        "test": "TEST",
+        "equation": "Internal QSAR",
+        "measured": "Measured",
+        "opera": "OPERA"
+    }
+
+    $(document).ready(function() {
+        $(".submit").on("click", function() {
+            console.log("pchem inputs submit clicked.");
+
+            // TODO: Get list of checks calcs and props
+            // NOTE: How to know what's available and not though????
+            // NOTE: Perhaps tooltips or icons can be used in the property buttons
+            // to show which calcs have what properties.
+
+            // TODO: Add the brightBorders class if submit logic passes.
+
+        });
+
+        initializeCalculators();
+        initializeProperties();
+
+        $('.submit.input_button').addClass('brightBorders');  // TODO: Needs to be conditional on calcs/props checked.
+
+    });
+
+    function getAllUniqueProperties() {
+        return allProps.filter(prop => {
+            return Object.values(availablePropsByCalc).some(
+                calcProps => calcProps.includes(prop)
+            );
+        });
+    }
+
+    function getPropertyCalculatorMap() {
+        const propertyCalcMap = {};
+        
+        getAllUniqueProperties().forEach(prop => {
+            propertyCalcMap[prop] = [];
+        });
+        
+        Object.entries(availablePropsByCalc).forEach(([calc, props]) => {
+            props.forEach(prop => {
+                propertyCalcMap[prop].push(calc);
+            });
+        });
+        
+        return propertyCalcMap;
+    }
+
+    function categorizeProperties() {
+        const neutralProps = [];
+        const phProperties = [];
+        
+        getAllUniqueProperties().forEach(prop => {
+            if (phProps.includes(prop)) {
+                phProperties.push(prop);
+            } else {
+                neutralProps.push(prop);
+            }
+        });
+        
+        return { neutralProps, phProperties };
+    }
+
+    function initializeCalculators() {
+        const calculatorsContainer = document.getElementById('calculators');
+        calculatorsContainer.innerHTML = '';
+        
+        Object.keys(availablePropsByCalc).forEach(calc => {
+
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            chip.setAttribute('data-calculator', calc);
+            chip.setAttribute('name', calc);
+            chip.onclick = function() {
+                toggleCalcChip(this);
+            };
+            const displayName = calcDisplayMap[calc];
+            chip.innerHTML = `
+                <span class="chip-icon">✓</span>
+                <span class="chip-text">${displayName}</span>
+                <input type="checkout" style="display:none" name="${calc}" value="false">`;
+            calculatorsContainer.appendChild(chip);
+        });
+    }
+
+    function initializeProperties() {
+        const { neutralProps, phProperties } = categorizeProperties();
+        const propertyCalcMap = getPropertyCalculatorMap();
+        const neutralContainer = document.getElementById('neutral-properties');
+        neutralContainer.innerHTML = '';
+        
+        neutralProps.forEach(prop => {
+            const chip = createPropertyChip(prop, propertyCalcMap[prop]);
+            neutralContainer.appendChild(chip);
+        });
+        
+        const phContainer = document.getElementById('ph-properties');
+        phContainer.innerHTML = '';
+        
+        phProps.forEach(prop => {
+            const chip = createPropertyChip(prop, propertyCalcMap[prop]);
+            phContainer.appendChild(chip);
+        });
+    }
+
+    function createPropertyChip(prop, providingCalcs) {
+
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.setAttribute('data-property', prop);
+        chip.setAttribute('data-provided-by', providingCalcs.join(','));
+        chip.setAttribute('name', prop);
+        
+        chip.onclick = function() {
+            togglePropChip(this);
+        };
+
+        const displayName = propertyDisplayNames[prop] || prop;
+
+        chip.setAttribute('title', "Available calculators: " + providingCalcs.join(', '));
+
+        chip.innerHTML = `
+            <span class="chip-icon">✓</span>
+            <span class="chip-text title="Provided by: ${providingCalcs.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}">${displayName}</span>
+            <input type="checkout" style="display:none" name="${prop}" value="false">`;
+        
+        return chip;
+    }
+
+    function toggleCalcChip(chipElement) {
+        const calculator = chipElement.getAttribute('data-calculator');
+        const wasSelected = chipElement.classList.contains('selected');
+        chipElement.classList.toggle('selected');
+
+        const calcInput = chipElement.querySelector('input');
+
+        console.log("chipElement: ", chipElement)
+        console.log("calcInput: ", calcInput)
+        console.log("wasSelected: ", wasSelected)
+
+        // // TODO: Update hidden input with calc true/false:
+        if (wasSelected) {
+            // Now it's unchecked
+            calcInput.setAttribute("value", false);
+        }
+        else {
+            calcInput.setAttribute("value", true);
+        }
+
+        updatePropertiesFromCalculators(calculator, !wasSelected);
+    }
+
+    function togglePropChip(chipElement) {
+        
+        const wasSelected = chipElement.classList.contains('selected');
+        chipElement.classList.toggle('selected');
+        const property = chipElement.getAttribute('data-property');
+
+        updateCalculatorsFromProperties(property, !wasSelected);
+
+    }
+    
+    // function toggleAllProperties(selectAllChip) {
+    function toggleAllProperties() {
+
+        const selectAllChip = document.getElementById('select-all-props-chip');
+
+        selectAllChip.classList.toggle('selected');
+        const selectAll = selectAllChip.classList.contains('selected');
+        
+        const propertyChips = document.querySelectorAll('#neutral-properties .chip, #ph-properties .chip');
+        
+        propertyChips.forEach(chip => {
+            const calcInput = chip.querySelector('input');
+            if (selectAll && !chip.classList.contains('selected')) {
+                chip.classList.add('selected');
+                calcInput.setAttribute("value", true);
+            } else if (!selectAll && chip.classList.contains('selected')) {
+                chip.classList.remove('selected');
+                calcInput.setAttribute("value", false);
+            }
+        });
+
+    }
+
+    function toggleAllCalculators() {
+
+        const selectAllChip = document.getElementById('select-all-calcs-chip');
+
+        selectAllChip.classList.toggle('selected');
+
+        const selectAll = selectAllChip.classList.contains('selected');
+        const calculatorChips = document.querySelectorAll('#calculators .chip');
+        
+        calculatorChips.forEach(chip => {
+
+            const calcName = chip.getAttribute('data-calculator');
+
+            if (selectAll && !chip.classList.contains('selected')) {
+                chip.classList.add('selected');
+                updatePropertiesFromCalculators(calcName, true);
+            } else if (!selectAll && chip.classList.contains('selected')) {
+                chip.classList.remove('selected');
+                updatePropertiesFromCalculators(calcName, false);
+            }
+        });
+
+    }
+
+    function updatePropertiesFromCalculators(calculator, isSelected) {
+
+        const neutralChips = document.querySelectorAll('#neutral-properties .chip');
+        const phChips = document.querySelectorAll('#ph-properties .chip');
+        const allPropertyChips = [...neutralChips, ...phChips];
+        
+        allPropertyChips.forEach(chip => {
+            const property = chip.getAttribute('data-property');
+            const providedBy = chip.getAttribute('data-provided-by').split(',');
+            if (providedBy.includes(calculator)) {
+
+                const selectedCalculators = Array.from(document.querySelectorAll('#calculators .chip.selected'))
+                    .map(c => c.getAttribute('data-calculator'));
+                
+                const isProvidedBySelectedCalc = providedBy.some(calc => selectedCalculators.includes(calc));
+
+                const calcInput = chip.querySelector('input');
+
+                if (isProvidedBySelectedCalc) {
+                    // chip.classList.remove('disabled');
+                    if (isSelected) {
+                        chip.classList.add('selected');
+                        calcInput.setAttribute("value", true);
+                    }
+                    else {
+                        chip.classList.remove('selected');
+                        calcInput.setAttribute("value", false);
+                    }
+                } else {
+                    // chip.classList.add('disabled');
+                    chip.classList.remove('selected');
+                    calcInput.setAttribute("value", false);
+                }
+            }
+        });
+    }
+
+    function updateCalculatorsFromProperties(property, isSelected) {
+
+        const allCalcChips = document.querySelectorAll('#calculators .chip');
+
+        allCalcChips.forEach(chip => {
+            const calcName = chip.getAttribute('data-calculator');
+            const isAvailable = availablePropsByCalc[calcName].includes(property);
+
+            console.log("calcName: ", calcName)
+            console.log("isAvailable: ", isAvailable)
+
+            const calcInput = chip.querySelector('input');
+
+            // const isCalcSelected = chip.classList.contains('selected');
+
+            if (isAvailable) {
+                if (isSelected) {
+                    chip.classList.add('selected');
+                    calcInput.setAttribute("value", true);
+                }
+                else {
+                    chip.classList.remove('selected');
+                    calcInput.setAttribute("value", false);
+                }
+            }
+
+        });
+
+    }
+
+
+
+
+
+
+
+
+
+</script>
