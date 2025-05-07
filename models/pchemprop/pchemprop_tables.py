@@ -108,7 +108,13 @@ def output_pchem_table(pchemprop_obj):
     if pchemprop_obj.kow_ph:
         kow_ph = round(float(pchemprop_obj.kow_ph), 1)
 
-    pchemHTML = render_to_string('cts_app/cts_pchem.html', {})
+    
+
+    # pchemHTML = render_to_string('cts_app/cts_pchem.html', {})
+    pchemHTML = render_to_string('cts_app/cts_pchem_orig.html', {})
+
+
+
     pchemHTML += str(pchemprop_parameters.form(None))
     pchemHTML = pchemHtmlTemplate().render(Context(dict(pchemHtml=pchemHTML)))
 
