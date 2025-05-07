@@ -39,12 +39,15 @@ def pchempropInputPage(request, model='', header='Physicochemical Property Calcu
         })
 
     # pchemprop inputs
-    html = html + render_to_string('cts_app/cts_pchem.html', {})
+    # html = html + render_to_string('cts_app/cts_pchem.html', {})
+    html = html + render_to_string('cts_app/cts_pchem_inputs.html', {})
+    # html = html + render_to_string('cts_app/cts_pchem_orig.html', {})
     
     # Creates popup divs for p-chem table using qtip2 JS library:
     html += render_to_string('cts_app/cts_pchem_definitions_popups.html', 
         {'pchem_defs' :pchem_defs})
 
-    html = html + render_to_string('cts_app/04cts_ubercts_end.html', {'sub_title': 'Submit'})
+    # html = html + render_to_string('cts_app/04cts_ubercts_end.html', {'sub_title': 'Submit'})
+    html = html + render_to_string('cts_app/04cts_uberinput_tabbed_end.html', {'sub_title': 'Submit'})
     
     return html
