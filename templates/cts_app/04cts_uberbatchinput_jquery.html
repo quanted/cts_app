@@ -126,7 +126,7 @@ $(document).ready(function() {
         //         return io.connect(nodejs_host, {'force new connection': true});
         //     }
         // }
-        return io(nodejs_host, {path: '/cts/ws/'}).connect({'force new connection': true});
+        return io({path: '/cts/ws/'}).connect({forceNew: true});
 	}
 
 	function cleanInputFile(batch_chems) {
