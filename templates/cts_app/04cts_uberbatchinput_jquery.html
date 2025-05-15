@@ -239,6 +239,9 @@ $(document).ready(function() {
 			let chem = chemResponseObject.request_post.chemical;
 			let error = chemResponseObject.error || "invalid chemical";
 			chemical_display = chem + " -- " + error;
+
+			return;
+
 		}
 
 		// Expecting an 'id' key in 'request_post' to use for mapping responses to chemical list:

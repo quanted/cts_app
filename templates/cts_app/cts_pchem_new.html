@@ -1,0 +1,249 @@
+
+
+<table id="pchemprop_table" class="input_table tab tab_ChemCalcs" style="display:none;">
+	
+	<tr>
+		<th class="calc-header">Property</th>
+		<th class="calc-header">Source</th>
+		<th class="calc-header">Calculated Value</th>
+		<th class="calc-header">Geometric Mean</th>
+		<th class="calc-header">Measured</th>
+	</tr>
+
+	<tr>
+		<th class="pchem_label"><br><h3>Neutral Species Properties:</h3></th>
+	</tr>
+
+	<tr>
+		<th class="chemprop">Melting Point (&degC)</th>
+		<td id="id_melting_point_sources" class="pchem-cell-multival">
+			<div id="id_melting_point_EPI_source" class="ChemCalcs_available epi melting_point">EPI Suite</div>
+			<div id="id_melting_point_OPERA_source" class="ChemCalcs_available opera melting_point">OPERA</div>
+			<div id="id_melting_point_TEST_HC_source" class="ChemCalcs_available">TEST (HC)</div>
+			<div id="id_melting_point_TEST_GC_source" class="ChemCalcs_available">TEST (GC)</div>
+			<div id="id_melting_point_TEST_NN_source" class="ChemCalcs_available">TEST (NN)</div>
+		</td>
+		<td id="id_melting_point_values" class="pchem-cell-multival">
+			<div id="id_melting_point_EPI_value" class="ChemCalcs_available epi melting_point">EPI Suite val</div>
+			<div id="id_melting_point_OPERA_value" class="ChemCalcs_available opera melting_point">OPERA val</div>
+			<div id="id_melting_point_TEST_HC_value" class="ChemCalcs_available test hc melting_point">TEST val</div>
+			<!-- <div id="id_melting_point_TEST_GC_value" class="ChemCalcs_available test gc melting_point">TEST (GC) val</div>
+			<div id="id_melting_point_TEST_NN_value" class="ChemCalcs_available test nn melting_point">TEST (NN) val</div> -->
+		</td>
+		<td id="id_melting_point_geomean" class="ChemCalcs_available geomean melting_point"></td>
+		<td id="id_melting_point_Measured" class="ChemCalcs_available measured melting_point"></td>
+	</tr>
+
+
+
+	<tr>
+		<th class="chemprop">Boiling Point (&degC)</th>
+		<td id="id_boiling_point_sources" class="pchem-cell-multival">
+			<div id="id_boiling_point_EPI_source" class="ChemCalcs_available epi boiling_point">EPI Suite</div>
+			<div id="id_boiling_point_OPERA_source" class="ChemCalcs_available opera boiling_point">OPERA</div>
+			<div id="id_boiling_point_TEST_HC_source" class="ChemCalcs_available">TEST (HC)</div>
+			<div id="id_boiling_point_TEST_GC_source" class="ChemCalcs_available">TEST (GC)</div>
+			<div id="id_boiling_point_TEST_NN_source" class="ChemCalcs_available">TEST (NN)</div>
+		</td>
+		<td id="id_boiling_point_values" class="pchem-cell-multival">
+			<div id="id_boiling_point_EPI_value" class="ChemCalcs_available epi boiling_point">EPI Suite val</div>
+			<div id="id_boiling_point_OPERA_value" class="ChemCalcs_available opera boiling_point">OPERA val</div>
+			<div id="id_boiling_point_TEST_HC_value" class="ChemCalcs_available test hc boiling_point">TEST (HC) val</div>
+			<!-- <div id="id_boiling_point_TEST_GC_value" class="ChemCalcs_available test gc boiling_point">TEST (GC) val</div>
+			<div id="id_boiling_point_TEST_NN_value" class="ChemCalcs_available test nn boiling_point">TEST (NN) val</div> -->
+		</td>
+		<td id="id_boiling_point_geomean" class="ChemCalcs_available geomean boiling_point"></td>
+		<td id="id_boiling_point_Measured" class="ChemCalcs_available measured boiling_point"></td>
+	</tr>
+
+
+
+	<tr>
+		<th class="chemprop">Water Solubility (mg/L)</th>
+		<td id="id_water_sol_sources" class="pchem-cell-multival">
+			<div id="id_water_sol_EPI_source" class="ChemCalcs_available">EPI Suite</div>
+			<div id="id_water_sol_OPERA_source" class="ChemCalcs_available">OPERA</div>
+			<div id="id_water_sol_TEST_HC_source" class="ChemCalcs_available">TEST (HC)</div>
+			<div id="id_water_sol_TEST_GC_source" class="ChemCalcs_available">TEST (GC)</div>
+			<div id="id_water_sol_TEST_NN_source" class="ChemCalcs_available">TEST (NN)</div>
+			<!-- <div id="id_water_sol_ChemAxon_source" class="ChemCalcs_available chemaxon water_sol">ChemAxon</div> -->
+			<div id="id_water_sol_ChemAxon_source" class="ChemCalcs_available">ChemAxon</div>
+		</td>
+		<td id="id_water_sol_values" class="pchem-cell-multival">
+			<div id="id_water_sol_EPI_value" class="ChemCalcs_available epi water_sol">EPI Suite val</div>
+			<div id="id_water_sol_OPERA_value" class="ChemCalcs_available opera water_sol">OPERA val</div>
+			<div id="id_water_sol_TEST_HC_value" class="ChemCalcs_available test hc water_sol">TEST (HC) val</div>
+<!-- 			<div id="id_water_sol_TEST_GC_value" class="ChemCalcs_available test gc water_sol">TEST (GC) val</div>
+			<div id="id_water_sol_TEST_NN_value" class="ChemCalcs_available test nn water_sol">TEST (NN) val</div> -->
+			<div id="id_water_sol_ChemAxon_value" class="ChemCalcs_available chemaxon water_sol">ChemAxon val</div>
+		</td>
+		<td id="id_water_sol_geomean" class="ChemCalcs_available geomean water_sol"></td>
+		<td id="id_water_sol_Measured" class="ChemCalcs_available measured water_sol"></td>
+	</tr>
+
+
+
+	<tr>
+		<th class="chemprop">Vapor Pressure (mmHg)</th>
+		<td id="id_vapor_press_sources" class="pchem-cell-multival">
+			<div id="id_vapor_press_EPI_source" class="ChemCalcs_available">EPI Suite</div>
+			<div id="id_vapor_press_OPERA_source" class="ChemCalcs_available">OPERA</div>
+			<div id="id_vapor_press_TEST_HC_source" class="ChemCalcs_available">TEST (HC)</div>
+			<div id="id_vapor_press_TEST_GC_source" class="ChemCalcs_available">TEST (GC)</div>
+			<div id="id_vapor_press_TEST_NN_source" class="ChemCalcs_available">TEST (NN)</div>
+		</td>
+		<td id="id_vapor_press_values" class="pchem-cell-multival">
+			<div id="id_vapor_press_EPI_value" class="ChemCalcs_available epi vapor_press">EPI Suite val</div>
+			<div id="id_vapor_press_OPERA_value" class="ChemCalcs_available opera vapor_press">OPERA val</div>
+			<div id="id_vapor_press_TEST_HC_value" class="ChemCalcs_available test hc vapor_press">TEST val</div>
+			<!-- <div id="id_vapor_press_TEST_GC_value" class="ChemCalcs_available test gc vapor_press">TEST (GC) val</div>
+			<div id="id_vapor_press_TEST_NN_value" class="ChemCalcs_available test nn vapor_press">TEST (NN) val</div> -->
+		</td>
+		<td id="id_vapor_press_geomean" class="ChemCalcs_available geomean vapor_press"></td>
+		<td id="id_vapor_press_Measured" class="ChemCalcs_available measured vapor_press"></td>
+	</tr>
+
+
+	<tr>
+		<th class="chemprop">Henry's Law Constant (atm-m<sup>3</sup>/mol)</th>
+		<td id="id_henrys_law_con_sources" class="pchem-cell-multival">
+			<div id="id_henrys_law_con_EPI_source" class="ChemCalcs_available epi henrys_law_con">EPI Suite</div>
+			<div id="id_henrys_law_con_OPERA_source" class="ChemCalcs_available opera henrys_law_con">OPERA</div>
+		</td>
+		<td id="id_henrys_law_con" class="pchem-cell-multival">
+			<div id="id_henrys_law_con_EPI_value" class="ChemCalcs_available epi henrys_law_con">EPI Suite val</div>
+			<div id="id_henrys_law_con_OPERA_value" class="ChemCalcs_available opera henrys_law_con">OPERA val</div>
+		</td>
+		<td id="id_henrys_law_con_geomean" class="ChemCalcs_available geomean henrys_law_con"></td>
+		<td id="id_henrys_law_con_Measured" class="ChemCalcs_available measured henrys_law_con"></td>
+	</tr>
+
+
+	<tr>
+		<th class="chemprop">Octanol/Water Partition Coefficient (log)</th>
+		<td id="id_kow_no_ph_sources" class="pchem-cell-multival">
+			<div id="id_kow_no_ph_EPI_source" class="ChemCalcs_available epi kow_no_ph">EPI Suite</div>
+			<div id="id_kow_no_ph_OPERA_source" class="ChemCalcs_available opera kow_no_ph">OPERA</div>
+			<div id="id_kow_no_ph_ChemAxon_source" class="ChemCalcs_available">ChemAxon (KLOP)</div>
+			<div id="id_kow_no_ph_ChemAxon_source" class="ChemCalcs_available">ChemAxon (VG)</div>
+			<div id="id_kow_no_ph_ChemAxon_source" class="ChemCalcs_available">ChemAxon (PHYS)</div>
+		</td>
+		<td id="id_kow_no_ph_values" class="pchem-cell-multival">
+			<div id="id_kow_no_ph_EPI_value" class="ChemCalcs_available epi kow_no_ph">EPI Suite val</div>
+			<div id="id_kow_no_ph_OPERA_value" class="ChemCalcs_available opera kow_no_ph">OPERA val</div>
+			<div id="id_kow_no_ph_ChemAxon_value" class="ChemCalcs_available chemaxon kow_no_ph">ChemAxon val</div>
+		</td>
+		<td id="id_kow_no_ph_geomean" class="ChemCalcs_available geomean kow_no_ph"></td>
+		<td id="id_kow_no_ph_Measured" class="ChemCalcs_available measured kow_no_ph"></td>
+	</tr>
+
+
+	<tr>
+		<th class="chemprop">Organic Carbon Partition Coefficient (log(L/kg))</th>
+		<td id="id_koc_sources" class="pchem-cell-multival">
+			<div id="id_koc_EPI_source" class="ChemCalcs_available">EPI Suite</div>
+			<div id="id_koc_OPERA_source" class="ChemCalcs_available">OPERA</div>
+		</td>
+		<td id="id_koc_values" class="pchem-cell-multival">
+			<div id="id_koc_EPI_value" class="ChemCalcs_available epi koc">EPI Suite val</div>
+			<div id="id_koc_OPERA_value" class="ChemCalcs_available opera koc">OPERA val</div>
+		</td>
+		<td id="id_koc_geomean" class="ChemCalcs_available geomean koc"></td>
+		<td id="id_koc_Measured" class="ChemCalcs_available measured koc"></td>
+	</tr>
+
+	<tr>
+		<th class="chemprop">Bioconcentration Factor (log(L/kg))</th>
+		<td id="id_log_bcf_sources" class="pchem-cell-multival">
+			<div id="id_log_bcf_EPI_source" class="ChemCalcs_available">EPI Suite</div>
+			<div id="id_log_bcf_OPERA_source" class="ChemCalcs_available">OPERA</div>
+			<div id="id_log_bcf_TEST_HC_source" class="ChemCalcs_available">TEST (HC)</div>
+			<div id="id_log_bcf_TEST_GC_source" class="ChemCalcs_available">TEST (GC)</div>
+			<div id="id_log_bcf_TEST_NN_source" class="ChemCalcs_available">TEST (NN)</div>
+		</td>
+		<td id="id_log_bcf_values" class="pchem-cell-multival">
+			<div id="id_log_bcf_EPI_value" class="ChemCalcs_available epi log_bcf">EPI Suite val</div>
+			<div id="id_log_bcf_OPERA_value" class="ChemCalcs_available opera log_bcf">OPERA val</div>
+			<div id="id_log_bcf_TEST_HC_value" class="ChemCalcs_available test hc log_bcf">TEST (HC) val</div>
+			<div id="id_log_bcf_TEST_GC_value" class="ChemCalcs_available test gc log_bcf">TEST (GC) val</div>
+			<div id="id_log_bcf_TEST_NN_value" class="ChemCalcs_available test nn log_bcf">TEST (NN) val</div>
+		</td>
+		<td id="id_log_bcf_geomean" class="ChemCalcs_available geomean log_bcf"></td>
+		<td id="id_log_bcf_Measured" class="ChemCalcs_available measured log_bcf"></td>
+	</tr>
+
+	<tr>
+		<th class="chemprop">Bioaccumulation Factor (log(L/kg))</th>
+		<td id="id_log_baf_sources" class="pchem-cell-multival">
+			<div id="id_log_baf_EPI_source" class="ChemCalcs_available epi log_baf">EPI Suite</div>
+		</td>
+		<td id="id_log_baf_values" class="pchem-cell-multival">
+			<div id="id_log_baf_EPI_value" class="ChemCalcs_available epi log_baf">EPI Suite val</div>
+		</td>
+		<td id="id_log_baf_geomean" class="ChemCalcs_available geomean log_baf"></td>
+		<td id="id_log_baf_Measured" class="ChemCalcs_available measured log_baf"></td>
+	</tr>
+
+
+
+	<tr>
+		<th class="chemprop">Molecular Diffusivity in Water (cm<sup>2</sup>/s)</th>
+		<td id="id_mol_diss_sources" class="pchem-cell-multival">
+			<div id="id_mol_diss_equation_wc_source" class="ChemCalcs_available equation wc mol_diss">Wilk-Chang Equation</div>
+			<div id="id_mol_diss_equation_hl_source" class="ChemCalcs_available equation hl mol_diss">Hayduk-Laudie Equation</div>
+		</td>
+		<td id="id_mol_diss_values" class="pchem-cell-multival">
+			<div id="id_mol_diss_equation_wc_value" class="ChemCalcs_available equation wc mol_diss">Wilk-Chang Equation val</div>
+			<div id="id_mol_diss_equation_hl_value" class="ChemCalcs_available equation hl mol_diss">Hayduk-Laudie Equation val</div>
+		</td>
+		<td id="id_mol_diss_geomean" class="ChemCalcs_available geomean mol_diss"></td>
+		<td id="id_mol_diss_Measured" class="ChemCalcs_available measured mol_diss"></td>
+	</tr>
+
+
+
+	<tr>	
+		<th class="chemprop">Molecular Diffusivity in Air (cm<sup>2</sup>/s)</th>
+		<td id="id_mol_diss_air_sources" class="pchem-cell-multival">
+			<div id="id_mol_diss_air_equation_fsg_source" class="ChemCalcs_available equation fsg mol_diss_air">Fuller, Schettler, and Giddings Equation</div>
+		</td>
+		<td id="id_mol_diss_air_values" class="pchem-cell-multival">
+			<div id="id_mol_diss_air_equation_fsg_value" class="ChemCalcs_available equation fsg mol_diss_air">Fuller, Schettler, and Giddings Equation val</div>
+		</td>
+		<td id="id_mol_diss_air_geomean" class="ChemCalcs_available geomean mol_diss_air"></td>
+		<td id="id_mol_diss_air_Measured" class="ChemCalcs_available measured mol_diss_air"></td>
+	</tr>
+
+	<tr>
+		<th class="pchem_label"><br><h3><span>pH-Dependent Properties</span> <span>at pH:</span> <input aria-label="ph value for ph-dependent inputs" class="numberInput" data-parsley-max="14" data-parsley-required="true" data-parsley-required-message="This field is required." data-parsley-type="number" data-parsley-type-digits-message="Enter a number." data-parsley-type-number-message="Enter a number." id="id_kow_ph" max="14" min="0" name="kow_ph" step="0.1" type="number" value="7.4" /><br><div style="float:right;"></div></th>
+	</tr>
+
+
+	<tr>
+		<th class="chemprop">Octanol/Water Distribution Coefficient (log)</th>
+		<td id="id_kow_wph_sources" class="pchem-cell-multival">
+			<div id="id_kow_wph_OPERA_source" class="ChemCalcs_available opera kow_wph">OPERA</div>
+			<div id="id_kow_wph_ChemAxon_source" class="ChemCalcs_available">ChemAxon (KLOP)</div>
+			<div id="id_kow_wph_ChemAxon_source" class="ChemCalcs_available">ChemAxon (VG)</div>
+			<div id="id_kow_wph_ChemAxon_source" class="ChemCalcs_available">ChemAxon (PHYS)</div>
+		</td>
+		<td id="id_kow_wph_values" class="pchem-cell-multival">
+			<div id="id_kow_wph_OPERA_value" class="ChemCalcs_available opera kow_wph">OPERA val</div>
+			<div id="id_kow_wph_ChemAxon_value" class="ChemCalcs_available chemaxon kow_wph">ChemAxon val</div>
+		</td>
+		<td id="id_kow_wph_geomean" class="ChemCalcs_available geomean kow_wph"></td>
+	</tr>
+
+
+	<tr>
+		<th class="chemprop">Water Solubility (mg/L)</th>
+		<td id="id_water_sol_ph_sources" class="pchem-cell-multival">
+			<div id="id_water_sol_ph_ChemAxon_source" class="ChemCalcs_available chemaxon water_sol_ph">ChemAxon</div>
+		</td>
+		<td id="id_water_sol_ph_values" class="pchem-cell-multival">
+			<div id="id_water_sol_ph_ChemAxon_value" class="ChemCalcs_available chemaxon water_sol_ph">ChemAxon val</div>
+		</td>
+		<td id="id_water_sol_ph_geomean" class="ChemCalcs_available geomean water_sol_ph"></td>
+	</tr>
+
+</table>

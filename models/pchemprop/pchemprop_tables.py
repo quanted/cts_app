@@ -110,8 +110,8 @@ def output_pchem_table(pchemprop_obj):
 
     
 
-    # pchemHTML = render_to_string('cts_app/cts_pchem.html', {})
-    pchemHTML = render_to_string('cts_app/cts_pchem_orig.html', {})
+    pchemHTML = render_to_string('cts_app/cts_pchem.html', {})
+    # pchemHTML = render_to_string('cts_app/cts_pchem_orig.html', {})
 
 
 
