@@ -5,7 +5,7 @@ $(document).ready(function() {
 
 	var spinner_html = '<img src="/cts/static/cts_app/images/loader.gif" id="spinner" />';
 	var nodejs_host = "{{nodejsHost}}";
-    var nodejs_port = {{nodejsPort}};
+	var nodejs_port = {{nodejsPort}};
 
 	var validator = $("#form1").validate({
 		rules: {
@@ -67,11 +67,11 @@ $(document).ready(function() {
 
 		checkedCalcsAndProps = buildCheckedCalcsAndProps();
 		calls_tracker = calculateTotalCalls([nodes.length], checkedCalcsAndProps);
-        total_calls = calls_tracker;
-        sessionStorage.setItem('calls_tracker', calls_tracker);
-        sessionStorage.setItem('total_calls', total_calls);
+		total_calls = calls_tracker;
+		sessionStorage.setItem('calls_tracker', calls_tracker);
+		sessionStorage.setItem('total_calls', total_calls);
 
-        blockInterface(true);
+		blockInterface(true);
 
 		startPchemPropDataCollection("", "", checkedCalcsAndProps, kowPH, null, null, nodes);
 
@@ -80,23 +80,23 @@ $(document).ready(function() {
 
 	$('#csvTESTWSExport').click(function () {
 
-        // var jsonData = parseOutputForCSV();
-        var jsonData = {
-        	'batch_data': batch_data,  // batch_data from cts_pchemprop_requests.html
-        	'workflow': "testws",
-        	'checkedCalcsAndProps': checkedCalcsAndProps,
-        	'batch_chems': batch_chems
-        };
+		// var jsonData = parseOutputForCSV();
+		var jsonData = {
+			'batch_data': batch_data,  // batch_data from cts_pchemprop_requests.html
+			'workflow': "testws",
+			'checkedCalcsAndProps': checkedCalcsAndProps,
+			'batch_chems': batch_chems
+		};
 
-        var cache = [];
+		var cache = [];
 		var json_string = JSON.stringify(jsonData, function(key, value) {
-		    if (typeof value === 'object' && value !== null) {
-		        if (cache.indexOf(value) !== -1) {
-		            return;  // Circular reference found, discard key
-		        }
-		        cache.push(value);
-		    }
-		    return value;
+			if (typeof value === 'object' && value !== null) {
+				if (cache.indexOf(value) !== -1) {
+					return;  // Circular reference found, discard key
+				}
+				cache.push(value);
+			}
+			return value;
 		});
 		cache = null;  // Enable garbage collection
 
@@ -115,18 +115,18 @@ $(document).ready(function() {
 		/*
 		Connects to socket.io!
 		*/
-        // if (nodejs_host == 'nginx') {
-        //     return io.connect();  // docker way
-        // }
-        // else {
-        //     if (nodejs_port && nodejs_port != 80) {
-        //         return io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
-        //     }
-        //     else {
-        //         return io.connect(nodejs_host, {'force new connection': true});
-        //     }
-        // }
-        return io({path: '/cts/ws/'}).connect({forceNew: true});
+		// if (nodejs_host == 'nginx') {
+		//     return io.connect();  // docker way
+		// }
+		// else {
+		//     if (nodejs_port && nodejs_port != 80) {
+		//         return io.connect('http://' + nodejs_host + ':' + nodejs_port, {'force new connection': true});
+		//     }
+		//     else {
+		//         return io.connect(nodejs_host, {'force new connection': true});
+		//     }
+		// }
+		return io({path: '/cts/ws/'}).connect({forceNew: true});
 	}
 
 	function cleanInputFile(batch_chems) {
@@ -141,6 +141,41 @@ $(document).ready(function() {
 		}
 		return filteredChems;
 	}
+
+
+	function sanitizeChemicalList(batch_chems) {
+
+		const smilesCharLimit = 200;
+		const validSmilesPattern = /^[a-zA-Z0-9()\[\]@+\-=#%\\/:.]+$/;
+		const containsLetterPattern = /[a-zA-Z]/;
+		const validChemicals = [];
+		const invalidChemicals = [];
+	  
+		batch_chems.forEach(item => {
+
+			const chemical = String(item).trim();
+	    
+		    if (chemical.length === 0) { return; }
+	    
+		    if (validSmilesPattern.test(chemical) && 
+		        chemical.length <= smilesCharLimit &&
+		        containsLetterPattern.test(chemical))
+		    {
+	    		validChemicals.push(chemical);
+	    	}
+	    	else {
+	    		invalidChemicals.push(chemical);
+	    	}
+
+	  	});
+	  
+	  	return {
+	    	valid: validChemicals,
+	    	invalid: invalidChemicals
+	  	};
+
+	}
+	
 
 	function hasDuplicates(batch_chems) {
 		/*
@@ -160,7 +195,18 @@ $(document).ready(function() {
 
 		batch_chems = file_content.replace(/\r?\n|\r/g, ",").split(",");  // chemicals in array
 
-		batch_chems = cleanInputFile(batch_chems);
+		console.log("batch_chems: ", batch_chems);
+
+		// batch_chems = cleanInputFile(batch_chems);
+		batch_chems = sanitizeChemicalList(batch_chems);
+
+		console.log("sanitized batch_chems: ", batch_chems);
+
+		if (batch_chems.valid.length > 0) {
+			batch_chems = batch_chems.valid;
+		}
+
+		console.log("valid batch_chems: ", batch_chems)
 
 		if (hasDuplicates(batch_chems)) {
 			return;  // NOTE: Sends alert to user in the function.
@@ -188,19 +234,19 @@ $(document).ready(function() {
 
 			$('#batch_list').append(list_html);
 
-		    var mol_info_request = JSON.stringify({
-		        'chemical': batch_chems[chem],
-		        'service': "getChemInfo",
-		        'id': 'chem'+chemInd
-		    });
+			var mol_info_request = JSON.stringify({
+				'chemical': batch_chems[chem],
+				'service': "getChemInfo",
+				'id': 'chem'+chemInd
+			});
 
-		    // Send data to cts_nodejs server:
-		    socketConn.emit('get_data', mol_info_request);
+			// Send data to cts_nodejs server:
+			socketConn.emit('get_data', mol_info_request);
 
-		    chemInd += 1;
-		    // chem_calls += 1;  // increment chem info request counter
+			chemInd += 1;
+			// chem_calls += 1;  // increment chem info request counter
 
-		    nodes.push({"chemical": batch_chems[chem]});  // ensuring chemicals maintain order
+			nodes.push({"chemical": batch_chems[chem]});  // ensuring chemicals maintain order
 
 		}
 
@@ -208,19 +254,19 @@ $(document).ready(function() {
 
 
 		// for chemspec batch mode:
-	    if (window.location.href.indexOf('chemspec/batch') > -1) {
-	        	
-	      	var pka_table = $('.input_table[name=CTS_Speciation_Pka]');
-	      	var pka_chkbox = $(pka_table).find('input#id_get_pka');
+		if (window.location.href.indexOf('chemspec/batch') > -1) {
+				
+			var pka_table = $('.input_table[name=CTS_Speciation_Pka]');
+			var pka_chkbox = $(pka_table).find('input#id_get_pka');
 
-	        $('.input_table.tab_Speciation, div#chemEditLookup').hide();
-	        $(pka_table).show();
+			$('.input_table.tab_Speciation, div#chemEditLookup').hide();
+			$(pka_table).show();
 
-	        $('input[type="submit"]').prop('disabled', false).addClass('brightBorders');
-	        pka_table.find('input[type=number], input[type=text]').prop('readonly', false);
-            pka_table.removeClass('darken');
-            pka_chkbox.hide();
-	    }
+			$('input[type="submit"]').prop('disabled', false).addClass('brightBorders');
+			pka_table.find('input[type=number], input[type=text]').prop('readonly', false);
+			pka_table.removeClass('darken');
+			pka_chkbox.hide();
+		}
 
 	}
 
@@ -261,14 +307,14 @@ $(document).ready(function() {
 	function getCookie(name) {
 	  var cookieValue = null;
 	  if (document.cookie && document.cookie !== '') {
-	    var cookies = document.cookie.split(';');
-	    for (var i = 0; i < cookies.length; i++) {
-	      var cookie = jQuery.trim(cookies[i]);
-	      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-	        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-	        break;
-	      }
-	    }
+		var cookies = document.cookie.split(';');
+		for (var i = 0; i < cookies.length; i++) {
+		  var cookie = jQuery.trim(cookies[i]);
+		  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+			cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+			break;
+		  }
+		}
 	  }
 	  return cookieValue;
 	}     
