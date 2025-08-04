@@ -31,7 +31,7 @@ def parsePOST(request):
 	# Append strings and check if charts are present
 	final_str = pdf_t
 
-	sanitized_html = sanitize_table_html(final_str)
+	final_str = sanitize_table_html(final_str)
 
 	if 'gentrans' in request.path:
 		final_str += handle_gentrans_request(pdf_json)  # add metabolites to PDF/HTML file
