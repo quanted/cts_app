@@ -89,7 +89,6 @@ $(document).ready(function () {
     			json_data['checkedCalcsAndProps'] = checkedCalcsAndProps;
     			json_data['geomeanDict'] = geomeanDict;  // gets global geomean for p-chem properties
 
-    			console.log("QSAR Half-life: ", includeRates)
     			json_data['includeRates'] = includeRates;
 
     		}
@@ -133,7 +132,7 @@ $(document).ready(function () {
 
         elements = collectDOM(workflow); // get relevant dom objects
 
-        $(elements).find('script').remove();  // removes script elements
+        let santized_elements = sanitizeForPDF(elements);
 
    		if (workflow == "chemspec") {
             try {
@@ -141,8 +140,12 @@ $(document).ready(function () {
                 imgData.push($('#isoelectric-point').jqplotToImageStr(options));
             }
             catch(e) { console.log(e); }
+
+
         }
         else if (workflow == "gentrans") {
+
+        	// TODO: Sanitize list of nodes.
             var nodeArray = buildMetabolitesArray(); // (cts_gentrans_tree)
 
             var data_obj = {'nodes': nodeArray, 'checkedCalcsAndProps': checkedCalcsAndProps};
@@ -164,7 +167,8 @@ $(document).ready(function () {
 
         }
 
-		jq_html = $('<div />').append($(elements).clone()).html();
+		// jq_html = $('<div />').append($(elements).clone()).html();
+		jq_html = '<div>' + santized_elements.join('') + '</div>';
 		var n_plot_1 = $('#microspecies-distribution').length;
 		var n_plot_2 = $('#isoelectric-point').length;
 		n_plot = n_plot_1 + n_plot_2;
@@ -286,6 +290,8 @@ function buildMetabolitesArray(csvType="tree", run_type="single", productNodes=n
     		nodeArray.push(nodeItem);
     	}
     }
+
+
     return nodeArray;
 }
 

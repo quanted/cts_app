@@ -6,11 +6,13 @@ from django.template import Context
 import json
 from xhtml2pdf import pisa
 import logging
+from django.core.cache import cache
+from django.conf import settings
+
 from cts_app.cts_calcs.calculator_metabolizer import MetabolizerCalc
 from cts_app.models.gentrans.gentrans_tables import buildMetaboliteTableForPDF
 from .downloads_cts import CSV, roundData
-from django.core.cache import cache
-from django.conf import settings
+from .sanitize_pdf import sanitize_table_html
 
 
 
@@ -29,8 +31,11 @@ def parsePOST(request):
 	# Append strings and check if charts are present
 	final_str = pdf_t
 
+	sanitized_html = sanitize_table_html(final_str)
+
 	if 'gentrans' in request.path:
 		final_str += handle_gentrans_request(pdf_json)  # add metabolites to PDF/HTML file
+
 
 	final_str += "<br>"
 	if (int(pdf_nop)>0):
