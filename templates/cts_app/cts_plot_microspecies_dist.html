@@ -40,7 +40,14 @@ function plotMicroDist(calc, microDistDataId, microDistPlotId) {
 
   let dataArr;
   try {
-    dataArr = JSON.parse($('#' + microDistDataId).text());
+    let plotData = $('#' + microDistDataId).text();
+
+    if (plotData.length < 1) {
+      console.warn("No plot data available.");
+      return;
+    }
+
+    dataArr = JSON.parse(plotData);
   }
   catch (e) {
     console.error("plotMicroDist: error parsing chart data: ", e);
