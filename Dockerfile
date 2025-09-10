@@ -16,10 +16,6 @@ RUN apk add --update --no-cache \
     zlib-dev \
     libjpeg \
     gettext \
-    py3-lxml \
-    py3-pillow \
-    openldap-dev \
-    python3-dev \
     linux-headers \
     && rm -rf /var/cache/apk/*
 
@@ -34,7 +30,7 @@ COPY . /src/cts_app
 # RUN pip install -r /src/cts_app/requirements.txt
 # RUN pip install uwsgi
 
-RUN micromamba create -n $CONDA_ENV -c conda-forge python=3.10
+RUN micromamba create -n $CONDA_ENV -c conda-forge python=3.12
 RUN micromamba install -n $CONDA_ENV -f /src/cts_app/environment.yml
 RUN micromamba clean -p -t -l --trash -y
 RUN micromamba run -n $CONDA_ENV pip uninstall -y xhtml2pdf && micromamba run -n $CONDA_ENV pip install xhtml2pdf
