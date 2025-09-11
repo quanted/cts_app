@@ -34,8 +34,10 @@ RUN micromamba create -n $CONDA_ENV -c conda-forge python=3.12
 RUN micromamba install -n $CONDA_ENV -f /src/cts_app/environment.yml
 RUN micromamba clean -p -t -l --trash -y
 RUN micromamba run -n $CONDA_ENV pip uninstall -y xhtml2pdf && micromamba run -n $CONDA_ENV pip install xhtml2pdf
-RUN micromamba run -n $CONDA_ENV pip uninstall -y future
-RUN micromamba run pip uninstall -y future
+
+RUN rm -rf /opt/conda/pkgs/future-1.0.0-pyhd8ed1ab_2/ 2>/dev/null || true
+RUN rm -rf /opt/conda/envs/pyenv/lib/python3.12/site-packages/future/ 2>/dev/null || true
+RUN rm -rf /opt/conda/envs/pyenv/lib/python3.12/site-packages/future-1.0.0.dist-info/ 2>/dev/null || true
 
 
 # RUN pip install --upgrade pip
