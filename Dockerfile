@@ -35,6 +35,7 @@ RUN micromamba install -n $CONDA_ENV -f /src/cts_app/environment.yml
 RUN micromamba clean -p -t -l --trash -y
 RUN micromamba run -n $CONDA_ENV pip uninstall -y xhtml2pdf && micromamba run -n $CONDA_ENV pip install xhtml2pdf
 RUN micromamba run -n $CONDA_ENV pip uninstall -y future
+RUN micromamba run pip uninstall -y future
 
 
 # RUN pip install --upgrade pip
