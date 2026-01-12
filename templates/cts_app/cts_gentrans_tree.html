@@ -1205,16 +1205,11 @@ function makeQsarRequest(requestObj) {
         success: function(data) {
 
             let dataArray = data["data"]["data"];
-            // console.log("Data array: ", dataArray)
 
             dataArray.forEach(dataObj => {
-                // console.log("Data obj: ", dataObj)
                 handleQsarResponse(dataObj);
             });
 
-            // let results = handleQsarResponse(data)
-            // console.log("Results: ", results)
-            // return results;
         },
         error: function(jqXHR, textStatus, errorThrown) {
           console.log("Error making qsar request: ", textStatus, jqXHR, errorThrown);
@@ -1263,29 +1258,19 @@ function handleQsarResponse(response) {
 
     */
 
+
     var response = jsonRepack(response);
-    // console.log("QSAR request returned: ", response)
+    // console.log("QSAR response: ", response)
 
     if (response.status == false) {
         console.log("Status is false: ", textStatus);
         return;
     }
 
-
-    // TODO: Add the results to the reactions pathway arrow sections
-
     for (nodeInd in st.graph.nodes) {
       let node = st.graph.nodes[nodeInd];
-      // let childGenkey = response['data']['childGenkey'];
-      // let nodeGenkey = node.data.genKey.split(' ')[1]
-      // let matchedSmiles = node.data.smiles == response['data']['child'] ||
-      //                       node.data.orig_smiles == response['data']['child'] ||
-      //                       node.data.chemical == response['data']['child'];
 
-
-      // let childGenkey = response['childGenkey'];
       let childGenkey = response['genKey'];
-      // let nodeGenkey = node.data.genKey.split(' ')[1]
       let nodeGenkey = node.data.genKey;
       let matchedSmiles = node.data.smiles == response['smiles'] ||
                             node.data.orig_smiles == response['smiles'] ||
@@ -1293,10 +1278,21 @@ function handleQsarResponse(response) {
 
       if (matchedSmiles && nodeGenkey == childGenkey) {
         console.log("A match has occurred.");
+
+        let hlUnit = 'days';
+        let hlVal = response['data'];
+
+        if (hlVal == null) {
+            hlVal = findReactionRate(response['routes']);
+            hlUnit = '';
+            console.log("Null HL, using qualitative value: ", hlVal);
+        }
+
         let qsarObj = {
-            'data': response['data'],
-            'units': 'days'
+            'data': hlVal,
+            'units': hlUnit
         };
+
         st.graph.nodes[nodeInd]['data']['qsar'] = qsarObj;
       }
     }
