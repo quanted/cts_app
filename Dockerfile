@@ -1,6 +1,3 @@
-# FROM python:3.10-alpine
-# FROM python:3.10.12-slim
-# FROM mambaorg/micromamba:1.5.8-alpine3.19
 FROM mambaorg/micromamba:2.3.2-alpine3.21
 
 ENV APP_USER=www-data
@@ -18,10 +15,6 @@ RUN apk add --update --no-cache \
     gettext \
     linux-headers \
     && rm -rf /var/cache/apk/*
-
-# RUN apt-get update && \
-#     apt-get upgrade -y && \
-#     apt-get install -y build-essential
 
 WORKDIR /src/cts_app
 COPY . /src/cts_app
