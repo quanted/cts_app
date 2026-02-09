@@ -19,7 +19,7 @@ RUN apk add --update --no-cache \
 WORKDIR /src/cts_app
 COPY . /src/cts_app
 
-RUN micromamba create -n $CONDA_ENV -c conda-forge python=3.13
+RUN micromamba create -n $CONDA_ENV -c conda-forge python=3.12
 RUN micromamba install -n $CONDA_ENV -f /src/cts_app/environment.yml
 RUN micromamba clean -p -t -l --trash -y
 RUN micromamba run -n $CONDA_ENV pip uninstall -y xhtml2pdf && micromamba run -n $CONDA_ENV pip install xhtml2pdf
