@@ -6,7 +6,7 @@ dependencies:
   - bcrypt=5.0.0
   - beautifulsoup4=4.14.3
   - bleach=6.3.0
-  - Django=5.2.9
+  - Django=5.2.12
   - django-cors-headers=4.9.0
   - html5lib=1.1
   - pandas=3.0.1
