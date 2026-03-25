@@ -1,29 +1,22 @@
-FROM mambaorg/micromamba:2.5-alpine3.22
+# FROM mambaorg/micromamba:2.5-alpine3.22
+FROM python:3.13-slim
 
 ENV APP_USER=www-data
 ENV CONDA_ENV="pyenv"
 
 USER root
 
-RUN adduser -S $APP_USER -G $APP_USER
-
-RUN apk add --update --no-cache \
-    build-base \
-    jpeg-dev \
-    zlib-dev \
-    libjpeg \
-    gettext \
-    linux-headers \
-    && rm -rf /var/cache/apk/*
+RUN apt-get update && \
+    apt-get install -y \
+        pkg-config \
+        libcairo2-dev \
+        python3-dev \
+        gcc
 
 WORKDIR /src/cts_app
 COPY . /src/cts_app
 
-RUN micromamba create -n $CONDA_ENV -c conda-forge python=3.12
-RUN micromamba install -n $CONDA_ENV -f /src/cts_app/environment.yml
-RUN micromamba clean -p -t -l --trash -y
-RUN micromamba run -n $CONDA_ENV pip uninstall -y xhtml2pdf && micromamba run -n $CONDA_ENV pip install xhtml2pdf
-RUN micromamba run -n $CONDA_ENV pip uninstall -y future
+RUN pip install -r requirements.txt
 
 RUN find /opt/conda -name "*test.key" -delete || true
 RUN find /opt/conda/ -name 'test.key' -delete || true
@@ -38,7 +31,8 @@ RUN find /opt/conda/ -type d -name "test" -exec sh -c 'find "{}" -type f -name "
 # ------------------------- #
 
 COPY uwsgi.ini /etc/uwsgi/
-RUN chown -R $APP_USER:$APP_USER /src/cts_app
+RUN chown -R $APP_USER:$APP_USER /src
+RUN chmod -R u+rw /src/cts_app/collected_static
 RUN chmod 755 /src/cts_app/docker-start.sh
 
 ENV DJANGO_SETTINGS_MODULE "settings"
@@ -49,6 +43,6 @@ ENV PATH="/src:/src/cts_app:${PATH}"
 
 USER $APP_USER
 
-# CMD ["sh", "/src/cts_app/docker-start.sh"]
-ENV START_COMMAND="micromamba run -n $CONDA_ENV sh docker-start.sh"
-CMD ${START_COMMAND}
+CMD ["sh", "/src/cts_app/docker-start.sh"]
+# ENV START_COMMAND="micromamba run -n $CONDA_ENV sh docker-start.sh"
+# CMD ${START_COMMAND}
