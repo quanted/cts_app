@@ -32,7 +32,6 @@ RUN find /opt/conda/ -type d -name "test" -exec sh -c 'find "{}" -type f -name "
 
 COPY uwsgi.ini /etc/uwsgi/
 RUN chown -R $APP_USER:$APP_USER /src
-RUN chmod -R u+rw /src/cts_app/collected_static
 RUN chmod 755 /src/cts_app/docker-start.sh
 
 ENV DJANGO_SETTINGS_MODULE "settings"
