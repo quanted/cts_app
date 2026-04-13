@@ -1,5 +1,5 @@
 # FROM mambaorg/micromamba:2.5-alpine3.22
-FROM python:3.13-slim
+FROM python:3.13.13-slim
 
 ENV APP_USER=www-data
 ENV CONDA_ENV="pyenv"
