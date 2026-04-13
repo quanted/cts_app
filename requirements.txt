@@ -7,7 +7,7 @@ html5lib==1.1
 pandas==2.3.2
 pymongo==4.14.1
 python-dotenv==1.1.1
-pytz==2025.2
+pytz==2026.1.post1
 rdkit==2025.9.6
 requests==2.33.0
 tabulate==0.9.0
