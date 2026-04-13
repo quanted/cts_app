@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y \
         pkg-config \
         libcairo2-dev \
-        python3-dev \
+        # python3-dev \
         gcc
 
 WORKDIR /src/cts_app
