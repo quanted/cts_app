@@ -6,7 +6,7 @@ django-cors-headers==4.8.0
 html5lib==1.1
 pandas==2.3.2
 pymongo==4.14.1
-python-dotenv==1.1.1
+python-dotenv==1.2.2
 pytz==2025.2
 rdkit==2025.9.6
 requests==2.33.0
