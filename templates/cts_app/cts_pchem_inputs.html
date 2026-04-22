@@ -119,7 +119,7 @@
 
     <div class="section-header">
         <h3 class="pchem-header">Select calculators</h3>
-        <div class="chip" onclick="toggleAllCalculators(this)" id="select-all-calcs-chip">
+        <div class="chip" onclick="toggleSelectAll(this)" id="select-all-calcs-chip">
             <span class="chip-icon">✓</span>
             <span class="chip-text">Select All</span>
         </div>
@@ -130,11 +130,7 @@
     <div class="divider"></div>
 
     <div class="section-header">
-        <h3 class="pchem-header">Select properties</h3>        
-        <div class="chip" onclick="toggleAllProperties(this)" id="select-all-props-chip">
-            <span class="chip-icon">✓</span>
-            <span class="chip-text">Select All</span>
-        </div>
+        <h3 class="pchem-header">Select properties</h3>
     </div>
 
     <div class="properties-div">
@@ -280,22 +276,10 @@
     }
 
     $(document).ready(function() {
-        $(".submit").on("click", function() {
-            console.log("pchem inputs submit clicked.");
-
-            // TODO: Get list of checks calcs and props
-            // NOTE: How to know what's available and not though????
-            // NOTE: Perhaps tooltips or icons can be used in the property buttons
-            // to show which calcs have what properties.
-
-            // TODO: Add the brightBorders class if submit logic passes.
-
-        });
 
         initializeCalculators();
         initializeProperties();
-
-        $('.submit.input_button').addClass('brightBorders');  // TODO: Needs to be conditional on calcs/props checked.
+        updateSubmitState();
 
     });
 
@@ -404,159 +388,132 @@
         return chip;
     }
 
+    function getSelectedCalcs() {
+        return Array.from(document.querySelectorAll('#calculators .chip.selected'))
+            .map(c => c.getAttribute('data-calculator'));
+    }
+
+    function getSelectedProps() {
+        return Array.from(document.querySelectorAll('#neutral-properties .chip.selected, #ph-properties .chip.selected'))
+            .map(c => c.getAttribute('data-property'));
+    }
+
+    function toggleSelectAll(el) {
+        primaryMode = 'props';
+        el.classList.toggle('selected');
+        const selectAll = el.classList.contains('selected');
+
+        const allChips = document.querySelectorAll('#calculators .chip, #neutral-properties .chip, #ph-properties .chip');
+        allChips.forEach(chip => {
+            chip.classList.toggle('selected', selectAll);
+            chip.querySelector('input').setAttribute('value', selectAll);
+        });
+
+        updateSubmitState();
+    }
+
+
+
+    let primaryMode = 'calcs'; // 'calcs' or 'props'
+
     function toggleCalcChip(chipElement) {
-        const calculator = chipElement.getAttribute('data-calculator');
+        primaryMode = 'calcs';
         const wasSelected = chipElement.classList.contains('selected');
         chipElement.classList.toggle('selected');
-
-        const calcInput = chipElement.querySelector('input');
-
-        console.log("chipElement: ", chipElement)
-        console.log("calcInput: ", calcInput)
-        console.log("wasSelected: ", wasSelected)
-
-        // // TODO: Update hidden input with calc true/false:
-        if (wasSelected) {
-            // Now it's unchecked
-            calcInput.setAttribute("value", false);
-        }
-        else {
-            calcInput.setAttribute("value", true);
+        chipElement.querySelector('input').setAttribute('value', !wasSelected);
+        
+        if (!wasSelected) {
+            syncPropsFromCalcs(); // checking: add props
+        } else {
+            removeOrphanedProps(); // unchecking: only remove props no longer covered
         }
 
-        updatePropertiesFromCalculators(calculator, !wasSelected);
+        updateSubmitState();
     }
 
     function togglePropChip(chipElement) {
-        
+        primaryMode = 'props';
         const wasSelected = chipElement.classList.contains('selected');
         chipElement.classList.toggle('selected');
-        const property = chipElement.getAttribute('data-property');
+        chipElement.querySelector('input').setAttribute('value', !wasSelected);
 
-        updateCalculatorsFromProperties(property, !wasSelected);
+        if (!wasSelected) {
+            syncCalcsFromProps(); // checking: add calcs
+        } else {
+            removeOrphanedCalcs(); // unchecking: only remove calcs no longer covered
+        }
 
-    }
-    
-    // function toggleAllProperties(selectAllChip) {
-    function toggleAllProperties() {
-
-        const selectAllChip = document.getElementById('select-all-props-chip');
-
-        selectAllChip.classList.toggle('selected');
-        const selectAll = selectAllChip.classList.contains('selected');
-        
-        const propertyChips = document.querySelectorAll('#neutral-properties .chip, #ph-properties .chip');
-        
-        propertyChips.forEach(chip => {
-            const calcInput = chip.querySelector('input');
-            if (selectAll && !chip.classList.contains('selected')) {
-                chip.classList.add('selected');
-                calcInput.setAttribute("value", true);
-            } else if (!selectAll && chip.classList.contains('selected')) {
-                chip.classList.remove('selected');
-                calcInput.setAttribute("value", false);
-            }
-        });
-
+        updateSubmitState();
     }
 
-    function toggleAllCalculators() {
+    function syncPropsFromCalcs() {
+        const selectedCalcs = getSelectedCalcs();
+        const allPropChips = document.querySelectorAll('#neutral-properties .chip, #ph-properties .chip');
 
-        const selectAllChip = document.getElementById('select-all-calcs-chip');
-
-        selectAllChip.classList.toggle('selected');
-
-        const selectAll = selectAllChip.classList.contains('selected');
-        const calculatorChips = document.querySelectorAll('#calculators .chip');
-        
-        calculatorChips.forEach(chip => {
-
-            const calcName = chip.getAttribute('data-calculator');
-
-            if (selectAll && !chip.classList.contains('selected')) {
-                chip.classList.add('selected');
-                updatePropertiesFromCalculators(calcName, true);
-            } else if (!selectAll && chip.classList.contains('selected')) {
-                chip.classList.remove('selected');
-                updatePropertiesFromCalculators(calcName, false);
-            }
-        });
-
-    }
-
-    function updatePropertiesFromCalculators(calculator, isSelected) {
-
-        const neutralChips = document.querySelectorAll('#neutral-properties .chip');
-        const phChips = document.querySelectorAll('#ph-properties .chip');
-        const allPropertyChips = [...neutralChips, ...phChips];
-        
-        allPropertyChips.forEach(chip => {
-            const property = chip.getAttribute('data-property');
+        allPropChips.forEach(chip => {
             const providedBy = chip.getAttribute('data-provided-by').split(',');
-            if (providedBy.includes(calculator)) {
-
-                const selectedCalculators = Array.from(document.querySelectorAll('#calculators .chip.selected'))
-                    .map(c => c.getAttribute('data-calculator'));
-                
-                const isProvidedBySelectedCalc = providedBy.some(calc => selectedCalculators.includes(calc));
-
-                const calcInput = chip.querySelector('input');
-
-                if (isProvidedBySelectedCalc) {
-                    // chip.classList.remove('disabled');
-                    if (isSelected) {
-                        chip.classList.add('selected');
-                        calcInput.setAttribute("value", true);
-                    }
-                    else {
-                        chip.classList.remove('selected');
-                        calcInput.setAttribute("value", false);
-                    }
-                } else {
-                    // chip.classList.add('disabled');
-                    chip.classList.remove('selected');
-                    calcInput.setAttribute("value", false);
-                }
+            const shouldBeSelected = providedBy.some(calc => selectedCalcs.includes(calc));
+            if (shouldBeSelected) {
+                chip.classList.add('selected');
+                chip.querySelector('input').setAttribute('value', true);
             }
         });
     }
 
-    function updateCalculatorsFromProperties(property, isSelected) {
-
+    function syncCalcsFromProps() {
+        const selectedProps = getSelectedProps();
         const allCalcChips = document.querySelectorAll('#calculators .chip');
 
         allCalcChips.forEach(chip => {
-            const calcName = chip.getAttribute('data-calculator');
-            const isAvailable = availablePropsByCalc[calcName].includes(property);
-
-            console.log("calcName: ", calcName)
-            console.log("isAvailable: ", isAvailable)
-
-            const calcInput = chip.querySelector('input');
-
-            // const isCalcSelected = chip.classList.contains('selected');
-
-            if (isAvailable) {
-                if (isSelected) {
-                    chip.classList.add('selected');
-                    calcInput.setAttribute("value", true);
-                }
-                else {
-                    chip.classList.remove('selected');
-                    calcInput.setAttribute("value", false);
-                }
+            const calc = chip.getAttribute('data-calculator');
+            const shouldBeSelected = availablePropsByCalc[calc].some(prop => selectedProps.includes(prop));
+            if (shouldBeSelected) {
+                chip.classList.add('selected');
+                chip.querySelector('input').setAttribute('value', true);
             }
-
         });
-
     }
 
+    function removeOrphanedProps() {
+        const selectedCalcs = getSelectedCalcs();
+        const allPropChips = document.querySelectorAll('#neutral-properties .chip, #ph-properties .chip');
 
+        allPropChips.forEach(chip => {
+            const providedBy = chip.getAttribute('data-provided-by').split(',');
+            const stillCovered = providedBy.some(calc => selectedCalcs.includes(calc));
+            if (!stillCovered) {
+                chip.classList.remove('selected');
+                chip.querySelector('input').setAttribute('value', false);
+            }
+        });
+    }
 
+    function removeOrphanedCalcs() {
+        const selectedProps = getSelectedProps();
+        const allCalcChips = document.querySelectorAll('#calculators .chip');
 
+        allCalcChips.forEach(chip => {
+            const calc = chip.getAttribute('data-calculator');
+            const stillCovered = availablePropsByCalc[calc].some(prop => selectedProps.includes(prop));
+            if (!stillCovered) {
+                chip.classList.remove('selected');
+                chip.querySelector('input').setAttribute('value', false);
+            }
+        });
+    }
 
-
-
-
+    function updateSubmitState() {
+        const hasCalc = getSelectedCalcs().length > 0;
+        const hasProp = getSelectedProps().length > 0;
+        const submitBtn = document.querySelector('.submit.input_button');
+        
+        if (hasCalc && hasProp) {
+            submitBtn.removeAttribute('disabled');
+            submitBtn.classList.add('brightBorders');
+        } else {
+            submitBtn.setAttribute('disabled', true);
+            submitBtn.classList.remove('brightBorders');
+        }
+    }
 
 </script>
