@@ -40,11 +40,10 @@ else:
 
 mimetypes.add_type("application/javascript", ".js", True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', 'qed.qed-stage.aws.epa.gov', 'qed.qed-prod.aws.epa.gov', 'qed.epa.gov']
 APPEND_SLASH = True
 
 ADMINS = (
-    ('Deron Smith', 'smith.deron@epa.gov'),
     ('Kurt Wolfe', 'wolfe.kurt@epa.gov'),
     ('Nick Pope', 'pope.nick@epa.gov')
 )
