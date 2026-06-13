@@ -1,5 +1,5 @@
 bcrypt==4.3.0
-beautifulsoup4==4.13.5
+beautifulsoup4==4.15.0
 bleach==6.2.0
 Django==5.2.13
 django-cors-headers==4.8.0
