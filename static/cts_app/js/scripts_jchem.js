@@ -133,7 +133,9 @@ function populateChemEditDOM(data) {
   $('#mass').val(data["mass"]); //Mass txtbox - results table
   $('#exactmass').val(data['exactMass']);
   try {
-    getKetcherInstance().setMolecule(data.structureData.structure);
+    // console.log("structureData: ", data.structureData.structure);
+    // getKetcherInstance().setMolecule(data.structureData.structure);
+    getKetcherInstance().setMolecule(data.smiles);
   }
   catch (e) {
     console.error(e);
