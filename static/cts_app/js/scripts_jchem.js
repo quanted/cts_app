@@ -54,7 +54,7 @@ function loadCachedChemical() {
 function checkForKetcherData(cachedMolecule) {
   // Checks for missing MarvinSketch, if there isn't
   // <cml> data for it, then it requests it:
-  if (!('structureData' in cachedMolecule)) {
+  if (!('chemical' in cachedMolecule)) {
     var chemicalObj = {'chemical': cachedMolecule.chemical, 'get_structure_data': true};
     getChemDetails(chemicalObj, function (molecule_info) {
       sessionStorage.setItem('molecule', JSON.stringify(molecule_info.data)); // set current chemical in session cache
