@@ -110,7 +110,7 @@ def about_page(request, model='none', header='non'):
                 'cts_measured_refs': cts_measured_refs.cts_measured_refs,
                 'cts_measured_refs_headers': cts_measured_refs.cts_measured_refs_headers
             })
-        header = "CTS Acronyms"
+        header = "CTS Measured pKa References"
 
     #drupal template for header with bluestripe
     html = render_to_string('cts_app/01cts_epa_drupal_header.html', {
