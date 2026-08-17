@@ -339,8 +339,6 @@ class CSV(object):
 
 	def parseToCSV(self, run_data):
 
-		logging.warning("RUN DATA: {}".format(run_data))
-
 		jid = JchemCalc().gen_jid()  # create timestamp
 		time_str = datetime.datetime.strptime(jid, '%Y%m%d%H%M%S%f').strftime('%A, %Y-%B-%d %H:%M:%S')
 
