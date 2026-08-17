@@ -291,6 +291,11 @@ function addMeasuredTooltip(tooltipElements, tooltipHtml) {
     $(tooltipElements).each(function(index) {
 
         let dataObj = findDataForMeasuredRef(this);
+
+        if (dataObj == null) {
+            return;
+        }
+
         let copiedContent = dataObj.lsCitation || dataObj.lsName || dataObj.method;
         let text = copiedContent + ' <i>(click to copy)</i>';
         const tooltipElement = $(this);
