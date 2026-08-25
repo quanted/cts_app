@@ -298,7 +298,7 @@ function addMeasuredTooltip(tooltipElements, tooltipHtml) {
 
         let copiedContent = dataObj.lsCitation || dataObj.lsName || dataObj.method;
         let text = copiedContent + ' <i>(click to copy)</i>';
-        const tooltipElement = $(this);
+        var tooltipElement = $(this);
 
         $(tooltipElement).qtip({
             content: {
@@ -315,9 +315,20 @@ function addMeasuredTooltip(tooltipElements, tooltipHtml) {
             events: {
                 render: function(event, api) {
                     $(tooltipElement).on('click', function() {
-                        // navigator.clipboard.writeText(dataObj.source).then(() => {
-                        navigator.clipboard.writeText(text).then(() => {
+                        var el = $(this);
+                        navigator.clipboard.writeText(copiedContent).then(() => {
+                            var original = $el.text();
+                            $el.text('Copied!').addClass('copied');
+                            setTimeout(function() {
+                                $el.text(original).removeClass('copied');
+                            }, 1200);
+                        }).catch(function() {
+                            $el.text('Copy failed').addClass('copy-error');
+                            setTimeout(function() {
+                                $el.removeClass('copy-error');
+                            }, 1200);
                         });
+                        
                     });
                 }
             }
