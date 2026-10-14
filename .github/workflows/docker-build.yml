@@ -53,6 +53,6 @@ jobs:
           GH_TOKEN: ${{ secrets.NGINX_REPO_PAT }}
           IMAGE_TAG: ${{ github.ref_name }}-${{ github.sha }}
         run: |
-          gh api --method POST repos/quanted/cts-nginx/dispatches \
+          gh api --method POST repos/quanted/cts_nginx/dispatches \
             -f event_type=django-image-updated \
             -f "client_payload[django_tag]=${IMAGE_TAG}"
