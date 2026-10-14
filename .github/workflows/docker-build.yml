@@ -49,12 +49,10 @@ jobs:
 
       - name: Trigger nginx build
         if: github.event_name == 'push'
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ secrets.NGINX_REPO_PAT }}
-          repository: quanted/cts-nginx
-          event-type: django-image-updated
-          client-payload: |
-            {
-              "django_tag": "${{ github.ref_name }}-${{ github.sha }}"
-            }
+        env:
+          GH_TOKEN: ${{ secrets.NGINX_REPO_PAT }}
+          IMAGE_TAG: ${{ github.ref_name }}-${{ github.sha }}
+        run: |
+          gh api --method POST repos/quanted/cts-nginx/dispatches \
+            -f event_type=django-image-updated \
+            -f "client_payload[django_tag]=${IMAGE_TAG}"
