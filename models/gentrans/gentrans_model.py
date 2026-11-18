@@ -15,7 +15,7 @@ class gentrans(object):
 	def __init__(self, run_type, chem_struct, smiles, orig_smiles, preferredName, name, formula, mass,
 				 exactMass, casrn, cas, dtxsid, abiotic_hydrolysis, abiotic_reduction, mamm_metabolism, photolysis_unranked,
 				 photolysis_ranked, pfas_environmental, pfas_metabolism, gen_limit, pop_limit,
-				 likely_limit, biotrans_metabolism, biotrans_libs, envipath_metabolism, include_rates, tree_type):
+				 likely_limit, biotrans_metabolism, biotrans_libs, microbial_libs, microbial_metabolism, include_rates, tree_type):
 
 		self.title = "Generate Transformation Products"
 		self.jid = MetabolizerCalc().gen_jid()
@@ -71,7 +71,8 @@ class gentrans(object):
 		self.biotrans_metabolism = biotrans_metabolism
 		self.biotrans_libs = biotrans_libs
 
-		self.envipath_metabolism = envipath_metabolism
+		self.microbial_metabolism = microbial_metabolism
+		self.microbial_libs = microbial_libs
 
 		self.include_rates = include_rates
 
@@ -105,11 +106,12 @@ class gentrans(object):
 				'gen_limit': self.gen_limit,
 				'prop': self.biotrans_libs
 			}
-		elif self.envipath_metabolism:
-			self.calc = "envipath"
+		elif self.microbial_metabolism:
+			self.calc = "biotrans"
 			self.metabolizer_request_post = {
 				'chemical': self.smiles,
-				'gen_limit': self.gen_limit
+				'gen_limit': self.gen_limit,
+				'prop': self.microbial_libs
 			}
 		else:
 			self.metabolizer_request_post = {

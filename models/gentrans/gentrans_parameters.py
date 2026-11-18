@@ -64,6 +64,12 @@ def tmpl_reactionSysCTS():
 					{{field.label}}
 					{{biotrans_libs.biotrans_libs}}
 				</td>
+			{% elif field.label == "Microbial transformation" %}
+				<td>{{field}}</td>
+				<td>
+					{{field.label}}
+					{{microbial_libs.microbial_libs}}
+				</td>
 			{% else %}
 				<td>{{field}}</td>
 				<td>{{field.label}}</td>
@@ -178,7 +184,8 @@ def form(formData, model='gentrans'):
 	else:
 		form_cts_reaction_libs = cts_reaction_libs(formData)
 		form_cts_biotrans_libs = cts_biotrans_libs(formData)
-	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, biotrans_libs=form_cts_biotrans_libs, header=mark_safe("Reaction Libraries"))))
+		form_cts_microbial_libs = cts_microbial_libs(formData)
+	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_reaction_libs, biotrans_libs=form_cts_biotrans_libs, microbial_libs=form_cts_microbial_libs, header=mark_safe("Reaction Libraries"))))
 
 	form_cts_class_specific_reaction_libs = cts_class_specific_reaction_libs(formData)
 	html = html + tmpl_reactionSysCTS.render(Context(dict(form=form_cts_class_specific_reaction_libs, header=mark_safe("Chemical Class-Specific Reaction Libraries"))))	
@@ -293,6 +300,16 @@ class cts_biotrans_libs(forms.Form):
 					required=False)
 
 
+@parsleyfy
+class cts_microbial_libs(forms.Form):
+	microbial_choices = (('superbio', "Biotransformer"), ('envimicro', "Envipath"))
+	microbial_libs = forms.ChoiceField(
+					label='Microbial Transformation Choices',
+					choices=microbial_choices,
+					widget=forms.Select(),
+					required=False)
+
+
 # Reaction Libraries
 @parsleyfy
 class cts_reaction_libs(forms.Form):
@@ -307,9 +324,9 @@ class cts_reaction_libs(forms.Form):
 		required=False,
 		label='Biotransformer Mammalian Metabolism'
 	)
-	envipath_metabolism = forms.BooleanField(
+	microbial_metabolism = forms.BooleanField(
 		required=False,
-		label='Envipath microbial biotransformation'
+		label='Microbial transformation'
 	)
 
 
@@ -421,5 +438,3 @@ class cts_oecd_guidelines(forms.Form):
 
 class GentransInp(cts_reaction_paths, cts_reaction_sys, cts_respiration, cts_mammalian_choices, cts_reaction_libs, cts_oecd_guidelines):
 	pass
-
-

@@ -101,7 +101,7 @@ $(document).ready(function() {
                 $('#id_biotrans_libs').prop({'disabled':false}).trigger('change');   
             }
             if (!disableEnvipath) {
-                $('#id_envipath_metabolism').prop({'checked': false, 'disabled':false}).trigger('change');
+                $('#id_microbial_metabolism').prop({'checked': false, 'disabled':false}).trigger('change');
             }
             if (!disablePfas) {
                 $('#id_pfas_metabolism').prop({'checked': false, 'disabled':false}).trigger('change');
@@ -162,7 +162,7 @@ $(document).ready(function() {
 
         else if ($(this).val() == "2") {
             // Sets reaction library options for aerobic (microbial) option
-            $('#id_envipath_metabolism').prop({'checked': true, 'disabled':false}).trigger('change');
+            $('#id_microbial_metabolism').prop({'checked': true, 'disabled':false}).trigger('change');
             // $('#id_abiotic_reduction').prop({'checked': true, 'disabled':false}).trigger('change');
             // $('#id_mamm_metabolism').prop({'checked': false, 'disabled':true}).trigger('change');
             brightenBorder($('#cts_reaction_libs'));
@@ -262,7 +262,7 @@ $(document).ready(function() {
         }
         else if ($(this).val() == "3") {
             // Aerobic Transformation selected
-            $('#id_envipath_metabolism').prop({'checked': true, 'disabled':false}).trigger('change');
+            $('#id_microbial_metabolism').prop({'checked': true, 'disabled':false}).trigger('change');
             brightenBorder($('#cts_reaction_libs'));
         }
         else if ($(this).val() == "4") {
@@ -285,7 +285,7 @@ $(document).ready(function() {
         let photolysis_unranked_checked = $('#id_photolysis_unranked:checked').length > 0;
         let photolysis_ranked_checked = $('#id_photolysis_ranked:checked').length > 0;
         let biotrans_checked = $('#id_biotrans_metabolism:checked').length > 0;
-        let envipath_checked = $('#id_envipath_metabolism:checked').length > 0;
+        let envipath_checked = $('#id_microbial_metabolism:checked').length > 0;
         let pfas_environmental_checked = $('#id_pfas_environmental:checked').length > 0;
         let pfas_metabolism_checked = $('#id_pfas_metabolism:checked').length > 0;
 
@@ -375,7 +375,7 @@ function clearReactionLib() {
     $('#id_photolysis_ranked').prop({'checked': false, 'disabled':true});
     $('#id_biotrans_metabolism').prop({'checked': false, 'disabled':true});
     $('#id_biotrans_libs').prop({'disabled':true});
-    $('#id_envipath_metabolism').prop({'checked': false, 'disabled':true});
+    $('#id_microbial_metabolism').prop({'checked': false, 'disabled':true});
     $('input#id_include_rates').attr({'checked': false, 'disabled': true});
     $('#id_biotrans_libs').val("cyp450");
     $('#id_pfas_metabolism').attr({'checked': false, 'disabled': true});

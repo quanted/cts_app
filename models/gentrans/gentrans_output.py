@@ -37,7 +37,8 @@ def gentransOutputPage(request):
 	biotrans_metabolism = bleach.clean(request.POST.get('biotrans_metabolism', ''))
 	biotrans_libs = bleach.clean(request.POST.get('biotrans_libs', ''))
 
-	envipath_metabolism = bleach.clean(request.POST.get('envipath_metabolism', ''))
+	microbial_metabolism = bleach.clean(request.POST.get('microbial_metabolism', ''))
+	microbial_libs = bleach.clean(request.POST.get('microbial_libs', ''))
 
 	include_rates = bleach.clean(request.POST.get('include_rates', ''))
 
@@ -47,7 +48,7 @@ def gentransOutputPage(request):
 									mass, exact_mass, casrn, cas, dtxsid, abioticHydrolysis, abioticRecuction,
 									mammMetabolism, photolysis_unranked, photolysis_ranked, 
 									pfas_environmental, pfas_metabolism, genLimit, popLimit, 
-									likelyLimit, biotrans_metabolism, biotrans_libs, envipath_metabolism,
+									likelyLimit, biotrans_metabolism, biotrans_libs, microbial_libs, microbial_metabolism,
 									include_rates, tree_type)
 
 	return gentrans_obj
