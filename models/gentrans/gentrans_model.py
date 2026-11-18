@@ -107,12 +107,20 @@ class gentrans(object):
 				'prop': self.biotrans_libs
 			}
 		elif self.microbial_metabolism:
-			self.calc = "biotrans"
-			self.metabolizer_request_post = {
-				'chemical': self.smiles,
-				'gen_limit': self.gen_limit,
-				'prop': self.microbial_libs
-			}
+			print("microbial_libs: {}".format(microbial_libs))
+			if "envipath" in microbial_libs:
+				self.calc = "envipath"
+				self.metabolizer_request_post = {
+					'chemical': self.smiles,
+					'gen_limit': self.gen_limit
+				}
+			elif "envimicro" in microbial_libs:
+				self.calc = "biotrans"
+				self.metabolizer_request_post = {
+					'chemical': self.smiles,
+					'gen_limit': self.gen_limit,
+					'prop': self.microbial_libs
+				}
 		else:
 			self.metabolizer_request_post = {
 				'structure': self.smiles,

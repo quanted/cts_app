@@ -302,7 +302,7 @@ class cts_biotrans_libs(forms.Form):
 
 @parsleyfy
 class cts_microbial_libs(forms.Form):
-	microbial_choices = (('superbio', "Biotransformer"), ('envimicro', "Envipath"))
+	microbial_choices = (('envipath', "Envipath"), ('envimicro', "Biotransformer"))
 	microbial_libs = forms.ChoiceField(
 					label='Microbial Transformation Choices',
 					choices=microbial_choices,
